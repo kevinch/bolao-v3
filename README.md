@@ -39,5 +39,5 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 - Frontend: NextJS - [docs](https://nextjs.org/docs)
 - Host: Vercel (kevinchevallier@gmail.com account)
-- Auth: Clerk (hibolaoio@gmail.com account) - [docs](https://clerk.com/docs/references/nextjs/overview)
+- Auth: Clerk (hibolaoio@gmail.com account) - [docs](https://clerk.com/docs/references/nextjs/overview) - [dashboard](https://dashboard.clerk.com/)
 - Repo: [/bolaov3-poc-clerk-auth](https://github.com/kevinch/bolaov3-poc-clerk-auth)
