@@ -1,7 +1,11 @@
+"use client";
+
 import Link from "next/link";
-import { UserButton } from "@clerk/nextjs";
+import { UserButton, useAuth } from "@clerk/nextjs";
 
 export default function Nav() {
+  const { isLoaded, userId } = useAuth();
+
   return (
     <nav>
       <UserButton />
@@ -19,9 +23,11 @@ export default function Nav() {
         <li>
           <Link href="/sign-up">Sign-up</Link>
         </li>
-        <li>
-          <Link href="/profile">Profile</Link>
-        </li>
+        {isLoaded && userId && (
+          <li>
+            <Link href="/profile">Profile</Link>
+          </li>
+        )}
       </ul>
     </nav>
   );
