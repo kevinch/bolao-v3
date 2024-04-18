@@ -27,16 +27,11 @@ export default function Nav() {
           <Link href="/sign-up">Sign-up</Link>
         </li>
         {isLoaded && userId && (
-          <>
-            <li>
-              <Link href="/profile">Profile</Link>
-            </li>
-            <li>
-              <button onClick={() => signOut(() => router.push("/"))}>
-                Sign out
-              </button>
-            </li>
-          </>
+          <li>
+            <button onClick={() => signOut(() => router.push("/"))}>
+              Sign out
+            </button>
+          </li>
         )}
       </ul>
     </nav>
