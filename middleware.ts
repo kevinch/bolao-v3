@@ -1,11 +1,11 @@
-import { authMiddleware } from "@clerk/nextjs";
+import { authMiddleware } from "@clerk/nextjs"
 
 // See https://clerk.com/docs/references/nextjs/auth-middleware
 // for more information about configuring your Middleware
 export default authMiddleware({
   // Allow signed out users to access the specified routes:
   publicRoutes: ["/", "/about", "/sign-in", "sign-up"],
-});
+})
 
 export const config = {
   matcher: [
@@ -15,4 +15,4 @@ export const config = {
     // Re-include any files in the api or trpc folders that might have an extension
     "/(api|trpc)(.*)",
   ],
-};
+}

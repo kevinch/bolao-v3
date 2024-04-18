@@ -1,10 +1,13 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import { UserButton, useAuth } from "@clerk/nextjs";
+import Link from "next/link"
+import { UserButton, useAuth, useClerk } from "@clerk/nextjs"
+import { useRouter } from "next/navigation"
 
 export default function Nav() {
-  const { isLoaded, userId } = useAuth();
+  const { isLoaded, userId } = useAuth()
+  const { signOut } = useClerk()
+  const router = useRouter()
 
   return (
     <nav>
@@ -24,11 +27,18 @@ export default function Nav() {
           <Link href="/sign-up">Sign-up</Link>
         </li>
         {isLoaded && userId && (
-          <li>
-            <Link href="/profile">Profile</Link>
-          </li>
+          <>
+            <li>
+              <Link href="/profile">Profile</Link>
+            </li>
+            <li>
+              <button onClick={() => signOut(() => router.push("/"))}>
+                Sign out
+              </button>
+            </li>
+          </>
         )}
       </ul>
     </nav>
-  );
+  )
 }
