@@ -11,7 +11,9 @@ export default function Nav() {
 
   return (
     <nav>
+      <pre>{userId}</pre>
       <UserButton />
+
       <ul>
         <li>
           <Link href="/">Home</Link>
@@ -21,11 +23,16 @@ export default function Nav() {
         </li>
 
         {isLoaded && userId ? (
-          <li>
-            <button onClick={() => signOut(() => router.push("/"))}>
-              Sign out
-            </button>
-          </li>
+          <>
+            <li>
+              <Link href="/bolao/create">Create Bolão</Link>
+            </li>
+            <li>
+              <button onClick={() => signOut(() => router.push("/"))}>
+                Sign out
+              </button>
+            </li>
+          </>
         ) : (
           <>
             <li>
