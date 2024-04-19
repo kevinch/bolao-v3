@@ -7,7 +7,10 @@ import { useRouter } from "next/navigation"
 export default function Nav() {
   const { isLoaded, userId } = useAuth()
   const { signOut } = useClerk()
+  // const { user } = useUser()
   const router = useRouter()
+
+  // console.log(user?.firstName, user?.id)
 
   return (
     <nav>
