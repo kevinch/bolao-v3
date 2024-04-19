@@ -1,12 +1,24 @@
 import Nav from "@/app/components/nav"
-// import { useEffect, useState } from "react"
-// import axios from "axios"
 import { Competition } from "@/app/lib/definitions"
+import { FOOTBALL_DATA_API } from "@/app/lib/utils"
 
 async function getData() {
-  const res = await fetch("https://api.football-data.org/v4/competitions")
-  // The return value is *not* serialized
-  // You can return Date, Map, Set, etc.
+  let token: string
+  if (process.env.NEXT_PUBLIC_FOOTBALLDATA_TOKEN) {
+    token = process.env.NEXT_PUBLIC_FOOTBALLDATA_TOKEN
+  } else {
+    throw new Error("FOOTBALLDATA_TOKEN environment variable is not set")
+  }
+
+  const myHeaders = new Headers()
+  myHeaders.append("X-Auth-Token", token)
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+  }
+
+  const res = await fetch(`${FOOTBALL_DATA_API}/competitions`, requestOptions)
 
   if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary
@@ -18,28 +30,7 @@ async function getData() {
 
 async function CreateBolao() {
   const data = await getData()
-  // const [data, setData] = useState([])
-  // const [error, setError] = useState(null)
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios({
-  //         method: "get",
-  //         url: "https://api.football-data.org/v4/competitions",
-  //         headers: {
-  //           "X-Auth-Token": process.env.NEXT_PUBLIC_FOOTBALLDATA_TOKEN,
-  //         },
-  //       })
-
-  //       setData(response.data.competitions)
-  //     } catch (error: any) {
-  //       setError(error)
-  //     }
-  //   }
-
-  //   fetchData()
-  // }, [])
+  const competitions = data.competitions
 
   return (
     <div>
@@ -61,7 +52,7 @@ async function CreateBolao() {
           <option value="" disabled>
             Select a competition
           </option>
-          {data.map((el: Competition) => (
+          {competitions.map((el: Competition) => (
             <option key={el.id} value={el.id}>
               {el.name}
             </option>
