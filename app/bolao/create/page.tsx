@@ -39,25 +39,29 @@ async function CreateBolao() {
       <h1>Create bolão</h1>
 
       <form>
-        <label htmlFor="name">Name</label>
-        <input
-          type="text"
-          id="name"
-          name="name"
-          placeholder="Choose a name for your bolão"
-        />
+        <div>
+          <label htmlFor="name">Name</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="Choose a name for your bolão"
+          />
+        </div>
 
-        <label htmlFor="competition">Competition</label>
-        <select id="competition">
-          <option value="" disabled>
-            Select a competition
-          </option>
-          {competitions.map((el: Competition) => (
-            <option key={el.id} value={el.id}>
-              {el.name}
+        <div>
+          <label htmlFor="competition">Competition</label>
+          <select id="competition">
+            <option value="" disabled>
+              Select a competition
             </option>
-          ))}
-        </select>
+            {competitions.map((el: Competition) => (
+              <option key={el.id} value={el.id}>
+                {el.name}
+              </option>
+            ))}
+          </select>
+        </div>
       </form>
     </div>
   )
