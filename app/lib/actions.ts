@@ -55,7 +55,6 @@ export async function createUserBolao(bolaoId: number) {
     await sql`
       INSERT INTO user_bolao (bolao_id, user_id)
       VALUES (${bolaoId}, ${userId})
-      RETURNING *
     `
   } catch (error) {
     console.log(error)
