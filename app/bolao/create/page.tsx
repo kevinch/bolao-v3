@@ -1,6 +1,6 @@
 import Nav from "@/app/components/nav"
-import { Competition } from "@/app/lib/definitions"
 import { FOOTBALL_DATA_API } from "@/app/lib/utils"
+import Form from "@/app/ui/bolao/create/form"
 
 async function getData() {
   let token: string
@@ -38,31 +38,7 @@ async function CreateBolao() {
 
       <h1>Create bolão</h1>
 
-      <form>
-        <div>
-          <label htmlFor="name">Name</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            placeholder="Choose a name for your bolão"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="competition">Competition</label>
-          <select id="competition">
-            <option value="" disabled>
-              Select a competition
-            </option>
-            {competitions.map((el: Competition) => (
-              <option key={el.id} value={el.id}>
-                {el.name}
-              </option>
-            ))}
-          </select>
-        </div>
-      </form>
+      <Form data={competitions} />
     </div>
   )
 }
