@@ -11,27 +11,37 @@ export default function Nav() {
 
   return (
     <nav>
+      <pre>{userId}</pre>
       <UserButton />
+
       <ul>
         <li>
           <Link href="/">Home</Link>
         </li>
         <li>
-          {" "}
           <Link href="/about">About</Link>
         </li>
-        <li>
-          <Link href="/sign-in">Sign-in</Link>
-        </li>
-        <li>
-          <Link href="/sign-up">Sign-up</Link>
-        </li>
-        {isLoaded && userId && (
-          <li>
-            <button onClick={() => signOut(() => router.push("/"))}>
-              Sign out
-            </button>
-          </li>
+
+        {isLoaded && userId ? (
+          <>
+            <li>
+              <Link href="/bolao/create">Create Bolão</Link>
+            </li>
+            <li>
+              <button onClick={() => signOut(() => router.push("/"))}>
+                Sign out
+              </button>
+            </li>
+          </>
+        ) : (
+          <>
+            <li>
+              <Link href="/sign-in">Sign-in</Link>
+            </li>
+            <li>
+              <Link href="/sign-up">Sign-up</Link>
+            </li>
+          </>
         )}
       </ul>
     </nav>
