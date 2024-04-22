@@ -1,16 +1,19 @@
 "use client"
 
 import Link from "next/link"
-import { UserButton, useAuth, useClerk } from "@clerk/nextjs"
+import {
+  UserButton,
+  useAuth,
+  useClerk,
+  // useUser
+} from "@clerk/nextjs"
 import { useRouter } from "next/navigation"
 
 export default function Nav() {
-  const { isLoaded, userId } = useAuth()
+  const { isSignedIn, userId } = useAuth()
   const { signOut } = useClerk()
   // const { user } = useUser()
   const router = useRouter()
-
-  // console.log(user?.firstName, user?.id)
 
   return (
     <nav>
@@ -25,7 +28,7 @@ export default function Nav() {
           <Link href="/about">About</Link>
         </li>
 
-        {isLoaded && userId ? (
+        {isSignedIn ? (
           <>
             <li>
               <Link href="/bolao/create">Create Bolão</Link>
