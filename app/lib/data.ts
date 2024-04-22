@@ -2,11 +2,8 @@
 
 import { unstable_noStore as noStore } from "next/cache"
 import { sql } from "@vercel/postgres"
-import { auth } from "@clerk/nextjs/server"
 
-const { userId } = auth()
-
-export async function fetchBoloes() {
+export async function fetchBoloes(userId: string) {
   noStore()
 
   console.log("FETCHBOLOES()")

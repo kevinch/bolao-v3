@@ -17,7 +17,7 @@ export default function BoloesList() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response: any = await fetchBoloes()
+        const response: any = userId && (await fetchBoloes(userId))
 
         setData(response)
       } catch (error) {
@@ -32,16 +32,18 @@ export default function BoloesList() {
     return <p>(nothing in BoloesList because logged out)</p>
   }
 
-  return (
-    <div>
-      <pre>{userId}</pre>
-      <ul>
-        {data.length > 0 ? (
-          data.map((el: Bolao) => <li key={el.id}>{el.name}</li>)
-        ) : (
-          <button>create bolao</button>
-        )}
-      </ul>
-    </div>
-  )
+  if (data) {
+    return (
+      <div>
+        <pre>{userId}</pre>
+        <ul>
+          {data.length > 0 ? (
+            data.map((el: Bolao) => <li key={el.id}>{el.name}</li>)
+          ) : (
+            <button>create bolao</button>
+          )}
+        </ul>
+      </div>
+    )
+  }
 }
