@@ -7,7 +7,7 @@ async function getData(bolaoId: string) {
   return res
 }
 
-export async function Results({ params }: { params: { id: string } }) {
+async function Results({ params }: { params: { id: string } }) {
   const data = await getData(params.id)
 
   if (!data) {
