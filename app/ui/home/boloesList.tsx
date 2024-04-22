@@ -26,7 +26,7 @@ export default function BoloesList() {
     }
 
     fetchData()
-  }, [])
+  }, [userId])
 
   if (!isSignedIn) {
     return <p>(nothing in BoloesList because logged out)</p>
