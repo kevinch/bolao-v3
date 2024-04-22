@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { fetchBoloes } from "@/app/lib/data"
 import { useAuth } from "@clerk/nextjs"
 import { useEffect, useState } from "react"
@@ -29,20 +30,28 @@ export default function BoloesList() {
   }, [userId])
 
   if (!isSignedIn) {
-    return <p>(nothing in BoloesList because logged out)</p>
+    return
   }
 
   if (data) {
     return (
       <div>
-        <pre>{userId}</pre>
-        <ul>
+        {/* <pre>{userId}</pre> */}
+        <div>
           {data.length > 0 ? (
-            data.map((el: Bolao) => <li key={el.id}>{el.name}</li>)
+            data.map((el: Bolao) => (
+              <div key={el.id}>
+                <h3>{el.name}</h3>
+                <div>
+                  <Link href={`/bolao/${el.id}/bet`}>Bet</Link>&nbsp;
+                  <Link href={`/bolao/${el.id}/results`}>Results</Link>
+                </div>
+              </div>
+            ))
           ) : (
             <button>create bolao</button>
           )}
-        </ul>
+        </div>
       </div>
     )
   }

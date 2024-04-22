@@ -1,18 +1,12 @@
 "use client"
 
 import Link from "next/link"
-import {
-  UserButton,
-  useAuth,
-  useClerk,
-  // useUser
-} from "@clerk/nextjs"
+import { UserButton, useAuth, useClerk } from "@clerk/nextjs"
 import { useRouter } from "next/navigation"
 
 export default function Nav() {
   const { isSignedIn, userId } = useAuth()
   const { signOut } = useClerk()
-  // const { user } = useUser()
   const router = useRouter()
 
   return (
