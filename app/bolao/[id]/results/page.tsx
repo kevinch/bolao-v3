@@ -2,9 +2,9 @@ import Nav from "@/app/components/nav"
 import { fetchBolao } from "@/app/lib/data"
 
 async function getData(bolaoId: string) {
-  const res = await fetchBolao(bolaoId)
+  const result = await fetchBolao(bolaoId)
 
-  return res
+  return result
 }
 
 async function Results({ params }: { params: { id: string } }) {
