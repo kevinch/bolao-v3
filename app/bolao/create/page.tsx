@@ -1,4 +1,3 @@
-import Nav from "@/app/components/nav"
 import Form from "@/app/ui/bolao/create/form"
 import { getFootballData } from "@/app/lib/data"
 
@@ -8,8 +7,6 @@ async function CreateBolao() {
 
   return (
     <div>
-      <Nav />
-
       <h1>Create bolão</h1>
 
       <Form data={competitions} />

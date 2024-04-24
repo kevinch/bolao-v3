@@ -1,4 +1,3 @@
-import Nav from "@/app/components/nav"
 import { fetchBolao } from "@/app/lib/data"
 
 async function getData(bolaoId: string) {
@@ -16,7 +15,6 @@ async function Results({ params }: { params: { id: string } }) {
 
   return (
     <main>
-      <Nav />
       <h1>{data.name}</h1>
       <pre>Competition Id: {data.competition_id}</pre>
     </main>

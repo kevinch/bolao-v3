@@ -1,4 +1,3 @@
-import Nav from "@/app/components/nav"
 import { fetchBolao, fetchUserBoloes, getFootballData } from "@/app/lib/data"
 
 async function getData(bolaoId: string) {
@@ -44,8 +43,6 @@ async function Bet({ params }: { params: { id: string } }) {
 
   return (
     <main>
-      <Nav />
-
       <h1>{data.bolao.name}</h1>
 
       {/* <pre>{JSON.stringify(data.matches, null, 4)}</pre> */}
