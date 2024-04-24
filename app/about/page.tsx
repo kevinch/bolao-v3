@@ -3,8 +3,6 @@ import Nav from "@/app/components/nav"
 export default function About() {
   return (
     <div>
-      <Nav />
-
       <h1>About</h1>
 
       <h2>Why another app?</h2>
