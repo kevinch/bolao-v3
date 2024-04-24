@@ -1,9 +1,9 @@
-import Nav from "@/app/components/nav"
+import PageTitle from "../components/pageTitle"
 
 export default function About() {
   return (
     <div>
-      <h1>About</h1>
+      <PageTitle>About</PageTitle>
 
       <h2>Why another app?</h2>
       <p>

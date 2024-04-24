@@ -3,8 +3,8 @@ import Background from "./Background"
 
 function Footer() {
   return (
-    <footer style={{ margin: "100px 0 0 0" }}>
-      <div className="footer_links" style={{ fontSize: "12px" }}>
+    <footer className="mt-8 text-sm">
+      <div className="footer_links">
         <Link href="/">Home</Link>&nbsp;
         <Link href="/bolao/create">Create Bolão</Link>&nbsp;
         <Link href="/about">About</Link>
