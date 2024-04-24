@@ -1,11 +1,11 @@
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { IBM_Plex_Sans } from "next/font/google"
 import { ClerkProvider } from "@clerk/nextjs"
 import Header from "@/app/components/header"
 import Footer from "@/app/components/footer"
 import "./globals.css"
 
-const inter = Inter({ subsets: ["latin"] })
+const Plex = IBM_Plex_Sans({ weight: "400", subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "Bolão.io v3",
@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={inter.className}>
+        <body className={Plex.className}>
           <div
             className="mobile_container"
             style={{ maxWidth: "500px", margin: "0 auto" }}
