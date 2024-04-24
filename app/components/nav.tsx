@@ -1,4 +1,5 @@
 "use client"
+// this could potencially be a SSR component
 
 import Link from "next/link"
 import { UserButton, useAuth, useClerk } from "@clerk/nextjs"
