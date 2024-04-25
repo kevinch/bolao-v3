@@ -21,10 +21,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={Plex.className}>
-          <div
-            className="mobile_container"
-            style={{ maxWidth: "500px", margin: "0 auto" }}
-          >
+          <div style={{ maxWidth: "500px", margin: "0 auto" }}>
             <Header />
             {children}
             <Footer />

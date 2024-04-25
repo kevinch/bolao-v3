@@ -28,3 +28,9 @@ export type User = {
   id: string
   role: string
 }
+
+export type Bolao = {
+  id: string
+  name: string
+  competition_id: string
+}

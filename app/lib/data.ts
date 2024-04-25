@@ -4,6 +4,7 @@ import { QueryResultRow } from "pg"
 import { unstable_noStore as noStore } from "next/cache"
 import { sql } from "@vercel/postgres"
 import { FOOTBALL_DATA_API } from "./utils"
+import { Bolao } from "./definitions"
 
 export async function fetchBoloes(userId: string) {
   noStore()
@@ -19,7 +20,7 @@ export async function fetchBoloes(userId: string) {
       WHERE CAST(user_bolao.user_id AS VARCHAR) = ${userId}
     `
 
-    return data.rows
+    return data.rows as Bolao[]
   } catch (error) {
     console.error("Database Error:", error)
     throw new Error("Failed to fetch boloes.")

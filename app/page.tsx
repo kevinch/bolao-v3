@@ -15,7 +15,7 @@ async function Home() {
           <br />
           {user.firstName
             ? `${user.firstName}.`
-            : user.emailAddresses[0].emailAddress}
+            : user.emailAddresses[0].emailAddress.split("@")[0]}
         </PageTitle>
         <BoloesList />
       </main>

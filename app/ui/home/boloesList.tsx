@@ -1,58 +1,61 @@
-"use client"
-
 import Link from "next/link"
 import { fetchBoloes } from "@/app/lib/data"
-import { useAuth } from "@clerk/nextjs"
-import { useEffect, useState } from "react"
+import { auth } from "@clerk/nextjs/server"
+import { Bolao } from "@/app/lib/definitions"
 
-type Bolao = {
-  id: string
-  name: string
-  competition_id: string
+async function getData(userId: string) {
+  const result = await fetchBoloes(userId)
+
+  return result
 }
 
-export default function BoloesList() {
-  const [data, setData] = useState([])
-  const { isSignedIn, userId } = useAuth()
+async function BoloesList() {
+  const { userId }: { userId: string | null } = auth()
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response: any = userId && (await fetchBoloes(userId))
-
-        setData(response)
-      } catch (error) {
-        console.error("Error fetching data:", error)
-      }
-    }
-
-    fetchData()
-  }, [userId])
-
-  if (!isSignedIn) {
+  if (!userId) {
     return
   }
 
-  if (data) {
+  let data: Bolao[] = []
+
+  if (userId) {
+    data = await getData(userId)
+  }
+
+  if (data.length === 0) {
     return (
-      <div>
-        {/* <pre>{userId}</pre> */}
-        <div>
-          {data.length > 0 ? (
-            data.map((el: Bolao) => (
-              <div key={el.id}>
-                <h3>{el.name}</h3>
-                <div>
-                  <Link href={`/bolao/${el.id}/bet`}>Bet</Link>&nbsp;
-                  <Link href={`/bolao/${el.id}/results`}>Results</Link>
-                </div>
-              </div>
-            ))
-          ) : (
-            <button>create bolao</button>
-          )}
-        </div>
+      <div className="flex items-center flex-col space-y-8 uppercase">
+        <Link className="underline hover:no-underline" href="/bolao/create">
+          Create Bolão
+        </Link>
       </div>
     )
   }
+
+  return (
+    <div>
+      {data.map((el: Bolao) => (
+        <div key={el.id} className="mb-6 drop-shadow-sm border bg-white p-4">
+          <h3 className="text-2xl capitalize mb-4">{el.name}</h3>
+          <div>
+            <Link
+              className="underline hover:no-underline"
+              href={`/bolao/${el.id}/bet`}
+            >
+              Bet
+            </Link>
+            &nbsp;
+            <Link
+              className="underline hover:no-underline"
+              href={`/bolao/${el.id}/results`}
+            >
+              Results
+            </Link>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
 }
+
+export default BoloesList
