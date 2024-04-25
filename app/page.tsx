@@ -13,9 +13,11 @@ async function Home() {
         <PageTitle>
           Hey
           <br />
-          {user.firstName
-            ? `${user.firstName}.`
-            : user.emailAddresses[0].emailAddress.split("@")[0]}
+          <span className="font-bold">
+            {user.firstName
+              ? `${user.firstName}.`
+              : user.emailAddresses[0].emailAddress.split("@")[0]}
+          </span>
         </PageTitle>
         <BoloesList />
       </main>

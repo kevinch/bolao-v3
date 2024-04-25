@@ -21,7 +21,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={Plex.className}>
-          <div style={{ maxWidth: "500px", margin: "0 auto" }}>
+          <div className="container mx-auto px-4">
             <Header />
             {children}
             <Footer />
