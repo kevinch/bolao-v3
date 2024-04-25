@@ -1,34 +1,9 @@
-import { ReactNode } from "react"
-import { Match } from "../lib/definitions"
-
-interface TlaProps {
-  children: ReactNode
-}
-
-interface ButtonProps {
-  children: ReactNode
-}
+import { Match } from "@/app/lib/definitions"
+import Tla from "./Tla"
+import ButtonsBet from "./buttonsBet"
 
 interface TableProps {
   matches: Match[]
-}
-
-function Button({ children }: ButtonProps) {
-  return (
-    <button className="border px-2 mx-2 rounded bg-slate-50">{children}</button>
-  )
-}
-
-function ButtonsBet() {
-  return (
-    <div>
-      <Button>-</Button>.<Button>+</Button>
-    </div>
-  )
-}
-
-function Tla({ children }: TlaProps) {
-  return <span className="">{children}</span>
 }
 
 function TableMatchDayRegularSeason({ matches }: TableProps) {

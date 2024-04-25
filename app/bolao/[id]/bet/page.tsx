@@ -1,8 +1,8 @@
 import Link from "next/link"
 import { fetchBolao, fetchUserBoloes, getFootballData } from "@/app/lib/data"
 import PageTitle from "@/app/components/pageTitle"
-import TableMatchDayRegularSeason from "@/app/components/tableMatchDayRegularSeason"
-import TableMatchDayStages from "@/app/components/tableMatchDayStages"
+import TableMatchDayRegularSeason from "@/app/ui/bolao/bet/tableMatchDayRegularSeason"
+import TableMatchDayStages from "@/app/ui/bolao/bet/tableMatchDayStages"
 import { MatchesData } from "@/app/lib/definitions"
 
 async function getData(bolaoId: string) {
@@ -71,7 +71,7 @@ async function Bet({ params }: { params: { id: string } }) {
       {isRegularSeason ? (
         <TableMatchDayRegularSeason matches={data.matchesData.matches} />
       ) : (
-        <TableMatchDayStages />
+        <TableMatchDayStages matches={data.matchesData.matches} />
       )}
     </main>
   )
