@@ -1,9 +1,10 @@
 import { SignUp } from "@clerk/nextjs"
+import PageTitle from "@/app/components/pageTitle"
 
 export default function Page() {
   return (
     <main>
-      <h1>Sign Up</h1>
+      <PageTitle>Sign Up</PageTitle>
 
       <SignUp />
     </main>

@@ -1,4 +1,5 @@
 import { fetchBolao, fetchUserBoloes, getFootballData } from "@/app/lib/data"
+import PageTitle from "@/app/components/pageTitle"
 
 async function getData(bolaoId: string) {
   const [bolao, userBoloes] = await Promise.all([
@@ -43,7 +44,7 @@ async function Bet({ params }: { params: { id: string } }) {
 
   return (
     <main>
-      <h1>{data.bolao.name}</h1>
+      <PageTitle>{data.bolao.name}</PageTitle>
 
       {/* <pre>{JSON.stringify(data.matches, null, 4)}</pre> */}
     </main>

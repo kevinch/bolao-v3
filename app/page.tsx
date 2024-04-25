@@ -1,5 +1,6 @@
 import BoloesList from "@/app/ui/home/boloesList"
 import { currentUser } from "@clerk/nextjs/server"
+import PageTitle from "./components/pageTitle"
 
 import Link from "next/link"
 
@@ -9,13 +10,13 @@ async function Home() {
   if (user) {
     return (
       <main>
-        <h1>
+        <PageTitle>
           Hey
           <br />
           {user.firstName
             ? `${user.firstName}.`
             : user.emailAddresses[0].emailAddress}
-        </h1>
+        </PageTitle>
         <BoloesList />
       </main>
     )
@@ -23,7 +24,7 @@ async function Home() {
 
   return (
     <main>
-      <h1>Simple soccer bets.</h1>
+      <PageTitle>Simple soccer bets.</PageTitle>
 
       <div style={{ margin: "30px 0" }}>
         <Link href="/sign-in">Sign-in</Link>&nbsp;

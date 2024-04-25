@@ -1,4 +1,5 @@
 import { fetchBolao } from "@/app/lib/data"
+import PageTitle from "@/app/components/pageTitle"
 
 async function getData(bolaoId: string) {
   const result = await fetchBolao(bolaoId)
@@ -15,7 +16,7 @@ async function Results({ params }: { params: { id: string } }) {
 
   return (
     <main>
-      <h1>{data.name}</h1>
+      <PageTitle>{data.name}</PageTitle>
       <pre>Competition Id: {data.competition_id}</pre>
     </main>
   )
