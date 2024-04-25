@@ -1,5 +1,9 @@
+import Link from "next/link"
 import { fetchBolao, fetchUserBoloes, getFootballData } from "@/app/lib/data"
 import PageTitle from "@/app/components/pageTitle"
+import TableMatchDayRegularSeason from "@/app/components/tableMatchDayRegularSeason"
+import TableMatchDayStages from "@/app/components/tableMatchDayStages"
+import { MatchesData } from "@/app/lib/definitions"
 
 async function getData(bolaoId: string) {
   const [bolao, userBoloes] = await Promise.all([
@@ -8,45 +12,62 @@ async function getData(bolaoId: string) {
   ])
 
   const competitionId = bolao.competition_id
-
   const competition = await getFootballData({
     path: `competitions/${competitionId}`,
   })
 
   // if competition.currentSeason.stages.includes('REGULAR_SEASON')
-  // then use competition.currentSeason.currentMatchday's value
-  // for next request with competitions/{id}/matches?matchday={value}
+  // then use competition.currentSeason.currentMatchday's value for a smaller payload in the request
+  let isRegularSeason = false
+  if (competition.currentSeason.stages.includes("REGULAR_SEASON")) {
+    isRegularSeason = true
+  }
 
   // else it's a championship with stages
-  // for now we will get all matches at once with
-  // competitions/{id}/matches
+  // for now we will get all matches at once
+  let path = `competitions/${competitionId}/matches`
+  if (isRegularSeason) {
+    const currentMatchday = competition.currentSeason.currentMatchday
+    path += `?matchday=${currentMatchday}`
+  }
 
-  const currentMatchday = competition.currentSeason.currentMatchday
-
-  const matches = await getFootballData({
-    path: `competitions/${competitionId}/matches?matchday=${currentMatchday}`,
-  })
+  const matchesData: MatchesData = await getFootballData({ path })
 
   return {
     bolao,
     userBoloes,
     competition,
-    matches,
+    matchesData,
   }
 }
 
 async function Bet({ params }: { params: { id: string } }) {
   const data = await getData(params.id)
+  const isRegularSeason: boolean =
+    data.competition.currentSeason.stages.includes("REGULAR_SEASON")
 
   if (!data) {
-    return <p>Error while loading the bolao.</p>
+    return <p>Error while loading the bolão.</p>
   }
 
   return (
     <main>
+      <div className="text-right">
+        <Link
+          className="underline hover:no-underline"
+          href={`/bolao/${params.id}/results`}
+        >
+          results
+        </Link>
+      </div>
+
       <PageTitle>{data.bolao.name}</PageTitle>
 
-      {/* <pre>{JSON.stringify(data.matches, null, 4)}</pre> */}
+      {isRegularSeason ? (
+        <TableMatchDayRegularSeason matches={data.matchesData.matches} />
+      ) : (
+        <TableMatchDayStages />
+      )}
     </main>
   )
 }

@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { fetchBolao } from "@/app/lib/data"
 import PageTitle from "@/app/components/pageTitle"
 
@@ -16,6 +17,15 @@ async function Results({ params }: { params: { id: string } }) {
 
   return (
     <main>
+      <div className="text-right">
+        <Link
+          className="underline hover:no-underline"
+          href={`/bolao/${params.id}/bet`}
+        >
+          bet
+        </Link>
+      </div>
+
       <PageTitle>{data.name}</PageTitle>
       <pre>Competition Id: {data.competition_id}</pre>
     </main>

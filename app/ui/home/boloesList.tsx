@@ -37,14 +37,14 @@ async function BoloesList() {
       {data.map((el: Bolao) => (
         <div key={el.id} className="mb-6 drop-shadow-sm border bg-white p-4">
           <h3 className="text-2xl capitalize mb-4">{el.name}</h3>
-          <div>
+          <div className="space-x-4">
             <Link
               className="underline hover:no-underline"
               href={`/bolao/${el.id}/bet`}
             >
               Bet
             </Link>
-            &nbsp;
+
             <Link
               className="underline hover:no-underline"
               href={`/bolao/${el.id}/results`}
