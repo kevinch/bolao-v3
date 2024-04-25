@@ -1,10 +1,37 @@
+import { ReactNode } from "react"
 import { Match } from "../lib/definitions"
 
-interface Props {
+interface TlaProps {
+  children: ReactNode
+}
+
+interface ButtonProps {
+  children: ReactNode
+}
+
+interface TableProps {
   matches: Match[]
 }
 
-function TableMatchDayRegularSeason({ matches }: Props) {
+function Button({ children }: ButtonProps) {
+  return (
+    <button className="border px-2 mx-2 rounded bg-slate-50">{children}</button>
+  )
+}
+
+function ButtonsBet() {
+  return (
+    <div>
+      <Button>-</Button>.<Button>+</Button>
+    </div>
+  )
+}
+
+function Tla({ children }: TlaProps) {
+  return <span className="">{children}</span>
+}
+
+function TableMatchDayRegularSeason({ matches }: TableProps) {
   if (matches) {
     return (
       <div>
@@ -17,7 +44,9 @@ function TableMatchDayRegularSeason({ matches }: Props) {
               <div className="text-xs text-center">{formattedDate}</div>
 
               <div className="flex text-center justify-center items-baseline">
-                <span>{el.homeTeam.tla}</span>
+                <ButtonsBet />
+
+                <Tla>{el.homeTeam.tla}</Tla>
                 <span className="mx-4">
                   {el.score.regularTime?.home || `.`}
                 </span>
@@ -27,7 +56,9 @@ function TableMatchDayRegularSeason({ matches }: Props) {
                 <span className="mx-4">
                   {el.score.regularTime?.away || `.`}
                 </span>
-                <span>{el.awayTeam.tla}</span>
+                <Tla>{el.awayTeam.tla}</Tla>
+
+                <ButtonsBet />
               </div>
             </div>
           )

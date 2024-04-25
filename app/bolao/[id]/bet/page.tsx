@@ -63,6 +63,11 @@ async function Bet({ params }: { params: { id: string } }) {
 
       <PageTitle>{data.bolao.name}</PageTitle>
 
+      {/* TODO: add later */}
+      {/* <div className="text-center mb-10">
+        Current round: {data.competition.currentSeason.currentMatchday}
+      </div> */}
+
       {isRegularSeason ? (
         <TableMatchDayRegularSeason matches={data.matchesData.matches} />
       ) : (
