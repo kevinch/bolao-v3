@@ -5,7 +5,7 @@ interface Props {
 }
 
 function PageTitle({ children }: Props) {
-  return <h1 className="text-4xl my-8">{children}</h1>
+  return <h1 className="text-5xl my-28">{children}</h1>
 }
 
 export default PageTitle

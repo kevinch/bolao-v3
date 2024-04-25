@@ -26,9 +26,13 @@ async function Home() {
     <main>
       <PageTitle>Simple soccer bets.</PageTitle>
 
-      <div style={{ margin: "30px 0" }}>
-        <Link href="/sign-in">Sign-in</Link>&nbsp;
-        <Link href="/sign-up">Sign-up</Link>
+      <div className="flex items-center flex-col space-y-8 uppercase">
+        <Link className="underline hover:no-underline" href="/sign-in">
+          Sign-in
+        </Link>
+        <Link className="underline hover:no-underline" href="/sign-up">
+          Sign-up
+        </Link>
       </div>
     </main>
   )
