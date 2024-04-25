@@ -1,43 +1,52 @@
 import { Match } from "@/app/lib/definitions"
-import Tla from "./Tla"
+import Tla from "./tla"
 import ButtonsBet from "./buttonsBet"
+import Pagination from "./pagination"
 
 interface TableProps {
   matches: Match[]
+  currentMatchday?: string // prop drililng here
 }
 
-function TableMatchDayRegularSeason({ matches }: TableProps) {
+function TableMatchDayRegularSeason({
+  matches,
+  currentMatchday = "",
+}: TableProps) {
   if (matches) {
     return (
       <div>
-        {matches.map((el: Match) => {
-          const date = new Date(el.utcDate)
-          const formattedDate = date.toUTCString()
+        <Pagination currentMatchday={currentMatchday} />
 
-          return (
-            <div key={el.id} className="mb-4">
-              <div className="text-xs text-center">{formattedDate}</div>
+        <div>
+          {matches.map((el: Match) => {
+            const date = new Date(el.utcDate)
+            const formattedDate = date.toUTCString()
 
-              <div className="flex text-center justify-center items-baseline">
-                <ButtonsBet />
+            return (
+              <div key={el.id} className="mb-4">
+                <div className="text-xs text-center">{formattedDate}</div>
 
-                <Tla>{el.homeTeam.tla}</Tla>
-                <span className="mx-4">
-                  {el.score.regularTime?.home || `.`}
-                </span>
+                <div className="flex text-center justify-center items-baseline">
+                  <ButtonsBet />
 
-                <span className="mx-4 text-xs">&times;</span>
+                  <Tla>{el.homeTeam.tla}</Tla>
+                  <span className="mx-4">
+                    {el.score.regularTime?.home || `.`}
+                  </span>
 
-                <span className="mx-4">
-                  {el.score.regularTime?.away || `.`}
-                </span>
-                <Tla>{el.awayTeam.tla}</Tla>
+                  <span className="mx-4 text-xs">&times;</span>
 
-                <ButtonsBet />
+                  <span className="mx-4">
+                    {el.score.regularTime?.away || `.`}
+                  </span>
+                  <Tla>{el.awayTeam.tla}</Tla>
+
+                  <ButtonsBet />
+                </div>
               </div>
-            </div>
-          )
-        })}
+            )
+          })}
+        </div>
       </div>
     )
   }

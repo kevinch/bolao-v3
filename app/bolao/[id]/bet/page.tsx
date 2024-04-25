@@ -5,7 +5,7 @@ import TableMatchDayRegularSeason from "@/app/ui/bolao/bet/tableMatchDayRegularS
 import TableMatchDayStages from "@/app/ui/bolao/bet/tableMatchDayStages"
 import { MatchesData } from "@/app/lib/definitions"
 
-async function getData(bolaoId: string) {
+async function getData(bolaoId: string, matchday: string) {
   const [bolao, userBoloes] = await Promise.all([
     fetchBolao(bolaoId),
     fetchUserBoloes(bolaoId),
@@ -28,7 +28,7 @@ async function getData(bolaoId: string) {
   let path = `competitions/${competitionId}/matches`
   if (isRegularSeason) {
     const currentMatchday = competition.currentSeason.currentMatchday
-    path += `?matchday=${currentMatchday}`
+    path += `?matchday=${matchday || currentMatchday}`
   }
 
   const matchesData: MatchesData = await getFootballData({ path })
@@ -41,8 +41,18 @@ async function getData(bolaoId: string) {
   }
 }
 
-async function Bet({ params }: { params: { id: string } }) {
-  const data = await getData(params.id)
+async function Bet({
+  params,
+  searchParams,
+}: {
+  params: { id: string }
+  searchParams?: {
+    matchday?: string
+  }
+}) {
+  const matchday: string = searchParams?.matchday || ""
+
+  const data = await getData(params.id, matchday)
   const isRegularSeason: boolean =
     data.competition.currentSeason.stages.includes("REGULAR_SEASON")
 
@@ -63,13 +73,11 @@ async function Bet({ params }: { params: { id: string } }) {
 
       <PageTitle>{data.bolao.name}</PageTitle>
 
-      {/* TODO: add later */}
-      {/* <div className="text-center mb-10">
-        Current round: {data.competition.currentSeason.currentMatchday}
-      </div> */}
-
       {isRegularSeason ? (
-        <TableMatchDayRegularSeason matches={data.matchesData.matches} />
+        <TableMatchDayRegularSeason
+          matches={data.matchesData.matches}
+          currentMatchday={data.matchesData.filters.matchday}
+        />
       ) : (
         <TableMatchDayStages matches={data.matchesData.matches} />
       )}
