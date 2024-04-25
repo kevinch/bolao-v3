@@ -1,9 +1,9 @@
-import Button from "@/app/ui/bolao/bet/button"
+import Btn from "@/app/ui/bolao/bet/btn"
 
 function ButtonsBet() {
   return (
     <div>
-      <Button>-</Button>.<Button>+</Button>
+      <Btn>-</Btn>.<Btn>+</Btn>
     </div>
   )
 }

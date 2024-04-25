@@ -1,5 +1,5 @@
 import { Match } from "@/app/lib/definitions"
-import Tla from "@/app/ui/bolao/bet/tla"
+import TeamCode from "@/app/ui/bolao/bet/teamCode"
 import ButtonsBet from "./buttonsBet"
 import Pagination from "./pagination"
 
@@ -29,7 +29,7 @@ function TableMatchDayRegularSeason({
                 <div className="flex text-center justify-center items-baseline">
                   <ButtonsBet />
 
-                  <Tla>{el.homeTeam.tla}</Tla>
+                  <TeamCode>{el.homeTeam.tla}</TeamCode>
                   <span className="mx-4">
                     {el.score.regularTime?.home || `.`}
                   </span>
@@ -39,7 +39,7 @@ function TableMatchDayRegularSeason({
                   <span className="mx-4">
                     {el.score.regularTime?.away || `.`}
                   </span>
-                  <Tla>{el.awayTeam.tla}</Tla>
+                  <TeamCode>{el.awayTeam.tla}</TeamCode>
 
                   <ButtonsBet />
                 </div>
