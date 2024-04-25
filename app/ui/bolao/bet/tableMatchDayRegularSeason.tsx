@@ -1,5 +1,5 @@
 import { Match } from "@/app/lib/definitions"
-import Tla from "./tla"
+import Tla from "@/app/ui/bolao/bet/tla"
 import ButtonsBet from "./buttonsBet"
 import Pagination from "./pagination"
 

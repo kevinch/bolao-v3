@@ -1,4 +1,4 @@
-import Button from "./button"
+import Button from "@/app/ui/bolao/bet/button"
 
 function ButtonsBet() {
   return (
