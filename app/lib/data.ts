@@ -6,6 +6,7 @@ import { sql } from "@vercel/postgres"
 import { FOOTBALL_DATA_API, FOOTBALL_API_SPORTS } from "./utils"
 import { Bolao } from "./definitions"
 import { FOOTBALL_API_SPORTS_LEAGUES } from "./utils"
+import { MOCK_ROUNDS_REGULAR } from "./mock"
 
 export async function fetchBoloes(userId: string) {
   noStore()
@@ -111,52 +112,17 @@ export async function getLeague(leagueId: number) {
 
 export async function getRounds({
   leagueId,
-  season,
+  year,
   current,
 }: {
   leagueId: string
-  season: number
+  year: number
   current?: boolean
 }) {
   if (current) {
     return ["Regular Season - 32"]
   }
-  return [
-    "Regular Season - 1",
-    "Regular Season - 2",
-    "Regular Season - 3",
-    "Regular Season - 4",
-    "Regular Season - 5",
-    "Regular Season - 6",
-    "Regular Season - 7",
-    "Regular Season - 8",
-    "Regular Season - 9",
-    "Regular Season - 10",
-    "Regular Season - 11",
-    "Regular Season - 12",
-    "Regular Season - 13",
-    "Regular Season - 14",
-    "Regular Season - 15",
-    "Regular Season - 16",
-    "Regular Season - 17",
-    "Regular Season - 18",
-    "Regular Season - 19",
-    "Regular Season - 20",
-    "Regular Season - 21",
-    "Regular Season - 22",
-    "Regular Season - 23",
-    "Regular Season - 24",
-    "Regular Season - 25",
-    "Regular Season - 26",
-    "Regular Season - 27",
-    "Regular Season - 28",
-    "Regular Season - 29",
-    "Regular Season - 30",
-    "Regular Season - 31",
-    "Regular Season - 32",
-    "Regular Season - 33",
-    "Regular Season - 34",
-  ]
+  return MOCK_ROUNDS_REGULAR
 
   // let token: string
   // if (process.env.RAPID_API_KEY) {
@@ -174,7 +140,7 @@ export async function getRounds({
   //   headers: myHeaders,
   // }
 
-  // let url = `${FOOTBALL_API_SPORTS}/fixtures/rounds?league=${leagueId}&season=${season}`
+  // let url = `${FOOTBALL_API_SPORTS}/fixtures/rounds?league=${leagueId}&season=${year}`
   // if (current) {
   //   url += "&current=true"
   // }
@@ -189,6 +155,45 @@ export async function getRounds({
   // const data = await res.json()
 
   // return data.response
+}
+
+export async function fetchFixtures({
+  leagueId,
+  year,
+  round,
+}: {
+  leagueId: string
+  year: number
+  round: string
+}) {
+  let token: string
+  if (process.env.RAPID_API_KEY) {
+    token = process.env.RAPID_API_KEY
+  } else {
+    throw new Error("RAPID_API_KEY environment variable is not set")
+  }
+
+  const myHeaders = new Headers()
+  myHeaders.append("x-rapidapi-key", token)
+  myHeaders.append("x-rapidapi-host", "v3.football.api-sports.io")
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+  }
+
+  const url = `${FOOTBALL_API_SPORTS}/fixtures?league=${leagueId}&season=${year}&round=${round}`
+
+  const res = await fetch(url, requestOptions)
+
+  if (!res.ok) {
+    // This will activate the closest `error.js` Error Boundary
+    throw new Error("Failed to fetch data")
+  }
+
+  const data = await res.json()
+
+  return data.response
 }
 
 export async function getFootballData({

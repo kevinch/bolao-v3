@@ -1,56 +1,51 @@
 import Link from "next/link"
 import {
   fetchBolao,
-  fetchUserBoloes,
-  getFootballData,
+  // fetchUserBoloes,
   getRounds,
+  fetchFixtures,
 } from "@/app/lib/data"
 import PageTitle from "@/app/components/pageTitle"
 import TableMatchDayRegularSeason from "@/app/ui/bolao/bet/tableMatchDayRegularSeason"
-import TableMatchDayStages from "@/app/ui/bolao/bet/tableMatchDayStages"
-import { MatchesData } from "@/app/lib/definitions"
+// import TableMatchDayStages from "@/app/ui/bolao/bet/tableMatchDayStages"
 
-async function getData(bolaoId: string) {
-  const [bolao, userBoloes] = await Promise.all([
+async function getData(bolaoId: string, roundParam?: string) {
+  const [bolao] = await Promise.all([
     fetchBolao(bolaoId),
-    fetchUserBoloes(bolaoId),
+    // fetchUserBoloes(bolaoId),
   ])
 
-  const { year, competition_id } = bolao
+  const year = bolao.year // HAS TO GO TO STORE
+  const leagueId = bolao.competition_id // HAS TO GO TO STORE
 
-  const allRounds = await getRounds({ leagueId: competition_id, season: year })
-  const currentRound = await getRounds({
-    leagueId: competition_id,
-    season: year,
+  const allRounds = await getRounds({ leagueId, year }) // HAS TO GO TO STORE
+  const currentRoundObj = await getRounds({
+    leagueId,
+    year,
     current: true,
+  }) // HAS TO GO TO STORE?
+  const currentRound = currentRoundObj[0] // HAS TO GO TO STORE
+
+  // We use round as an index because there are space in the round names
+  let round = currentRound
+  if (roundParam) {
+    const index = Number(round)
+    round = allRounds[index]
+  }
+
+  const fixtures = await fetchFixtures({
+    leagueId,
+    year,
+    round,
   })
-
-  // const competition = await getFootballData({
-  //   path: `competitions/${competitionId}`,
-  // })
-
-  // if competition.currentSeason.stages.includes('REGULAR_SEASON')
-  // then use competition.currentSeason.currentMatchday's value for a smaller payload in the request
-  // let isRegularSeason = false
-  // if (competition.currentSeason.stages.includes("REGULAR_SEASON")) {
-  //   isRegularSeason = true
-  // }
-
-  // else it's a championship with stages
-  // for now we will get all matches at once
-  // let path = `competitions/${competitionId}/matches`
-  // if (isRegularSeason) {
-  //   const currentMatchday = competition.currentSeason.currentMatchday
-  //   path += `?matchday=${matchday || currentMatchday}`
-  // }
-
-  // const matchesData: MatchesData = await getFootballData({ path })
 
   return {
     bolao,
     // userBoloes,
     // competition,
-    // matchesData,
+    currentRound,
+    allRounds,
+    fixtures,
   }
 }
 
@@ -60,14 +55,14 @@ async function Bet({
 }: {
   params: { id: string }
   searchParams?: {
-    matchday?: string
+    round?: string
   }
 }) {
-  // const matchday: string = searchParams?.matchday || ""
+  // console.log("params", params)
+  // console.log("searchParams", searchParams)
+  const round: string = searchParams?.round || ""
 
-  const data = await getData(params.id)
-  // const isRegularSeason: boolean =
-  //   data.competition.currentSeason.stages.includes("REGULAR_SEASON")
+  const data = await getData(params.id, round)
 
   if (!data) {
     return <p>Error while loading the bolão.</p>
@@ -86,12 +81,13 @@ async function Bet({
 
       <PageTitle>{data.bolao.name}</PageTitle>
 
-      {/* {isRegularSeason ? (
-        <TableMatchDayRegularSeason
-          matches={data.matchesData.matches}
-          currentMatchday={data.matchesData.filters.matchday}
-        />
-      ) : (
+      {/* {isRegularSeason ? ( */}
+      <TableMatchDayRegularSeason
+        matches={data.fixtures}
+        currentRound={data.currentRound}
+        allRounds={data.allRounds}
+      />
+      {/* ) : (
         <TableMatchDayStages matches={data.matchesData.matches} />
       )} */}
     </main>
