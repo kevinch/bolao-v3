@@ -31,7 +31,7 @@ export async function fetchBoloes(userId: string) {
 export async function fetchBolao(bolaoId: string) {
   try {
     const data: { rows: QueryResultRow[] } =
-      await sql`SELECT name, id, competition_id
+      await sql`SELECT name, id, competition_id, year
       FROM boloes
       WHERE CAST(id AS VARCHAR) = ${bolaoId}
     `
@@ -46,6 +46,7 @@ export async function fetchBolao(bolaoId: string) {
       id: row.id as string,
       name: row.name as string,
       competition_id: row.competition_id as string,
+      year: row.year as number,
     }
   } catch (error) {
     console.error("Database Error:", error)
@@ -94,7 +95,7 @@ export async function getLeague(leagueId: number) {
     headers: myHeaders,
   }
 
-  let url = `${FOOTBALL_API_SPORTS}/leagues?id=${leagueId}`
+  const url = `${FOOTBALL_API_SPORTS}/leagues?id=${leagueId}`
 
   const res = await fetch(url, requestOptions)
 
@@ -106,6 +107,88 @@ export async function getLeague(leagueId: number) {
   const data = await res.json()
 
   return data.response[0]
+}
+
+export async function getRounds({
+  leagueId,
+  season,
+  current,
+}: {
+  leagueId: string
+  season: number
+  current?: boolean
+}) {
+  if (current) {
+    return ["Regular Season - 32"]
+  }
+  return [
+    "Regular Season - 1",
+    "Regular Season - 2",
+    "Regular Season - 3",
+    "Regular Season - 4",
+    "Regular Season - 5",
+    "Regular Season - 6",
+    "Regular Season - 7",
+    "Regular Season - 8",
+    "Regular Season - 9",
+    "Regular Season - 10",
+    "Regular Season - 11",
+    "Regular Season - 12",
+    "Regular Season - 13",
+    "Regular Season - 14",
+    "Regular Season - 15",
+    "Regular Season - 16",
+    "Regular Season - 17",
+    "Regular Season - 18",
+    "Regular Season - 19",
+    "Regular Season - 20",
+    "Regular Season - 21",
+    "Regular Season - 22",
+    "Regular Season - 23",
+    "Regular Season - 24",
+    "Regular Season - 25",
+    "Regular Season - 26",
+    "Regular Season - 27",
+    "Regular Season - 28",
+    "Regular Season - 29",
+    "Regular Season - 30",
+    "Regular Season - 31",
+    "Regular Season - 32",
+    "Regular Season - 33",
+    "Regular Season - 34",
+  ]
+
+  // let token: string
+  // if (process.env.RAPID_API_KEY) {
+  //   token = process.env.RAPID_API_KEY
+  // } else {
+  //   throw new Error("RAPID_API_KEY environment variable is not set")
+  // }
+
+  // const myHeaders = new Headers()
+  // myHeaders.append("x-rapidapi-key", token)
+  // myHeaders.append("x-rapidapi-host", "v3.football.api-sports.io")
+
+  // const requestOptions = {
+  //   method: "GET",
+  //   headers: myHeaders,
+  // }
+
+  // let url = `${FOOTBALL_API_SPORTS}/fixtures/rounds?league=${leagueId}&season=${season}`
+  // if (current) {
+  //   url += "&current=true"
+  // }
+
+  // const res = await fetch(url, requestOptions)
+
+  // if (!res.ok) {
+  //   // This will activate the closest `error.js` Error Boundary
+  //   throw new Error("Failed to fetch data")
+  // }
+
+  // const data = await res.json()
+
+  // return data.response
 }
 
 export async function getFootballData({

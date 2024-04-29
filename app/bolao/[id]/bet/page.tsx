@@ -1,17 +1,30 @@
 import Link from "next/link"
-import { fetchBolao, fetchUserBoloes, getFootballData } from "@/app/lib/data"
+import {
+  fetchBolao,
+  fetchUserBoloes,
+  getFootballData,
+  getRounds,
+} from "@/app/lib/data"
 import PageTitle from "@/app/components/pageTitle"
 import TableMatchDayRegularSeason from "@/app/ui/bolao/bet/tableMatchDayRegularSeason"
 import TableMatchDayStages from "@/app/ui/bolao/bet/tableMatchDayStages"
 import { MatchesData } from "@/app/lib/definitions"
 
-async function getData(bolaoId: string, matchday: string) {
+async function getData(bolaoId: string) {
   const [bolao, userBoloes] = await Promise.all([
     fetchBolao(bolaoId),
     fetchUserBoloes(bolaoId),
   ])
 
-  // const competitionId = bolao.competition_id
+  const { year, competition_id } = bolao
+
+  const allRounds = await getRounds({ leagueId: competition_id, season: year })
+  const currentRound = await getRounds({
+    leagueId: competition_id,
+    season: year,
+    current: true,
+  })
+
   // const competition = await getFootballData({
   //   path: `competitions/${competitionId}`,
   // })
@@ -33,13 +46,12 @@ async function getData(bolaoId: string, matchday: string) {
 
   // const matchesData: MatchesData = await getFootballData({ path })
 
-  // return {
-  //   bolao,
-  //   userBoloes,
-  //   competition,
-  //   matchesData,
-  // }
-  return {}
+  return {
+    bolao,
+    // userBoloes,
+    // competition,
+    // matchesData,
+  }
 }
 
 async function Bet({
@@ -51,15 +63,15 @@ async function Bet({
     matchday?: string
   }
 }) {
-  const matchday: string = searchParams?.matchday || ""
+  // const matchday: string = searchParams?.matchday || ""
 
-  const data = await getData(params.id, matchday)
+  const data = await getData(params.id)
   // const isRegularSeason: boolean =
   //   data.competition.currentSeason.stages.includes("REGULAR_SEASON")
 
-  // if (!data) {
-  //   return <p>Error while loading the bolão.</p>
-  // }
+  if (!data) {
+    return <p>Error while loading the bolão.</p>
+  }
 
   return (
     <main>
@@ -72,7 +84,7 @@ async function Bet({
         </Link>
       </div>
 
-      {/* <PageTitle>{data.bolao.name}</PageTitle> */}
+      <PageTitle>{data.bolao.name}</PageTitle>
 
       {/* {isRegularSeason ? (
         <TableMatchDayRegularSeason
