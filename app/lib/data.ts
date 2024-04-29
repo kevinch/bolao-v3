@@ -5,6 +5,7 @@ import { unstable_noStore as noStore } from "next/cache"
 import { sql } from "@vercel/postgres"
 import { FOOTBALL_DATA_API } from "./utils"
 import { Bolao } from "./definitions"
+import { FOOTBALL_API_SPORTS_LEAGUES } from "./utils"
 
 export async function fetchBoloes(userId: string) {
   noStore()
@@ -70,6 +71,10 @@ export async function fetchUserBoloes(bolaoId: string) {
     console.error("Database Error:", error)
     throw new Error("Failed to fetch user bolões.")
   }
+}
+
+export async function getLeagues() {
+  return FOOTBALL_API_SPORTS_LEAGUES
 }
 
 export async function getFootballData({
