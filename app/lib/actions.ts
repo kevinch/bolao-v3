@@ -3,6 +3,8 @@
 import { sql } from "@vercel/postgres"
 import { redirect } from "next/navigation"
 import { auth } from "@clerk/nextjs/server"
+import { getLeague } from "./data"
+import { getCurrentSeason } from "./utils"
 
 const { userId } = auth()
 
@@ -32,14 +34,20 @@ export async function createBolao(formData: any) {
   const name = formData.get("name")
   const date = new Date().toISOString().split("T")[0]
 
+  const league = await getLeague(competitionId)
+
+  const year = getCurrentSeason(league.seasons)
+
   try {
     const result = await sql`
-      INSERT INTO boloes (name, competition_id, created_by, created_at)
-      VALUES (${name}, ${competitionId}, ${userId}, ${date})
+      INSERT INTO boloes (name, competition_id, created_by, created_at, year)
+      VALUES (${name}, ${competitionId}, ${userId}, ${date}, ${year})
       RETURNING *
     `
 
     const insertedData = result.rows[0]
+
+    // console.log("INSERTED DATA ON createBolao():", insertedData)
 
     createUserBolao(insertedData.id)
   } catch (error) {
@@ -52,10 +60,15 @@ export async function createBolao(formData: any) {
 
 export async function createUserBolao(bolaoId: number) {
   try {
-    await sql`
+    const result = await sql`
       INSERT INTO user_bolao (bolao_id, user_id)
       VALUES (${bolaoId}, ${userId})
     `
+
+    const insertedData = result.rows
+    // console.log("INSERTED DATA ON createUserBolao():", insertedData)
+
+    return insertedData
   } catch (error) {
     console.log(error)
     return {

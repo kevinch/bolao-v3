@@ -11,34 +11,35 @@ async function getData(bolaoId: string, matchday: string) {
     fetchUserBoloes(bolaoId),
   ])
 
-  const competitionId = bolao.competition_id
-  const competition = await getFootballData({
-    path: `competitions/${competitionId}`,
-  })
+  // const competitionId = bolao.competition_id
+  // const competition = await getFootballData({
+  //   path: `competitions/${competitionId}`,
+  // })
 
   // if competition.currentSeason.stages.includes('REGULAR_SEASON')
   // then use competition.currentSeason.currentMatchday's value for a smaller payload in the request
-  let isRegularSeason = false
-  if (competition.currentSeason.stages.includes("REGULAR_SEASON")) {
-    isRegularSeason = true
-  }
+  // let isRegularSeason = false
+  // if (competition.currentSeason.stages.includes("REGULAR_SEASON")) {
+  //   isRegularSeason = true
+  // }
 
   // else it's a championship with stages
   // for now we will get all matches at once
-  let path = `competitions/${competitionId}/matches`
-  if (isRegularSeason) {
-    const currentMatchday = competition.currentSeason.currentMatchday
-    path += `?matchday=${matchday || currentMatchday}`
-  }
+  // let path = `competitions/${competitionId}/matches`
+  // if (isRegularSeason) {
+  //   const currentMatchday = competition.currentSeason.currentMatchday
+  //   path += `?matchday=${matchday || currentMatchday}`
+  // }
 
-  const matchesData: MatchesData = await getFootballData({ path })
+  // const matchesData: MatchesData = await getFootballData({ path })
 
-  return {
-    bolao,
-    userBoloes,
-    competition,
-    matchesData,
-  }
+  // return {
+  //   bolao,
+  //   userBoloes,
+  //   competition,
+  //   matchesData,
+  // }
+  return {}
 }
 
 async function Bet({
@@ -53,12 +54,12 @@ async function Bet({
   const matchday: string = searchParams?.matchday || ""
 
   const data = await getData(params.id, matchday)
-  const isRegularSeason: boolean =
-    data.competition.currentSeason.stages.includes("REGULAR_SEASON")
+  // const isRegularSeason: boolean =
+  //   data.competition.currentSeason.stages.includes("REGULAR_SEASON")
 
-  if (!data) {
-    return <p>Error while loading the bolão.</p>
-  }
+  // if (!data) {
+  //   return <p>Error while loading the bolão.</p>
+  // }
 
   return (
     <main>
@@ -71,16 +72,16 @@ async function Bet({
         </Link>
       </div>
 
-      <PageTitle>{data.bolao.name}</PageTitle>
+      {/* <PageTitle>{data.bolao.name}</PageTitle> */}
 
-      {isRegularSeason ? (
+      {/* {isRegularSeason ? (
         <TableMatchDayRegularSeason
           matches={data.matchesData.matches}
           currentMatchday={data.matchesData.filters.matchday}
         />
       ) : (
         <TableMatchDayStages matches={data.matchesData.matches} />
-      )}
+      )} */}
     </main>
   )
 }

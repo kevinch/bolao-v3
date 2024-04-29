@@ -3,7 +3,7 @@
 import { QueryResultRow } from "pg"
 import { unstable_noStore as noStore } from "next/cache"
 import { sql } from "@vercel/postgres"
-import { FOOTBALL_DATA_API } from "./utils"
+import { FOOTBALL_DATA_API, FOOTBALL_API_SPORTS } from "./utils"
 import { Bolao } from "./definitions"
 import { FOOTBALL_API_SPORTS_LEAGUES } from "./utils"
 
@@ -75,6 +75,37 @@ export async function fetchUserBoloes(bolaoId: string) {
 
 export async function getLeagues() {
   return FOOTBALL_API_SPORTS_LEAGUES
+}
+
+export async function getLeague(leagueId: number) {
+  let token: string
+  if (process.env.RAPID_API_KEY) {
+    token = process.env.RAPID_API_KEY
+  } else {
+    throw new Error("RAPID_API_KEY environment variable is not set")
+  }
+
+  const myHeaders = new Headers()
+  myHeaders.append("x-rapidapi-key", token)
+  myHeaders.append("x-rapidapi-host", "v3.football.api-sports.io")
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+  }
+
+  let url = `${FOOTBALL_API_SPORTS}/leagues?id=${leagueId}`
+
+  const res = await fetch(url, requestOptions)
+
+  if (!res.ok) {
+    // This will activate the closest `error.js` Error Boundary
+    throw new Error("Failed to fetch data")
+  }
+
+  const data = await res.json()
+
+  return data.response[0]
 }
 
 export async function getFootballData({
