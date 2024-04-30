@@ -19,30 +19,32 @@ async function getData(bolaoId: string, roundParam?: string) {
   const year = bolao.year
   const leagueId = bolao.competition_id
 
-  const allRounds = await getRounds({ leagueId, year }) // MOCKED, HAS TO GO TO STORE
+  const allRounds = await getRounds({ leagueId, year }) // HAS TO GO TO STORE
   const currentRoundObj = await getRounds({
     leagueId,
     year,
     current: true,
-  }) // MOCKED, HAS TO GO TO STORE
+  }) // HAS TO GO TO STORE
   const currentRound = currentRoundObj[0] // HAS TO GO TO STORE
 
   let isFirstRound: boolean = false
   let isLastRound: boolean = false
 
+  // PARAM HANDLING FOR PAGINATION
   // We use round as an index because there are spaces in the round names
   let round = currentRound
 
   if (roundParam) {
-    const index: number = Number(roundParam)
+    const index: number = Number(roundParam) - 1
     round = allRounds[index]
 
-    isFirstRound = Number(roundParam) === 0
-    isLastRound = Number(roundParam) === allRounds.length - 1
+    isFirstRound = Number(roundParam) === 1
+    isLastRound = Number(roundParam) === allRounds.length
   } else {
     isFirstRound = currentRound === allRounds[0]
     isLastRound = currentRound === allRounds[allRounds.length - 1]
   }
+  // END
 
   const fixtures = await fetchFixtures({
     leagueId,
@@ -73,9 +75,10 @@ async function Bet({
 
   const data = await getData(params.id, roundIndex)
 
-  const currentRoundIndex = data.allRounds.findIndex(
-    (el: string) => el.toLowerCase() === data.currentRound.toLowerCase()
-  )
+  const currentRoundIndex =
+    data.allRounds.findIndex(
+      (el: string) => el.toLowerCase() === data.currentRound.toLowerCase()
+    ) + 1
 
   if (!data) {
     return <p>Error while loading the bolão.</p>
@@ -98,7 +101,6 @@ async function Bet({
       <Pagination
         isLastRound={data.isLastRound}
         isFirstRound={data.isFirstRound}
-        currentRound={data.currentRound}
         currentRoundIndex={currentRoundIndex}
       />
       <TableMatchDayRegularSeason matches={data.fixtures} />

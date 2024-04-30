@@ -4,18 +4,12 @@ import Link from "next/link"
 import { usePathname, useSearchParams } from "next/navigation"
 
 interface Props {
-  currentRound: string
   currentRoundIndex: number
   isLastRound: boolean
   isFirstRound: boolean
 }
 
-function Pagination({
-  currentRound,
-  currentRoundIndex,
-  isLastRound,
-  isFirstRound,
-}: Props) {
+function Pagination({ currentRoundIndex, isLastRound, isFirstRound }: Props) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
@@ -39,7 +33,7 @@ function Pagination({
         </Link>
       )}
 
-      <span>{currentRound}</span>
+      <span>Round: {currentRoundIndex}</span>
 
       {!isLastRound && (
         <Link
