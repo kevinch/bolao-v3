@@ -3,10 +3,9 @@
 import { QueryResultRow } from "pg"
 import { unstable_noStore as noStore } from "next/cache"
 import { sql } from "@vercel/postgres"
-import { FOOTBALL_DATA_API, FOOTBALL_API_SPORTS } from "./utils"
+import { FOOTBALL_API_SPORTS } from "./utils"
 import { Bolao } from "./definitions"
 import { FOOTBALL_API_SPORTS_LEAGUES } from "./utils"
-import { MOCK_ROUNDS_REGULAR } from "./mock"
 
 export async function fetchBoloes(userId: string) {
   noStore()
@@ -119,42 +118,37 @@ export async function getRounds({
   year: number
   current?: boolean
 }) {
-  if (current) {
-    return ["Regular Season - 32"]
+  let token: string
+  if (process.env.RAPID_API_KEY) {
+    token = process.env.RAPID_API_KEY
+  } else {
+    throw new Error("RAPID_API_KEY environment variable is not set")
   }
-  return MOCK_ROUNDS_REGULAR
 
-  // let token: string
-  // if (process.env.RAPID_API_KEY) {
-  //   token = process.env.RAPID_API_KEY
-  // } else {
-  //   throw new Error("RAPID_API_KEY environment variable is not set")
-  // }
+  const myHeaders = new Headers()
+  myHeaders.append("x-rapidapi-key", token)
+  myHeaders.append("x-rapidapi-host", "v3.football.api-sports.io")
 
-  // const myHeaders = new Headers()
-  // myHeaders.append("x-rapidapi-key", token)
-  // myHeaders.append("x-rapidapi-host", "v3.football.api-sports.io")
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+  }
 
-  // const requestOptions = {
-  //   method: "GET",
-  //   headers: myHeaders,
-  // }
+  let url = `${FOOTBALL_API_SPORTS}/fixtures/rounds?league=${leagueId}&season=${year}`
+  if (current) {
+    url += "&current=true"
+  }
 
-  // let url = `${FOOTBALL_API_SPORTS}/fixtures/rounds?league=${leagueId}&season=${year}`
-  // if (current) {
-  //   url += "&current=true"
-  // }
+  const res = await fetch(url, requestOptions)
 
-  // const res = await fetch(url, requestOptions)
+  if (!res.ok) {
+    // This will activate the closest `error.js` Error Boundary
+    throw new Error("Failed to fetch data")
+  }
 
-  // if (!res.ok) {
-  //   // This will activate the closest `error.js` Error Boundary
-  //   throw new Error("Failed to fetch data")
-  // }
+  const data = await res.json()
 
-  // const data = await res.json()
-
-  // return data.response
+  return data.response
 }
 
 export async function fetchFixtures({
@@ -194,41 +188,4 @@ export async function fetchFixtures({
   const data = await res.json()
 
   return data.response
-}
-
-export async function getFootballData({
-  path,
-  params,
-}: {
-  path: string
-  params?: string
-}) {
-  let token: string
-  if (process.env.NEXT_PUBLIC_FOOTBALLDATA_TOKEN) {
-    token = process.env.NEXT_PUBLIC_FOOTBALLDATA_TOKEN
-  } else {
-    throw new Error("FOOTBALLDATA_TOKEN environment variable is not set")
-  }
-
-  const myHeaders = new Headers()
-  myHeaders.append("X-Auth-Token", token)
-
-  const requestOptions = {
-    method: "GET",
-    headers: myHeaders,
-  }
-
-  let url = `${FOOTBALL_DATA_API}/${path}`
-  if (params) {
-    url += `?${params}`
-  }
-
-  const res = await fetch(url, requestOptions)
-
-  if (!res.ok) {
-    // This will activate the closest `error.js` Error Boundary
-    throw new Error("Failed to fetch data")
-  }
-
-  return res.json()
 }

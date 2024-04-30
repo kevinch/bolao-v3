@@ -35,19 +35,6 @@ export type Bolao = {
   competition_id: string
 }
 
-// export type Team = {
-//   id: number
-//   name: string
-//   shortName?: string
-//   tla?: string
-//   crest?: string
-//   coach?: unknown
-//   leagueRank?: unknown
-//   formation?: string
-//   lineup: []
-//   bench: []
-// }
-
 type Score = {
   home: number
   away: number
@@ -126,4 +113,12 @@ export type MatchesData = {
     emblem: string
   }
   matches: Match[]
+}
+
+export type Season = {
+  year: number
+  start: string
+  end: string
+  current: boolean
+  coveragge: {}
 }

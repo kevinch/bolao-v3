@@ -34,6 +34,7 @@ async function BoloesList() {
 
   return (
     <div>
+      {/* TODO: update list after creation */}
       {data.map((el: Bolao) => (
         <div key={el.id} className="mb-6 drop-shadow-sm border bg-white p-4">
           <h3 className="text-2xl capitalize mb-4">{el.name}</h3>

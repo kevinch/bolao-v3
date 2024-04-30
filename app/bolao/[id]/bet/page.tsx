@@ -8,6 +8,7 @@ import {
 import PageTitle from "@/app/components/pageTitle"
 import TableMatchDayRegularSeason from "@/app/ui/bolao/bet/tableMatchDayRegularSeason"
 // import TableMatchDayStages from "@/app/ui/bolao/bet/tableMatchDayStages"
+import Pagination from "@/app/ui/bolao/bet/pagination"
 
 async function getData(bolaoId: string, roundParam?: string) {
   const [bolao] = await Promise.all([
@@ -15,22 +16,32 @@ async function getData(bolaoId: string, roundParam?: string) {
     // fetchUserBoloes(bolaoId),
   ])
 
-  const year = bolao.year // HAS TO GO TO STORE
-  const leagueId = bolao.competition_id // HAS TO GO TO STORE
+  const year = bolao.year
+  const leagueId = bolao.competition_id
 
-  const allRounds = await getRounds({ leagueId, year }) // HAS TO GO TO STORE
+  const allRounds = await getRounds({ leagueId, year }) // MOCKED, HAS TO GO TO STORE
   const currentRoundObj = await getRounds({
     leagueId,
     year,
     current: true,
-  }) // HAS TO GO TO STORE?
+  }) // MOCKED, HAS TO GO TO STORE
   const currentRound = currentRoundObj[0] // HAS TO GO TO STORE
 
-  // We use round as an index because there are space in the round names
+  let isFirstRound: boolean = false
+  let isLastRound: boolean = false
+
+  // We use round as an index because there are spaces in the round names
   let round = currentRound
+
   if (roundParam) {
-    const index = Number(round)
+    const index: number = Number(roundParam)
     round = allRounds[index]
+
+    isFirstRound = Number(roundParam) === 0
+    isLastRound = Number(roundParam) === allRounds.length - 1
+  } else {
+    isFirstRound = currentRound === allRounds[0]
+    isLastRound = currentRound === allRounds[allRounds.length - 1]
   }
 
   const fixtures = await fetchFixtures({
@@ -41,11 +52,11 @@ async function getData(bolaoId: string, roundParam?: string) {
 
   return {
     bolao,
-    // userBoloes,
-    // competition,
-    currentRound,
+    currentRound: round,
     allRounds,
     fixtures,
+    isLastRound,
+    isFirstRound,
   }
 }
 
@@ -55,14 +66,16 @@ async function Bet({
 }: {
   params: { id: string }
   searchParams?: {
-    round?: string
+    roundIndex?: string
   }
 }) {
-  // console.log("params", params)
-  // console.log("searchParams", searchParams)
-  const round: string = searchParams?.round || ""
+  const roundIndex: string = searchParams?.roundIndex || ""
 
-  const data = await getData(params.id, round)
+  const data = await getData(params.id, roundIndex)
+
+  const currentRoundIndex = data.allRounds.findIndex(
+    (el: string) => el.toLowerCase() === data.currentRound.toLowerCase()
+  )
 
   if (!data) {
     return <p>Error while loading the bolão.</p>
@@ -82,11 +95,13 @@ async function Bet({
       <PageTitle>{data.bolao.name}</PageTitle>
 
       {/* {isRegularSeason ? ( */}
-      <TableMatchDayRegularSeason
-        matches={data.fixtures}
+      <Pagination
+        isLastRound={data.isLastRound}
+        isFirstRound={data.isFirstRound}
         currentRound={data.currentRound}
-        allRounds={data.allRounds}
+        currentRoundIndex={currentRoundIndex}
       />
+      <TableMatchDayRegularSeason matches={data.fixtures} />
       {/* ) : (
         <TableMatchDayStages matches={data.matchesData.matches} />
       )} */}

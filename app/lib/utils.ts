@@ -1,8 +1,4 @@
-// Data relative to api.football-data.org
-
-export const FOOTBALL_DATA_API = "https://api.football-data.org/v4"
-
-// Data relative to football.api-sports.io
+import { Season } from "./definitions"
 
 export const FOOTBALL_API_SPORTS = "https://v3.football.api-sports.io"
 
@@ -28,14 +24,6 @@ export const FOOTBALL_API_SPORTS_LEAGUES = [
     id: 71,
   },
 ]
-
-interface Season {
-  year: number
-  start: string
-  end: string
-  current: boolean
-  coveragge: {}
-}
 
 export const getCurrentSeason = (seasons: Season[]): number | undefined => {
   const year: number | undefined = seasons.find(
