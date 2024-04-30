@@ -59,3 +59,19 @@ export const formatDate = (dateString: string): string => {
 
   return `${formattedDate} ${formattedTime}`
 }
+
+const stringsToRemove = [
+  "Preliminary Round",
+  "1st Qualifying Round",
+  "2nd Qualifying Round",
+  "3rd Qualifying Round",
+  "Play-offs",
+]
+
+export const cleanRounds = (rounds: string[]) => {
+  const filteredRounds = rounds.filter(
+    (round: string) => !stringsToRemove.includes(round)
+  )
+
+  return filteredRounds
+}
