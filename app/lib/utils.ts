@@ -1,4 +1,4 @@
-import { Season } from "./definitions"
+import { Season, Match } from "./definitions"
 
 export const FOOTBALL_API_SPORTS = "https://v3.football.api-sports.io"
 
@@ -31,4 +31,31 @@ export const getCurrentSeason = (seasons: Season[]): number | undefined => {
   )?.year
 
   return year
+}
+
+export const sortFixtures = (fixtures: Match[]) => {
+  return fixtures.sort((a, b) => {
+    const dateA = new Date(a.fixture.date).getTime()
+    const dateB = new Date(b.fixture.date).getTime()
+    if (dateA < dateB) return -1
+    if (dateA > dateB) return 1
+    return 0
+  })
+}
+
+export const formatDate = (dateString: string): string => {
+  const date = new Date(dateString)
+
+  const formattedDate = date.toLocaleDateString(undefined, {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  })
+
+  const formattedTime = date.toLocaleTimeString(undefined, {
+    hour: "2-digit",
+    minute: "2-digit",
+  })
+
+  return `${formattedDate} ${formattedTime}`
 }

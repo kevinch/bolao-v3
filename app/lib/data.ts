@@ -176,7 +176,9 @@ export async function fetchFixtures({
     headers: myHeaders,
   }
 
-  const url = `${FOOTBALL_API_SPORTS}/fixtures?league=${leagueId}&season=${year}&round=${round}`
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+
+  const url = `${FOOTBALL_API_SPORTS}/fixtures?league=${leagueId}&season=${year}&round=${round}&timezone=${timezone}`
 
   const res = await fetch(url, requestOptions)
 

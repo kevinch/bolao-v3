@@ -52,7 +52,7 @@ export type Match = {
     id: number
     referee: unknown
     timezone: string
-    date: string
+    date: Date
     timestamp: number
     periods: {
       first: number

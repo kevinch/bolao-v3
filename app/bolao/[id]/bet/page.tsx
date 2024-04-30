@@ -9,6 +9,7 @@ import PageTitle from "@/app/components/pageTitle"
 import TableMatchDayRegularSeason from "@/app/ui/bolao/bet/tableMatchDayRegularSeason"
 // import TableMatchDayStages from "@/app/ui/bolao/bet/tableMatchDayStages"
 import Pagination from "@/app/ui/bolao/bet/pagination"
+import { sortFixtures } from "@/app/lib/utils"
 
 async function getData(bolaoId: string, roundParam?: string) {
   const [bolao] = await Promise.all([
@@ -20,6 +21,7 @@ async function getData(bolaoId: string, roundParam?: string) {
   const leagueId = bolao.competition_id
 
   const allRounds = await getRounds({ leagueId, year }) // HAS TO GO TO STORE
+  console.log("allRounds", allRounds)
   const currentRoundObj = await getRounds({
     leagueId,
     year,
@@ -46,11 +48,12 @@ async function getData(bolaoId: string, roundParam?: string) {
   }
   // END
 
-  const fixtures = await fetchFixtures({
+  const unSortedFixtures = await fetchFixtures({
     leagueId,
     year,
     round,
   })
+  const fixtures = sortFixtures(unSortedFixtures)
 
   return {
     bolao,
