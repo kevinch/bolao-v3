@@ -12,12 +12,12 @@ export const FOOTBALL_API_SPORTS_LEAGUES = [
     id: 3,
   },
   {
-    name: "Ligue 1",
-    id: 61,
-  },
-  {
     name: "Euro Championship",
     id: 4,
+  },
+  {
+    name: "Ligue 1",
+    id: 61,
   },
   {
     name: "Serie A",
@@ -68,8 +68,8 @@ const stringsToRemove = [
   "Play-offs",
 ]
 
-export const cleanRounds = (rounds: string[]) => {
-  const filteredRounds = rounds.filter(
+export const cleanRounds = (rounds: string[]): string[] => {
+  const filteredRounds: string[] = rounds.filter(
     (round: string) => !stringsToRemove.includes(round)
   )
 

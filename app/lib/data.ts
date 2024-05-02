@@ -74,11 +74,11 @@ export async function fetchUserBoloes(bolaoId: string) {
   }
 }
 
-export async function getLeagues() {
+export async function fetchLeagues() {
   return FOOTBALL_API_SPORTS_LEAGUES
 }
 
-export async function getLeague(leagueId: number) {
+export async function fetchLeague(leagueId: number) {
   let token: string
   if (process.env.RAPID_API_KEY) {
     token = process.env.RAPID_API_KEY
@@ -109,7 +109,7 @@ export async function getLeague(leagueId: number) {
   return data.response[0]
 }
 
-export async function getRounds({
+export async function fetchRounds({
   leagueId,
   year,
   current,

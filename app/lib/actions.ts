@@ -3,7 +3,7 @@
 import { sql } from "@vercel/postgres"
 import { redirect } from "next/navigation"
 import { auth } from "@clerk/nextjs/server"
-import { getLeague } from "./data"
+import { fetchLeague } from "./data"
 import { getCurrentSeason } from "./utils"
 
 const { userId } = auth()
@@ -34,7 +34,7 @@ export async function createBolao(formData: any) {
   const name = formData.get("name")
   const date = new Date().toISOString().split("T")[0]
 
-  const league = await getLeague(competitionId)
+  const league = await fetchLeague(competitionId)
 
   const year = getCurrentSeason(league.seasons)
 

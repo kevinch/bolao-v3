@@ -2,7 +2,7 @@
 
 ## Getting Started
 
-Development server:
+Development:
 
 ```bash
 yarn dev
@@ -23,6 +23,7 @@ git push
 - Host: Vercel
 - Auth: Clerk - [docs](https://clerk.com/docs/references/nextjs/overview) - [dashboard](https://dashboard.clerk.com/)
 - Repo: [/bolaov3-poc-clerk-auth](https://github.com/kevinch/bolaov3-poc-clerk-auth)
+- Data source: [api-football.com](https://www.api-football.com/documentation-v3) - [dashboard](https://dashboard.api-football.com/)
 - env vars:
 
 ```

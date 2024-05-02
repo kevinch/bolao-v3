@@ -1,9 +1,9 @@
 import Form from "@/app/ui/bolao/create/form"
-import { getLeagues } from "@/app/lib/data"
+import { fetchLeagues } from "@/app/lib/data"
 import PageTitle from "@/app/components/pageTitle"
 
 async function CreateBolao() {
-  const data = await getLeagues()
+  const data = await fetchLeagues()
 
   return (
     <div>

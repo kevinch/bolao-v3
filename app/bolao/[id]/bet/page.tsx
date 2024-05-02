@@ -1,13 +1,12 @@
 import Link from "next/link"
 import {
   fetchBolao,
-  // fetchUserBoloes,
-  getRounds,
+  fetchUserBoloes,
+  fetchRounds,
   fetchFixtures,
 } from "@/app/lib/data"
 import PageTitle from "@/app/components/pageTitle"
-import TableMatchDayRegularSeason from "@/app/ui/bolao/bet/tableMatchDayRegularSeason"
-// import TableMatchDayStages from "@/app/ui/bolao/bet/tableMatchDayStages"
+import TableMatchDay from "@/app/ui/bolao/bet/tableMatchDay"
 import Pagination from "@/app/ui/bolao/bet/pagination"
 import { sortFixtures, cleanRounds } from "@/app/lib/utils"
 
@@ -20,10 +19,10 @@ async function getData(bolaoId: string, roundParam?: string) {
   const year: number = bolao.year
   const leagueId = bolao.competition_id
 
-  const allRoundsUncleaned: string[] = await getRounds({ leagueId, year }) // HAS TO GO TO STORE
+  const allRoundsUncleaned: string[] = await fetchRounds({ leagueId, year }) // HAS TO GO TO STORE
   const allRounds: string[] = cleanRounds(allRoundsUncleaned)
 
-  const currentRoundObj: string[] = await getRounds({
+  const currentRoundObj: string[] = await fetchRounds({
     leagueId,
     year,
     current: true,
@@ -101,16 +100,12 @@ async function Bet({
 
       <PageTitle>{data.bolao.name}</PageTitle>
 
-      {/* {isRegularSeason ? ( */}
       <Pagination
         isLastRound={data.isLastRound}
         isFirstRound={data.isFirstRound}
         currentRoundIndex={currentRoundIndex}
       />
-      <TableMatchDayRegularSeason matches={data.fixtures} />
-      {/* ) : (
-        <TableMatchDayStages matches={data.matchesData.matches} />
-      )} */}
+      <TableMatchDay matches={data.fixtures} />
     </main>
   )
 }

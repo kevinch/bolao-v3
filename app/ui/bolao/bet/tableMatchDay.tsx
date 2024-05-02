@@ -7,7 +7,7 @@ interface TableProps {
   matches: Match[]
 }
 
-function TableMatchDayRegularSeason({ matches }: TableProps) {
+function TableMatchDay({ matches }: TableProps) {
   if (matches) {
     return (
       <div>
@@ -43,4 +43,4 @@ function TableMatchDayRegularSeason({ matches }: TableProps) {
   return <p>loading...</p>
 }
 
-export default TableMatchDayRegularSeason
+export default TableMatchDay
