@@ -4,8 +4,7 @@ import { useState, useEffect } from "react"
 import { createBet, updateBet } from "@/app/lib/actions"
 import { initialBetValue } from "@/app/lib/utils"
 import { BetResult } from "@/app/lib/definitions"
-
-const classes = "border px-2 mx-2 rounded bg-slate-50"
+import clsx from "clsx"
 
 type Props = {
   userBolaoId: string
@@ -13,9 +12,17 @@ type Props = {
   fixtureId: string
   betValue?: number
   betId?: string
+  disabled: boolean
 }
 
-function ButtonsBet({ userBolaoId, type, fixtureId, betValue, betId }: Props) {
+function ButtonsBet({
+  userBolaoId,
+  type,
+  fixtureId,
+  betValue,
+  betId,
+  disabled,
+}: Props) {
   const [value, setValue] = useState(
     betValue !== undefined ? betValue : initialBetValue
   )
@@ -65,14 +72,32 @@ function ButtonsBet({ userBolaoId, type, fixtureId, betValue, betId }: Props) {
     }
   }
 
+  const buttonClasses = clsx("border px-2 mx-2 rounded", {
+    "bg-white border-teal-400": !disabled,
+    "bg-slate-50 border-slate-100": disabled,
+  })
+
+  const labelClasses = clsx("", {
+    "text-teal-500": !disabled,
+    "text-slate-500": disabled,
+  })
+
   return (
     <div>
-      <button className={classes} onClick={() => decrementCount()}>
-        -
+      <button
+        disabled={disabled}
+        className={buttonClasses}
+        onClick={() => decrementCount()}
+      >
+        <span className={labelClasses}>-</span>
       </button>
       {value}
-      <button className={classes} onClick={() => incrementCount()}>
-        +
+      <button
+        disabled={disabled}
+        className={buttonClasses}
+        onClick={() => incrementCount()}
+      >
+        <span className={labelClasses}>+</span>
       </button>
     </div>
   )

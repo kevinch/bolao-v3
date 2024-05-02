@@ -1,4 +1,4 @@
-// TODO: update Competition(s) and Match(es) to Fixture(s)
+// TODO: update Match(es) to Fixture(s)
 
 export type Competition = {
   name: string

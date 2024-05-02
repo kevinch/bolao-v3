@@ -1,7 +1,8 @@
 import { Match, Bet } from "@/app/lib/definitions"
 import TeamCode from "@/app/ui/bolao/bet/teamCode"
 import ButtonsBet from "./buttonsBet"
-import { formatDate, findBetObj } from "@/app/lib/utils"
+import { formatDate, findBetObj, FIXTURES_STATUSES_OPEN } from "@/app/lib/utils"
+import Image from "next/image"
 
 interface TableProps {
   matches: Match[]
@@ -14,6 +15,10 @@ function TableMatchDay({ matches, userBolaoId, bets }: TableProps) {
     return (
       <div>
         {matches.map((match: Match) => {
+          const disabled = !FIXTURES_STATUSES_OPEN.includes(
+            match.fixture.status.short
+          )
+
           const fixtureId = match.fixture.id.toString()
           const homeBet: Bet | null = findBetObj({
             bets,
@@ -40,10 +45,12 @@ function TableMatchDay({ matches, userBolaoId, bets }: TableProps) {
                   userBolaoId={userBolaoId}
                   betValue={homeBet?.value}
                   betId={homeBet?.id}
+                  disabled={disabled}
                 />
 
-                <img
+                <Image
                   width={20}
+                  height={20}
                   src={match.teams.home.logo}
                   alt={`${match.teams.home.name}'s logo`}
                 />
@@ -62,8 +69,9 @@ function TableMatchDay({ matches, userBolaoId, bets }: TableProps) {
                     : `.`}
                 </span>
                 {/* <TeamCode>{match.teams.away.name}</TeamCode> */}
-                <img
+                <Image
                   width={20}
+                  height={20}
                   src={match.teams.away.logo}
                   alt={`${match.teams.away.name}'s logo`}
                 />
@@ -74,6 +82,7 @@ function TableMatchDay({ matches, userBolaoId, bets }: TableProps) {
                   userBolaoId={userBolaoId}
                   betValue={awayBet?.value}
                   betId={awayBet?.id}
+                  disabled={disabled}
                 />
               </div>
             </div>
