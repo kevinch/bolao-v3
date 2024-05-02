@@ -122,3 +122,17 @@ export type Season = {
   current: boolean
   coveragge: {}
 }
+
+export type BetResult = BetResultOk | BetResultNotOk
+
+type BetResultOk = {
+  id: string
+  user_bolao_id: string
+  fixture_id: string
+  value: number
+  type: "away" | "home"
+}
+
+type BetResultNotOk = {
+  message: string
+}

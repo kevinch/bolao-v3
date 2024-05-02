@@ -5,6 +5,7 @@ import { redirect } from "next/navigation"
 import { auth } from "@clerk/nextjs/server"
 import { fetchLeague } from "./data"
 import { getCurrentSeason } from "./utils"
+import { BetResult } from "./definitions"
 
 const { userId }: { userId: string | null } = auth()
 
@@ -87,24 +88,53 @@ export async function createBet({
   value: number
   type: "away" | "home"
 }) {
-  console.log("userBolaoId", userBolaoId)
-  console.log("fixtureId", fixtureId)
-  console.log("value", value)
-  console.log("type", type)
-
   try {
+    console.log("CREATING BET")
+
     const result = await sql`
-      INSERT INTO bets (user_bolao_id, fixture_id, value, type)
-      VALUES (${userBolaoId}, ${fixtureId}, ${value}, ${type})
-    `
+        INSERT INTO bets (user_bolao_id, fixture_id, value, type)
+        VALUES (${userBolaoId}, ${fixtureId}, ${value}, ${type})
+        RETURNING *
+      `
+    const data = result.rows[0]
+    console.log("SRV", data)
 
-    const insertedData = result.rows
-
-    return insertedData
+    return data as BetResult
   } catch (error) {
     console.log(error)
     return {
       message: "Database Error: Failed to set a bet.",
-    }
+    } as BetResult
+  }
+}
+
+export async function updateBet({
+  value,
+  betId,
+}: {
+  value: number
+  betId: string
+}) {
+  console.log("value", value)
+  console.log("betId", betId)
+
+  try {
+    console.log("UPDATING BET")
+
+    const result = await sql`
+        UPDATE bets
+        SET value = ${value}
+        WHERE CAST(id AS VARCHAR) = ${betId}
+        RETURNING *
+      `
+    const data = result.rows[0]
+    console.log("SRV", data)
+
+    return data as BetResult
+  } catch (error) {
+    console.log(error)
+    return {
+      message: "Database Error: Failed to set a bet.",
+    } as BetResult
   }
 }

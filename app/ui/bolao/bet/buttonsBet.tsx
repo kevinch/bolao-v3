@@ -1,8 +1,9 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { createBet } from "@/app/lib/actions"
+import { createBet, updateBet } from "@/app/lib/actions"
 import { initialBetValue } from "@/app/lib/utils"
+import { BetResult } from "@/app/lib/definitions"
 
 const classes = "border px-2 mx-2 rounded bg-slate-50"
 
@@ -14,20 +15,31 @@ type Props = {
 
 function ButtonsBet({ userBolaoId, type, fixtureId }: Props) {
   const [value, setValue] = useState(initialBetValue)
+  const [betId, setBetId] = useState("")
 
   const setData = async () => {
     try {
-      const data = { userBolaoId, value: Number(value), type, fixtureId }
-      await createBet(data)
+      let result: BetResult
+
+      if (betId) {
+        const data = { betId, value: Number(value) }
+        result = await updateBet(data)
+      } else {
+        const data = { userBolaoId, value: Number(value), type, fixtureId }
+        result = await createBet(data)
+      }
+
+      if ("id" in result && !betId) {
+        setBetId(result.id)
+      }
     } catch (error) {
-      console.error("Error setting bet:", error)
+      console.error("Error creating bet:", error)
     }
   }
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       if (value !== initialBetValue) {
-        console.log("useEffect called, value:", value)
         setData()
       }
     }, 300)
