@@ -123,7 +123,9 @@ async function BetPage({
         </Link>
       </div>
 
-      <PageTitle>{data.bolao.name}</PageTitle>
+      <PageTitle center={true} subTitle={data.bolao.year}>
+        {data.bolao.name}
+      </PageTitle>
 
       <Pagination
         isLastRound={data.isLastRound}
