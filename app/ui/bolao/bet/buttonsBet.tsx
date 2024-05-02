@@ -11,29 +11,33 @@ type Props = {
   userBolaoId: string
   type: "home" | "away"
   fixtureId: string
+  betValue?: number
+  betId?: string
 }
 
-function ButtonsBet({ userBolaoId, type, fixtureId }: Props) {
-  const [value, setValue] = useState(initialBetValue)
-  const [betId, setBetId] = useState("")
+function ButtonsBet({ userBolaoId, type, fixtureId, betValue, betId }: Props) {
+  const [value, setValue] = useState(
+    betValue !== undefined ? betValue : initialBetValue
+  )
+  const [betIdValue, setBetId] = useState(betId || null)
 
   const setData = async () => {
     try {
       let result: BetResult
 
-      if (betId) {
-        const data = { betId, value: Number(value) }
+      if (betIdValue) {
+        const data = { betId: betIdValue, value: Number(value) }
         result = await updateBet(data)
       } else {
         const data = { userBolaoId, value: Number(value), type, fixtureId }
         result = await createBet(data)
       }
 
-      if ("id" in result && !betId) {
+      if ("id" in result && !betIdValue) {
         setBetId(result.id)
       }
     } catch (error) {
-      console.error("Error creating bet:", error)
+      console.error("Error creating/updating bet:", error)
     }
   }
 

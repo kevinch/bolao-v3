@@ -89,15 +89,12 @@ export async function createBet({
   type: "away" | "home"
 }) {
   try {
-    console.log("CREATING BET")
-
     const result = await sql`
         INSERT INTO bets (user_bolao_id, fixture_id, value, type)
         VALUES (${userBolaoId}, ${fixtureId}, ${value}, ${type})
         RETURNING *
       `
     const data = result.rows[0]
-    console.log("SRV", data)
 
     return data as BetResult
   } catch (error) {
@@ -115,12 +112,7 @@ export async function updateBet({
   value: number
   betId: string
 }) {
-  console.log("value", value)
-  console.log("betId", betId)
-
   try {
-    console.log("UPDATING BET")
-
     const result = await sql`
         UPDATE bets
         SET value = ${value}
@@ -128,7 +120,6 @@ export async function updateBet({
         RETURNING *
       `
     const data = result.rows[0]
-    console.log("SRV", data)
 
     return data as BetResult
   } catch (error) {

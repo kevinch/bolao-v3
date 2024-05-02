@@ -4,7 +4,7 @@ import { QueryResultRow } from "pg"
 import { unstable_noStore as noStore } from "next/cache"
 import { sql } from "@vercel/postgres"
 import { FOOTBALL_API_SPORTS } from "./utils"
-import { Bolao } from "./definitions"
+import { Bolao, Bet } from "./definitions"
 import { FOOTBALL_API_SPORTS_LEAGUES } from "./utils"
 
 export async function fetchBoloes(userId: string) {
@@ -222,4 +222,28 @@ export async function fetchFixtures({
   const data = await res.json()
 
   return data.response
+}
+
+export async function fetchBets(userBolaoId: string) {
+  if (!userBolaoId) {
+    throw new Error("Missing userBolaoId")
+  }
+
+  try {
+    const data: { rows: QueryResultRow[] } = await sql`SELECT *
+      FROM bets
+      WHERE CAST(user_bolao_id AS VARCHAR) = ${userBolaoId}
+    `
+
+    const result = data.rows
+
+    if (!result) {
+      throw new Error("No bets found for the given user_bolao_id.")
+    }
+
+    return result as Bet[]
+  } catch (error) {
+    console.error("Database Error:", error)
+    throw new Error("Failed to fetch bets.")
+  }
 }

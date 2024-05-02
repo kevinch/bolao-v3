@@ -1,3 +1,5 @@
+// TODO: update Competition(s) and Match(es) to Fixture(s)
+
 export type Competition = {
   name: string
   id: string
@@ -135,4 +137,12 @@ type BetResultOk = {
 
 type BetResultNotOk = {
   message: string
+}
+
+export type Bet = {
+  id: string
+  user_bolao_id: string
+  fixture_id: string
+  value: number
+  type: "away" | "home"
 }

@@ -1,50 +1,84 @@
-import { Match } from "@/app/lib/definitions"
+import { Match, Bet } from "@/app/lib/definitions"
 import TeamCode from "@/app/ui/bolao/bet/teamCode"
 import ButtonsBet from "./buttonsBet"
-import { formatDate } from "@/app/lib/utils"
+import { formatDate, findBetObj } from "@/app/lib/utils"
 
 interface TableProps {
   matches: Match[]
   userBolaoId: string
+  bets: Bet[]
 }
 
-function TableMatchDay({ matches, userBolaoId }: TableProps) {
+function TableMatchDay({ matches, userBolaoId, bets }: TableProps) {
   if (matches) {
     return (
       <div>
-        {matches.map((el: Match) => (
-          <div key={el.fixture.id} className="mb-4">
-            <div className="text-xs text-center">
-              {formatDate(el.fixture.date.toString())}
+        {matches.map((match: Match) => {
+          const fixtureId = match.fixture.id.toString()
+          const homeBet: Bet | null = findBetObj({
+            bets,
+            fixtureId,
+            type: "home",
+          })
+
+          const awayBet: Bet | null = findBetObj({
+            bets,
+            fixtureId,
+            type: "away",
+          })
+
+          return (
+            <div key={match.fixture.id} className="mb-4">
+              <div className="text-xs text-center">
+                {formatDate(match.fixture.date.toString())}
+              </div>
+
+              <div className="flex text-center justify-center items-baseline">
+                <ButtonsBet
+                  fixtureId={match.fixture.id.toString()}
+                  type="home"
+                  userBolaoId={userBolaoId}
+                  betValue={homeBet?.value}
+                  betId={homeBet?.id}
+                />
+
+                <img
+                  width={20}
+                  src={match.teams.home.logo}
+                  alt={`${match.teams.home.name}'s logo`}
+                />
+                {/* <TeamCode>{match.teams.home.name}</TeamCode> */}
+                <span className="mx-4">
+                  {match.score.fulltime.home >= 0
+                    ? match.score.fulltime.home
+                    : `.`}
+                </span>
+
+                <span className="mx-4 text-xs">&times;</span>
+
+                <span className="mx-4">
+                  {match.score.fulltime.away >= 0
+                    ? match.score.fulltime.away
+                    : `.`}
+                </span>
+                {/* <TeamCode>{match.teams.away.name}</TeamCode> */}
+                <img
+                  width={20}
+                  src={match.teams.away.logo}
+                  alt={`${match.teams.away.name}'s logo`}
+                />
+
+                <ButtonsBet
+                  fixtureId={match.fixture.id.toString()}
+                  type="away"
+                  userBolaoId={userBolaoId}
+                  betValue={awayBet?.value}
+                  betId={awayBet?.id}
+                />
+              </div>
             </div>
-
-            <div className="flex text-center justify-center items-baseline">
-              <ButtonsBet
-                fixtureId={el.fixture.id.toString()}
-                type="home"
-                userBolaoId={userBolaoId}
-              />
-
-              <TeamCode>{el.teams.home.name}</TeamCode>
-              <span className="mx-4">
-                {el.score.fulltime.home >= 0 ? el.score.fulltime.home : `.`}
-              </span>
-
-              <span className="mx-4 text-xs">&times;</span>
-
-              <span className="mx-4">
-                {el.score.fulltime.away >= 0 ? el.score.fulltime.away : `.`}
-              </span>
-              <TeamCode>{el.teams.away.name}</TeamCode>
-
-              <ButtonsBet
-                fixtureId={el.fixture.id.toString()}
-                type="away"
-                userBolaoId={userBolaoId}
-              />
-            </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
     )
   }

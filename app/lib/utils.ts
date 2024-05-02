@@ -1,4 +1,4 @@
-import { Season, Match } from "./definitions"
+import { Season, Match, Bet } from "./definitions"
 
 export const FOOTBALL_API_SPORTS = "https://v3.football.api-sports.io"
 
@@ -77,3 +77,19 @@ export const cleanRounds = (rounds: string[]): string[] => {
 }
 
 export const initialBetValue = "."
+
+export const findBetObj = ({
+  bets,
+  fixtureId,
+  type,
+}: {
+  bets: Bet[]
+  fixtureId: string
+  type: "home" | "away"
+}): Bet | null => {
+  const result = bets.find(
+    (bet: Bet) => bet.type === type && bet.fixture_id === fixtureId
+  )
+
+  return result ?? null
+}

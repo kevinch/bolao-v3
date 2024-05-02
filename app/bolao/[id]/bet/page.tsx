@@ -4,12 +4,14 @@ import {
   fetchUserBolao,
   fetchRounds,
   fetchFixtures,
+  fetchBets,
 } from "@/app/lib/data"
 import PageTitle from "@/app/components/pageTitle"
 import TableMatchDay from "@/app/ui/bolao/bet/tableMatchDay"
 import Pagination from "@/app/ui/bolao/bet/pagination"
 import { sortFixtures, cleanRounds } from "@/app/lib/utils"
 import { auth } from "@clerk/nextjs/server"
+import { Bet } from "@/app/lib/definitions"
 
 async function getData({
   bolaoId,
@@ -26,7 +28,10 @@ async function getData({
   ])
 
   const year: number = bolao.year
-  const leagueId = bolao.competition_id
+  const leagueId: string = bolao.competition_id
+  const userBolaoId: string = userBolao.id
+
+  const bets: Bet[] = await fetchBets(userBolaoId)
 
   const allRoundsUncleaned: string[] = await fetchRounds({ leagueId, year }) // HAS TO GO TO STORE
   const allRounds: string[] = cleanRounds(allRoundsUncleaned)
@@ -72,10 +77,11 @@ async function getData({
     fixtures,
     isLastRound,
     isFirstRound,
+    bets,
   }
 }
 
-async function Bet({
+async function BetPage({
   params,
   searchParams,
 }: {
@@ -124,9 +130,13 @@ async function Bet({
         isFirstRound={data.isFirstRound}
         currentRoundIndex={currentRoundIndex}
       />
-      <TableMatchDay matches={data.fixtures} userBolaoId={data.userBolao.id} />
+      <TableMatchDay
+        bets={data.bets}
+        matches={data.fixtures}
+        userBolaoId={data.userBolao.id}
+      />
     </main>
   )
 }
 
-export default Bet
+export default BetPage
