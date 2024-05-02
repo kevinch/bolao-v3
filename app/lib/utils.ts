@@ -95,4 +95,6 @@ export const findBetObj = ({
 }
 
 // Details: api-football.com/documentation-v3#tag/Fixtures/operation/get-fixtures-rounds
-export const FIXTURES_STATUSES_OPEN = ["TBD", "NS", "PST", "AWD"]
+export const STATUSES_OPEN_TO_PLAY = ["TBD", "NS", "PST", "AWD"]
+
+export const STATUSES_IN_PLAY = ["1H", "HT", "2H", "ET", "BT", "LIVE"]

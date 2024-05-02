@@ -1,7 +1,12 @@
 import { Match, Bet } from "@/app/lib/definitions"
 import TeamCode from "@/app/ui/bolao/bet/teamCode"
 import ButtonsBet from "./buttonsBet"
-import { formatDate, findBetObj, FIXTURES_STATUSES_OPEN } from "@/app/lib/utils"
+import {
+  formatDate,
+  findBetObj,
+  STATUSES_OPEN_TO_PLAY,
+  STATUSES_IN_PLAY,
+} from "@/app/lib/utils"
 import Image from "next/image"
 
 interface TableProps {
@@ -15,9 +20,11 @@ function TableMatchDay({ matches, userBolaoId, bets }: TableProps) {
     return (
       <div>
         {matches.map((match: Match) => {
-          const disabled = !FIXTURES_STATUSES_OPEN.includes(
+          const disabled = !STATUSES_OPEN_TO_PLAY.includes(
             match.fixture.status.short
           )
+          const inPlay = STATUSES_IN_PLAY.includes(match.fixture.status.short)
+          const formatedDate = formatDate(match.fixture.date.toString())
 
           const fixtureId = match.fixture.id.toString()
           const homeBet: Bet | null = findBetObj({
@@ -35,7 +42,13 @@ function TableMatchDay({ matches, userBolaoId, bets }: TableProps) {
           return (
             <div key={match.fixture.id} className="mb-4">
               <div className="text-xs text-center">
-                {formatDate(match.fixture.date.toString())}
+                {inPlay ? (
+                  <span className="text-cyan-600">
+                    {match.fixture.status.long}
+                  </span>
+                ) : (
+                  formatedDate
+                )}
               </div>
 
               <div className="flex text-center justify-center items-baseline">
