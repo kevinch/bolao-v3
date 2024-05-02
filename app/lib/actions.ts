@@ -16,7 +16,6 @@ export async function createUser({ id, role }: { id: string; role: string }) {
       VALUES (${id}, ${role})
       ON CONFLICT (id) DO NOTHING;
     `
-    // add "RETURNING *" to SQL query to get inserted data'
   } catch (error) {
     console.error("ERROR", error)
     return {
@@ -66,7 +65,6 @@ export async function createUserBolao(bolaoId: number) {
     `
 
     const insertedData = result.rows
-    // console.log("INSERTED DATA ON createUserBolao():", insertedData)
 
     return insertedData
   } catch (error) {
