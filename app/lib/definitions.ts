@@ -1,3 +1,5 @@
+// TODO: update Competition(s) and Match(es) to Fixture(s)
+
 export type Competition = {
   name: string
   id: string
@@ -35,56 +37,63 @@ export type Bolao = {
   competition_id: string
 }
 
-export type Team = {
-  id: number
-  name: string
-  shortName?: string
-  tla?: string
-  crest?: string
-  coach?: unknown
-  leagueRank?: unknown
-  formation?: string
-  lineup: []
-  bench: []
-}
-
 type Score = {
   home: number
   away: number
 }
 
-export type Match = {
-  area: {}
-  competition: {}
-  season: {}
+type Team = {
   id: number
-  utcDate: string
-  status: string
-  minute?: number
-  injuryTime?: unknown
-  attendance?: unknown
-  venue?: string
-  matchday: number
-  stage?: string
-  group?: unknown
-  lastUpdated?: string
-  homeTeam: Team
-  awayTeam: Team
-  score: {
-    winner: string
-    duration: string
-    fullTime: Score
-    halfTime: Score
-    regularTime: Score
-    extraTime: Score
-    penalties: Score
+  name: string
+  logo: string
+  winner: unknown
+}
+
+export type Match = {
+  fixture: {
+    id: number
+    referee: unknown
+    timezone: string
+    date: Date
+    timestamp: number
+    periods: {
+      first: number
+      second: number
+    }
+    venue: {
+      id: number
+      name: string
+      city: string
+    }
+    status: {
+      long: string
+      short: string
+      elapsed: number
+    }
   }
-  goals?: []
-  penalties?: []
-  bookings?: []
-  substitutions?: []
-  odds?: {}
-  referees?: []
+  league: {
+    id: number
+    name: string
+    country: string
+    logo: string
+    flag: string
+    season: number
+    round: string
+  }
+  teams: {
+    home: Team
+    away: Team
+  }
+  goals: {
+    home: number
+    away: number
+  }
+  score: {
+    halftime: Score
+    fulltime: Score
+    extratime: Score
+    penalty: Score
+  }
 }
 
 export type MatchesData = {
@@ -106,4 +115,34 @@ export type MatchesData = {
     emblem: string
   }
   matches: Match[]
+}
+
+export type Season = {
+  year: number
+  start: string
+  end: string
+  current: boolean
+  coveragge: {}
+}
+
+export type BetResult = BetResultOk | BetResultNotOk
+
+type BetResultOk = {
+  id: string
+  user_bolao_id: string
+  fixture_id: string
+  value: number
+  type: "away" | "home"
+}
+
+type BetResultNotOk = {
+  message: string
+}
+
+export type Bet = {
+  id: string
+  user_bolao_id: string
+  fixture_id: string
+  value: number
+  type: "away" | "home"
 }

@@ -3,8 +3,11 @@
 import { sql } from "@vercel/postgres"
 import { redirect } from "next/navigation"
 import { auth } from "@clerk/nextjs/server"
+import { fetchLeague } from "./data"
+import { getCurrentSeason } from "./utils"
+import { BetResult } from "./definitions"
 
-const { userId } = auth()
+const { userId }: { userId: string | null } = auth()
 
 export async function createUser({ id, role }: { id: string; role: string }) {
   try {
@@ -32,10 +35,14 @@ export async function createBolao(formData: any) {
   const name = formData.get("name")
   const date = new Date().toISOString().split("T")[0]
 
+  const league = await fetchLeague(competitionId)
+
+  const year = getCurrentSeason(league.seasons)
+
   try {
     const result = await sql`
-      INSERT INTO boloes (name, competition_id, created_by, created_at)
-      VALUES (${name}, ${competitionId}, ${userId}, ${date})
+      INSERT INTO boloes (name, competition_id, created_by, created_at, year)
+      VALUES (${name}, ${competitionId}, ${userId}, ${date}, ${year})
       RETURNING *
     `
 
@@ -52,14 +59,71 @@ export async function createBolao(formData: any) {
 
 export async function createUserBolao(bolaoId: number) {
   try {
-    await sql`
+    const result = await sql`
       INSERT INTO user_bolao (bolao_id, user_id)
       VALUES (${bolaoId}, ${userId})
     `
+
+    const insertedData = result.rows
+
+    return insertedData
   } catch (error) {
     console.log(error)
     return {
       message: "Database Error: Failed to Create UserBolao.",
     }
+  }
+}
+
+export async function createBet({
+  userBolaoId,
+  fixtureId,
+  value,
+  type,
+}: {
+  userBolaoId: string
+  fixtureId: string
+  value: number
+  type: "away" | "home"
+}) {
+  try {
+    const result = await sql`
+        INSERT INTO bets (user_bolao_id, fixture_id, value, type)
+        VALUES (${userBolaoId}, ${fixtureId}, ${value}, ${type})
+        RETURNING *
+      `
+    const data = result.rows[0]
+
+    return data as BetResult
+  } catch (error) {
+    console.log(error)
+    return {
+      message: "Database Error: Failed to set a bet.",
+    } as BetResult
+  }
+}
+
+export async function updateBet({
+  value,
+  betId,
+}: {
+  value: number
+  betId: string
+}) {
+  try {
+    const result = await sql`
+        UPDATE bets
+        SET value = ${value}
+        WHERE CAST(id AS VARCHAR) = ${betId}
+        RETURNING *
+      `
+    const data = result.rows[0]
+
+    return data as BetResult
+  } catch (error) {
+    console.log(error)
+    return {
+      message: "Database Error: Failed to set a bet.",
+    } as BetResult
   }
 }

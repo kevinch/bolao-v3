@@ -70,12 +70,38 @@ async function seedUserBolao(client) {
   }
 }
 
+async function seedBets(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`
+    // Create the "Bets" table if it doesn't exist
+    const createTable = await client.sql`
+      CREATE TABLE IF NOT EXISTS bets (
+        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        user_bolao_id VARCHAR(100) NOT NULL,
+        fixture_id VARCHAR(100) NOT NULL,
+        value SMALLINT NOT NULL,
+        type VARCHAR(100) NOT NULL
+      );
+    `
+
+    console.log(`Created "bets" table`)
+
+    return {
+      createTable,
+    }
+  } catch (error) {
+    console.error("Error creating table bets:", error)
+    throw error
+  }
+}
+
 async function main() {
   const client = await db.connect()
 
   await seedUsers(client)
   await seedBoloes(client)
   await seedUserBolao(client)
+  await seedBets(client)
 
   await client.end()
 }

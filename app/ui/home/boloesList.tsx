@@ -10,7 +10,7 @@ async function getData(userId: string) {
 }
 
 async function BoloesList() {
-  const { userId }: { userId: string | null } = auth()
+  const { userId }: { userId: string | null } = auth() // could go to context?
 
   if (!userId) {
     return
@@ -34,6 +34,7 @@ async function BoloesList() {
 
   return (
     <div>
+      {/* TODO: update list after creation */}
       {data.map((el: Bolao) => (
         <div key={el.id} className="mb-6 drop-shadow-sm border bg-white p-4">
           <h3 className="text-2xl capitalize mb-4">{el.name}</h3>

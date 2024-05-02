@@ -1,9 +1,17 @@
 "use client"
 
-import { Competition } from "@/app/lib/definitions"
 import { createBolao } from "@/app/lib/actions"
 
-function Form({ data }: { data: Competition[] }) {
+interface League {
+  id: number
+  name: string
+}
+
+interface FormProps {
+  leagues: League[]
+}
+
+function Form({ leagues }: FormProps) {
   return (
     <form action={createBolao}>
       <div>
@@ -23,7 +31,7 @@ function Form({ data }: { data: Competition[] }) {
           <option value="" disabled>
             Select a competition
           </option>
-          {data.map((el: Competition) => (
+          {leagues.map((el: { name: string; id: number }) => (
             <option key={el.id} value={el.id}>
               {el.name}
             </option>
