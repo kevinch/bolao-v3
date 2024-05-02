@@ -54,6 +54,38 @@ export async function fetchBolao(bolaoId: string) {
   }
 }
 
+export async function fetchUserBolao({
+  bolaoId,
+  userId,
+}: {
+  bolaoId: string
+  userId: string
+}) {
+  if (!userId || !bolaoId) {
+    throw new Error("Missing userid or bolaoId")
+  }
+
+  try {
+    const data: { rows: QueryResultRow[] } =
+      await sql`SELECT id, bolao_id, user_id
+      FROM user_bolao
+      WHERE CAST(bolao_id AS VARCHAR) = ${bolaoId}
+      AND CAST(user_id AS VARCHAR) = ${userId}
+    `
+
+    const result = data.rows[0]
+
+    if (!result) {
+      throw new Error("No usre bolao found for the given user id and bolao id.")
+    }
+
+    return result as { id: string; bolao_id: string; user_id: string }
+  } catch (error) {
+    console.error("Database Error:", error)
+    throw new Error("Failed to fetch user bolões.")
+  }
+}
+
 export async function fetchUserBoloes(bolaoId: string) {
   try {
     const data: { rows: QueryResultRow[] } = await sql`SELECT user_id

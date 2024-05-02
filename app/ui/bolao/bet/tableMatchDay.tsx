@@ -5,9 +5,10 @@ import { formatDate } from "@/app/lib/utils"
 
 interface TableProps {
   matches: Match[]
+  userBolaoId: string
 }
 
-function TableMatchDay({ matches }: TableProps) {
+function TableMatchDay({ matches, userBolaoId }: TableProps) {
   if (matches) {
     return (
       <div>
@@ -18,7 +19,11 @@ function TableMatchDay({ matches }: TableProps) {
             </div>
 
             <div className="flex text-center justify-center items-baseline">
-              <ButtonsBet />
+              <ButtonsBet
+                fixtureId={el.fixture.id.toString()}
+                type="home"
+                userBolaoId={userBolaoId}
+              />
 
               <TeamCode>{el.teams.home.name}</TeamCode>
               <span className="mx-4">
@@ -32,7 +37,11 @@ function TableMatchDay({ matches }: TableProps) {
               </span>
               <TeamCode>{el.teams.away.name}</TeamCode>
 
-              <ButtonsBet />
+              <ButtonsBet
+                fixtureId={el.fixture.id.toString()}
+                type="away"
+                userBolaoId={userBolaoId}
+              />
             </div>
           </div>
         ))}

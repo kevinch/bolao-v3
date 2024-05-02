@@ -6,7 +6,7 @@ import { auth } from "@clerk/nextjs/server"
 import { fetchLeague } from "./data"
 import { getCurrentSeason } from "./utils"
 
-const { userId } = auth()
+const { userId }: { userId: string | null } = auth()
 
 export async function createUser({ id, role }: { id: string; role: string }) {
   try {
@@ -15,6 +15,7 @@ export async function createUser({ id, role }: { id: string; role: string }) {
       VALUES (${id}, ${role})
       ON CONFLICT (id) DO NOTHING;
     `
+    // add "RETURNING *" to SQL query to get inserted data'
   } catch (error) {
     console.error("ERROR", error)
     return {
@@ -47,8 +48,6 @@ export async function createBolao(formData: any) {
 
     const insertedData = result.rows[0]
 
-    // console.log("INSERTED DATA ON createBolao():", insertedData)
-
     createUserBolao(insertedData.id)
   } catch (error) {
     console.log(error)
@@ -73,6 +72,39 @@ export async function createUserBolao(bolaoId: number) {
     console.log(error)
     return {
       message: "Database Error: Failed to Create UserBolao.",
+    }
+  }
+}
+
+export async function createBet({
+  userBolaoId,
+  fixtureId,
+  value,
+  type,
+}: {
+  userBolaoId: string
+  fixtureId: string
+  value: number
+  type: "away" | "home"
+}) {
+  console.log("userBolaoId", userBolaoId)
+  console.log("fixtureId", fixtureId)
+  console.log("value", value)
+  console.log("type", type)
+
+  try {
+    const result = await sql`
+      INSERT INTO bets (user_bolao_id, fixture_id, value, type)
+      VALUES (${userBolaoId}, ${fixtureId}, ${value}, ${type})
+    `
+
+    const insertedData = result.rows
+
+    return insertedData
+  } catch (error) {
+    console.log(error)
+    return {
+      message: "Database Error: Failed to set a bet.",
     }
   }
 }

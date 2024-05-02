@@ -10,7 +10,7 @@ async function getData(userId: string) {
 }
 
 async function BoloesList() {
-  const { userId }: { userId: string | null } = auth()
+  const { userId }: { userId: string | null } = auth() // could go to context?
 
   if (!userId) {
     return

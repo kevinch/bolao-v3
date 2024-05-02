@@ -1,7 +1,7 @@
 import Link from "next/link"
 import {
   fetchBolao,
-  fetchUserBoloes,
+  fetchUserBolao,
   fetchRounds,
   fetchFixtures,
 } from "@/app/lib/data"
@@ -9,11 +9,20 @@ import PageTitle from "@/app/components/pageTitle"
 import TableMatchDay from "@/app/ui/bolao/bet/tableMatchDay"
 import Pagination from "@/app/ui/bolao/bet/pagination"
 import { sortFixtures, cleanRounds } from "@/app/lib/utils"
+import { auth } from "@clerk/nextjs/server"
 
-async function getData(bolaoId: string, roundParam?: string) {
-  const [bolao] = await Promise.all([
+async function getData({
+  bolaoId,
+  roundParam,
+  userId,
+}: {
+  bolaoId: string
+  roundParam?: string
+  userId: string
+}) {
+  const [bolao, userBolao] = await Promise.all([
     fetchBolao(bolaoId),
-    // fetchUserBoloes(bolaoId),
+    fetchUserBolao({ bolaoId, userId }),
   ])
 
   const year: number = bolao.year
@@ -57,6 +66,7 @@ async function getData(bolaoId: string, roundParam?: string) {
 
   return {
     bolao,
+    userBolao,
     currentRound: round,
     allRounds,
     fixtures,
@@ -74,18 +84,27 @@ async function Bet({
     roundIndex?: string
   }
 }) {
+  const { userId }: { userId: string | null } = auth()
   const roundIndex: string = searchParams?.roundIndex || ""
 
-  const data = await getData(params.id, roundIndex)
+  if (!userId) {
+    return <p>Error while loading the bolão. Missing userid</p>
+  }
+
+  const data = await getData({
+    bolaoId: params.id,
+    roundParam: roundIndex,
+    userId,
+  })
+
+  if (!data) {
+    return <p>Error while loading the bolão.</p>
+  }
 
   const currentRoundIndex =
     data.allRounds.findIndex(
       (el: string) => el.toLowerCase() === data.currentRound.toLowerCase()
     ) + 1
-
-  if (!data) {
-    return <p>Error while loading the bolão.</p>
-  }
 
   return (
     <main>
@@ -105,7 +124,7 @@ async function Bet({
         isFirstRound={data.isFirstRound}
         currentRoundIndex={currentRoundIndex}
       />
-      <TableMatchDay matches={data.fixtures} />
+      <TableMatchDay matches={data.fixtures} userBolaoId={data.userBolao.id} />
     </main>
   )
 }

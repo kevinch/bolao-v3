@@ -75,3 +75,5 @@ export const cleanRounds = (rounds: string[]): string[] => {
 
   return filteredRounds
 }
+
+export const initialBetValue = "."
