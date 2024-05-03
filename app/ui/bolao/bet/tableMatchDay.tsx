@@ -9,7 +9,7 @@ import {
 } from "@/app/lib/utils"
 import Image from "next/image"
 
-interface TableProps {
+type TableProps = {
   matches: Match[]
   userBolaoId: string
   bets: Bet[]

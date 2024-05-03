@@ -1,10 +1,10 @@
 import { ReactNode } from "react"
 
-interface TeamCodeProps {
+type Props = {
   children: ReactNode
 }
 
-function TeamCode({ children }: TeamCodeProps) {
+function TeamCode({ children }: Props) {
   return <span>{children}</span>
 }
 

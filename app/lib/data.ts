@@ -243,3 +243,41 @@ export async function fetchBets(userBolaoId: string) {
     throw new Error("Failed to fetch bets.")
   }
 }
+
+export async function fetchStandings({
+  leagueId,
+  year,
+}: {
+  leagueId: string
+  year: number
+}) {
+  let token: string
+  if (process.env.RAPID_API_KEY) {
+    token = process.env.RAPID_API_KEY
+  } else {
+    throw new Error("RAPID_API_KEY environment variable is not set")
+  }
+
+  const myHeaders = new Headers()
+  myHeaders.append("x-rapidapi-key", token)
+  myHeaders.append("x-rapidapi-host", "v3.football.api-sports.io")
+
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+  }
+
+  const url = `${FOOTBALL_API_SPORTS}/standings?league=${leagueId}&season=${year}`
+
+  const res = await fetch(url, requestOptions)
+
+  if (!res.ok) {
+    // This will activate the closest `error.js` Error Boundary
+    throw new Error("Failed to fetch data")
+  }
+
+  const data = await res.json()
+
+  // the shape of the data comes from the api's response
+  return data.response[0].league.standings[0]
+}

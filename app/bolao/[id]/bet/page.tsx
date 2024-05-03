@@ -1,4 +1,3 @@
-import Link from "next/link"
 import {
   fetchBolao,
   fetchUserBolao,
@@ -12,6 +11,7 @@ import Pagination from "@/app/ui/bolao/bet/pagination"
 import { sortFixtures, cleanRounds } from "@/app/lib/utils"
 import { auth } from "@clerk/nextjs/server"
 import { Bet } from "@/app/lib/definitions"
+import BolaoLinks from "@/app/ui/bolao/bolaoLinks"
 
 async function getData({
   bolaoId,
@@ -114,18 +114,11 @@ async function BetPage({
 
   return (
     <main>
-      <div className="text-right">
-        <Link
-          className="underline hover:no-underline"
-          href={`/bolao/${params.id}/results`}
-        >
-          results
-        </Link>
-      </div>
-
       <PageTitle center={true} subTitle={data.bolao.year}>
         {data.bolao.name}
       </PageTitle>
+
+      <BolaoLinks bolaoId={data.bolao.id} active={1} />
 
       <Pagination
         isLastRound={data.isLastRound}

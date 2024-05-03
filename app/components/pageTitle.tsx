@@ -1,7 +1,7 @@
 import { ReactNode } from "react"
 import clsx from "clsx"
 
-interface Props {
+type Props = {
   children: ReactNode
   center?: boolean
   subTitle?: string | number
@@ -14,12 +14,9 @@ function PageTitle({ children, center, subTitle }: Props) {
         {children}
       </h1>
       {subTitle && (
-        <>
-          <br />
-          <div className={clsx("text-2xl", { "text-center": center })}>
-            {subTitle}
-          </div>
-        </>
+        <div className={clsx("text-2xl", { "text-center": center })}>
+          {subTitle}
+        </div>
       )}
     </div>
   )

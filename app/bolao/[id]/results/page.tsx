@@ -1,14 +1,14 @@
-import Link from "next/link"
 import { fetchBolao } from "@/app/lib/data"
 import PageTitle from "@/app/components/pageTitle"
+import BolaoLinks from "@/app/ui/bolao/bolaoLinks"
 
 async function getData(bolaoId: string) {
-  const result = await fetchBolao(bolaoId)
+  const bolao = await fetchBolao(bolaoId)
 
-  return result
+  return { bolao }
 }
 
-async function Results({ params }: { params: { id: string } }) {
+async function ResultsPage({ params }: { params: { id: string } }) {
   const data = await getData(params.id)
 
   if (!data) {
@@ -17,19 +17,13 @@ async function Results({ params }: { params: { id: string } }) {
 
   return (
     <main>
-      <div className="text-right">
-        <Link
-          className="underline hover:no-underline"
-          href={`/bolao/${params.id}/bet`}
-        >
-          bet
-        </Link>
-      </div>
+      <PageTitle center={true} subTitle={data.bolao.year}>
+        {data.bolao.name}
+      </PageTitle>
 
-      <PageTitle>{data.name}</PageTitle>
-      <pre>Competition Id: {data.competition_id}</pre>
+      <BolaoLinks bolaoId={data.bolao.id} active={3} />
     </main>
   )
 }
 
-export default Results
+export default ResultsPage

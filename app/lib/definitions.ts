@@ -159,3 +159,33 @@ export type Bet = {
   value: number
   type: "away" | "home"
 }
+
+export type Standing = {
+  rank: number
+  team: {
+    id: number
+    name: string
+    logo: string
+  }
+  points: number
+  goalsDiff: number
+  group: string
+  form: string
+  status: string
+  description: string
+  all: StandingGames
+  home: StandingGames
+  away: StandingGames
+  update: string
+}
+
+type StandingGames = {
+  played: number
+  win: number
+  draw: number
+  lose: number
+  goals: {
+    for: number
+    against: number
+  }
+}

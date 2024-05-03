@@ -2,12 +2,12 @@
 
 import { createBolao } from "@/app/lib/actions"
 
-interface League {
+type League = {
   id: number
   name: string
 }
 
-interface FormProps {
+type FormProps = {
   leagues: League[]
 }
 

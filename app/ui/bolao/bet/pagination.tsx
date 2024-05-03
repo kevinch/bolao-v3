@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname, useSearchParams } from "next/navigation"
 
-interface Props {
+type Props = {
   currentRoundIndex: number
   isLastRound: boolean
   isFirstRound: boolean
