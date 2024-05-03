@@ -16,9 +16,8 @@ async function getData({
     fetchUserBolao({ bolaoId, userId }),
   ])
 
-  let resultText: string
+  let resultText: string = "You are already in the bolão."
 
-  // Create a user_bolao
   if (!userBolao) {
     const data = await createUserBolao(bolaoId)
 
@@ -27,8 +26,6 @@ async function getData({
     } else {
       resultText = "Something went wrong while adding you to the bolão."
     }
-  } else {
-    resultText = "You are already in the bolão."
   }
 
   return { bolao, resultText }
