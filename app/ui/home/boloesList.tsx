@@ -2,6 +2,7 @@ import Link from "next/link"
 import { fetchBoloes } from "@/app/lib/data"
 import { auth } from "@clerk/nextjs/server"
 import { Bolao } from "@/app/lib/definitions"
+import CopyToClipboard from "./copyToClipboard"
 
 async function getData(userId: string) {
   const result = await fetchBoloes(userId)
@@ -38,20 +39,25 @@ async function BoloesList() {
       {data.map((el: Bolao) => (
         <div key={el.id} className="mb-6 drop-shadow-sm border bg-white p-4">
           <h3 className="text-2xl capitalize mb-4">{el.name}</h3>
-          <div className="space-x-4">
-            <Link
-              className="underline hover:no-underline"
-              href={`/bolao/${el.id}/bet`}
-            >
-              Bet
-            </Link>
+          <div className="flex justify-between">
+            <div className="space-x-4">
+              <Link
+                className="underline hover:no-underline"
+                href={`/bolao/${el.id}/results`}
+              >
+                Results
+              </Link>
 
-            <Link
-              className="underline hover:no-underline"
-              href={`/bolao/${el.id}/results`}
-            >
-              Results
-            </Link>
+              <Link
+                className="underline hover:no-underline"
+                href={`/bolao/${el.id}/bet`}
+              >
+                Bet
+              </Link>
+            </div>
+            <div>
+              <CopyToClipboard bolaoId={el.id} />
+            </div>
           </div>
         </div>
       ))}

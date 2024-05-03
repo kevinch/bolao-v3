@@ -37,6 +37,23 @@ export type Bolao = {
   competition_id: string
 }
 
+export type UserBolao = {
+  id: string
+  bolao_id: string
+  user_id: string
+}
+
+type SuccessUserBolaoResult = {
+  success: boolean
+} & UserBolao
+
+type ErrorResult = {
+  success: boolean
+  message: string
+}
+
+export type CreateUserBolaoResult = SuccessUserBolaoResult | ErrorResult
+
 type Score = {
   home: number
   away: number
@@ -125,18 +142,14 @@ export type Season = {
   coveragge: {}
 }
 
-export type BetResult = BetResultOk | BetResultNotOk
+export type BetResult = SuccessBetResult | ErrorResult
 
-type BetResultOk = {
+type SuccessBetResult = {
   id: string
   user_bolao_id: string
   fixture_id: string
   value: number
   type: "away" | "home"
-}
-
-type BetResultNotOk = {
-  message: string
 }
 
 export type Bet = {

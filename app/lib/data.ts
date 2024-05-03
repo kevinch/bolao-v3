@@ -75,10 +75,6 @@ export async function fetchUserBolao({
 
     const result = data.rows[0]
 
-    if (!result) {
-      throw new Error("No usre bolao found for the given user id and bolao id.")
-    }
-
     return result as { id: string; bolao_id: string; user_id: string }
   } catch (error) {
     console.error("Database Error:", error)
