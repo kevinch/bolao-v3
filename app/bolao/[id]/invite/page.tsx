@@ -3,7 +3,6 @@ import { fetchBolao, fetchUserBolao } from "@/app/lib/data"
 import PageTitle from "@/app/components/pageTitle"
 import { auth } from "@clerk/nextjs/server"
 import { createUserBolao } from "@/app/lib/actions"
-import { UserBolao } from "@/app/lib/definitions"
 
 async function getData({
   bolaoId,
@@ -23,7 +22,7 @@ async function getData({
   if (!userBolao) {
     const data = await createUserBolao(bolaoId)
 
-    if (data.id) {
+    if (data.success) {
       resultText = "You were added to the bolão with success."
     } else {
       resultText = "Something went wrong while adding you to the bolão."

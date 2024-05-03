@@ -5,7 +5,7 @@ import { redirect } from "next/navigation"
 import { auth } from "@clerk/nextjs/server"
 import { fetchLeague } from "./data"
 import { getCurrentSeason } from "./utils"
-import { BetResult, UserBolao, ResultNotOk } from "./definitions"
+import { BetResult, CreateUserBolaoResult } from "./definitions"
 
 export async function createUser({ id, role }: { id: string; role: string }) {
   try {
@@ -57,24 +57,32 @@ export async function createBolao(formData: any) {
   }
 }
 
-export async function createUserBolao(bolaoId: number | string) {
+export async function createUserBolao(
+  bolaoId: number | string
+): Promise<CreateUserBolaoResult> {
   const { userId }: { userId: string | null } = auth()
 
   try {
-    const result = await sql`
+    const data = await sql`
       INSERT INTO user_bolao (bolao_id, user_id)
       VALUES (${bolaoId}, ${userId})
       RETURNING *
     `
 
-    const insertedData = result.rows[0]
+    const result = {
+      id: data.rows[0].id,
+      bolao_id: data.rows[0].bolao_id,
+      user_id: data.rows[0].user_id,
+      success: true,
+    }
 
-    return insertedData as UserBolao
+    return result
   } catch (error) {
     console.log(error)
     return {
+      success: false,
       message: "Database Error: Failed to Create UserBolao.",
-    } as ResultNotOk
+    }
   }
 }
 
