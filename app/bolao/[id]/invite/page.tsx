@@ -1,0 +1,71 @@
+import Link from "next/link"
+import { fetchBolao, fetchUserBolao } from "@/app/lib/data"
+import PageTitle from "@/app/components/pageTitle"
+import { auth } from "@clerk/nextjs/server"
+import { createUserBolao } from "@/app/lib/actions"
+import { UserBolao } from "@/app/lib/definitions"
+
+async function getData({
+  bolaoId,
+  userId,
+}: {
+  bolaoId: string
+  userId: string
+}) {
+  const [bolao, userBolao] = await Promise.all([
+    fetchBolao(bolaoId),
+    fetchUserBolao({ bolaoId, userId }),
+  ])
+
+  let resultText: string
+
+  // Create a user_bolao
+  if (!userBolao) {
+    const data = await createUserBolao(bolaoId)
+
+    if (data.id) {
+      resultText = "You were added to the bolão with success."
+    } else {
+      resultText = "Something went wrong while adding you to the bolão."
+    }
+  } else {
+    resultText = "You are already in the bolão."
+  }
+
+  return { bolao, resultText }
+}
+
+async function InvitePage({ params }: { params: { id: string } }) {
+  const { userId }: { userId: string | null } = auth()
+
+  if (!userId) {
+    return <p>Error while loading the bolão. Missing userid</p>
+  }
+
+  const data: { bolao: { name: string; id: string }; resultText: string } =
+    await getData({
+      bolaoId: params.id,
+      userId,
+    })
+
+  if (!data) {
+    return <p>Error while adding you to the bolao.</p>
+  }
+
+  return (
+    <main>
+      <PageTitle>Invite for "{data.bolao.name}"</PageTitle>
+      <p>{data.resultText}</p>
+      <p>
+        <Link
+          className="underline hover:no-underline"
+          href={`/bolao/${data.bolao.id}/bet`}
+        >
+          Start betting now
+        </Link>
+      </p>
+    </main>
+  )
+}
+
+export default InvitePage

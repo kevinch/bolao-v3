@@ -5,9 +5,7 @@ import { redirect } from "next/navigation"
 import { auth } from "@clerk/nextjs/server"
 import { fetchLeague } from "./data"
 import { getCurrentSeason } from "./utils"
-import { BetResult } from "./definitions"
-
-const { userId }: { userId: string | null } = auth()
+import { BetResult, UserBolao, ResultNotOk } from "./definitions"
 
 export async function createUser({ id, role }: { id: string; role: string }) {
   try {
@@ -30,6 +28,8 @@ export async function navigate(path: string) {
 
 export async function createBolao(formData: any) {
   // type should be FormData
+
+  const { userId }: { userId: string | null } = auth()
 
   const competitionId = formData.get("competitionId")
   const name = formData.get("name")
@@ -57,21 +57,24 @@ export async function createBolao(formData: any) {
   }
 }
 
-export async function createUserBolao(bolaoId: number) {
+export async function createUserBolao(bolaoId: number | string) {
+  const { userId }: { userId: string | null } = auth()
+
   try {
     const result = await sql`
       INSERT INTO user_bolao (bolao_id, user_id)
       VALUES (${bolaoId}, ${userId})
+      RETURNING *
     `
 
-    const insertedData = result.rows
+    const insertedData = result.rows[0]
 
-    return insertedData
+    return insertedData as UserBolao
   } catch (error) {
     console.log(error)
     return {
       message: "Database Error: Failed to Create UserBolao.",
-    }
+    } as ResultNotOk
   }
 }
 

@@ -37,6 +37,12 @@ export type Bolao = {
   competition_id: string
 }
 
+export type UserBolao = {
+  id: string
+  bolao_id: string
+  user_id: string
+}
+
 type Score = {
   home: number
   away: number
@@ -125,7 +131,7 @@ export type Season = {
   coveragge: {}
 }
 
-export type BetResult = BetResultOk | BetResultNotOk
+export type BetResult = BetResultOk | ResultNotOk
 
 type BetResultOk = {
   id: string
@@ -135,7 +141,7 @@ type BetResultOk = {
   type: "away" | "home"
 }
 
-type BetResultNotOk = {
+export type ResultNotOk = {
   message: string
 }
 
