@@ -30,6 +30,7 @@ export default function RootLayout({
         </body>
       </ClerkProvider>
       <Script
+        async
         src="https://analytics.us.umami.is/script.js"
         data-website-id="45e7ea7a-c17d-447f-8cfd-b19da32523ce"
       />
