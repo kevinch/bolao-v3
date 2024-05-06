@@ -279,5 +279,5 @@ export async function fetchStandings({
   const data = await res.json()
 
   // the shape of the data comes from the api's response
-  return data.response[0].league.standings[0]
+  return data.response[0].league
 }

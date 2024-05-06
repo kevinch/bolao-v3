@@ -160,6 +160,20 @@ export type Bet = {
   type: "away" | "home"
 }
 
+export type StandingsLeague = {
+  id: number
+  name: string
+  country: string
+  logo: string
+  flag: string
+  season: number
+  standings: Standings[]
+}
+
+type Standings = []
+
+export type StandingsGroup = Standing[]
+
 export type Standing = {
   rank: number
   team: {
