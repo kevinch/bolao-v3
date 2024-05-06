@@ -15,8 +15,6 @@ async function getData(bolaoId: string) {
 
   const standings: Standing[] = await fetchStandings({ leagueId, year })
 
-  console.log(standings)
-
   return { bolao, standings }
 }
 
