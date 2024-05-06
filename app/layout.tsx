@@ -19,8 +19,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <ClerkProvider>
+    <ClerkProvider>
+      <html lang="en">
         <body className={Plex.className}>
           <div className="container mx-auto px-4">
             <Header />
@@ -28,12 +28,13 @@ export default function RootLayout({
             <Footer />
           </div>
         </body>
-      </ClerkProvider>
-      <Script
-        async
-        src="https://analytics.us.umami.is/script.js"
-        data-website-id="45e7ea7a-c17d-447f-8cfd-b19da32523ce"
-      />
-    </html>
+
+        <Script
+          async
+          src="https://analytics.us.umami.is/script.js"
+          data-website-id="45e7ea7a-c17d-447f-8cfd-b19da32523ce"
+        />
+      </html>
+    </ClerkProvider>
   )
 }
