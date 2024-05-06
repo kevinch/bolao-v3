@@ -32,7 +32,7 @@ export default function RootLayout({
         <Script
           async
           src="https://analytics.us.umami.is/script.js"
-          data-website-id="45e7ea7a-c17d-447f-8cfd-b19da32523ce"
+          data-website-id={process.env.UMAMI_ID}
         />
       </html>
     </ClerkProvider>
