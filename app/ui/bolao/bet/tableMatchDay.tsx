@@ -69,7 +69,10 @@ function TableMatchDay({ matches, userBolaoId, bets }: TableProps) {
                 />
                 {/* <TeamCode>{match.teams.home.name}</TeamCode> */}
                 <span className="mx-4">
-                  {match.score.fulltime.home >= 0
+                  {match.score.fulltime.home === null &&
+                  match.score.halftime.home >= 0
+                    ? match.score.halftime.home
+                    : match.score.fulltime.home >= 0
                     ? match.score.fulltime.home
                     : `.`}
                 </span>
@@ -77,7 +80,10 @@ function TableMatchDay({ matches, userBolaoId, bets }: TableProps) {
                 <span className="mx-4 text-xs">&times;</span>
 
                 <span className="mx-4">
-                  {match.score.fulltime.away >= 0
+                  {match.score.fulltime.away === null &&
+                  match.score.halftime.away >= 0
+                    ? match.score.halftime.away
+                    : match.score.fulltime.away >= 0
                     ? match.score.fulltime.away
                     : `.`}
                 </span>
