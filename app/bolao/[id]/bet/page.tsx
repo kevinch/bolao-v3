@@ -1,9 +1,10 @@
-import BolaoPageTitle from "@/app/ui/bolao/bolaoPageTitle"
-import TableMatchDay from "@/app/ui/bolao/bet/tableMatchDay"
-import Pagination from "@/app/ui/bolao/bet/pagination"
-import { auth } from "@clerk/nextjs/server"
-import BolaoLinks from "@/app/ui/bolao/bolaoLinks"
 import { getData } from "@/app/lib/controllerBetResults"
+import { auth } from "@clerk/nextjs/server"
+
+import BolaoPageTitle from "@/app/ui/bolao/bolaoPageTitle"
+import BolaoLinks from "@/app/ui/bolao/bolaoLinks"
+import Pagination from "@/app/ui/bolao/bet/pagination"
+import TableMatchDayBets from "@/app/ui/bolao/bet/tableMatchDayBets"
 
 async function BetPage({
   params,
@@ -53,7 +54,7 @@ async function BetPage({
         currentRoundIndex={currentRoundIndex}
       />
 
-      <TableMatchDay
+      <TableMatchDayBets
         bets={data.bets}
         fixtures={data.fixtures}
         userBolaoId={data.userBolao.id}

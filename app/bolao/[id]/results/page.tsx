@@ -1,9 +1,10 @@
+import { getData } from "@/app/lib/controllerBetResults"
+import { auth } from "@clerk/nextjs/server"
+
 import BolaoPageTitle from "@/app/ui/bolao/bolaoPageTitle"
 import BolaoLinks from "@/app/ui/bolao/bolaoLinks"
 import Pagination from "@/app/ui/bolao/bet/pagination"
-import { auth } from "@clerk/nextjs/server"
-import TableMatchDayResults from "@/app/ui/bolao/results/tableMatchDay"
-import { getData } from "@/app/lib/controllerBetResults"
+import TableMatchDayResults from "@/app/ui/bolao/results/tableMatchDayResults"
 
 async function ResultsPage({
   params,

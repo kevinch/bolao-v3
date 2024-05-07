@@ -15,7 +15,7 @@ type TableProps = {
   bets: Bet[]
 }
 
-function TableMatchDay({ fixtures, userBolaoId, bets }: TableProps) {
+function TableMatchDayBets({ fixtures, userBolaoId, bets }: TableProps) {
   if (fixtures) {
     return (
       <div className={STYLES_BOX_SHADOW}>
@@ -89,4 +89,4 @@ function TableMatchDay({ fixtures, userBolaoId, bets }: TableProps) {
   return <p>loading...</p>
 }
 
-export default TableMatchDay
+export default TableMatchDayBets
