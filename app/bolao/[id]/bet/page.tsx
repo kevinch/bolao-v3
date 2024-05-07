@@ -5,7 +5,7 @@ import {
   fetchFixtures,
   fetchBets,
 } from "@/app/lib/data"
-import PageTitle from "@/app/components/pageTitle"
+import BolaoPageTitle from "@/app/ui/bolao/bolaoPageTitle"
 import TableMatchDay from "@/app/ui/bolao/bet/tableMatchDay"
 import Pagination from "@/app/ui/bolao/bet/pagination"
 import { sortFixtures, cleanRounds } from "@/app/lib/utils"
@@ -114,9 +114,12 @@ async function BetPage({
 
   return (
     <main>
-      <PageTitle center={true} subTitle={data.bolao.year}>
-        {data.bolao.name}
-      </PageTitle>
+      <BolaoPageTitle
+        bolaoName={data.bolao.name}
+        bolaoYear={data.bolao.year}
+        leagueLogo={data.fixtures[0].league.logo}
+        leagueName={data.fixtures[0].league.name}
+      />
 
       <BolaoLinks bolaoId={data.bolao.id} active={1} />
 

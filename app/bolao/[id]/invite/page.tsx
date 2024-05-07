@@ -50,7 +50,9 @@ async function InvitePage({ params }: { params: { id: string } }) {
 
   return (
     <main>
+      {/* TODO: format header like bet and standings pages */}
       <PageTitle>Invite for "{data.bolao.name}"</PageTitle>
+
       <p>{data.resultText}</p>
       <p>
         <Link

@@ -96,5 +96,7 @@ export const findBetObj = ({
 
 // Details: api-football.com/documentation-v3#tag/Fixtures/operation/get-fixtures-rounds
 export const STATUSES_OPEN_TO_PLAY = ["TBD", "NS", "PST", "AWD"]
-
 export const STATUSES_IN_PLAY = ["1H", "HT", "2H", "ET", "BT", "LIVE"]
+export const STATUSES_ERROR = ["CANC", "PST", "ABD", "AWD"]
+
+export const STYLES_BOX_SHADOW = "shadow bg-white p-4 mb-6"

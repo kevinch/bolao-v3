@@ -1,6 +1,6 @@
 import { fetchBolao, fetchStandings } from "@/app/lib/data"
-import PageTitle from "@/app/components/pageTitle"
 import BolaoLinks from "@/app/ui/bolao/bolaoLinks"
+import BolaoPageTitle from "@/app/ui/bolao/bolaoPageTitle"
 import {
   Standing,
   StandingsGroup,
@@ -8,6 +8,7 @@ import {
 } from "@/app/lib/definitions"
 import clsx from "clsx"
 import Image from "next/image"
+import { STYLES_BOX_SHADOW } from "@/app/lib/utils"
 
 const thClasses = "font-normal text-xs py-3"
 
@@ -53,67 +54,52 @@ async function StandingsPage({ params }: { params: { id: string } }) {
 
   return (
     <main>
-      <PageTitle center={true}>
-        {data.standingsLeague.logo && (
-          <div className="flex justify-center mb-6">
-            <Image
-              alt={`${data.standingsLeague.name}'s logo`}
-              src={data.standingsLeague.logo}
-              width={40}
-              height={40}
-            />
-          </div>
-        )}
-
-        {data.bolao.name}
-        <br />
-        <span className="text-lg">
-          {data.standingsLeague.name} - {data.standingsLeague.season}
-          <br />
-        </span>
-      </PageTitle>
+      <BolaoPageTitle
+        bolaoName={data.bolao.name}
+        bolaoYear={data.bolao.year}
+        leagueLogo={data.standingsLeague.logo}
+        leagueName={data.standingsLeague.name}
+      />
 
       <BolaoLinks bolaoId={data.bolao.id} active={2} />
 
-      {data.standingsLeague.standings.map((standingGroup: StandingsGroup) => {
-        return (
-          <table className="w-full text-xs mb-10 shadow">
-            <Thead title={standingGroup[0].group} />
-            <tbody>
-              {standingGroup.map((el: Standing) => {
-                return (
-                  <tr
-                    key={`${data.bolao.competition_id}_${el.rank}_${el.team.id}`}
-                    className={clsx("text-center py-5", {
-                      "bg-slate-50": el.rank % 2 !== 0,
-                    })}
-                  >
-                    <td className="py-3">{el.rank}</td>
-                    <td className="text-left">
-                      <Image
-                        src={el.team.logo}
-                        width={20}
-                        height={20}
-                        alt={`Logo of ${el.team.name}`}
-                        className="inline mr-2"
-                      />
-                      {el.team.name}
-                    </td>
-                    <td>{el.all.played}</td>
-                    <td>{el.all.win}</td>
-                    <td>{el.all.draw}</td>
-                    <td>{el.all.lose}</td>
-                    <td>{el.all.goals.for}</td>
-                    <td>{el.all.goals.against}</td>
-                    <td>{el.all.goals.for - el.all.goals.against}</td>
-                    <td className="font-bold">{el.points}</td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        )
-      })}
+      {data.standingsLeague.standings.map((standingGroup: StandingsGroup) => (
+        <table className={clsx(`${STYLES_BOX_SHADOW} w-full text-xs`)}>
+          <Thead title={standingGroup[0].group} />
+          <tbody>
+            {standingGroup.map((el: Standing) => {
+              return (
+                <tr
+                  key={`${data.bolao.competition_id}_${el.rank}_${el.team.id}`}
+                  className={clsx("text-center py-5", {
+                    "bg-slate-50": el.rank % 2 !== 0,
+                  })}
+                >
+                  <td className="py-3">{el.rank}</td>
+                  <td className="text-left">
+                    <Image
+                      src={el.team.logo}
+                      width={20}
+                      height={20}
+                      alt={`Logo of ${el.team.name}`}
+                      className="inline mr-2"
+                    />
+                    {el.team.name}
+                  </td>
+                  <td>{el.all.played}</td>
+                  <td>{el.all.win}</td>
+                  <td>{el.all.draw}</td>
+                  <td>{el.all.lose}</td>
+                  <td>{el.all.goals.for}</td>
+                  <td>{el.all.goals.against}</td>
+                  <td>{el.all.goals.for - el.all.goals.against}</td>
+                  <td className="font-bold">{el.points}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      ))}
     </main>
   )
 }

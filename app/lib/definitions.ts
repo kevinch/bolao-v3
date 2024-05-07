@@ -66,6 +66,19 @@ type Team = {
   winner: unknown
 }
 
+export type ScoreGroup = {
+  halftime: Score
+  fulltime: Score
+  extratime: Score
+  penalty: Score
+}
+
+export type FixtureStatus = {
+  long: string
+  short: string
+  elapsed: number
+}
+
 export type Match = {
   fixture: {
     id: number
@@ -82,11 +95,7 @@ export type Match = {
       name: string
       city: string
     }
-    status: {
-      long: string
-      short: string
-      elapsed: number
-    }
+    status: FixtureStatus
   }
   league: {
     id: number
@@ -105,12 +114,7 @@ export type Match = {
     home: number
     away: number
   }
-  score: {
-    halftime: Score
-    fulltime: Score
-    extratime: Score
-    penalty: Score
-  }
+  score: ScoreGroup
 }
 
 export type MatchesData = {

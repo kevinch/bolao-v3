@@ -3,6 +3,7 @@ import { fetchBoloes } from "@/app/lib/data"
 import { auth } from "@clerk/nextjs/server"
 import { Bolao } from "@/app/lib/definitions"
 import CopyToClipboard from "./copyToClipboard"
+import { STYLES_BOX_SHADOW } from "@/app/lib/utils"
 
 async function getData(userId: string) {
   const result = await fetchBoloes(userId)
@@ -37,7 +38,7 @@ async function BoloesList() {
     <div>
       {/* TODO: update list after creation */}
       {data.map((el: Bolao) => (
-        <div key={el.id} className="mb-6 drop-shadow-sm border bg-white p-4">
+        <div key={el.id} className={STYLES_BOX_SHADOW}>
           <h3 className="text-2xl capitalize mb-4">{el.name}</h3>
           <div className="flex justify-between">
             <div className="space-x-4">

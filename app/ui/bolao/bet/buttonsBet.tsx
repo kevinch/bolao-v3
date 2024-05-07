@@ -83,7 +83,7 @@ function ButtonsBet({
   })
 
   return (
-    <div>
+    <div className="content-center">
       <button
         disabled={disabled}
         className={buttonClasses}

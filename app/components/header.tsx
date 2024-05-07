@@ -12,12 +12,12 @@ function Header() {
     <header>
       <Background />
       <div className="flex justify-between mt-6">
-        <div>
+        <div className="content-center">
           <Link href={"/"}>
             <LogoSvg size={80} color="#666666" />
           </Link>
         </div>
-        <div>{userId && <UserButton />}</div>
+        <div className="content-center">{userId && <UserButton />}</div>
       </div>
     </header>
   )
