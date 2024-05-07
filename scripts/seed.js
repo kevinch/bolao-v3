@@ -71,6 +71,8 @@ async function seedUserBolao(client) {
 }
 
 async function seedBets(client) {
+  // TODO:
+  // optimize bet fetching by adding a round param like fixtures
   try {
     await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`
     // Create the "Bets" table if it doesn't exist
