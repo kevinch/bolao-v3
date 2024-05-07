@@ -44,16 +44,16 @@ async function BoloesList() {
             <div className="space-x-4">
               <Link
                 className="underline hover:no-underline"
-                href={`/bolao/${el.id}/results`}
+                href={`/bolao/${el.id}/bet`}
               >
-                Results
+                Bet
               </Link>
 
               <Link
                 className="underline hover:no-underline"
-                href={`/bolao/${el.id}/bet`}
+                href={`/bolao/${el.id}/results`}
               >
-                Bet
+                Results
               </Link>
             </div>
             <div>
