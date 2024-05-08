@@ -20,8 +20,8 @@ async function LeadPage({ params }: { params: { id: string } }) {
       <BolaoPageTitle
         bolaoName={data.bolao.name}
         bolaoYear={data.bolao.year}
-        // leagueLogo={data.standingsLeague.logo}
-        // leagueName={data.standingsLeague.name}
+        leagueLogo={data.fixtures[0].league.logo}
+        leagueName={data.fixtures[0].league.name}
       />
 
       <BolaoLinks bolaoId={data.bolao.id} active={4} />
