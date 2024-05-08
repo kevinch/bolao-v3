@@ -3,11 +3,12 @@ import { calcLead } from "@/app/lib/calcLeadFactory"
 import BolaoPageTitle from "@/app/ui/bolao/bolaoPageTitle"
 import BolaoLinks from "@/app/ui/bolao/bolaoLinks"
 import { getData } from "@/app/lib/controllerLead"
+import { LeadData } from "@/app/lib/definitions"
 
 async function LeadPage({ params }: { params: { id: string } }) {
   const data = await getData({ bolaoId: params.id })
 
-  const unsortedLead = calcLead({
+  const unsortedLead: LeadData[] = calcLead({
     players: data.players,
     fixtures: data.fixtures,
     bets: data.bets,

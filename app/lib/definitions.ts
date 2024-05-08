@@ -115,27 +115,6 @@ export type FixtureData = {
   score: ScoreGroup
 }
 
-// export type MatchesData = {
-//   filters: {
-//     season: string
-//     matchday?: string
-//   }
-//   resultSet: {
-//     count: number
-//     first: string
-//     last: string
-//     played: number
-//   }
-//   competition: {
-//     id: number
-//     name: string
-//     code: string
-//     type: string
-//     emblem: string
-//   }
-//   matches: FixtureData[]
-// }
-
 export type Season = {
   year: number
   start: string
@@ -218,4 +197,9 @@ export type ScoreArgs = {
   betHome: number
   resultAway: number
   betAway: number
+}
+
+export type LeadData = {
+  name: string
+  total: number
 }
