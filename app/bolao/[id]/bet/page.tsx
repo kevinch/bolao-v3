@@ -1,4 +1,4 @@
-import { getData } from "@/app/lib/controllerBetResults"
+import { getData } from "@/app/lib/controllerBet"
 import { auth } from "@clerk/nextjs/server"
 
 import BolaoPageTitle from "@/app/ui/bolao/bolaoPageTitle"

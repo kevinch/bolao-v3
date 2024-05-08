@@ -1,5 +1,3 @@
-// TODO: update Match(es) to Fixture(s)
-
 export type Competition = {
   name: string
   id: string
@@ -206,4 +204,11 @@ type StandingGames = {
     for: number
     against: number
   }
+}
+
+export type PlayersData = {
+  id: string
+  firstName: string | null
+  email: string
+  userBolaoId: string
 }

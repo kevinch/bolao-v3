@@ -82,14 +82,24 @@ export const findBetObj = ({
   bets,
   fixtureId,
   type,
+  userBolaoId,
 }: {
   bets: Bet[]
   fixtureId: string
   type: "home" | "away"
+  userBolaoId?: string
 }): Bet | null => {
-  const result = bets.find(
-    (bet: Bet) => bet.type === type && bet.fixture_id === fixtureId
-  )
+  const result = bets.find((bet: Bet) => {
+    if (userBolaoId) {
+      return (
+        bet.type === type &&
+        bet.fixture_id === fixtureId &&
+        bet.user_bolao_id === userBolaoId
+      )
+    }
+
+    return bet.type === type && bet.fixture_id === fixtureId
+  })
 
   return result ?? null
 }

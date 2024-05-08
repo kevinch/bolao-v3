@@ -1,12 +1,13 @@
 import {
   fetchBolao,
-  fetchUserBolao,
+  fetchUsersBolao,
   fetchRounds,
   fetchFixtures,
-  fetchBets,
+  fetchUsersBets,
 } from "@/app/lib/data"
 import { sortFixtures, cleanRounds } from "@/app/lib/utils"
-import { Bet } from "@/app/lib/definitions"
+import { Bet, UserBolao, PlayersData } from "@/app/lib/definitions"
+import { clerkClient } from "@clerk/nextjs/server"
 
 export async function getData({
   bolaoId,
@@ -17,26 +18,49 @@ export async function getData({
   roundParam?: string
   userId: string
 }) {
-  const [bolao, userBolao] = await Promise.all([
+  const [bolao, usersBolao] = await Promise.all([
     fetchBolao(bolaoId),
-    fetchUserBolao({ bolaoId, userId }),
+    fetchUsersBolao(bolaoId),
   ])
 
   const year: number = bolao.year
   const leagueId: string = bolao.competition_id
-  const userBolaoId: string = userBolao.id
 
-  const bets: Bet[] = await fetchBets(userBolaoId)
+  // Fetch players infos
+  const userIds: string[] = usersBolao.map((el: UserBolao) => el.user_id)
+  const users = await clerkClient.users.getUserList({ userId: userIds })
 
-  const allRoundsUncleaned: string[] = await fetchRounds({ leagueId, year }) // HAS TO GO TO STORE
+  const players: PlayersData[] = []
+  users.data.map((el) => {
+    // TODO: fix the "any" type
+    const userBolaoObj: any = usersBolao.find(
+      (ub: UserBolao) => ub.user_id === el.id
+    )
+
+    const obj = {
+      id: el.id,
+      firstName: el.firstName,
+      email: el.emailAddresses[0].emailAddress,
+      userBolaoId: userBolaoObj.id,
+    }
+
+    players.push(obj)
+  })
+
+  // Fetch bets
+  const userBoloesIds: string[] = usersBolao.map((el: UserBolao) => el.id)
+  const bets: Bet[] = await fetchUsersBets(userBoloesIds)
+
+  // Fewtch rounds infos
+  const allRoundsUncleaned: string[] = await fetchRounds({ leagueId, year })
   const allRounds: string[] = cleanRounds(allRoundsUncleaned)
 
   const currentRoundObj: string[] = await fetchRounds({
     leagueId,
     year,
     current: true,
-  }) // HAS TO GO TO STORE
-  const currentRound = currentRoundObj[0] // HAS TO GO TO STORE
+  })
+  const currentRound = currentRoundObj[0]
 
   let isFirstRound: boolean = false
   let isLastRound: boolean = false
@@ -55,8 +79,8 @@ export async function getData({
     isFirstRound = currentRound === allRounds[0]
     isLastRound = currentRound === allRounds[allRounds.length - 1]
   }
-  // END
 
+  // Fetch fixtures via parameters
   const unSortedFixtures = await fetchFixtures({
     leagueId,
     year,
@@ -66,12 +90,13 @@ export async function getData({
 
   return {
     bolao,
-    userBolao,
+    usersBolao,
     currentRound: round,
     allRounds,
     fixtures,
     isLastRound,
     isFirstRound,
+    players,
     bets,
   }
 }

@@ -1,4 +1,4 @@
-import { getData } from "@/app/lib/controllerBetResults"
+import { getData } from "@/app/lib/controllerResults"
 import { auth } from "@clerk/nextjs/server"
 
 import BolaoPageTitle from "@/app/ui/bolao/bolaoPageTitle"
@@ -54,7 +54,11 @@ async function ResultsPage({
         currentRoundIndex={currentRoundIndex}
       />
 
-      <TableMatchDayResults bets={data.bets} fixtures={data.fixtures} />
+      <TableMatchDayResults
+        bets={data.bets}
+        fixtures={data.fixtures}
+        players={data.players}
+      />
     </main>
   )
 }
