@@ -1,4 +1,4 @@
-import { Season, Match, Bet } from "./definitions"
+import { Season, FixtureData, Bet } from "./definitions"
 
 export const FOOTBALL_API_SPORTS = "https://v3.football.api-sports.io"
 
@@ -33,7 +33,7 @@ export const getCurrentSeason = (seasons: Season[]): number | undefined => {
   return year
 }
 
-export const sortFixtures = (fixtures: Match[]) => {
+export const sortFixtures = (fixtures: FixtureData[]) => {
   return fixtures.sort((a, b) => {
     const dateA = new Date(a.fixture.date).getTime()
     const dateB = new Date(b.fixture.date).getTime()
@@ -60,7 +60,7 @@ export const formatDate = (dateString: string): string => {
   return `${formattedDate} ${formattedTime}`
 }
 
-const stringsToRemove = [
+const ROUNDS_TO_REMOVE = [
   "Preliminary Round",
   "1st Qualifying Round",
   "2nd Qualifying Round",
@@ -70,33 +70,47 @@ const stringsToRemove = [
 
 export const cleanRounds = (rounds: string[]): string[] => {
   const filteredRounds: string[] = rounds.filter(
-    (round: string) => !stringsToRemove.includes(round)
+    (round: string) => !ROUNDS_TO_REMOVE.includes(round)
   )
 
   return filteredRounds
 }
 
-export const initialBetValue = "."
+export const INITIAL_BET_VALUE = "."
 
 export const findBetObj = ({
   bets,
   fixtureId,
   type,
+  userBolaoId,
 }: {
   bets: Bet[]
   fixtureId: string
   type: "home" | "away"
+  userBolaoId?: string
 }): Bet | null => {
-  const result = bets.find(
-    (bet: Bet) => bet.type === type && bet.fixture_id === fixtureId
-  )
+  const result = bets.find((bet: Bet) => {
+    if (userBolaoId) {
+      return (
+        bet.type === type &&
+        bet.fixture_id === fixtureId &&
+        bet.user_bolao_id === userBolaoId
+      )
+    }
+
+    return bet.type === type && bet.fixture_id === fixtureId
+  })
 
   return result ?? null
 }
 
-// Details: api-football.com/documentation-v3#tag/Fixtures/operation/get-fixtures-rounds
+export const isNil = (value: any) => value === null || value === undefined
+
+// FIXTURES STATUSES
+// api-football.com/documentation-v3#tag/Fixtures/operation/get-fixtures-rounds
 export const STATUSES_OPEN_TO_PLAY = ["TBD", "NS", "PST", "AWD"]
 export const STATUSES_IN_PLAY = ["1H", "HT", "2H", "ET", "BT", "LIVE"]
+export const STATUSES_FINISHED = ["FT", "AET", "PEN", "CANC", ""]
 export const STATUSES_ERROR = ["CANC", "PST", "ABD", "AWD"]
 
 export const STYLES_BOX_SHADOW = "shadow bg-white p-4 mb-6"

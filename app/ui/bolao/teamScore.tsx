@@ -1,4 +1,5 @@
 import { ScoreGroup } from "@/app/lib/definitions"
+import { INITIAL_BET_VALUE } from "@/app/lib/utils"
 
 type Props = {
   score: ScoreGroup
@@ -6,7 +7,7 @@ type Props = {
 }
 
 function TeamScore({ score, type }: Props) {
-  let displayScore: string = "."
+  let displayScore: string = INITIAL_BET_VALUE
 
   if (score.fulltime[type] !== null) {
     displayScore = score.fulltime[type].toString()

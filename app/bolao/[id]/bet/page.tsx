@@ -1,85 +1,10 @@
-import {
-  fetchBolao,
-  fetchUserBolao,
-  fetchRounds,
-  fetchFixtures,
-  fetchBets,
-} from "@/app/lib/data"
-import BolaoPageTitle from "@/app/ui/bolao/bolaoPageTitle"
-import TableMatchDay from "@/app/ui/bolao/bet/tableMatchDay"
-import Pagination from "@/app/ui/bolao/bet/pagination"
-import { sortFixtures, cleanRounds } from "@/app/lib/utils"
+import { getData } from "@/app/lib/controllerBet"
 import { auth } from "@clerk/nextjs/server"
-import { Bet } from "@/app/lib/definitions"
+
+import BolaoPageTitle from "@/app/ui/bolao/bolaoPageTitle"
 import BolaoLinks from "@/app/ui/bolao/bolaoLinks"
-
-async function getData({
-  bolaoId,
-  roundParam,
-  userId,
-}: {
-  bolaoId: string
-  roundParam?: string
-  userId: string
-}) {
-  const [bolao, userBolao] = await Promise.all([
-    fetchBolao(bolaoId),
-    fetchUserBolao({ bolaoId, userId }),
-  ])
-
-  const year: number = bolao.year
-  const leagueId: string = bolao.competition_id
-  const userBolaoId: string = userBolao.id
-
-  const bets: Bet[] = await fetchBets(userBolaoId)
-
-  const allRoundsUncleaned: string[] = await fetchRounds({ leagueId, year }) // HAS TO GO TO STORE
-  const allRounds: string[] = cleanRounds(allRoundsUncleaned)
-
-  const currentRoundObj: string[] = await fetchRounds({
-    leagueId,
-    year,
-    current: true,
-  }) // HAS TO GO TO STORE
-  const currentRound = currentRoundObj[0] // HAS TO GO TO STORE
-
-  let isFirstRound: boolean = false
-  let isLastRound: boolean = false
-
-  // PARAM HANDLING FOR PAGINATION
-  // We use round as an index because there are spaces in the round names
-  let round = currentRound
-
-  if (roundParam) {
-    const index: number = Number(roundParam) - 1
-    round = allRounds[index]
-
-    isFirstRound = Number(roundParam) === 1
-    isLastRound = Number(roundParam) === allRounds.length
-  } else {
-    isFirstRound = currentRound === allRounds[0]
-    isLastRound = currentRound === allRounds[allRounds.length - 1]
-  }
-  // END
-
-  const unSortedFixtures = await fetchFixtures({
-    leagueId,
-    year,
-    round,
-  })
-  const fixtures = sortFixtures(unSortedFixtures)
-
-  return {
-    bolao,
-    userBolao,
-    currentRound: round,
-    allRounds,
-    fixtures,
-    isLastRound,
-    isFirstRound,
-    bets,
-  }
-}
+import Pagination from "@/app/ui/bolao/bet/pagination"
+import TableMatchDayBets from "@/app/ui/bolao/bet/tableMatchDayBets"
 
 async function BetPage({
   params,
@@ -94,7 +19,7 @@ async function BetPage({
   const roundIndex: string = searchParams?.roundIndex || ""
 
   if (!userId) {
-    return <p>Error while loading the bolão. Missing userid</p>
+    return <p>Error while loading the bet page. Missing userid.</p>
   }
 
   const data = await getData({
@@ -104,7 +29,7 @@ async function BetPage({
   })
 
   if (!data) {
-    return <p>Error while loading the bolão.</p>
+    return <p>Error while loading the bet page. No data.</p>
   }
 
   const currentRoundIndex =
@@ -128,9 +53,10 @@ async function BetPage({
         isFirstRound={data.isFirstRound}
         currentRoundIndex={currentRoundIndex}
       />
-      <TableMatchDay
+
+      <TableMatchDayBets
         bets={data.bets}
-        matches={data.fixtures}
+        fixtures={data.fixtures}
         userBolaoId={data.userBolao.id}
       />
     </main>

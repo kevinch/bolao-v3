@@ -82,9 +82,9 @@ export async function fetchUserBolao({
   }
 }
 
-export async function fetchUserBoloes(bolaoId: string) {
+export async function fetchUsersBolao(bolaoId: string) {
   try {
-    const data: { rows: QueryResultRow[] } = await sql`SELECT user_id
+    const data: { rows: QueryResultRow[] } = await sql`SELECT *
       FROM user_bolao
       WHERE CAST(bolao_id AS VARCHAR) = ${bolaoId}
     `
@@ -186,7 +186,7 @@ export async function fetchFixtures({
 }: {
   leagueId: string
   year: number
-  round: string
+  round?: string
 }) {
   let token: string
   if (process.env.RAPID_API_KEY) {
@@ -206,7 +206,10 @@ export async function fetchFixtures({
 
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
-  const url = `${FOOTBALL_API_SPORTS}/fixtures?league=${leagueId}&season=${year}&round=${round}&timezone=${timezone}`
+  let url = `${FOOTBALL_API_SPORTS}/fixtures?league=${leagueId}&season=${year}&timezone=${timezone}`
+  if (round) {
+    url += `&round=${round}`
+  }
 
   const res = await fetch(url, requestOptions)
 
@@ -220,7 +223,7 @@ export async function fetchFixtures({
   return data.response
 }
 
-export async function fetchBets(userBolaoId: string) {
+export async function fetchUserBets(userBolaoId: string) {
   if (!userBolaoId) {
     throw new Error("Missing userBolaoId")
   }
@@ -229,6 +232,30 @@ export async function fetchBets(userBolaoId: string) {
     const data: { rows: QueryResultRow[] } = await sql`SELECT *
       FROM bets
       WHERE CAST(user_bolao_id AS VARCHAR) = ${userBolaoId}
+    `
+
+    const result = data.rows
+
+    if (!result) {
+      throw new Error("No bets found for the given user_bolao_id.")
+    }
+
+    return result as Bet[]
+  } catch (error) {
+    console.error("Database Error:", error)
+    throw new Error("Failed to fetch bets.")
+  }
+}
+
+export async function fetchUsersBets(userBoloesIds: string[]) {
+  if (!userBoloesIds) {
+    throw new Error("Missing userBoloesIds")
+  }
+
+  try {
+    const data: { rows: QueryResultRow[] } = await sql`SELECT *
+      FROM bets
+      WHERE CAST(user_bolao_id AS VARCHAR) = ANY(${userBoloesIds as any})
     `
 
     const result = data.rows

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { createBet, updateBet } from "@/app/lib/actions"
-import { initialBetValue } from "@/app/lib/utils"
+import { INITIAL_BET_VALUE } from "@/app/lib/utils"
 import { BetResult } from "@/app/lib/definitions"
 import clsx from "clsx"
 
@@ -24,7 +24,7 @@ function ButtonsBet({
   disabled,
 }: Props) {
   const [value, setValue] = useState(
-    betValue !== undefined ? betValue : initialBetValue
+    betValue !== undefined ? betValue : INITIAL_BET_VALUE
   )
   const [betIdValue, setBetId] = useState(betId || null)
 
@@ -50,7 +50,7 @@ function ButtonsBet({
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
-      if (value !== initialBetValue) {
+      if (value !== INITIAL_BET_VALUE) {
         setData()
       }
     }, 300)
@@ -59,7 +59,7 @@ function ButtonsBet({
   }, [value])
 
   const incrementCount = () => {
-    if (value === initialBetValue) {
+    if (value === INITIAL_BET_VALUE) {
       setValue("0")
     } else {
       setValue((Number(value) + 1).toString())
@@ -67,7 +67,7 @@ function ButtonsBet({
   }
 
   const decrementCount = () => {
-    if (value !== initialBetValue && Number(value) !== 0) {
+    if (value !== INITIAL_BET_VALUE && Number(value) !== 0) {
       setValue((Number(value) - 1).toString())
     }
   }

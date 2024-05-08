@@ -1,5 +1,3 @@
-// TODO: update Match(es) to Fixture(s)
-
 export type Competition = {
   name: string
   id: string
@@ -79,7 +77,7 @@ export type FixtureStatus = {
   elapsed: number
 }
 
-export type Match = {
+export type FixtureData = {
   fixture: {
     id: number
     referee: unknown
@@ -115,27 +113,6 @@ export type Match = {
     away: number
   }
   score: ScoreGroup
-}
-
-export type MatchesData = {
-  filters: {
-    season: string
-    matchday?: string
-  }
-  resultSet: {
-    count: number
-    first: string
-    last: string
-    played: number
-  }
-  competition: {
-    id: number
-    name: string
-    code: string
-    type: string
-    emblem: string
-  }
-  matches: Match[]
 }
 
 export type Season = {
@@ -206,4 +183,23 @@ type StandingGames = {
     for: number
     against: number
   }
+}
+
+export type PlayersData = {
+  id: string
+  firstName: string | null
+  email: string
+  userBolaoId: string
+}
+
+export type ScoreArgs = {
+  resultHome: number
+  betHome: number
+  resultAway: number
+  betAway: number
+}
+
+export type LeadData = {
+  name: string
+  total: number
 }
