@@ -15,8 +15,6 @@ import TeamCodeLogo from "@/app/ui/bolao/teamCodeLogo"
 import TeamScore from "@/app/ui/bolao/teamScore"
 import FixtureDate from "@/app/ui/bolao/fixtureDate"
 
-import clsx from "clsx"
-
 type TableProps = {
   fixtures: FixtureData[]
   bets: Bet[]
@@ -28,7 +26,7 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
   if (fixtures) {
     return (
       <div
-        className={clsx("ag-theme-quartzz", STYLES_BOX_SHADOW)}
+        className={STYLES_BOX_SHADOW}
         style={{ height: "auto", width: "100%" }}
       >
         <StickyTable borderWidth={0}>

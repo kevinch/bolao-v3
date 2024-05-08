@@ -1,12 +1,11 @@
 import PageTitle from "@/app/components/pageTitle"
-import { StandingsLeague } from "@/app/lib/definitions"
 import Image from "next/image"
 
 type Props = {
   bolaoName: string
   bolaoYear: string | number
-  leagueName: string
-  leagueLogo: string
+  leagueName?: string
+  leagueLogo?: string
 }
 
 function BolaoPageTitle({
@@ -17,14 +16,16 @@ function BolaoPageTitle({
 }: Props) {
   return (
     <PageTitle center={true}>
-      <div className="flex justify-center mb-6">
-        <Image
-          alt={`${leagueName}'s logo`}
-          src={leagueLogo}
-          width={40}
-          height={40}
-        />
-      </div>
+      {leagueLogo && (
+        <div className="flex justify-center mb-6">
+          <Image
+            alt={`${leagueName}'s logo`}
+            src={leagueLogo}
+            width={40}
+            height={40}
+          />
+        </div>
+      )}
 
       {bolaoName}
       <br />

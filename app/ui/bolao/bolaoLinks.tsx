@@ -9,7 +9,7 @@ type Props = {
 }
 
 function BolaoLinks({ bolaoId, active }: Props) {
-  const classesDiv = "flex grow justify-center w-1/3 text-xs"
+  const classesDiv = "flex grow justify-center w-1/4 text-xs"
 
   return (
     <div className="flex mb-10">
@@ -38,6 +38,15 @@ function BolaoLinks({ bolaoId, active }: Props) {
       >
         <Link className={classesLink} href={`/bolao/${bolaoId}/results`}>
           results
+        </Link>
+      </div>
+      <div
+        className={clsx(classesDiv, {
+          "border-b-2": active === 4,
+        })}
+      >
+        <Link className={classesLink} href={`/bolao/${bolaoId}/lead`}>
+          lead
         </Link>
       </div>
     </div>

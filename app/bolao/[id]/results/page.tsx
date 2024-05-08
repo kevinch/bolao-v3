@@ -25,7 +25,6 @@ async function ResultsPage({
   const data = await getData({
     bolaoId: params.id,
     roundParam: roundIndex,
-    userId,
   })
 
   if (!data) {

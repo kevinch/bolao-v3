@@ -12,11 +12,9 @@ import { clerkClient } from "@clerk/nextjs/server"
 export async function getData({
   bolaoId,
   roundParam,
-  userId,
 }: {
   bolaoId: string
   roundParam?: string
-  userId: string
 }) {
   const [bolao, usersBolao] = await Promise.all([
     fetchBolao(bolaoId),
@@ -51,7 +49,7 @@ export async function getData({
   const userBoloesIds: string[] = usersBolao.map((el: UserBolao) => el.id)
   const bets: Bet[] = await fetchUsersBets(userBoloesIds)
 
-  // Fewtch rounds infos
+  // Fetch rounds infos
   const allRoundsUncleaned: string[] = await fetchRounds({ leagueId, year })
   const allRounds: string[] = cleanRounds(allRoundsUncleaned)
 

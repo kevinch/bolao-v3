@@ -1,4 +1,5 @@
 import { ScoreArgs } from "./definitions"
+import { isNil } from "./utils"
 
 // #1: Perfect score, ex: result: 3-0, your bet: 3-0
 const score1 = 200
@@ -17,9 +18,6 @@ const score5 = 120
 
 // #6: Just the winner, ex: result 1-0, your bet 3-2
 const score6 = 80
-
-// Helper
-const isNil = (value: any) => value === null || value === undefined
 
 /**
  * @param {number} resultHome result of the host team

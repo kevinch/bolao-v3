@@ -186,7 +186,7 @@ export async function fetchFixtures({
 }: {
   leagueId: string
   year: number
-  round: string
+  round?: string
 }) {
   let token: string
   if (process.env.RAPID_API_KEY) {
@@ -206,7 +206,10 @@ export async function fetchFixtures({
 
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
-  const url = `${FOOTBALL_API_SPORTS}/fixtures?league=${leagueId}&season=${year}&round=${round}&timezone=${timezone}`
+  let url = `${FOOTBALL_API_SPORTS}/fixtures?league=${leagueId}&season=${year}&timezone=${timezone}`
+  if (round) {
+    url += `&round=${round}`
+  }
 
   const res = await fetch(url, requestOptions)
 
