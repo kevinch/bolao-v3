@@ -6,6 +6,7 @@ import {
   findBetObj,
   INITIAL_BET_VALUE,
   STATUSES_FINISHED,
+  STATUSES_IN_PLAY,
 } from "@/app/lib/utils"
 import { calcScore } from "@/app/lib/scoresCalcFactory"
 
@@ -88,7 +89,10 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
                 {players.map((player) => {
                   const showScores =
                     player.id === userId ||
-                    STATUSES_FINISHED.includes(fixtureData.fixture.status.short)
+                    STATUSES_FINISHED.includes(
+                      fixtureData.fixture.status.short
+                    ) ||
+                    STATUSES_IN_PLAY.includes(fixtureData.fixture.status.short)
 
                   const betHome = getBet({
                     type: "home",
@@ -108,8 +112,6 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
                       resultAway: fixtureData.score.fulltime.away,
                       betHome: Number(betHome),
                       betAway: Number(betAway),
-                      // multiplier,
-                      // isJoker,
                     })
                   }
 
