@@ -25,9 +25,3 @@
     )
     rgb(var(--background-start-rgb));
 } */
-
-/* Related to the results table by Ag Grid */
-.text-center .ag-header-cell-label {
-  justify-content: center !important;
-  text-align: center !important;
-}

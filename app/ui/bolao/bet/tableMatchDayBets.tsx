@@ -1,4 +1,4 @@
-import { Match, Bet } from "@/app/lib/definitions"
+import { FixtureData, Bet } from "@/app/lib/definitions"
 import ButtonsBet from "./buttonsBet"
 import {
   findBetObj,
@@ -10,7 +10,7 @@ import TeamScore from "@/app/ui/bolao/teamScore"
 import FixtureDate from "@/app/ui/bolao/fixtureDate"
 
 type TableProps = {
-  fixtures: Match[]
+  fixtures: FixtureData[]
   userBolaoId: string
   bets: Bet[]
 }
@@ -19,12 +19,12 @@ function TableMatchDayBets({ fixtures, userBolaoId, bets }: TableProps) {
   if (fixtures) {
     return (
       <div className={STYLES_BOX_SHADOW}>
-        {fixtures.map((match: Match) => {
-          const shortStatus = match.fixture.status.short
+        {fixtures.map((fixture: FixtureData) => {
+          const shortStatus = fixture.fixture.status.short
 
           const disabled = !STATUSES_OPEN_TO_PLAY.includes(shortStatus)
 
-          const fixtureId = match.fixture.id.toString()
+          const fixtureId = fixture.fixture.id.toString()
           const homeBet: Bet | null = findBetObj({
             bets,
             fixtureId,
@@ -40,8 +40,8 @@ function TableMatchDayBets({ fixtures, userBolaoId, bets }: TableProps) {
           return (
             <div key={fixtureId} className="mb-4">
               <FixtureDate
-                date={match.fixture.date.toString()}
-                status={match.fixture.status}
+                date={fixture.fixture.date.toString()}
+                status={fixture.fixture.status}
               />
 
               <div className="flex justify-center content-center">
@@ -55,19 +55,17 @@ function TableMatchDayBets({ fixtures, userBolaoId, bets }: TableProps) {
                 />
 
                 <TeamCodeLogo
-                  logoSrc={match.teams.home.logo}
-                  name={match.teams.home.name}
+                  logoSrc={fixture.teams.home.logo}
+                  name={fixture.teams.home.name}
                 />
-
-                <TeamScore score={match.score} type="home" />
+                <TeamScore score={fixture.score} type="home" />
 
                 <span className="mx-4 text-xs content-center">&times;</span>
 
-                <TeamScore score={match.score} type="away" />
-
+                <TeamScore score={fixture.score} type="away" />
                 <TeamCodeLogo
-                  logoSrc={match.teams.away.logo}
-                  name={match.teams.away.name}
+                  logoSrc={fixture.teams.away.logo}
+                  name={fixture.teams.away.name}
                 />
 
                 <ButtonsBet

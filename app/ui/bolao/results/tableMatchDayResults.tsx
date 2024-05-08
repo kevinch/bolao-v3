@@ -1,98 +1,119 @@
 "use client"
 
-import { Match, Bet, PlayersData } from "@/app/lib/definitions"
-import { STYLES_BOX_SHADOW, findBetObj } from "@/app/lib/utils"
+import { FixtureData, Bet, PlayersData } from "@/app/lib/definitions"
+import {
+  STYLES_BOX_SHADOW,
+  findBetObj,
+  INITIAL_BET_VALUE,
+} from "@/app/lib/utils"
+
+import { StickyTable, Row, Cell } from "react-sticky-table"
+
 import TeamCodeLogo from "@/app/ui/bolao/teamCodeLogo"
 import TeamScore from "@/app/ui/bolao/teamScore"
 import FixtureDate from "@/app/ui/bolao/fixtureDate"
 
-import { AgGridReact } from "ag-grid-react" // React Data Grid Component
-import "ag-grid-community/styles/ag-grid.css" // Mandatory CSS required
-import "ag-grid-community/styles/ag-theme-quartz.css"
-
 import clsx from "clsx"
 
 type TableProps = {
-  fixtures: Match[]
+  fixtures: FixtureData[]
   bets: Bet[]
   players: PlayersData[]
 }
 
 function TableMatchDayResults({ fixtures, bets, players }: TableProps) {
   if (fixtures) {
-    const colDefs: any = [{ field: "fixture" }]
-    const rowData: any = []
-
-    // Add fixtures in 1st column
-    fixtures.forEach((el: Match) => {
-      const homeTLA = el.teams.home.name
-        .toUpperCase()
-        .replace(" ", "")
-        .slice(0, 3)
-      const awayTLA = el.teams.away.name
-        .toUpperCase()
-        .replace(" ", "")
-        .slice(0, 3)
-
-      const rowDataEntry: { [key: string]: any } = {
-        fixture: `${homeTLA} x ${awayTLA}`,
-      }
-
-      const getBet = ({
-        type,
-        userBolaoId,
-      }: {
-        type: "home" | "away"
-        userBolaoId: string
-      }) => {
-        const obj = findBetObj({
-          bets,
-          fixtureId: el.fixture.id.toString(),
-          type,
-          userBolaoId,
-        })
-
-        if (obj) {
-          return obj.value.toString()
-        }
-        return "."
-      }
-
-      players.forEach((player) => {
-        rowDataEntry[player.id] = `${getBet({
-          type: "home",
-          userBolaoId: player.userBolaoId,
-        })} - ${getBet({ type: "away", userBolaoId: player.userBolaoId })}`
-      })
-
-      rowData.push(rowDataEntry)
-    })
-
-    // Add players to columns
-    players.forEach((el) => {
-      const name = el.firstName
-      const email = el.email.split("@")[0]
-
-      colDefs.push({
-        field: el.id,
-        headerName: name || email,
-        sortable: false,
-        headerClass: "text-center",
-        cellRenderer: (params: any) => (
-          <span className="flex flex-col text-center">
-            <span>{params.value}</span>
-            <span className="text-xs">pts</span>
-          </span>
-        ),
-      })
-    })
-
     return (
       <div
         className={clsx("ag-theme-quartzz", STYLES_BOX_SHADOW)}
-        style={{ height: "400px", width: "100%" }}
+        style={{ height: "auto", width: "100%" }}
       >
-        <AgGridReact rowData={rowData} columnDefs={colDefs} rowHeight={65} />
+        <StickyTable borderWidth={0}>
+          <Row>
+            <Cell>&nbsp;</Cell>
+            {players.map((player: PlayersData) => {
+              return (
+                <Cell>{player.firstName || player.email.split("@")[0]}</Cell>
+              )
+            })}
+          </Row>
+
+          {fixtures.map((fixtureData: FixtureData) => {
+            const getBet = ({
+              type,
+              userBolaoId,
+            }: {
+              type: "home" | "away"
+              userBolaoId: string
+            }) => {
+              const obj = findBetObj({
+                bets,
+                fixtureId: fixtureData.fixture.id.toString(),
+                type,
+                userBolaoId,
+              })
+
+              if (obj) {
+                return obj.value.toString()
+              }
+              return INITIAL_BET_VALUE
+            }
+
+            return (
+              <Row>
+                <Cell>
+                  <FixtureDate
+                    date={fixtureData.fixture.date.toString()}
+                    status={fixtureData.fixture.status}
+                  />
+
+                  <div className="flex justify-center content-center">
+                    <TeamCodeLogo
+                      logoSrc={fixtureData.teams.home.logo}
+                      name={fixtureData.teams.home.name}
+                    />
+                    <TeamScore score={fixtureData.score} type="home" />
+
+                    <span className="mx-4 text-xs content-center">&times;</span>
+
+                    <TeamScore score={fixtureData.score} type="away" />
+                    <TeamCodeLogo
+                      logoSrc={fixtureData.teams.away.logo}
+                      name={fixtureData.teams.away.name}
+                    />
+                  </div>
+                </Cell>
+
+                {players.map((player) => {
+                  const betHome = getBet({
+                    type: "home",
+                    userBolaoId: player.userBolaoId,
+                  })
+                  const betAway = getBet({
+                    type: "home",
+                    userBolaoId: player.userBolaoId,
+                  })
+
+                  return (
+                    <Cell>
+                      <span>
+                        {betHome}-{betAway}
+                      </span>
+                      <div>pts</div>
+                    </Cell>
+                  )
+                })}
+              </Row>
+            )
+          })}
+
+          <Row>
+            <Cell>total:</Cell>
+            {players.map(() => (
+              <Cell>pts</Cell>
+            ))}
+          </Row>
+        </StickyTable>
       </div>
     )
   }

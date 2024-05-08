@@ -77,7 +77,7 @@ export type FixtureStatus = {
   elapsed: number
 }
 
-export type Match = {
+export type FixtureData = {
   fixture: {
     id: number
     referee: unknown
@@ -133,7 +133,7 @@ export type MatchesData = {
     type: string
     emblem: string
   }
-  matches: Match[]
+  matches: FixtureData[]
 }
 
 export type Season = {

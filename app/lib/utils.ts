@@ -1,4 +1,4 @@
-import { Season, Match, Bet } from "./definitions"
+import { Season, FixtureData, Bet } from "./definitions"
 
 export const FOOTBALL_API_SPORTS = "https://v3.football.api-sports.io"
 
@@ -33,7 +33,7 @@ export const getCurrentSeason = (seasons: Season[]): number | undefined => {
   return year
 }
 
-export const sortFixtures = (fixtures: Match[]) => {
+export const sortFixtures = (fixtures: FixtureData[]) => {
   return fixtures.sort((a, b) => {
     const dateA = new Date(a.fixture.date).getTime()
     const dateB = new Date(b.fixture.date).getTime()
@@ -60,7 +60,7 @@ export const formatDate = (dateString: string): string => {
   return `${formattedDate} ${formattedTime}`
 }
 
-const stringsToRemove = [
+const STRINGS_TO_REMOVE = [
   "Preliminary Round",
   "1st Qualifying Round",
   "2nd Qualifying Round",
@@ -70,13 +70,13 @@ const stringsToRemove = [
 
 export const cleanRounds = (rounds: string[]): string[] => {
   const filteredRounds: string[] = rounds.filter(
-    (round: string) => !stringsToRemove.includes(round)
+    (round: string) => !STRINGS_TO_REMOVE.includes(round)
   )
 
   return filteredRounds
 }
 
-export const initialBetValue = "."
+export const INITIAL_BET_VALUE = "."
 
 export const findBetObj = ({
   bets,
