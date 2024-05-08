@@ -105,9 +105,12 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
 
                   let score = 0
                   if (canShowScores) {
+                    const fulltime = fixtureData.score.fulltime
+                    const halftime = fixtureData.score.halftime
+
                     score = calcScore({
-                      resultHome: fixtureData.score.fulltime.home,
-                      resultAway: fixtureData.score.fulltime.away,
+                      resultHome: fulltime.home || halftime.home,
+                      resultAway: fulltime.away || halftime.away,
                       betHome: Number(betHome),
                       betAway: Number(betAway),
                     })
