@@ -58,6 +58,7 @@ async function ResultsPage({
         bets={data.bets}
         fixtures={data.fixtures}
         players={data.players}
+        userId={userId}
       />
     </main>
   )

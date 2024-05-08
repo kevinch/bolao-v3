@@ -5,7 +5,9 @@ import {
   STYLES_BOX_SHADOW,
   findBetObj,
   INITIAL_BET_VALUE,
+  STATUSES_FINISHED,
 } from "@/app/lib/utils"
+import { calcScore } from "@/app/lib/scoresCalcFactory"
 
 import { StickyTable, Row, Cell } from "react-sticky-table"
 
@@ -19,9 +21,10 @@ type TableProps = {
   fixtures: FixtureData[]
   bets: Bet[]
   players: PlayersData[]
+  userId: string //Could be in context
 }
 
-function TableMatchDayResults({ fixtures, bets, players }: TableProps) {
+function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
   if (fixtures) {
     return (
       <div
@@ -85,6 +88,10 @@ function TableMatchDayResults({ fixtures, bets, players }: TableProps) {
                 </Cell>
 
                 {players.map((player) => {
+                  const showScores =
+                    player.id === userId ||
+                    STATUSES_FINISHED.includes(fixtureData.fixture.status.short)
+
                   const betHome = getBet({
                     type: "home",
                     userBolaoId: player.userBolaoId,
@@ -94,12 +101,27 @@ function TableMatchDayResults({ fixtures, bets, players }: TableProps) {
                     userBolaoId: player.userBolaoId,
                   })
 
+                  let score = 0
+                  if (
+                    STATUSES_FINISHED.includes(fixtureData.fixture.status.short)
+                  ) {
+                    score = calcScore({
+                      resultHome: fixtureData.score.fulltime.home,
+                      resultAway: fixtureData.score.fulltime.away,
+                      betHome: Number(betHome),
+                      betAway: Number(betAway),
+                      // multiplier,
+                      // isJoker,
+                    })
+                  }
+
                   return (
                     <Cell>
                       <span>
-                        {betHome}-{betAway}
+                        {showScores ? betHome : INITIAL_BET_VALUE}-
+                        {showScores ? betAway : INITIAL_BET_VALUE}
                       </span>
-                      <div>pts</div>
+                      <div>{score} pts</div>
                     </Cell>
                   )
                 })}
@@ -110,7 +132,7 @@ function TableMatchDayResults({ fixtures, bets, players }: TableProps) {
           <Row>
             <Cell>total:</Cell>
             {players.map(() => (
-              <Cell>pts</Cell>
+              <Cell>...pts</Cell>
             ))}
           </Row>
         </StickyTable>

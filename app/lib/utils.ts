@@ -60,7 +60,7 @@ export const formatDate = (dateString: string): string => {
   return `${formattedDate} ${formattedTime}`
 }
 
-const STRINGS_TO_REMOVE = [
+const ROUNDS_TO_REMOVE = [
   "Preliminary Round",
   "1st Qualifying Round",
   "2nd Qualifying Round",
@@ -70,7 +70,7 @@ const STRINGS_TO_REMOVE = [
 
 export const cleanRounds = (rounds: string[]): string[] => {
   const filteredRounds: string[] = rounds.filter(
-    (round: string) => !STRINGS_TO_REMOVE.includes(round)
+    (round: string) => !ROUNDS_TO_REMOVE.includes(round)
   )
 
   return filteredRounds
@@ -104,9 +104,11 @@ export const findBetObj = ({
   return result ?? null
 }
 
-// Details: api-football.com/documentation-v3#tag/Fixtures/operation/get-fixtures-rounds
+// FIXTURES STATUSES
+// api-football.com/documentation-v3#tag/Fixtures/operation/get-fixtures-rounds
 export const STATUSES_OPEN_TO_PLAY = ["TBD", "NS", "PST", "AWD"]
 export const STATUSES_IN_PLAY = ["1H", "HT", "2H", "ET", "BT", "LIVE"]
+export const STATUSES_FINISHED = ["FT", "AET", "PEN", "CANC", ""]
 export const STATUSES_ERROR = ["CANC", "PST", "ABD", "AWD"]
 
 export const STYLES_BOX_SHADOW = "shadow bg-white p-4 mb-6"

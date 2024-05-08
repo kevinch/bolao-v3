@@ -115,26 +115,26 @@ export type FixtureData = {
   score: ScoreGroup
 }
 
-export type MatchesData = {
-  filters: {
-    season: string
-    matchday?: string
-  }
-  resultSet: {
-    count: number
-    first: string
-    last: string
-    played: number
-  }
-  competition: {
-    id: number
-    name: string
-    code: string
-    type: string
-    emblem: string
-  }
-  matches: FixtureData[]
-}
+// export type MatchesData = {
+//   filters: {
+//     season: string
+//     matchday?: string
+//   }
+//   resultSet: {
+//     count: number
+//     first: string
+//     last: string
+//     played: number
+//   }
+//   competition: {
+//     id: number
+//     name: string
+//     code: string
+//     type: string
+//     emblem: string
+//   }
+//   matches: FixtureData[]
+// }
 
 export type Season = {
   year: number
@@ -211,4 +211,11 @@ export type PlayersData = {
   firstName: string | null
   email: string
   userBolaoId: string
+}
+
+export type ScoreArgs = {
+  resultHome: number
+  betHome: number
+  resultAway: number
+  betAway: number
 }
