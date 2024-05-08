@@ -41,6 +41,11 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
           </Row>
 
           {fixtures.map((fixtureData: FixtureData) => {
+            const statusShort = fixtureData.fixture.status.short
+            const canShowScores =
+              STATUSES_FINISHED.includes(statusShort) ||
+              STATUSES_IN_PLAY.includes(statusShort)
+
             const getBet = ({
               type,
               userBolaoId,
@@ -87,26 +92,19 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
                 </Cell>
 
                 {players.map((player) => {
-                  const showScores =
-                    player.id === userId ||
-                    STATUSES_FINISHED.includes(
-                      fixtureData.fixture.status.short
-                    ) ||
-                    STATUSES_IN_PLAY.includes(fixtureData.fixture.status.short)
+                  const showScores = player.id === userId || canShowScores
 
                   const betHome = getBet({
                     type: "home",
                     userBolaoId: player.userBolaoId,
                   })
                   const betAway = getBet({
-                    type: "home",
+                    type: "away",
                     userBolaoId: player.userBolaoId,
                   })
 
                   let score = 0
-                  if (
-                    STATUSES_FINISHED.includes(fixtureData.fixture.status.short)
-                  ) {
+                  if (canShowScores) {
                     score = calcScore({
                       resultHome: fixtureData.score.fulltime.home,
                       resultAway: fixtureData.score.fulltime.away,
