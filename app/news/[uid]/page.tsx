@@ -10,8 +10,8 @@ async function NewsPost({ params }: any) {
     <div>
       <pre>{JSON.stringify(document, null, 2)}</pre>
 
-      <h1>{document.data.title[0]?.text}</h1>
-      <div>{document.data.content[0]?.text}</div>
+      {/* <h1>{document.data.title[0]?.text}</h1>
+      <div>{document.data.content[0]?.text}</div> */}
     </div>
   )
 }
