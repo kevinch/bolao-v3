@@ -22,17 +22,6 @@ interface NewsDocumentData {
   title: prismic.TitleField;
 
   /**
-   * publishingdate field in *news*
-   *
-   * - **Field Type**: Date
-   * - **Placeholder**: *None*
-   * - **API ID Path**: news.publishingdate
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#date
-   */
-  publishingdate: prismic.DateField;
-
-  /**
    * content field in *news*
    *
    * - **Field Type**: Rich Text

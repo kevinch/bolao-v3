@@ -21,13 +21,6 @@
           "single": "heading1"
         }
       },
-      "publishingdate": {
-        "type": "Date",
-        "config": {
-          "label": "publishingdate",
-          "placeholder": ""
-        }
-      },
       "content": {
         "type": "StructuredText",
         "config": {
