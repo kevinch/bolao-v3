@@ -1,18 +1,27 @@
 import { ScoreGroup } from "@/app/lib/definitions"
-import { INITIAL_BET_VALUE } from "@/app/lib/utils"
+import {
+  INITIAL_BET_VALUE,
+  STATUSES_FINISHED,
+  STATUSES_IN_PLAY,
+} from "@/app/lib/utils"
 
 type Props = {
   score: ScoreGroup
   type: "away" | "home"
+  status: string
+  goals: {
+    home: number | null
+    away: number | null
+  }
 }
 
-function TeamScore({ score, type }: Props) {
+function TeamScore({ score, type, status, goals }: Props) {
   let displayScore: string = INITIAL_BET_VALUE
 
-  if (score.fulltime[type] !== null) {
-    displayScore = score.fulltime[type].toString()
-  } else if (score.halftime[type] !== null) {
-    displayScore = score.halftime[type].toString()
+  if (STATUSES_FINISHED.includes(status)) {
+    displayScore = score.fulltime[type]?.toString() || INITIAL_BET_VALUE
+  } else if (STATUSES_IN_PLAY.includes(status) && goals[type] !== null) {
+    displayScore = goals[type]?.toString() || INITIAL_BET_VALUE
   }
 
   return <div className="mx-4 content-center text-sm">{displayScore}</div>

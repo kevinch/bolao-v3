@@ -79,11 +79,21 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
                       logoSrc={fixtureData.teams.home.logo}
                       name={fixtureData.teams.home.name}
                     />
-                    <TeamScore score={fixtureData.score} type="home" />
+                    <TeamScore
+                      score={fixtureData.score}
+                      goals={fixtureData.goals}
+                      type="home"
+                      status={statusShort}
+                    />
 
                     <span className="mx-4 text-xs content-center">&times;</span>
 
-                    <TeamScore score={fixtureData.score} type="away" />
+                    <TeamScore
+                      score={fixtureData.score}
+                      goals={fixtureData.goals}
+                      type="away"
+                      status={statusShort}
+                    />
                     <TeamCodeLogo
                       logoSrc={fixtureData.teams.away.logo}
                       name={fixtureData.teams.away.name}
@@ -109,8 +119,8 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
                     const halftime = fixtureData.score.halftime
 
                     score = calcScore({
-                      resultHome: fulltime.home || halftime.home,
-                      resultAway: fulltime.away || halftime.away,
+                      resultHome: fulltime.home || halftime.home || 0,
+                      resultAway: fulltime.away || halftime.away || 0,
                       betHome: Number(betHome),
                       betAway: Number(betAway),
                     })

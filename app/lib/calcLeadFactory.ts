@@ -31,8 +31,8 @@ const getTotal = ({
 
       if (homeBetObj?.value && awayBetObj?.value) {
         const fixtureScore = calcScore({
-          resultHome: fixtureData.score.fulltime.home,
-          resultAway: fixtureData.score.fulltime.away,
+          resultHome: fixtureData.score.fulltime.home || 0,
+          resultAway: fixtureData.score.fulltime.away || 0,
           betHome: homeBetObj.value,
           betAway: awayBetObj.value,
         })

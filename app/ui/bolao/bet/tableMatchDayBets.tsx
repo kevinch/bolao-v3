@@ -19,12 +19,12 @@ function TableMatchDayBets({ fixtures, userBolaoId, bets }: TableProps) {
   if (fixtures) {
     return (
       <div className={STYLES_BOX_SHADOW}>
-        {fixtures.map((fixture: FixtureData) => {
-          const shortStatus = fixture.fixture.status.short
+        {fixtures.map((fixtureData: FixtureData) => {
+          const statusShort = fixtureData.fixture.status.short
 
-          const disabled = !STATUSES_OPEN_TO_PLAY.includes(shortStatus)
+          const disabled = !STATUSES_OPEN_TO_PLAY.includes(statusShort)
 
-          const fixtureId = fixture.fixture.id.toString()
+          const fixtureId = fixtureData.fixture.id.toString()
           const homeBet: Bet | null = findBetObj({
             bets,
             fixtureId,
@@ -40,8 +40,8 @@ function TableMatchDayBets({ fixtures, userBolaoId, bets }: TableProps) {
           return (
             <div key={fixtureId} className="mb-4">
               <FixtureDate
-                date={fixture.fixture.date.toString()}
-                status={fixture.fixture.status}
+                date={fixtureData.fixture.date.toString()}
+                status={fixtureData.fixture.status}
               />
 
               <div className="flex justify-center content-center">
@@ -55,17 +55,27 @@ function TableMatchDayBets({ fixtures, userBolaoId, bets }: TableProps) {
                 />
 
                 <TeamCodeLogo
-                  logoSrc={fixture.teams.home.logo}
-                  name={fixture.teams.home.name}
+                  logoSrc={fixtureData.teams.home.logo}
+                  name={fixtureData.teams.home.name}
                 />
-                <TeamScore score={fixture.score} type="home" />
+                <TeamScore
+                  score={fixtureData.score}
+                  goals={fixtureData.goals}
+                  type="home"
+                  status={statusShort}
+                />
 
                 <span className="mx-4 text-xs content-center">&times;</span>
 
-                <TeamScore score={fixture.score} type="away" />
+                <TeamScore
+                  score={fixtureData.score}
+                  goals={fixtureData.goals}
+                  type="away"
+                  status={statusShort}
+                />
                 <TeamCodeLogo
-                  logoSrc={fixture.teams.away.logo}
-                  name={fixture.teams.away.name}
+                  logoSrc={fixtureData.teams.away.logo}
+                  name={fixtureData.teams.away.name}
                 />
 
                 <ButtonsBet

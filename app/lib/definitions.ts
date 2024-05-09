@@ -53,8 +53,8 @@ type ErrorResult = {
 export type CreateUserBolaoResult = SuccessUserBolaoResult | ErrorResult
 
 type Score = {
-  home: number
-  away: number
+  home: number | null
+  away: number | null
 }
 
 type Team = {
@@ -109,8 +109,8 @@ export type FixtureData = {
     away: Team
   }
   goals: {
-    home: number
-    away: number
+    home: number | null
+    away: number | null
   }
   score: ScoreGroup
 }
