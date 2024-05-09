@@ -1,4 +1,8 @@
-import { STATUSES_IN_PLAY, STATUSES_ERROR, formatDate } from "@/app/lib/utils"
+import {
+  STATUSES_IN_PLAY,
+  STATUSES_ERROR,
+  formatDateFixtures,
+} from "@/app/lib/utils"
 import { FixtureStatus } from "@/app/lib/definitions"
 import clsx from "clsx"
 
@@ -10,7 +14,7 @@ type Props = {
 function FixtureDate({ date, status }: Props) {
   const inPlay = STATUSES_IN_PLAY.includes(status.short)
 
-  const formatedDate = formatDate(date.toString())
+  const formatedDate = formatDateFixtures(date.toString())
 
   return (
     <div className="text-xs text-center mb-4">

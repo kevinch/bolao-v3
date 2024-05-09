@@ -1,4 +1,5 @@
 import { Season, FixtureData, Bet } from "./definitions"
+import { format } from "date-fns"
 
 export const FOOTBALL_API_SPORTS = "https://v3.football.api-sports.io"
 
@@ -43,7 +44,7 @@ export const sortFixtures = (fixtures: FixtureData[]) => {
   })
 }
 
-export const formatDate = (dateString: string): string => {
+export const formatDateFixtures = (dateString: string): string => {
   const date = new Date(dateString)
 
   const formattedDate = date.toLocaleDateString(undefined, {
@@ -58,6 +59,11 @@ export const formatDate = (dateString: string): string => {
   })
 
   return `${formattedDate} ${formattedTime}`
+}
+
+export const formatDateNews = (dateString: string) => {
+  const date = new Date(dateString)
+  return format(date, "PPP", {})
 }
 
 const ROUNDS_TO_REMOVE = [
