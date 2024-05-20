@@ -1,14 +1,9 @@
 import { getData } from "@/app/lib/controllerResults"
 import { auth } from "@clerk/nextjs/server"
-import { Suspense } from "react"
 import BolaoPageTitle from "@/app/ui/bolao/bolaoPageTitle"
 import BolaoLinks from "@/app/ui/bolao/bolaoLinks"
 import Pagination from "@/app/ui/bolao/bet/pagination"
 import TableMatchDayResults from "@/app/ui/bolao/results/tableMatchDayResults"
-import {
-  PaginationSkeleton,
-  TableMatchDayResultsSkeleton,
-} from "@/app/ui/skeletons"
 
 async function ResultsPage({
   params,
@@ -51,22 +46,18 @@ async function ResultsPage({
 
       <BolaoLinks bolaoId={data.bolao.id} active={3} />
 
-      <Suspense fallback={<PaginationSkeleton />}>
-        <Pagination
-          isLastRound={data.isLastRound}
-          isFirstRound={data.isFirstRound}
-          currentRoundIndex={currentRoundIndex}
-        />
-      </Suspense>
+      <Pagination
+        isLastRound={data.isLastRound}
+        isFirstRound={data.isFirstRound}
+        currentRoundIndex={currentRoundIndex}
+      />
 
-      <Suspense fallback={<TableMatchDayResultsSkeleton />}>
-        <TableMatchDayResults
-          bets={data.bets}
-          fixtures={data.fixtures}
-          players={data.players}
-          userId={userId}
-        />
-      </Suspense>
+      <TableMatchDayResults
+        bets={data.bets}
+        fixtures={data.fixtures}
+        players={data.players}
+        userId={userId}
+      />
     </main>
   )
 }
