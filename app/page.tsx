@@ -1,6 +1,8 @@
+import { Suspense } from "react"
 import BoloesList from "@/app/ui/home/boloesList"
 import { currentUser } from "@clerk/nextjs/server"
 import PageTitle from "./components/pageTitle"
+import { BoloesListSkeleton } from "./ui/skeletons"
 
 import Link from "next/link"
 
@@ -19,7 +21,10 @@ async function Home() {
               : user.emailAddresses[0].emailAddress.split("@")[0]}
           </span>
         </PageTitle>
-        <BoloesList />
+
+        <Suspense fallback={<BoloesListSkeleton />}>
+          <BoloesList />
+        </Suspense>
       </main>
     )
   }

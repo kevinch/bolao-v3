@@ -35,11 +35,12 @@ async function BoloesList() {
   }
 
   return (
-    <div>
+    <>
       {/* TODO: update list after creation */}
       {data.map((el: Bolao) => (
         <div key={el.id} className={STYLES_BOX_SHADOW}>
           <h3 className="text-2xl capitalize mb-4">{el.name}</h3>
+
           <div className="flex justify-between">
             <div className="space-x-4">
               <Link
@@ -62,7 +63,7 @@ async function BoloesList() {
           </div>
         </div>
       ))}
-    </div>
+    </>
   )
 }
 
