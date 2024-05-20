@@ -13,27 +13,26 @@ type Props = {
 
 function FixtureDate({ date, status }: Props) {
   const inPlay = STATUSES_IN_PLAY.includes(status.short)
+  const hasError = STATUSES_ERROR.includes(status.short)
 
   const formatedDate = formatDateFixtures(date.toString())
 
   return (
     <div className="text-xs text-center mb-4">
-      {inPlay ? (
-        <span className="text-cyan-600">{status.long}</span>
-      ) : (
-        formatedDate
-      )}
-      {STATUSES_ERROR.includes(status.short) && (
+      {hasError ? (
         <>
-          &nbsp;-&nbsp;
           <span
             className={clsx("", {
-              "text-orange-500": STATUSES_ERROR.includes(status.short),
+              "text-orange-500": hasError,
             })}
           >
             {status.long}
           </span>
         </>
+      ) : inPlay ? (
+        <span className="text-cyan-600">{status.long}</span>
+      ) : (
+        formatedDate
       )}
     </div>
   )

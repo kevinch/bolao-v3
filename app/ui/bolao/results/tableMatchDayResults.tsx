@@ -35,7 +35,9 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
             <Cell>&nbsp;</Cell>
             {players.map((player: PlayersData) => {
               return (
-                <Cell>{player.firstName || player.email.split("@")[0]}</Cell>
+                <Cell key={player.id}>
+                  {player.firstName || player.email.split("@")[0]}
+                </Cell>
               )
             })}
           </Row>
@@ -67,7 +69,7 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
             }
 
             return (
-              <Row>
+              <Row key={fixtureData.fixture.id}>
                 <Cell>
                   <FixtureDate
                     date={fixtureData.fixture.date.toString()}
@@ -127,7 +129,7 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
                   }
 
                   return (
-                    <Cell>
+                    <Cell key={`${fixtureData.fixture.id}_${player.id}`}>
                       <span>
                         {showScores ? betHome : INITIAL_BET_VALUE}-
                         {showScores ? betAway : INITIAL_BET_VALUE}
@@ -140,12 +142,12 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
             )
           })}
 
-          <Row>
+          {/* <Row>
             <Cell>total:</Cell>
             {players.map(() => (
               <Cell>...pts</Cell>
             ))}
-          </Row>
+          </Row> */}
         </StickyTable>
       </div>
     )
