@@ -11,7 +11,9 @@ async function News() {
 
   return (
     <div>
-      <PageTitle center={true}>News</PageTitle>
+      <PageTitle center={true}>
+        <h1>News</h1>
+      </PageTitle>
 
       <div>
         {documents.map((document) => {

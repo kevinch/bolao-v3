@@ -7,7 +7,9 @@ async function CreateBolao() {
 
   return (
     <div>
-      <PageTitle>Create bolão</PageTitle>
+      <PageTitle center={true}>
+        <h1>Create bolão</h1>
+      </PageTitle>
 
       <Form leagues={data} />
     </div>

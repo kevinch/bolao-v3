@@ -6,7 +6,9 @@ const h2Classes = "text-2xl mb-6 text-center"
 export default function About() {
   return (
     <div>
-      <PageTitle center={true}>About</PageTitle>
+      <PageTitle center={true}>
+        <h1>About</h1>
+      </PageTitle>
 
       <h2 className={h2Classes}>Why another app?</h2>
       <p className={pClasses}>
