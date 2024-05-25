@@ -2,7 +2,7 @@
 
 import { FixtureData, Bet, PlayersData } from "@/app/lib/definitions"
 import {
-  STYLES_BOX_SHADOW,
+  STYLES_TABLE_SHADOW,
   findBetObj,
   INITIAL_BET_VALUE,
   STATUSES_FINISHED,
@@ -23,20 +23,24 @@ type TableProps = {
   userId: string //Could be in context
 }
 
+const cellStyles = { padding: 0, margin: 0, border: 0 }
+
 function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
   if (fixtures) {
     return (
       <div
-        className={STYLES_BOX_SHADOW}
+        className={STYLES_TABLE_SHADOW}
         style={{ height: "auto", width: "100%" }}
       >
         <StickyTable borderWidth={0}>
           <Row>
-            <Cell>&nbsp;</Cell>
+            <Cell style={cellStyles}>&nbsp;</Cell>
             {players.map((player: PlayersData) => {
               return (
-                <Cell key={player.id}>
-                  {player.firstName || player.email.split("@")[0]}
+                <Cell style={cellStyles} key={player.id}>
+                  <span className="font-semibold text-sm px-2">
+                    {player.firstName || player.email.split("@")[0]}
+                  </span>
                 </Cell>
               )
             })}
@@ -70,7 +74,7 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
 
             return (
               <Row key={fixtureData.fixture.id}>
-                <Cell>
+                <Cell style={cellStyles}>
                   <FixtureDate
                     date={fixtureData.fixture.date.toString()}
                     status={fixtureData.fixture.status}
@@ -129,12 +133,17 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
                   }
 
                   return (
-                    <Cell key={`${fixtureData.fixture.id}_${player.id}`}>
-                      <span>
+                    <Cell
+                      style={cellStyles}
+                      key={`${fixtureData.fixture.id}_${player.id}`}
+                      className="text-center"
+                    >
+                      <div className="text-sm">&nbsp;</div>
+                      <div>
                         {showScores ? betHome : INITIAL_BET_VALUE}-
                         {showScores ? betAway : INITIAL_BET_VALUE}
-                      </span>
-                      <div>{score} pts</div>
+                      </div>
+                      <div className="text-sm">{score} pts</div>
                     </Cell>
                   )
                 })}

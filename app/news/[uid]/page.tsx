@@ -4,7 +4,7 @@ async function NewsPost({ params }: any) {
   const client = createClient()
   const document = await client.getByUID("news", params.uid)
 
-  console.log({ document })
+  // console.log({ document })
 
   return (
     <div>

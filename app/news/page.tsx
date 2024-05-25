@@ -7,7 +7,7 @@ async function News() {
   const client = createClient()
   const documents = await client.getAllByType("news")
 
-  console.log(documents[0].data)
+  // console.log(documents[0].data)
 
   return (
     <div>

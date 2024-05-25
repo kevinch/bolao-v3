@@ -18,7 +18,7 @@ function FixtureDate({ date, status }: Props) {
   const formatedDate = formatDateFixtures(date.toString())
 
   return (
-    <div className="text-xs text-center mb-4">
+    <div className="text-xs text-center">
       {hasError ? (
         <>
           <span

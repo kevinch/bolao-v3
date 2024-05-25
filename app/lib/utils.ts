@@ -46,19 +46,7 @@ export const sortFixtures = (fixtures: FixtureData[]) => {
 
 export const formatDateFixtures = (dateString: string): string => {
   const date = new Date(dateString)
-
-  const formattedDate = date.toLocaleDateString(undefined, {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  })
-
-  const formattedTime = date.toLocaleTimeString(undefined, {
-    hour: "2-digit",
-    minute: "2-digit",
-  })
-
-  return `${formattedDate} ${formattedTime}`
+  return format(date, "LLL do H:mm", {})
 }
 
 export const formatDateNews = (dateString: string) => {
@@ -119,4 +107,5 @@ export const STATUSES_IN_PLAY = ["1H", "HT", "2H", "ET", "BT", "LIVE"]
 export const STATUSES_FINISHED = ["FT", "AET", "PEN", "CANC", ""]
 export const STATUSES_ERROR = ["CANC", "PST", "ABD", "AWD"]
 
-export const STYLES_BOX_SHADOW = "shadow bg-white p-4 mb-6"
+export const STYLES_BOX_SHADOW = "shadow-md bg-white p-4 mb-6"
+export const STYLES_TABLE_SHADOW = "shadow-md bg-white p-0 mb-6"
