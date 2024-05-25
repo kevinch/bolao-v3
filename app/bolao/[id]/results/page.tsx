@@ -4,6 +4,8 @@ import BolaoPageTitle from "@/app/ui/bolao/bolaoPageTitle"
 import BolaoLinks from "@/app/ui/bolao/bolaoLinks"
 import Pagination from "@/app/ui/bolao/bet/pagination"
 import TableMatchDayResults from "@/app/ui/bolao/results/tableMatchDayResults"
+import { Suspense } from "react"
+import { TableSkeleton } from "@/app/ui/skeletons"
 
 async function ResultsPage({
   params,
@@ -52,12 +54,14 @@ async function ResultsPage({
         currentRoundIndex={currentRoundIndex}
       />
 
-      <TableMatchDayResults
-        bets={data.bets}
-        fixtures={data.fixtures}
-        players={data.players}
-        userId={userId}
-      />
+      <Suspense fallback={<TableSkeleton />}>
+        <TableMatchDayResults
+          bets={data.bets}
+          fixtures={data.fixtures}
+          players={data.players}
+          userId={userId}
+        />
+      </Suspense>
     </main>
   )
 }

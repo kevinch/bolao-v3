@@ -54,24 +54,27 @@ function TableLineSkeleton() {
   return <div className="h-6 rounded-md bg-gray-200 mb-4 " />
 }
 
+export function TableSkeleton() {
+  return (
+    <div className="animate-pulse bg-gray-100 p-4 shadow">
+      <TableLineSkeleton />
+      <TableLineSkeleton />
+      <TableLineSkeleton />
+      <TableLineSkeleton />
+      <TableLineSkeleton />
+      <TableLineSkeleton />
+      <TableLineSkeleton />
+    </div>
+  )
+}
+
 export function BolaoPagesSkeleton() {
   return (
     <>
       <PageTitleSkeleton />
-
       <TabsSkeleton />
-
       <PaginationSkeleton />
-
-      <div className="animate-pulse bg-gray-100 p-4 shadow">
-        <TableLineSkeleton />
-        <TableLineSkeleton />
-        <TableLineSkeleton />
-        <TableLineSkeleton />
-        <TableLineSkeleton />
-        <TableLineSkeleton />
-        <TableLineSkeleton />
-      </div>
+      <TableSkeleton />
     </>
   )
 }
