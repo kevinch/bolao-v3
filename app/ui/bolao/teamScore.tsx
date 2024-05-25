@@ -24,7 +24,7 @@ function TeamScore({ score, type, status, goals }: Props) {
     displayScore = goals[type]?.toString() || INITIAL_BET_VALUE
   }
 
-  return <div className="mx-4 content-center text-base">{displayScore}</div>
+  return <div className="mx-3 content-center text-base">{displayScore}</div>
 }
 
 export default TeamScore

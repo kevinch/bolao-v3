@@ -25,23 +25,23 @@ function Pagination({ currentRoundIndex, isLastRound, isFirstRound }: Props) {
   return (
     <div className="flex justify-center mb-10 items-center">
       {!isFirstRound && (
-        <Link
+        <a
           href={createPageURL(-1)}
           className="border px-2 mx-2 rounded bg-slate-50"
         >
           &lsaquo;
-        </Link>
+        </a>
       )}
 
       <span className="uppercase text-xs">Round: {currentRoundIndex}</span>
 
       {!isLastRound && (
-        <Link
+        <a
           href={createPageURL(+1)}
           className="border px-2 mx-2 rounded bg-slate-50"
         >
           &rsaquo;
-        </Link>
+        </a>
       )}
     </div>
   )

@@ -65,7 +65,7 @@ function TableMatchDayBets({ fixtures, userBolaoId, bets }: TableProps) {
                   status={statusShort}
                 />
 
-                <span className="mx-4 text-xs content-center">&times;</span>
+                <span className="mx-3 text-xs content-center">&times;</span>
 
                 <TeamScore
                   score={fixtureData.score}

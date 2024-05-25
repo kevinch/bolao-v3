@@ -15,6 +15,8 @@ type Props = {
   disabled: boolean
 }
 
+const buttonHardStyles = { width: "26px", height: "26px" }
+
 function ButtonsBet({
   userBolaoId,
   type,
@@ -72,8 +74,8 @@ function ButtonsBet({
     }
   }
 
-  const buttonClasses = clsx("border px-2 mx-2 rounded", {
-    "bg-white border-teal-400": !disabled,
+  const buttonClasses = clsx("border px-2 mx-2 rounded-md", {
+    "bg-white border-teal-500": !disabled,
     "bg-slate-50 border-slate-100": disabled,
   })
 
@@ -83,16 +85,18 @@ function ButtonsBet({
   })
 
   return (
-    <div className="content-center">
+    <div className="flex items-center">
       <button
+        style={buttonHardStyles}
         disabled={disabled}
         className={buttonClasses}
         onClick={() => decrementCount()}
       >
         <span className={labelClasses}>-</span>
       </button>
-      {value}
+      <div>{value}</div>
       <button
+        style={buttonHardStyles}
         disabled={disabled}
         className={buttonClasses}
         onClick={() => incrementCount()}
