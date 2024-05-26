@@ -4,6 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs"
 import Header from "@/app/components/header"
 import Footer from "@/app/components/footer"
 import Script from "next/script"
+import { Analytics } from "@vercel/analytics/react"
 import "./globals.css"
 
 const Plex = IBM_Plex_Sans({ weight: "400", subsets: ["latin"] })
@@ -26,6 +27,7 @@ export default function RootLayout({
             <Header />
             {children}
             <Footer />
+            <Analytics />
           </div>
         </body>
 
