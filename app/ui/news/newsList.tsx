@@ -8,20 +8,20 @@ function NewsList({
 }: {
   documents: any
   // [
-  //   {
-  //     id: string
-  //     uid: string
-  //     url: string
-  //     type: string
-  //     href: string
-  //     tags: []
-  //     first_publication_date: string
-  //     last_publication_date: string
-  //     slugs: []
-  //     linked_documents: []
-  //     lang: string
-  //     alternate_languages: []
-  //     data: any
+  // {
+  // id: string
+  // uid: string
+  // url: string
+  // type: string
+  // href: string
+  // tags: []
+  // first_publication_date: string
+  // last_publication_date: string
+  // slugs: []
+  // linked_documents: []
+  // lang: string
+  // alternate_languages: []
+  // data: any
   // {
   //   title: [
   //     {
@@ -47,7 +47,7 @@ function NewsList({
     <div>
       {documents.map((document: any) => {
         return (
-          <div className="mb-6">
+          <div className="mb-6" key={document.id}>
             <h2 className="text-2xl">{document.data.title[0]?.text}</h2>
             <div className="text-sm mb-12 text-slate-500">
               {formatDateNews(document.first_publication_date)}

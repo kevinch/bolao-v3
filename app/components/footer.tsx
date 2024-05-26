@@ -11,9 +11,9 @@ function Footer() {
         <Link className="underline hover:no-underline" href="/bolao/create">
           Create Bolão
         </Link>
-        <Link className="underline hover:no-underline" href="/about">
+        {/* <Link className="underline hover:no-underline" href="/about">
           About
-        </Link>
+        </Link> */}
         <Link className="underline hover:no-underline" href="/news">
           News
         </Link>

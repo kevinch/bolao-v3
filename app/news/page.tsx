@@ -6,7 +6,7 @@ async function News() {
   const client = createClient()
   const documents = await client.getAllByType("news")
 
-  // console.log(documents)
+  console.log(documents)
 
   return (
     <div className="news-container">
@@ -14,7 +14,7 @@ async function News() {
         <h1>News</h1>
       </PageTitle>
 
-      <NewsList documents={documents} />
+      {documents && <NewsList documents={documents} />}
     </div>
   )
 }

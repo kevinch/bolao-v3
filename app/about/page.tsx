@@ -1,3 +1,4 @@
+import Link from "next/link"
 import PageTitle from "../components/pageTitle"
 
 const pClasses = "mb-10"
@@ -7,7 +8,7 @@ export default function About() {
   return (
     <div>
       <PageTitle center={true}>
-        <h1>About</h1>
+        <h1>[wip] About</h1>
       </PageTitle>
 
       <h2 className={h2Classes}>Why another app?</h2>
@@ -34,11 +35,17 @@ export default function About() {
       <p className={pClasses}>
         This is a one person project for now. My name is Kevin and i'm a
         software developer and former web designer living in Rio de Janeiro -
-        Brazil. If you really want to know more about me, head to LinkedIn. I
-        work on the app almost every week day early in the morning.
+        Brazil. If you really want to know more about me, head to{" "}
+        <Link
+          className="underline hover:no-underline"
+          href="https://www.linkedin.com/in/kevinchevallier/"
+        >
+          LinkedIn
+        </Link>
+        .
       </p>
 
-      <h2 className={h2Classes}>On the tech side</h2>
+      {/* <h2 className={h2Classes}>On the tech side</h2>
 
       <p className={pClasses}>
         As stated before, this is a web app, which means no Android or IOs extra
@@ -58,9 +65,9 @@ export default function About() {
       <p className={pClasses}>
         It uses Prismic.io for the headless CMS and applies tests via Jest an
         Cypress before each deploy. Design is done with Figma.
-      </p>
+      </p> */}
 
-      <h2 className={h2Classes}>Wait, no notifications?</h2>
+      {/* <h2 className={h2Classes}>Wait, no notifications?</h2>
 
       <p className={pClasses}>
         Indeed, the biggest flaw so far. I know that it's THE feature the app
@@ -79,7 +86,7 @@ export default function About() {
         be the increasing amount of people switching to Android or Apple
         deciding to ship such a feature onto its IOs browser Safari. I'll keep
         you guy posted in the news or tech news section.
-      </p>
+      </p> */}
     </div>
   )
 }
