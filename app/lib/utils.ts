@@ -6,24 +6,47 @@ export const FOOTBALL_API_SPORTS = "https://v3.football.api-sports.io"
 export const FOOTBALL_API_SPORTS_LEAGUES = [
   {
     name: "UEFA Champions League",
+    countryName: "World",
     id: 2,
   },
   {
     name: "UEFA Europa League",
+    countryName: "World",
     id: 3,
   },
   {
     name: "Euro Championship",
+    countryName: "World",
     id: 4,
   },
   {
     name: "Ligue 1",
+    countryName: "France",
     id: 61,
   },
   {
     name: "Serie A",
+    countryName: "Brazil",
     id: 71,
   },
+  {
+    name: "Premier League",
+    countryName: "England",
+    id: 39,
+  },
+  {
+    name: "Copa America",
+    countryName: "World",
+    id: 9,
+  },
+  {
+    name: "CONMEBOL Libertadores",
+    countryName: "World",
+    id: 13,
+  },
+  { name: "FIFA Club World Cup", countryName: "World", id: 15 },
+  { name: "World Cup", countryName: "World", id: 1 },
+  { name: "UEFA Europa Conference League", countryName: "World", id: 848 },
 ]
 
 export const getCurrentSeason = (seasons: Season[]): number | undefined => {

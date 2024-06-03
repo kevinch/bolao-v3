@@ -5,6 +5,7 @@ import { createBolao } from "@/app/lib/actions"
 type League = {
   id: number
   name: string
+  countryName: string
 }
 
 type FormProps = {
@@ -31,9 +32,9 @@ function Form({ leagues }: FormProps) {
           <option value="" disabled>
             Select a competition
           </option>
-          {leagues.map((el: { name: string; id: number }) => (
+          {leagues.map((el: League) => (
             <option key={el.id} value={el.id}>
-              {el.name}
+              {el.name} - {el.countryName}
             </option>
           ))}
         </select>

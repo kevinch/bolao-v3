@@ -103,7 +103,9 @@ export async function fetchUsersBolao(bolaoId: string) {
 }
 
 export async function fetchLeagues() {
-  return FOOTBALL_API_SPORTS_LEAGUES
+  return FOOTBALL_API_SPORTS_LEAGUES.sort((a, b) =>
+    a.name.localeCompare(b.name)
+  )
 }
 
 export async function fetchLeague(leagueId: number) {
