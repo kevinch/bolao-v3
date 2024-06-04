@@ -1,4 +1,4 @@
-# The new bolao.io app: v3
+# The bolao.io app: v3
 
 ## Getting Started
 
@@ -22,17 +22,17 @@ Open [http://localhost:3000](http://localhost:3000)
 - Styling: Tailwind - [docs](https://tailwindcss.com/docs/installation)
 - Host: Vercel - [site](https://vercel.com)
 - Auth: Clerk - [docs](https://clerk.com/docs/references/nextjs/overview) - [dashboard](https://dashboard.clerk.com/)
-- Repo: [bolaov3-poc-clerk-auth](https://github.com/kevinch/bolaov3-poc-clerk-auth)
+- Repo: [github.com/kevinch/bolao-v3](https://github.com/kevinch/bolao-v3)
 - Data source: [api-football.com](https://www.api-football.com/documentation-v3) - [dashboard](https://dashboard.api-football.com/)
 - ENV vars:
 
 ```
 CLERK_SECRET_KEY
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
-NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
+NEXT_PUBLIC_CLERK_SIGN_IN_URL
+NEXT_PUBLIC_CLERK_SIGN_UP_URL
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL
 
 POSTGRES_URL
 POSTGRES_PRISMA_URL
