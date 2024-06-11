@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import clsx from "clsx"
+import { buttonClasses } from "../styles"
 
 type Props = {
   bolaoId: string
@@ -21,13 +22,10 @@ function CopyToClipboard({ bolaoId }: Props) {
 
   return (
     <button
-      className={clsx(
-        "border px-2 mx-2 rounded transition-colors duration-200 ease-in-out",
-        {
-          "bg-white": !copied,
-          "bg-teal-200": copied,
-        }
-      )}
+      className={clsx(buttonClasses, {
+        "bg-white": !copied,
+        "bg-teal-200": copied,
+      })}
       onClick={() => handleCopyClipboard()}
     >
       {copied ? "Copied to clipboard" : "Copy invite link"}

@@ -52,6 +52,7 @@ export async function createBolao(formData: any) {
   } catch (error) {
     console.log(error)
     return {
+      success: false,
       message: "Database Error: Failed to Create Bolao.",
     }
   }
