@@ -8,6 +8,7 @@ import Link from "next/link"
 
 async function Home() {
   const user = await currentUser()
+  console.log(user)
 
   if (user) {
     return (
@@ -16,8 +17,8 @@ async function Home() {
           Hey
           <br />
           <span className="font-bold">
-            {user.firstName
-              ? `${user.firstName}.`
+            {user.username
+              ? `${user.username}.`
               : user.emailAddresses[0].emailAddress.split("@")[0]}
           </span>
         </PageTitle>
