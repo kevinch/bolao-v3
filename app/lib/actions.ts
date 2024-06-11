@@ -26,13 +26,15 @@ export async function navigate(path: string) {
   redirect(path)
 }
 
-export async function createBolao(formData: any) {
-  // type should be FormData
-
+export async function createBolao({
+  name,
+  competitionId,
+}: {
+  name: string
+  competitionId: number
+}) {
   const { userId }: { userId: string | null } = auth()
 
-  const competitionId = formData.get("competitionId")
-  const name = formData.get("name")
   const date = new Date().toISOString().split("T")[0]
 
   const league = await fetchLeague(competitionId)
@@ -48,7 +50,7 @@ export async function createBolao(formData: any) {
 
     const insertedData = result.rows[0]
 
-    createUserBolao(insertedData.id)
+    return await createUserBolao(insertedData.id)
   } catch (error) {
     console.log(error)
     return {

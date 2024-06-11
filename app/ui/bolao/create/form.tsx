@@ -3,6 +3,7 @@
 import { createBolao } from "@/app/lib/actions"
 import clsx from "clsx"
 import { buttonClasses } from "../../styles"
+import { useState } from "react"
 
 type League = {
   id: number
@@ -15,8 +16,20 @@ type FormProps = {
 }
 
 function Form({ leagues }: FormProps) {
+  const [name, setName] = useState("")
+  const [competitionId, setCompetitionId] = useState(0)
+  const [result, setResult] = useState(false)
+
+  async function submit() {
+    console.log("submit")
+    const result = await createBolao({ name, competitionId })
+    if (result.success) {
+      setResult(true)
+    }
+  }
+
   return (
-    <form action={createBolao}>
+    <div>
       <div className="mb-6">
         <label htmlFor="name">Name:</label>
         <input
@@ -26,6 +39,7 @@ function Form({ leagues }: FormProps) {
           required
           placeholder="Choose a name for your bolão"
           className="w-full"
+          onChange={(e) => setName(e.target.value)}
         />
       </div>
 
@@ -36,6 +50,7 @@ function Form({ leagues }: FormProps) {
           name="competitionId"
           required
           className="w-full"
+          onChange={(e) => setCompetitionId(Number(e.target.value))}
         >
           <option value="" disabled>
             Select a competition
@@ -49,11 +64,13 @@ function Form({ leagues }: FormProps) {
       </div>
 
       <div>
-        <button type="submit" className={clsx(buttonClasses)}>
+        <button onClick={submit} className={clsx(buttonClasses)}>
           Create
         </button>
       </div>
-    </form>
+
+      {result && <div>Bolão created ✔</div>}
+    </div>
   )
 }
 
