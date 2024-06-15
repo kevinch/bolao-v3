@@ -8,7 +8,6 @@ import Link from "next/link"
 
 async function Home() {
   const user = await currentUser()
-  console.log(user)
 
   if (user) {
     return (

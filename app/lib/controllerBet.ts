@@ -36,7 +36,9 @@ export async function getData({
     year,
     current: true,
   }) // HAS TO GO TO STORE
-  const currentRound = currentRoundObj[0] || allRounds[allRounds.length - 1]
+  const currentRound =
+    currentRoundObj[currentRoundObj.length - 1] ||
+    allRounds[allRounds.length - 1]
 
   let isFirstRound: boolean = false
   let isLastRound: boolean = false
