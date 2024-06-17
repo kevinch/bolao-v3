@@ -11,7 +11,7 @@
     "slicemachine": "start-slicemachine"
   },
   "dependencies": {
-    "@clerk/nextjs": "5.1.4",
+    "@clerk/nextjs": "5.1.5",
     "@prismicio/client": "7.5.0",
     "@prismicio/next": "1.6.0",
     "@prismicio/react": "2.8.0",
@@ -19,7 +19,7 @@
     "@vercel/postgres": "^0.8.0",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
-    "next": "14.2.3",
+    "next": "14.2.4",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-sticky-table": "^5.1.11"
@@ -30,8 +30,8 @@
     "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",
     "autoprefixer": "^10.0.1",
-    "eslint": "9.4.0",
-    "eslint-config-next": "14.2.3",
+    "eslint": "9.5.0",
+    "eslint-config-next": "14.2.4",
     "pg": "8.12.0",
     "postcss": "^8",
     "slice-machine-ui": "2.2.0",

@@ -51,7 +51,7 @@ function TableMatchDayBets({ fixtures, userBolaoId, bets }: TableProps) {
                   userBolaoId={userBolaoId}
                   betValue={homeBet?.value}
                   betId={homeBet?.id}
-                  disabled={disabled}
+                  disabled={false}
                 />
 
                 <TeamCodeLogo
@@ -84,7 +84,7 @@ function TableMatchDayBets({ fixtures, userBolaoId, bets }: TableProps) {
                   userBolaoId={userBolaoId}
                   betValue={awayBet?.value}
                   betId={awayBet?.id}
-                  disabled={disabled}
+                  disabled={false}
                 />
               </div>
             </div>
