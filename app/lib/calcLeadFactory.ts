@@ -29,7 +29,7 @@ const getTotal = ({
         userBolaoId: player.userBolaoId,
       })
 
-      if (homeBetObj?.value && awayBetObj?.value) {
+      if (homeBetObj?.value !== undefined && awayBetObj?.value !== undefined) {
         const fixtureScore = calcScore({
           resultHome: fixtureData.score.fulltime.home || 0,
           resultAway: fixtureData.score.fulltime.away || 0,
