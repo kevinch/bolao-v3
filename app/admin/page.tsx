@@ -15,11 +15,13 @@ async function Admin() {
       </PageTitle>
 
       <Suspense fallback={<BoloesListSkeleton />}>
+        <h2 className="mb-10">Bolões: {data.boloes.length}</h2>
+
         {data.boloes.map((el: Bolao) => (
           <div key={el.id} className={STYLES_BOX_SHADOW}>
-            <h3 className="text-2xl capitalize mb-4">{el.name}</h3>
+            <h3 className="text-1xl capitalize mb-4">{el.name}</h3>
             <div>Competition id: {el.competition_id}</div>
-            <div>Id: {el.id}</div>
+            <div>Id: ****{el.id.slice(-5)}</div>
           </div>
         ))}
       </Suspense>
