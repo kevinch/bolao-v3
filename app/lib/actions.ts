@@ -145,7 +145,21 @@ export async function deleteBolao(bolaoId: string) {
 }
 
 export async function deleteUserBolao(userBolaoId: string) {
-  return true
+  try {
+    const result = await sql`
+      DELETE FROM user_bolao
+      WHERE CAST(id AS VARCHAR) = ${userBolaoId}
+    `
+
+    const data = result.rows
+
+    return data
+  } catch (error) {
+    console.log(error)
+    return {
+      message: "Database Error: Failed to delete a user bolao.",
+    }
+  }
 }
 
 export async function deleteBet(betId: string) {
@@ -153,7 +167,6 @@ export async function deleteBet(betId: string) {
     const result = await sql`
       DELETE FROM bets
       WHERE CAST(id AS VARCHAR) = ${betId}
-      RETURNING *
     `
 
     const data = result.rows
