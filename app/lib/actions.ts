@@ -139,3 +139,7 @@ export async function updateBet({
     } as BetResult
   }
 }
+
+export async function deleteBolao(bolaoId: string) {
+  return true
+}

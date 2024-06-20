@@ -10,3 +10,11 @@ export async function getData() {
     boloes,
   }
 }
+
+export async function deleteBolao(bolaoId: string) {
+  // find bets
+  // delete bets
+  // find user_boloes
+  // delete user boloes
+  // delete bolao
+}
