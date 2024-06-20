@@ -4,13 +4,13 @@ import { STYLES_BOX_SHADOW } from "@/app/lib/utils"
 import clsx from "clsx"
 import { buttonClasses } from "@/app/ui/styles"
 import { Bolao } from "@/app/lib/definitions"
-import { deleteBolao } from "@/app/lib/actions"
+import { deleteBolaoGroup } from "../lib/controllerAdmin"
 import { formatDateNews } from "@/app/lib/utils"
 
 function AdminBolao({ bolao }: { bolao: Bolao }) {
   const actionDelete = async (bolaoId: string) => {
     try {
-      const result = await deleteBolao(bolaoId)
+      const result = await deleteBolaoGroup(bolaoId)
 
       console.log(result)
     } catch (error) {
