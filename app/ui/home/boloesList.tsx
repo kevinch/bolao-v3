@@ -1,12 +1,12 @@
 import Link from "next/link"
-import { fetchBoloes } from "@/app/lib/data"
+import { fetchBoloesByUserId } from "@/app/lib/data"
 import { auth } from "@clerk/nextjs/server"
 import { Bolao } from "@/app/lib/definitions"
 import CopyToClipboard from "./copyToClipboard"
 import { STYLES_BOX_SHADOW } from "@/app/lib/utils"
 
 async function getData(userId: string) {
-  const result = await fetchBoloes(userId)
+  const result = await fetchBoloesByUserId(userId)
 
   return result
 }

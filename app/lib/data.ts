@@ -7,7 +7,22 @@ import { FOOTBALL_API_SPORTS } from "./utils"
 import { Bolao, Bet } from "./definitions"
 import { FOOTBALL_API_SPORTS_LEAGUES } from "./utils"
 
-export async function fetchBoloes(userId: string) {
+export async function fetchBoloes() {
+  noStore()
+
+  try {
+    const data = await sql`SELECT boloes.name, boloes.id, boloes.competition_id
+      FROM boloes
+    `
+
+    return data.rows as Bolao[]
+  } catch (error) {
+    console.error("Database Error:", error)
+    throw new Error("Failed to fetch boloes.")
+  }
+}
+
+export async function fetchBoloesByUserId(userId: string) {
   noStore()
 
   if (!userId) {

@@ -1,5 +1,5 @@
 import Link from "next/link"
-import PageTitle from "../components/pageTitle"
+import PageTitle from "@/app/components/pageTitle"
 
 const pClasses = "mb-10"
 const h2Classes = "text-2xl mb-6 text-center"

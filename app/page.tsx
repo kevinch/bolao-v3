@@ -2,7 +2,7 @@ import { Suspense } from "react"
 import BoloesList from "@/app/ui/home/boloesList"
 import { currentUser } from "@clerk/nextjs/server"
 import PageTitle from "./components/pageTitle"
-import { BoloesListSkeleton } from "./ui/skeletons"
+import { BoloesListSkeleton } from "@/app/ui/skeletons"
 
 import Link from "next/link"
 
