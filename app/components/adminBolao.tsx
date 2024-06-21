@@ -6,13 +6,21 @@ import { buttonClasses } from "@/app/ui/styles"
 import { Bolao } from "@/app/lib/definitions"
 import { deleteBolaoGroup } from "../lib/controllerAdmin"
 import { formatDateNews } from "@/app/lib/utils"
+import { useState } from "react"
 
 function AdminBolao({ bolao }: { bolao: Bolao }) {
+  const [finalBtns, setFinalBtns] = useState(false)
+  const [deleted, setDeleted] = useState(false)
+
   const actionDelete = async (bolaoId: string) => {
     try {
       const result = await deleteBolaoGroup(bolaoId)
 
-      console.log(result)
+      if (result.success) {
+        setDeleted(true)
+      }
+      // TODO:
+      // handle error
     } catch (error) {
       console.error("Error deleting bolao:", error)
     }
@@ -35,12 +43,41 @@ function AdminBolao({ bolao }: { bolao: Bolao }) {
         </div>
 
         <div>
-          <button
-            onClick={() => actionDelete(bolao.id)}
-            className={clsx(buttonClasses, "bg-white")}
-          >
-            delete
-          </button>
+          {deleted ? (
+            <span className={clsx("text-green-500")}>Deleted</span>
+          ) : finalBtns ? (
+            <>
+              <button
+                className={clsx(
+                  buttonClasses,
+                  "bg-white border-green-500 text-green-500"
+                )}
+                onClick={() => setFinalBtns(false)}
+              >
+                cancel
+              </button>
+              &nbsp;
+              <button
+                className={clsx(
+                  buttonClasses,
+                  "bg-white border-red-500 text-red-500"
+                )}
+                onClick={() => actionDelete(bolao.id)}
+              >
+                confirm
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={() => setFinalBtns(true)}
+              className={clsx(
+                buttonClasses,
+                "bg-white border-red-500 text-red-500"
+              )}
+            >
+              delete
+            </button>
+          )}
         </div>
       </div>
     </div>

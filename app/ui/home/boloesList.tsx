@@ -1,11 +1,14 @@
 import Link from "next/link"
 import { fetchBoloesByUserId } from "@/app/lib/data"
 import { auth } from "@clerk/nextjs/server"
+import { unstable_noStore as noStore } from "next/cache"
 import { Bolao } from "@/app/lib/definitions"
 import CopyToClipboard from "./copyToClipboard"
 import { STYLES_BOX_SHADOW } from "@/app/lib/utils"
 
 async function getData(userId: string) {
+  noStore()
+
   const result = await fetchBoloesByUserId(userId)
 
   return result
