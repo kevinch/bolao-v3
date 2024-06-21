@@ -139,3 +139,63 @@ export async function updateBet({
     } as BetResult
   }
 }
+
+export async function deleteBolao(bolaoId: string) {
+  try {
+    const result = await sql`
+      DELETE FROM boloes
+      WHERE CAST(id AS VARCHAR) = ${bolaoId}
+      RETURNING *
+    `
+
+    const data = result.rows
+
+    return {
+      data,
+      message: "bolao deleted",
+      success: true,
+    }
+  } catch (error) {
+    console.log(error)
+    return {
+      message: "Database Error: Failed to delete a bolao.",
+      success: false,
+    }
+  }
+}
+
+export async function deleteUserBolao(userBolaoId: string) {
+  try {
+    const result = await sql`
+      DELETE FROM user_bolao
+      WHERE CAST(id AS VARCHAR) = ${userBolaoId}
+    `
+
+    const data = result.rows
+
+    return data
+  } catch (error) {
+    console.log(error)
+    return {
+      message: "Database Error: Failed to delete a user bolao.",
+    }
+  }
+}
+
+export async function deleteBet(betId: string) {
+  try {
+    const result = await sql`
+      DELETE FROM bets
+      WHERE CAST(id AS VARCHAR) = ${betId}
+    `
+
+    const data = result.rows
+
+    return data
+  } catch (error) {
+    console.log(error)
+    return {
+      message: "Database Error: Failed to delete a bet.",
+    }
+  }
+}

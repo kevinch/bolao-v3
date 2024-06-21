@@ -33,6 +33,9 @@ export type Bolao = {
   id: string
   name: string
   competition_id: string
+  created_by: string
+  created_at: Date
+  year: number
 }
 
 export type UserBolao = {

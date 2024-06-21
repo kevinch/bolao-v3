@@ -3,7 +3,7 @@ import { getData } from "@/app/lib/controllerAdmin"
 import PageTitle from "@/app/components/pageTitle"
 import { BoloesListSkeleton } from "@/app/ui/skeletons"
 import { Bolao } from "@/app/lib/definitions"
-import { STYLES_BOX_SHADOW } from "@/app/lib/utils"
+import AdminBolao from "@/app/components/adminBolao"
 
 async function Admin() {
   const data = await getData()
@@ -15,15 +15,11 @@ async function Admin() {
       </PageTitle>
 
       <Suspense fallback={<BoloesListSkeleton />}>
-        <h2 className="mb-10">Bolões: {data.boloes.length}</h2>
+        <h2 className="mb-10">All Bolões: {data.boloes.length}</h2>
 
-        {data.boloes.map((el: Bolao) => (
-          <div key={el.id} className={STYLES_BOX_SHADOW}>
-            <h3 className="text-1xl capitalize mb-4">{el.name}</h3>
-            <div>Competition id: {el.competition_id}</div>
-            <div>Id: ****{el.id.slice(-5)}</div>
-          </div>
-        ))}
+        {data.boloes.map((el: Bolao) => {
+          return <AdminBolao key={el.id} bolao={el} />
+        })}
       </Suspense>
     </div>
   )

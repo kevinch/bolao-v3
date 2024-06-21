@@ -11,7 +11,7 @@ export async function fetchBoloes() {
   noStore()
 
   try {
-    const data = await sql`SELECT boloes.name, boloes.id, boloes.competition_id
+    const data = await sql`SELECT *
       FROM boloes
     `
 
