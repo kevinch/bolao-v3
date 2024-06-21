@@ -4,8 +4,20 @@ import PageTitle from "@/app/components/pageTitle"
 import { BoloesListSkeleton } from "@/app/ui/skeletons"
 import { Bolao } from "@/app/lib/definitions"
 import AdminBolao from "@/app/components/adminBolao"
+import { clerkClient, currentUser } from "@clerk/nextjs/server"
+import { navigate } from "@/app/lib/actions"
 
 async function Admin() {
+  const user = await currentUser()
+
+  if (user) {
+    const userData = await clerkClient.users.getUser(user.id)
+
+    if (userData.privateMetadata.role !== "admin") {
+      return navigate("/")
+    }
+  }
+
   const data = await getData()
 
   return (
