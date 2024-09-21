@@ -47,16 +47,14 @@ export const FOOTBALL_API_SPORTS_LEAGUES = [
   { name: "FIFA Club World Cup", countryName: "World", id: 15 },
   { name: "World Cup", countryName: "World", id: 1 },
   { name: "UEFA Europa Conference League", countryName: "World", id: 848 },
-  { name: "Olympics Men", countryName: "World", id: 480 },
-  { name: "Olympics Women", countryName: "World", id: 524 },
+  // { name: "Olympics Men", countryName: "World", id: 480 },
+  // { name: "Olympics Women", countryName: "World", id: 524 },
 ]
 
-export const getCurrentSeason = (seasons: Season[]): number | undefined => {
-  const year: number | undefined = seasons.find(
-    (el: Season) => el.current
-  )?.year
-
-  return year
+export const getCurrentSeasonObject = (
+  seasons: Season[]
+): Season | undefined => {
+  return seasons.find((el: Season) => el.current)
 }
 
 export const sortFixtures = (fixtures: FixtureData[]) => {
