@@ -3,7 +3,7 @@ import { auth } from "@clerk/nextjs/server"
 import Link from "next/link"
 
 import LogoSvg from "./logoSvg"
-import Background from "./Background"
+import Background from "./background"
 
 function Header() {
   const { userId }: { userId: string | null } = auth()

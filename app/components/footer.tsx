@@ -1,5 +1,5 @@
 import Link from "next/link"
-import Background from "./Background"
+import Background from "./background"
 
 function Footer() {
   return (
