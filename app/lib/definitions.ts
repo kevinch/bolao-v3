@@ -36,6 +36,8 @@ export type Bolao = {
   created_by: string
   created_at: Date
   year: number
+  start?: string
+  end?: string
 }
 
 export type UserBolao = {

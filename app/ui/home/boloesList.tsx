@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { fetchBoloesByUserId } from "@/app/lib/data"
 import { auth } from "@clerk/nextjs/server"
 import { unstable_noStore as noStore } from "next/cache"
@@ -37,36 +38,75 @@ async function BoloesList() {
     )
   }
 
+  const activeGroup: Bolao[] = []
+  const passiveGroup: Bolao[] = []
+  const currentYear = new Date().getFullYear()
+  const today = new Date()
+
+  data.forEach((el: Bolao) => {
+    if (el.end) {
+      const groupEndDate = new Date(el.end)
+
+      if (groupEndDate >= today) {
+        activeGroup.push(el)
+      } else {
+        passiveGroup.push(el)
+      }
+    } else if (el.year === currentYear) {
+      activeGroup.push(el)
+    } else {
+      passiveGroup.push(el)
+    }
+  })
+
   return (
-    <>
-      {/* TODO: update list after creation */}
-      {data.map((el: Bolao) => (
-        <div key={el.id} className={STYLES_BOX_SHADOW}>
-          <h3 className="text-2xl capitalize mb-4">{el.name}</h3>
+    <Tabs defaultValue="account" className="">
+      <TabsList>
+        <TabsTrigger value="account">Active bolões</TabsTrigger>
+        <TabsTrigger value="password">Past bolões</TabsTrigger>
+      </TabsList>
+      <TabsContent value="account">
+        {activeGroup.map((el: Bolao) => (
+          <BolaoCard bolao={el} />
+        ))}
+      </TabsContent>
+      <TabsContent value="password">
+        {passiveGroup.map((el: Bolao) => (
+          <BolaoCard bolao={el} />
+        ))}
+      </TabsContent>
+    </Tabs>
+  )
+}
 
-          <div className="flex justify-between">
-            <div className="space-x-4">
-              <Link
-                className="underline hover:no-underline"
-                href={`/bolao/${el.id}/bet`}
-              >
-                Bet
-              </Link>
+function BolaoCard({ bolao }: { bolao: Bolao }) {
+  return (
+    <div key={bolao.id} className={STYLES_BOX_SHADOW}>
+      <h3 className="text-2xl capitalize mb-4">
+        {bolao.name} - {bolao.year}
+      </h3>
 
-              <Link
-                className="underline hover:no-underline"
-                href={`/bolao/${el.id}/results`}
-              >
-                Results
-              </Link>
-            </div>
-            <div>
-              <CopyToClipboard bolaoId={el.id} />
-            </div>
-          </div>
+      <div className="flex justify-between">
+        <div className="space-x-4">
+          <Link
+            className="underline hover:no-underline"
+            href={`/bolao/${bolao.id}/bet`}
+          >
+            Bet
+          </Link>
+
+          <Link
+            className="underline hover:no-underline"
+            href={`/bolao/${bolao.id}/results`}
+          >
+            Results
+          </Link>
         </div>
-      ))}
-    </>
+        <div>
+          <CopyToClipboard bolaoId={bolao.id} />
+        </div>
+      </div>
+    </div>
   )
 }
 

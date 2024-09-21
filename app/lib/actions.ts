@@ -4,7 +4,7 @@ import { sql } from "@vercel/postgres"
 import { redirect } from "next/navigation"
 import { auth } from "@clerk/nextjs/server"
 import { fetchLeague } from "./data"
-import { getCurrentSeason } from "./utils"
+import { getCurrentSeasonObject } from "./utils"
 import { BetResult, CreateUserBolaoResult } from "./definitions"
 
 export async function createUser({ id, role }: { id: string; role: string }) {
@@ -37,12 +37,20 @@ export async function createBolao(formData: any) {
 
   const league = await fetchLeague(competitionId)
 
-  const year = getCurrentSeason(league.seasons)
+  const currentSeason = getCurrentSeasonObject(league.seasons)
+  let year
+  let start
+  let end
+  if (currentSeason) {
+    year = currentSeason.year
+    start = currentSeason.start
+    end = currentSeason.end
+  }
 
   try {
     const result = await sql`
-      INSERT INTO boloes (name, competition_id, created_by, created_at, year)
-      VALUES (${name}, ${competitionId}, ${userId}, ${date}, ${year})
+      INSERT INTO boloes (name, competition_id, created_by, created_at, year, start, "end")
+      VALUES (${name}, ${competitionId}, ${userId}, ${date}, ${year}, ${start}, ${end})
       RETURNING *
     `
 
