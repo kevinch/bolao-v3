@@ -30,7 +30,8 @@ export async function fetchBoloesByUserId(userId: string) {
   }
 
   try {
-    const data = await sql`SELECT boloes.name, boloes.id, boloes.competition_id
+    const data =
+      await sql`SELECT boloes.name, boloes.id, boloes.competition_id, boloes.start, boloes.end, boloes.year
       FROM boloes
       INNER JOIN user_bolao ON CAST(boloes.id AS VARCHAR) = user_bolao.bolao_id
       WHERE CAST(user_bolao.user_id AS VARCHAR) = ${userId}
