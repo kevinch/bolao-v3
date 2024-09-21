@@ -6,8 +6,6 @@ async function News() {
   const client = createClient()
   const documents = await client.getAllByType("news")
 
-  console.log(documents)
-
   return (
     <div className="news-container">
       <PageTitle center={true}>
