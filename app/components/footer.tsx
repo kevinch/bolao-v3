@@ -1,5 +1,5 @@
 import Link from "next/link"
-import Background from "./background"
+import BackgroundStripes from "./backgroundStripes"
 
 function Footer() {
   return (
@@ -18,7 +18,7 @@ function Footer() {
           News
         </Link>
       </div>
-      <Background />
+      <BackgroundStripes />
     </footer>
   )
 }
