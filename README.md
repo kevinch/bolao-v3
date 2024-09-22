@@ -20,6 +20,8 @@ Open [http://localhost:3000](http://localhost:3000)
 
 - Frontend: NextJS - [docs](https://nextjs.org/docs)
 - Styling: Tailwind - [docs](https://tailwindcss.com/docs/installation)
+- Components: Shadcn UI - [docs](https://ui.shadcn.com/docs/components)
+- Icons: radix-ui/icons - [docs](https://www.radix-ui.com/icons)
 - Host: Vercel - [site](https://vercel.com)
 - Auth: Clerk - [docs](https://clerk.com/docs/references/nextjs/overview) - [dashboard](https://dashboard.clerk.com/)
 - Repo: [github.com/kevinch/bolao-v3](https://github.com/kevinch/bolao-v3)

@@ -46,6 +46,12 @@ export type UserBolao = {
   user_id: string
 }
 
+type SuccessBolaoResult = {
+  success: boolean
+  id: string
+  name: string
+}
+
 type SuccessUserBolaoResult = {
   success: boolean
 } & UserBolao
@@ -56,6 +62,8 @@ type ErrorResult = {
 }
 
 export type CreateUserBolaoResult = SuccessUserBolaoResult | ErrorResult
+
+export type UpdateBolaoResult = SuccessBolaoResult | ErrorResult
 
 type Score = {
   home: number | null

@@ -3,14 +3,14 @@ import { auth } from "@clerk/nextjs/server"
 import Link from "next/link"
 
 import LogoSvg from "./logoSvg"
-import Background from "./Background"
+import BackgroundStripes from "./backgroundStripes"
 
 function Header() {
   const { userId }: { userId: string | null } = auth()
 
   return (
     <header>
-      <Background />
+      <BackgroundStripes />
       <div className="flex justify-between mt-6">
         <div className="content-center">
           <Link href={"/"}>

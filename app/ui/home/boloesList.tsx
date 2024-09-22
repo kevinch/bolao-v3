@@ -4,8 +4,7 @@ import { fetchBoloesByUserId } from "@/app/lib/data"
 import { auth } from "@clerk/nextjs/server"
 import { unstable_noStore as noStore } from "next/cache"
 import { Bolao } from "@/app/lib/definitions"
-import CopyToClipboard from "./copyToClipboard"
-import { STYLES_BOX_SHADOW } from "@/app/lib/utils"
+import BolaoCard from "@/app/components/bolaoCard"
 
 async function getData(userId: string) {
   noStore()
@@ -67,46 +66,15 @@ async function BoloesList() {
       </TabsList>
       <TabsContent value="account">
         {activeGroup.map((el: Bolao) => (
-          <BolaoCard bolao={el} />
+          <BolaoCard key={el.id} bolao={el} userId={userId} />
         ))}
       </TabsContent>
       <TabsContent value="password">
         {passiveGroup.map((el: Bolao) => (
-          <BolaoCard bolao={el} />
+          <BolaoCard key={el.id} bolao={el} userId={userId} />
         ))}
       </TabsContent>
     </Tabs>
-  )
-}
-
-function BolaoCard({ bolao }: { bolao: Bolao }) {
-  return (
-    <div key={bolao.id} className={STYLES_BOX_SHADOW}>
-      <h3 className="text-2xl capitalize mb-4">
-        {bolao.name} - {bolao.year}
-      </h3>
-
-      <div className="flex justify-between">
-        <div className="space-x-4">
-          <Link
-            className="underline hover:no-underline"
-            href={`/bolao/${bolao.id}/bet`}
-          >
-            Bet
-          </Link>
-
-          <Link
-            className="underline hover:no-underline"
-            href={`/bolao/${bolao.id}/results`}
-          >
-            Results
-          </Link>
-        </div>
-        <div>
-          <CopyToClipboard bolaoId={bolao.id} />
-        </div>
-      </div>
-    </div>
   )
 }
 

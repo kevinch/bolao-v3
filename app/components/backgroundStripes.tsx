@@ -2,7 +2,7 @@ import BackgroundStripe from "./backgroundStripe"
 
 const styles = { width: "22%", maxWidth: "90px" }
 
-function Background() {
+function BackgroundStripes() {
   return (
     <div className="background" style={{ height: "15px", width: "100%" }}>
       <div
@@ -30,4 +30,4 @@ function Background() {
   )
 }
 
-export default Background
+export default BackgroundStripes
