@@ -1,9 +1,11 @@
 "use client"
 
-import * as React from "react"
+import { ReactNode, useState, forwardRef } from "react"
 import Link from "next/link"
+import { format } from "date-fns"
 import CopyToClipboard from "./copyToClipboard"
 import { STYLES_BOX_SHADOW } from "@/app/lib/utils"
+import { updateBolao } from "@/app/lib/actions"
 import { Bolao } from "@/app/lib/definitions"
 import { Button } from "@/components/ui/button"
 import {
@@ -30,12 +32,44 @@ import {
   DialogOverlay,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
+import { useToast } from "@/hooks/use-toast"
 
 function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
+  const [name, setName] = useState(bolao.name)
+  const { toast } = useToast()
+
+  let bolaoDate = bolao.year.toString()
+
+  if (bolao.start && bolao.end) {
+    const startYear = new Date(bolao.start).getFullYear()
+    const endYear = new Date(bolao.end).getFullYear()
+
+    if (startYear < endYear) {
+      bolaoDate = `${format(bolao.start, "yy", {})}/${format(bolao.end, "yy", {})}`
+    }
+  }
+
+  async function handleUpdateBolao() {
+    const data = { name, bolaoId: bolao.id }
+
+    const result = await updateBolao(data)
+
+    if (result.success) {
+      toast({
+        description: "The bolão was successfully updated.",
+      })
+    } else {
+      toast({
+        description: "There was an issue with the update.",
+      })
+    }
+  }
+
   return (
     <div key={bolao.id} className={STYLES_BOX_SHADOW}>
       <h3 className="text-2xl capitalize mb-4">
-        {bolao.name} - {bolao.year}
+        {bolao.name}&nbsp;<Badge variant="outline">{bolaoDate}</Badge>
       </h3>
 
       <div className="flex justify-between">
@@ -82,11 +116,15 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
                       Edit this bolão's name
                     </DialogTitle>
                     <DialogDescription className="DialogDescription">
-                      <Input type="text" defaultValue={bolao.name} />
+                      <Input
+                        type="text"
+                        defaultValue={bolao.name}
+                        onChange={(e) => setName(e.target.value)}
+                      />
                     </DialogDescription>
 
                     <DialogFooter>
-                      <Button type="submit">Save changes</Button>
+                      <Button onClick={handleUpdateBolao}>Save</Button>
                     </DialogFooter>
                   </DialogItem>
 
@@ -106,7 +144,7 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
                       cannot be undone. Bets will be deleted as well.
                     </DialogDescription>
                     <DialogFooter>
-                      <Button type="submit" variant="destructive">
+                      <Button disabled variant="destructive">
                         Confirm
                       </Button>
                     </DialogFooter>
@@ -124,13 +162,13 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
 export default BolaoCard
 
 interface DialogItemProps {
-  triggerChildren: React.ReactNode
-  children: React.ReactNode
+  triggerChildren: ReactNode
+  children: ReactNode
   onSelect?: () => void
   onOpenChange?: () => void
 }
 
-const DialogItem = React.forwardRef<HTMLDivElement, DialogItemProps>(
+const DialogItem = forwardRef<HTMLDivElement, DialogItemProps>(
   (props, forwardedRef) => {
     const { triggerChildren, children, onSelect, onOpenChange, ...itemProps } =
       props

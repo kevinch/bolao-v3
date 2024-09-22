@@ -5,7 +5,11 @@ import { redirect } from "next/navigation"
 import { auth } from "@clerk/nextjs/server"
 import { fetchLeague } from "./data"
 import { getCurrentSeasonObject } from "./utils"
-import { BetResult, CreateUserBolaoResult } from "./definitions"
+import {
+  BetResult,
+  UpdateBolaoResult,
+  CreateUserBolaoResult,
+} from "./definitions"
 
 export async function createUser({ id, role }: { id: string; role: string }) {
   try {
@@ -62,6 +66,36 @@ export async function createBolao(formData: any) {
     return {
       success: false,
       message: "Database Error: Failed to Create Bolao.",
+    }
+  }
+}
+
+export async function updateBolao({
+  bolaoId,
+  name,
+}: {
+  bolaoId: string
+  name: string
+}): Promise<UpdateBolaoResult> {
+  try {
+    const data = await sql`
+        UPDATE boloes
+        SET name = ${name}
+        WHERE CAST(id AS VARCHAR) = ${bolaoId}
+        RETURNING *
+      `
+    const result = {
+      id: data.rows[0].id,
+      name: data.rows[0].id,
+      success: true,
+    }
+
+    return result
+  } catch (error) {
+    console.log(error)
+    return {
+      success: false,
+      message: "Database Error: Failed to update a bolao.",
     }
   }
 }
