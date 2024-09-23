@@ -216,3 +216,9 @@ export type LeadData = {
   name: string
   total: number
 }
+
+export type League = {
+  id: number
+  name: string
+  countryName: string
+}
