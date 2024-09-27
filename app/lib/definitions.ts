@@ -48,11 +48,9 @@ export type UserBolao = {
 
 type SuccessBolaoResult = {
   success: boolean
-  id: string
-  name: string
 }
 
-type SuccessUserBolaoResult = {
+type SuccessCreateUserBolaoResult = {
   success: boolean
 } & UserBolao
 
@@ -61,7 +59,13 @@ type ErrorResult = {
   message: string
 }
 
-export type CreateUserBolaoResult = SuccessUserBolaoResult | ErrorResult
+type SuccessCreateBolaoResult = {
+  success: boolean
+}
+
+export type CreateBolaoResult = SuccessCreateBolaoResult | ErrorResult
+
+export type CreateUserBolaoResult = SuccessCreateUserBolaoResult | ErrorResult
 
 export type UpdateBolaoResult = SuccessBolaoResult | ErrorResult
 
@@ -215,4 +219,10 @@ export type ScoreArgs = {
 export type LeadData = {
   name: string
   total: number
+}
+
+export type League = {
+  id: number
+  name: string
+  countryName: string
 }

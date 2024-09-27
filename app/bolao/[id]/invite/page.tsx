@@ -22,6 +22,7 @@ async function getData({
     const data = await createUserBolao(bolaoId)
 
     if (data.success) {
+      // TODO: update to toast
       resultText = "You were added to the bolão with success."
     } else {
       resultText = "Something went wrong while adding you to the bolão."

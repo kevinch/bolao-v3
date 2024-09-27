@@ -9,6 +9,7 @@ import {
   BetResult,
   UpdateBolaoResult,
   CreateUserBolaoResult,
+  CreateBolaoResult,
 } from "./definitions"
 
 export async function createUser({ id, role }: { id: string; role: string }) {
@@ -21,7 +22,7 @@ export async function createUser({ id, role }: { id: string; role: string }) {
   } catch (error) {
     console.error("ERROR", error)
     return {
-      message: "Database Error: Failed to Create User.",
+      message: "Database Error: failed to Create User.",
     }
   }
 }
@@ -30,21 +31,30 @@ export async function navigate(path: string) {
   redirect(path)
 }
 
-export async function createBolao(formData: any) {
-  // type should be FormData
-
+export async function createBolao(
+  formData: FormData
+): Promise<CreateBolaoResult> {
   const { userId }: { userId: string | null } = auth()
 
   const competitionId = formData.get("competitionId")
   const name = formData.get("name")
   const date = new Date().toISOString().split("T")[0]
 
-  const league = await fetchLeague(competitionId)
+  if (typeof name !== "string" || typeof competitionId !== "string") {
+    return {
+      success: false,
+      message: "Invalid data: name or compeitionId is not a string.",
+    }
+  }
+
+  const competitionIdNumber = Number(competitionId)
+  const league = await fetchLeague(competitionIdNumber)
 
   const currentSeason = getCurrentSeasonObject(league.seasons)
   let year
   let start
   let end
+
   if (currentSeason) {
     year = currentSeason.year
     start = currentSeason.start
@@ -60,12 +70,22 @@ export async function createBolao(formData: any) {
 
     const insertedData = result.rows[0]
 
-    createUserBolao(insertedData.id)
+    const userBolaoResult = await createUserBolao(insertedData.id)
+
+    if (userBolaoResult.success) {
+      return {
+        success: true,
+      }
+    }
+    return {
+      success: false,
+      message: "Database Error: failed to create a Bolao.",
+    }
   } catch (error) {
     console.log(error)
     return {
       success: false,
-      message: "Database Error: Failed to Create Bolao.",
+      message: "Database Error: failed to create a Bolao.",
     }
   }
 }
@@ -85,8 +105,6 @@ export async function updateBolao({
         RETURNING *
       `
     const result = {
-      id: data.rows[0].id,
-      name: data.rows[0].id,
       success: true,
     }
 
@@ -95,7 +113,7 @@ export async function updateBolao({
     console.log(error)
     return {
       success: false,
-      message: "Database Error: Failed to update a bolao.",
+      message: "Database Error: failed to update a bolao.",
     }
   }
 }
@@ -124,7 +142,7 @@ export async function createUserBolao(
     console.log(error)
     return {
       success: false,
-      message: "Database Error: Failed to Create UserBolao.",
+      message: "Database Error: failed to Create UserBolao.",
     }
   }
 }
@@ -152,7 +170,7 @@ export async function createBet({
   } catch (error) {
     console.log(error)
     return {
-      message: "Database Error: Failed to set a bet.",
+      message: "Database Error: failed to set a bet.",
     } as BetResult
   }
 }
@@ -177,7 +195,7 @@ export async function updateBet({
   } catch (error) {
     console.log(error)
     return {
-      message: "Database Error: Failed to set a bet.",
+      message: "Database Error: failed to set a bet.",
     } as BetResult
   }
 }
@@ -200,7 +218,7 @@ export async function deleteBolao(bolaoId: string) {
   } catch (error) {
     console.log(error)
     return {
-      message: "Database Error: Failed to delete a bolao.",
+      message: "Database Error: failed to delete a bolao.",
       success: false,
     }
   }
@@ -219,7 +237,7 @@ export async function deleteUserBolao(userBolaoId: string) {
   } catch (error) {
     console.log(error)
     return {
-      message: "Database Error: Failed to delete a user bolao.",
+      message: "Database Error: failed to delete a user bolao.",
     }
   }
 }
@@ -237,7 +255,7 @@ export async function deleteBet(betId: string) {
   } catch (error) {
     console.log(error)
     return {
-      message: "Database Error: Failed to delete a bet.",
+      message: "Database Error: failed to delete a bet.",
     }
   }
 }
