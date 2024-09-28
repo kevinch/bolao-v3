@@ -6,6 +6,7 @@ import { format } from "date-fns"
 import CopyToClipboard from "./copyToClipboard"
 import { STYLES_BOX_SHADOW } from "@/app/lib/utils"
 import { updateBolao } from "@/app/lib/actions"
+import { deleteBolaoGroup } from "@/app/lib/controllerAdmin"
 import { Bolao } from "@/app/lib/definitions"
 import { Button } from "@/components/ui/button"
 import {
@@ -30,6 +31,7 @@ import {
   DialogFooter,
   DialogPortal,
   DialogOverlay,
+  DialogClose,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -37,6 +39,7 @@ import { useToast } from "@/hooks/use-toast"
 
 function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
   const [name, setName] = useState(bolao.name)
+  const [disabledDelete, setDisabledDelete] = useState(false)
   const { toast } = useToast()
 
   let bolaoDate = bolao.year.toString()
@@ -62,6 +65,21 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
     } else {
       toast({
         description: "There was an issue with the update.",
+      })
+    }
+  }
+
+  async function actionDelete(bolaoId: string) {
+    const result = await deleteBolaoGroup(bolaoId)
+
+    if (result.success) {
+      setDisabledDelete(true)
+      toast({
+        description: "The bolão was successfully deleted.",
+      })
+    } else {
+      toast({
+        description: "There was an issue with the creation.",
       })
     }
   }
@@ -144,7 +162,14 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
                       cannot be undone. Bets will be deleted as well.
                     </DialogDescription>
                     <DialogFooter>
-                      <Button disabled variant="destructive">
+                      <DialogClose asChild>
+                        <Button variant="secondary">Cancel</Button>
+                      </DialogClose>
+                      <Button
+                        disabled={disabledDelete}
+                        variant="destructive"
+                        onClick={() => actionDelete(bolao.id)}
+                      >
                         Confirm
                       </Button>
                     </DialogFooter>
@@ -185,7 +210,9 @@ const DialogItem = forwardRef<HTMLDivElement, DialogItemProps>(
               onSelect && onSelect()
             }}
           >
-            {triggerChildren}
+            <span style={{ cursor: "pointer", display: "contents" }}>
+              {triggerChildren}
+            </span>
           </DropdownMenuItem>
         </DialogTrigger>
         <DialogPortal>

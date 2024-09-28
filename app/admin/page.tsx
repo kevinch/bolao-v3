@@ -27,7 +27,7 @@ async function Admin() {
       </PageTitle>
 
       <Suspense fallback={<BoloesListSkeleton />}>
-        <h2 className="mb-10">All Bolões: {data.boloes.length}</h2>
+        <h2 className="mb-10">All Bolões by all users: {data.boloes.length}</h2>
 
         {data.boloes.map((el: Bolao) => {
           return <AdminBolao key={el.id} bolao={el} />
