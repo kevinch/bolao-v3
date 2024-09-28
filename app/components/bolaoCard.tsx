@@ -4,7 +4,7 @@ import { ReactNode, useState, forwardRef } from "react"
 import Link from "next/link"
 import { format } from "date-fns"
 import CopyToClipboard from "./copyToClipboard"
-import { STYLES_BOX_SHADOW } from "@/app/lib/utils"
+import { STYLES_CARD } from "@/app/lib/utils"
 import { updateBolao } from "@/app/lib/actions"
 import { deleteBolaoGroup } from "@/app/lib/controllerAdmin"
 import { Bolao } from "@/app/lib/definitions"
@@ -36,6 +36,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
+import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
 function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
   const [name, setName] = useState(bolao.name)
@@ -85,102 +86,106 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
   }
 
   return (
-    <div key={bolao.id} className={STYLES_BOX_SHADOW}>
-      <h3 className="text-2xl capitalize mb-4">
-        {bolao.name}&nbsp;<Badge variant="outline">{bolaoDate}</Badge>
-      </h3>
+    <Card className={STYLES_CARD}>
+      <CardHeader>
+        <CardTitle>
+          {bolao.name}&nbsp;<Badge variant="outline">{bolaoDate}</Badge>
+        </CardTitle>
+      </CardHeader>
 
-      <div className="flex justify-between">
-        <div className="space-x-4">
-          <Link
-            className="underline hover:no-underline"
-            href={`/bolao/${bolao.id}/bet`}
-          >
-            Bet
-          </Link>
+      <CardFooter>
+        <div className="flex justify-between w-full">
+          <div className="space-x-4">
+            <Link
+              className="underline hover:no-underline"
+              href={`/bolao/${bolao.id}/bet`}
+            >
+              Bet
+            </Link>
 
-          <Link
-            className="underline hover:no-underline"
-            href={`/bolao/${bolao.id}/results`}
-          >
-            Results
-          </Link>
+            <Link
+              className="underline hover:no-underline"
+              href={`/bolao/${bolao.id}/results`}
+            >
+              Results
+            </Link>
+          </div>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon">
+                <DotsVerticalIcon className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuGroup>
+                <DropdownMenuItem>
+                  <ClipboardCopyIcon className="h-4 w-4 mr-2" />
+                  <CopyToClipboard bolaoId={bolao.id} />
+                </DropdownMenuItem>
+
+                {bolao.created_by === userId && (
+                  <>
+                    <DialogItem
+                      triggerChildren={
+                        <>
+                          <Pencil2Icon className="h-4 w-4 mr-2" /> Edit
+                        </>
+                      }
+                    >
+                      <DialogTitle className="DialogTitle">
+                        Edit this bolão's name
+                      </DialogTitle>
+                      <DialogDescription className="DialogDescription">
+                        <Input
+                          type="text"
+                          defaultValue={bolao.name}
+                          onChange={(e) => setName(e.target.value)}
+                        />
+                      </DialogDescription>
+
+                      <DialogFooter>
+                        <Button onClick={handleUpdateBolao}>Save</Button>
+                      </DialogFooter>
+                    </DialogItem>
+
+                    <DialogItem
+                      triggerChildren={
+                        <>
+                          <TrashIcon className="h-4 w-4 mr-2" color="red" />
+                          <span style={{ color: "red" }}> Delete</span>
+                        </>
+                      }
+                    >
+                      <DialogTitle className="DialogTitle">
+                        Delete bolão
+                      </DialogTitle>
+                      <DialogDescription className="DialogDescription">
+                        Are you sure you want to delete this bolão? This action
+                        cannot be undone. Bets will be deleted as well.
+                      </DialogDescription>
+                      <DialogFooter>
+                        <DialogClose asChild>
+                          <Button variant="secondary">Cancel</Button>
+                        </DialogClose>
+                        <Button
+                          disabled={disabledDelete}
+                          variant="destructive"
+                          onClick={() => actionDelete(bolao.id)}
+                        >
+                          Confirm
+                        </Button>
+                      </DialogFooter>
+                    </DialogItem>
+                  </>
+                )}
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
-
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon">
-              <DotsVerticalIcon className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-
-          <DropdownMenuContent className="w-56">
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <ClipboardCopyIcon className="h-4 w-4 mr-2" />
-                <CopyToClipboard bolaoId={bolao.id} />
-              </DropdownMenuItem>
-
-              {bolao.created_by === userId && (
-                <>
-                  <DialogItem
-                    triggerChildren={
-                      <>
-                        <Pencil2Icon className="h-4 w-4 mr-2" /> Edit
-                      </>
-                    }
-                  >
-                    <DialogTitle className="DialogTitle">
-                      Edit this bolão's name
-                    </DialogTitle>
-                    <DialogDescription className="DialogDescription">
-                      <Input
-                        type="text"
-                        defaultValue={bolao.name}
-                        onChange={(e) => setName(e.target.value)}
-                      />
-                    </DialogDescription>
-
-                    <DialogFooter>
-                      <Button onClick={handleUpdateBolao}>Save</Button>
-                    </DialogFooter>
-                  </DialogItem>
-
-                  <DialogItem
-                    triggerChildren={
-                      <>
-                        <TrashIcon className="h-4 w-4 mr-2" color="red" />
-                        <span style={{ color: "red" }}> Delete</span>
-                      </>
-                    }
-                  >
-                    <DialogTitle className="DialogTitle">
-                      Delete bolão
-                    </DialogTitle>
-                    <DialogDescription className="DialogDescription">
-                      Are you sure you want to delete this bolão? This action
-                      cannot be undone. Bets will be deleted as well.
-                    </DialogDescription>
-                    <DialogFooter>
-                      <DialogClose asChild>
-                        <Button variant="secondary">Cancel</Button>
-                      </DialogClose>
-                      <Button
-                        disabled={disabledDelete}
-                        variant="destructive"
-                        onClick={() => actionDelete(bolao.id)}
-                      >
-                        Confirm
-                      </Button>
-                    </DialogFooter>
-                  </DialogItem>
-                </>
-              )}
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    </div>
+      </CardFooter>
+    </Card>
   )
 }
 
