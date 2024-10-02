@@ -1,4 +1,10 @@
 import Image from "next/image"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 type Props = {
   name: string
@@ -12,7 +18,21 @@ function TeamCodeLogo({ name, logoSrc }: Props) {
   return (
     <span className="flex justify-center flex-col mx-3">
       <span className="flex justify-center">
-        <Image width={20} height={20} src={logoSrc} alt={`${name}'s logo`} />
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Image
+                width={20}
+                height={20}
+                src={logoSrc}
+                alt={`${name}'s logo`}
+              />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{name}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </span>
       <span className="text-sm">{formatTeamCode(name)}</span>
     </span>
