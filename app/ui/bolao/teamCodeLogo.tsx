@@ -10,7 +10,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { BrowserView, MobileView } from "react-device-detect"
+import { isBrowser } from "react-device-detect"
 
 type Props = {
   name: string
@@ -21,44 +21,44 @@ const formatTeamCode = (name: string) =>
   name.toUpperCase().replace(" ", "").slice(0, 3)
 
 function TeamCodeLogo({ name, logoSrc }: Props) {
-  return (
-    <span className="flex justify-center flex-col mx-3">
-      <span className="flex justify-center">
-        <BrowserView>
+  const triggerElement = (
+    <Image
+      width={100} // Placeholder width
+      height={100} // Placeholder height
+      className="h-[20px] w-auto"
+      src={logoSrc}
+      alt={`${name}'s logo`}
+    />
+  )
+
+  if (isBrowser) {
+    return (
+      <span className="flex justify-center flex-col mx-3">
+        <span className="flex justify-center">
           <TooltipProvider delayDuration={0}>
             <Tooltip>
-              <TooltipTrigger asChild>
-                <Image
-                  width={20}
-                  height={20}
-                  src={logoSrc}
-                  alt={`${name}'s logo`}
-                />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>{name}</p>
-              </TooltipContent>
+              <TooltipTrigger asChild>{triggerElement}</TooltipTrigger>
+              <TooltipContent>{name}</TooltipContent>
             </Tooltip>
           </TooltipProvider>
-        </BrowserView>
-        <MobileView>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Image
-                width={20}
-                height={20}
-                src={logoSrc}
-                alt={`${name}'s logo`}
-              />
-            </PopoverTrigger>
-            <PopoverContent className="w-80">
-              <p>{name}</p>
-            </PopoverContent>
-          </Popover>
-        </MobileView>
+        </span>
+        <span className="text-sm text-center">{formatTeamCode(name)}</span>
       </span>
-      <span className="text-sm">{formatTeamCode(name)}</span>
-    </span>
+    )
+  }
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <span className="flex justify-center flex-col mx-3">
+          <span className="flex justify-center">{triggerElement}</span>
+          <span className="text-sm text-center">{formatTeamCode(name)}</span>
+        </span>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto">
+        <span>{name}</span>
+      </PopoverContent>
+    </Popover>
   )
 }
 
