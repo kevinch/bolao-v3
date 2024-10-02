@@ -49,10 +49,10 @@ function TableStandings({ standingsLeague }: TableProps) {
                 <td className="text-left">
                   <Image
                     src={el.team.logo}
-                    width={20}
-                    height={20}
-                    alt={`Logo of ${el.team.name}`}
-                    className="inline mr-2"
+                    width={100} // Placeholder width
+                    height={100} // Placeholder height
+                    className="inline mr-2 max-h-[20px] max-w-[20px] object-contain"
+                    alt={`${el.team.name}'s logo`}
                   />
                   {el.team.name}
                 </td>
