@@ -38,8 +38,7 @@ async function ResultsPage({
   return (
     <main>
       <BolaoPageTitle
-        bolaoName={data.bolao.name}
-        bolaoYear={data.bolao.year}
+        bolao={data.bolao}
         leagueLogo={data.fixtures[0].league.logo}
         leagueName={data.fixtures[0].league.name}
       />

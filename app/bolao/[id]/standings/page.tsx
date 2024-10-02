@@ -13,8 +13,7 @@ async function StandingsPage({ params }: { params: { id: string } }) {
   return (
     <main>
       <BolaoPageTitle
-        bolaoName={data.bolao.name}
-        bolaoYear={data.bolao.year}
+        bolao={data.bolao}
         leagueLogo={data.standingsLeague.logo}
         leagueName={data.standingsLeague.name}
       />

@@ -34,7 +34,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
+import BolaoYearBadge from "@/app/components/bolaoYearBadge"
 import { useToast } from "@/hooks/use-toast"
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
@@ -50,7 +50,7 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
     const endYear = new Date(bolao.end).getFullYear()
 
     if (startYear < endYear) {
-      bolaoDate = `${format(bolao.start, "yy", {})}/${format(bolao.end, "yy", {})}`
+      bolaoDate = `${format(bolao.start, "yyyy", {})}/${format(bolao.end, "yyyy", {})}`
     }
   }
 
@@ -89,7 +89,8 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
     <Card className={STYLES_CARD}>
       <CardHeader>
         <CardTitle>
-          {bolao.name}&nbsp;<Badge variant="outline">{bolaoDate}</Badge>
+          {bolao.name}&nbsp;
+          <BolaoYearBadge bolao={bolao} />
         </CardTitle>
       </CardHeader>
 

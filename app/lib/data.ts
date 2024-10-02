@@ -40,14 +40,15 @@ export async function fetchBoloesByUserId(userId: string) {
     return data.rows as Bolao[]
   } catch (error) {
     console.error("Database Error:", error)
-    throw new Error("Failed to fetch boloes.")
+    throw new Error("Failed to fetch boloes by user id.")
   }
 }
 
 export async function fetchBolao(bolaoId: string) {
+  noStore()
+
   try {
-    const data: { rows: QueryResultRow[] } =
-      await sql`SELECT name, id, competition_id, year
+    const data: { rows: QueryResultRow[] } = await sql`SELECT *
       FROM boloes
       WHERE CAST(id AS VARCHAR) = ${bolaoId}
     `
@@ -63,10 +64,14 @@ export async function fetchBolao(bolaoId: string) {
       name: row.name as string,
       competition_id: row.competition_id as string,
       year: row.year as number,
+      start: row.start,
+      end: row.end,
+      created_by: row.created_by,
+      created_at: row.created_at,
     }
   } catch (error) {
     console.error("Database Error:", error)
-    throw new Error("Failed to fetch boloes.")
+    throw new Error("Failed to fetch bolao.")
   }
 }
 
@@ -77,6 +82,8 @@ export async function fetchUserBolao({
   bolaoId: string
   userId: string
 }) {
+  noStore()
+
   if (!userId || !bolaoId) {
     throw new Error("Missing userid or bolaoId")
   }
@@ -99,6 +106,8 @@ export async function fetchUserBolao({
 }
 
 export async function fetchUsersBolao(bolaoId: string) {
+  noStore()
+
   try {
     const data: { rows: QueryResultRow[] } = await sql`SELECT *
       FROM user_bolao
@@ -119,13 +128,18 @@ export async function fetchUsersBolao(bolaoId: string) {
 }
 
 export async function fetchLeagues() {
+  noStore()
+
   return FOOTBALL_API_SPORTS_LEAGUES.sort((a, b) =>
     a.name.localeCompare(b.name)
   )
 }
 
 export async function fetchLeague(leagueId: number) {
+  noStore()
+
   let token: string
+
   if (process.env.RAPID_API_KEY) {
     token = process.env.RAPID_API_KEY
   } else {
@@ -164,7 +178,10 @@ export async function fetchRounds({
   year: number
   current?: boolean
 }) {
+  noStore()
+
   let token: string
+
   if (process.env.RAPID_API_KEY) {
     token = process.env.RAPID_API_KEY
   } else {
@@ -206,7 +223,10 @@ export async function fetchFixtures({
   year: number
   round?: string
 }) {
+  noStore()
+
   let token: string
+
   if (process.env.RAPID_API_KEY) {
     token = process.env.RAPID_API_KEY
   } else {
@@ -242,6 +262,8 @@ export async function fetchFixtures({
 }
 
 export async function fetchUserBets(userBolaoId: string) {
+  noStore()
+
   if (!userBolaoId) {
     throw new Error("Missing userBolaoId")
   }
@@ -266,6 +288,8 @@ export async function fetchUserBets(userBolaoId: string) {
 }
 
 export async function fetchUsersBets(userBoloesIds: string[]) {
+  noStore()
+
   if (!userBoloesIds) {
     throw new Error("Missing userBoloesIds")
   }
@@ -296,7 +320,10 @@ export async function fetchStandings({
   leagueId: string
   year: number
 }) {
+  noStore()
+
   let token: string
+
   if (process.env.RAPID_API_KEY) {
     token = process.env.RAPID_API_KEY
   } else {

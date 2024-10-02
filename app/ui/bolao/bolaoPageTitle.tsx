@@ -1,19 +1,15 @@
 import PageTitle from "@/app/components/pageTitle"
 import Image from "next/image"
+import BolaoYearBadge from "@/app/components/bolaoYearBadge"
+import type { Bolao } from "@/app/lib/definitions"
 
 type Props = {
-  bolaoName: string
-  bolaoYear: string | number
+  bolao: Bolao
   leagueName?: string
   leagueLogo?: string
 }
 
-function BolaoPageTitle({
-  bolaoName,
-  leagueName,
-  leagueLogo,
-  bolaoYear,
-}: Props) {
+function BolaoPageTitle({ leagueName, leagueLogo, bolao }: Props) {
   return (
     <PageTitle center={true}>
       {leagueLogo && (
@@ -21,16 +17,16 @@ function BolaoPageTitle({
           <Image
             alt={`${leagueName}'s logo`}
             src={leagueLogo}
-            width={40}
-            height={40}
+            width={60}
+            height={60}
           />
         </div>
       )}
 
-      {bolaoName}
+      {bolao.name}
       <br />
       <span className="text-lg">
-        {leagueName} - {bolaoYear}
+        {leagueName} <BolaoYearBadge bolao={bolao} />
         <br />
       </span>
     </PageTitle>
