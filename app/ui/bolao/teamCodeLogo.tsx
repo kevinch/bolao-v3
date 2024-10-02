@@ -1,6 +1,5 @@
-"use client"
+"use client" // keep this to trigger the popovers on mobile
 
-import { useState } from "react"
 import Image from "next/image"
 import {
   Tooltip,
@@ -24,8 +23,6 @@ const formatTeamCode = (name: string) =>
   name.toUpperCase().replace(" ", "").slice(0, 3)
 
 function TeamCodeLogo({ name, logoSrc }: Props) {
-  const [open, setOpen] = useState(false)
-
   const triggerElement = (
     <Image
       width={100} // Placeholder width
@@ -35,41 +32,6 @@ function TeamCodeLogo({ name, logoSrc }: Props) {
       alt={`${name}'s logo`}
     />
   )
-
-  // return (
-  //   <>
-  //     <TooltipProvider delayDuration={0}>
-  //       <Tooltip open={open}>
-  //         <TooltipTrigger asChild>
-  //           <span className="flex justify-center flex-col mx-3">
-  //             <span className="flex justify-center">
-  //               <button
-  //                 type="button"
-  //                 className="cursor-pointer"
-  //                 onClick={() => setOpen(!open)}
-  //                 onMouseEnter={() => setOpen(true)}
-  //                 onMouseLeave={() => setOpen(false)}
-  //                 onTouchStart={() => setOpen(!open)}
-  //                 onKeyDown={(e) => {
-  //                   e.preventDefault()
-  //                   e.key === "Enter" && setOpen(!open)
-  //                 }}
-  //               >
-  //                 {triggerElement}
-  //               </button>{" "}
-  //             </span>
-  //             <span className="text-sm text-center">
-  //               {formatTeamCode(name)}
-  //             </span>
-  //           </span>
-  //         </TooltipTrigger>
-  //         <TooltipContent>
-  //           <span className="inline-block">{name}</span>
-  //         </TooltipContent>
-  //       </Tooltip>
-  //     </TooltipProvider>
-  //   </>
-  // )
 
   if (isBrowser) {
     return (
@@ -90,8 +52,8 @@ function TeamCodeLogo({ name, logoSrc }: Props) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <button className="flex justify-center flex-col mx-3">
-          <span className="flex justify-center">{triggerElement}</span>
+        <button className="flex items-center justify-center flex-col mx-3">
+          {triggerElement}
           <span className="text-sm text-center">{formatTeamCode(name)}</span>
         </button>
       </PopoverTrigger>
