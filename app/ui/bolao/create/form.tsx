@@ -66,11 +66,14 @@ function Form({ leagues }: FormProps) {
 
     if (result.success) {
       toast({
+        title: "Success",
         description: "The bolão was successfully created.",
+        variant: "success",
       })
     } else {
       toast({
         description: "There was an issue with the creation.",
+        variant: "destructive",
       })
     }
   }

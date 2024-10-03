@@ -61,11 +61,14 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
 
     if (result.success) {
       toast({
+        title: "Success",
         description: "The bolão was successfully updated.",
+        variant: "success",
       })
     } else {
       toast({
         description: "There was an issue with the update.",
+        variant: "destructive",
       })
     }
   }
@@ -76,11 +79,14 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
     if (result.success) {
       setDisabledDelete(true)
       toast({
+        title: "Success",
         description: "The bolão was successfully deleted.",
+        variant: "success",
       })
     } else {
       toast({
         description: "There was an issue with the creation.",
+        variant: "destructive",
       })
     }
   }

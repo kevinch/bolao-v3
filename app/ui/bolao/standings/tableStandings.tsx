@@ -18,7 +18,7 @@ function Thead({ title }: { title: string }) {
     <thead className="uppercase">
       <tr>
         <th>&nbsp;&nbsp;</th>
-        <th className="font-normal text-xs py-3 text-left w-2/6">{title}</th>
+        <th className="font-normal text-xs py-3 text-left w-2/6">Club</th>
         <th className={thClasses}>p</th>
         <th className={thClasses}>w</th>
         <th className={thClasses}>d</th>
@@ -26,7 +26,7 @@ function Thead({ title }: { title: string }) {
         <th className={thClasses}>gf</th>
         <th className={thClasses}>ga</th>
         <th className={thClasses}>gd</th>
-        <th className={clsx("font-bold text-sm")}>pts</th>
+        <th className={clsx("font-bold")}>pts</th>
       </tr>
     </thead>
   )

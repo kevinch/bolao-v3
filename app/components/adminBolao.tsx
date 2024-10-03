@@ -29,11 +29,14 @@ function AdminBolao({ bolao }: { bolao: Bolao }) {
     if (result.success) {
       setDeleted(true)
       toast({
+        title: "Success",
         description: "The bolão was successfully deleted.",
+        variant: "success",
       })
     } else {
       toast({
         description: "There was an issue with the deletion.",
+        variant: "destructive",
       })
     }
   }

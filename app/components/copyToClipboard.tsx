@@ -9,12 +9,23 @@ type Props = {
 function CopyToClipboard({ bolaoId }: Props) {
   const { toast } = useToast()
 
-  function handleCopyClipboard() {
-    navigator.clipboard.writeText(`${window.location}bolao/${bolaoId}/invite`)
+  async function handleCopyClipboard() {
+    try {
+      await navigator.clipboard.writeText(
+        `${window.location}bolao/${bolaoId}/invite`
+      )
 
-    toast({
-      description: "The link was copied to the clipboard.",
-    })
+      toast({
+        title: "Success",
+        description: "The link was copied to the clipboard.",
+        variant: "success",
+      })
+    } catch {
+      toast({
+        description: "Failed to copy the link to the clipboard.",
+        variant: "destructive",
+      })
+    }
   }
 
   return <button onClick={handleCopyClipboard}>Copy invite link</button>
