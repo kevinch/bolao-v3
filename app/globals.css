@@ -109,3 +109,7 @@
 .news-container p {
   margin-bottom: 1em;
 }
+
+.news-container p a {
+  text-decoration: underline;
+}
