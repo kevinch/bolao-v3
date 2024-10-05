@@ -1,6 +1,5 @@
 "use client"
 
-import { STYLES_BOX_SHADOW } from "@/app/lib/utils"
 import clsx from "clsx"
 import { Bolao } from "@/app/lib/definitions"
 import { deleteBolaoGroup } from "../lib/controllerAdmin"
@@ -18,6 +17,7 @@ import {
   DialogTrigger,
   DialogClose,
 } from "@/components/ui/dialog"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 function AdminBolao({ bolao }: { bolao: Bolao }) {
   const [deleted, setDeleted] = useState(false)
@@ -44,52 +44,56 @@ function AdminBolao({ bolao }: { bolao: Bolao }) {
   const formatedDate = formatDateNews(bolao.created_at.toString())
 
   return (
-    <div key={bolao.id} className={STYLES_BOX_SHADOW}>
-      <h3 className="text-1xl capitalize mb-4">{bolao.name}</h3>
+    <Card key={bolao.id} className="mb-8">
+      <CardHeader>
+        <CardTitle>{bolao.name}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex justify-between">
+          <div>
+            <div>Competition id: {bolao.competition_id}</div>
+            <div>Id: ****{bolao.id.slice(-5)}</div>
+            <div>Created by: ****{bolao.created_by.slice(-5)}</div>
+            <div>Created at: {formatedDate}</div>
+          </div>
 
-      <div className="flex justify-between">
-        <div className="">
-          <div>Competition id: {bolao.competition_id}</div>
-          <div>Id: ****{bolao.id.slice(-5)}</div>
-          <div>Created by: ****{bolao.created_by.slice(-5)}</div>
-          <div>Created at: {formatedDate}</div>
+          <div>
+            {deleted ? (
+              <span className={clsx("text-green-500")}>Deleted</span>
+            ) : (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="destructive">delete</Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Delete bolão</DialogTitle>
+                    <DialogDescription>
+                      You have selected the bolão "<strong>{bolao.name}</strong>
+                      ".
+                      <br />
+                      Once confirmed, this action cannot be undone.
+                    </DialogDescription>
+                  </DialogHeader>
+
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="secondary">Cancel</Button>
+                    </DialogClose>
+                    <Button
+                      variant="destructive"
+                      onClick={() => actionDelete(bolao.id)}
+                    >
+                      Confirm
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            )}
+          </div>
         </div>
-
-        <div>
-          {deleted ? (
-            <span className={clsx("text-green-500")}>Deleted</span>
-          ) : (
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="destructive">delete</Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                  <DialogTitle>Delete bolão</DialogTitle>
-                  <DialogDescription>
-                    You have selected the bolão "<strong>{bolao.name}</strong>".
-                    <br />
-                    Once confirmed, this action cannot be undone.
-                  </DialogDescription>
-                </DialogHeader>
-
-                <DialogFooter>
-                  <DialogClose asChild>
-                    <Button variant="secondary">Cancel</Button>
-                  </DialogClose>
-                  <Button
-                    variant="destructive"
-                    onClick={() => actionDelete(bolao.id)}
-                  >
-                    Confirm
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          )}
-        </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   )
 }
 

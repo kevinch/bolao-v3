@@ -2,6 +2,8 @@
 
 import Link from "next/link"
 import { usePathname, useSearchParams } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { ChevronRightIcon, ChevronLeftIcon } from "@radix-ui/react-icons"
 
 type Props = {
   currentRoundIndex: number
@@ -25,23 +27,21 @@ function Pagination({ currentRoundIndex, isLastRound, isFirstRound }: Props) {
   return (
     <div className="flex justify-center mb-10 items-center">
       {!isFirstRound && (
-        <Link
-          href={createPageURL(-1)}
-          className="border px-2 mx-2 rounded bg-slate-50"
-        >
-          &lsaquo;
-        </Link>
+        <Button asChild size="icon" variant="outline">
+          <Link href={createPageURL(-1)}>
+            <ChevronLeftIcon />
+          </Link>
+        </Button>
       )}
 
-      <span className="uppercase text-xs">Round: {currentRoundIndex}</span>
+      <span className="uppercase text-xs mx-4">Round: {currentRoundIndex}</span>
 
       {!isLastRound && (
-        <Link
-          href={createPageURL(+1)}
-          className="border px-2 mx-2 rounded bg-slate-50"
-        >
-          &rsaquo;
-        </Link>
+        <Button asChild size="icon" variant="outline">
+          <Link href={createPageURL(+1)}>
+            <ChevronRightIcon />
+          </Link>
+        </Button>
       )}
     </div>
   )

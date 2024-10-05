@@ -4,9 +4,11 @@ import PageTitle from "@/app/components/pageTitle"
 export default function Page() {
   return (
     <main>
-      <PageTitle>Sign In</PageTitle>
+      <PageTitle>Login</PageTitle>
 
-      <SignIn />
+      <div className="flex justify-center">
+        <SignIn />
+      </div>
     </main>
   )
 }

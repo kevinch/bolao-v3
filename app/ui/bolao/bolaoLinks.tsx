@@ -1,55 +1,34 @@
-import clsx from "clsx"
 import Link from "next/link"
-
-const classesLink = "uppercase py-4"
+import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
 
 type Props = {
   bolaoId: string
-  active: number
+  active?: number
 }
 
-function BolaoLinks({ bolaoId, active }: Props) {
-  const classesDiv = "flex grow justify-center w-1/4 text-xs"
-
+function BolaoLinks({ bolaoId }: Props) {
   return (
-    <div className="flex mb-10">
-      <div
-        className={clsx(classesDiv, {
-          "border-b-2": active === 1,
-        })}
-      >
-        <Link className={classesLink} href={`/bolao/${bolaoId}/bet`}>
-          bet
-        </Link>
+    <>
+      <div className="flex justify-center space-x-4 _mb-10">
+        <Button size="sm" asChild variant="ghost">
+          <Link href={`/bolao/${bolaoId}/bet`}>BET</Link>
+        </Button>
+
+        <Button size="sm" asChild variant="ghost">
+          <Link href={`/bolao/${bolaoId}/standings`}>STANDINGS</Link>
+        </Button>
+
+        <Button size="sm" asChild variant="ghost">
+          <Link href={`/bolao/${bolaoId}/results`}>RESULTS</Link>
+        </Button>
+
+        <Button size="sm" asChild variant="ghost">
+          <Link href={`/bolao/${bolaoId}/lead`}>LEAD</Link>
+        </Button>
       </div>
-      <div
-        className={clsx(classesDiv, {
-          "border-b-2": active === 2,
-        })}
-      >
-        <Link className={classesLink} href={`/bolao/${bolaoId}/standings`}>
-          standings
-        </Link>
-      </div>
-      <div
-        className={clsx(classesDiv, {
-          "border-b-2": active === 3,
-        })}
-      >
-        <Link className={classesLink} href={`/bolao/${bolaoId}/results`}>
-          results
-        </Link>
-      </div>
-      <div
-        className={clsx(classesDiv, {
-          "border-b-2": active === 4,
-        })}
-      >
-        <Link className={classesLink} href={`/bolao/${bolaoId}/lead`}>
-          lead
-        </Link>
-      </div>
-    </div>
+      <Separator className="my-4" />
+    </>
   )
 }
 

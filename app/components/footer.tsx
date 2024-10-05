@@ -1,22 +1,23 @@
 import Link from "next/link"
+import { Button } from "@/components/ui/button"
 import BackgroundStripes from "./backgroundStripes"
 
 function Footer() {
   return (
-    <footer className="mt-28 text-sm">
-      <div className="flex space-x-4 justify-center">
-        <Link className="underline hover:no-underline" href="/">
-          Home
-        </Link>
-        <Link className="underline hover:no-underline" href="/bolao/create">
-          Create Bolão
-        </Link>
-        <Link className="underline hover:no-underline" href="/about">
-          About
-        </Link>
-        <Link className="underline hover:no-underline" href="/news">
-          News
-        </Link>
+    <footer className="mt-20 text-sm">
+      <div className="flex space-x-0 mb-4 justify-center">
+        <Button asChild variant="ghost">
+          <Link href="/">Home</Link>
+        </Button>
+        <Button asChild variant="ghost">
+          <Link href="/bolao/create">Create bolão</Link>
+        </Button>
+        <Button asChild variant="ghost">
+          <Link href="/about">About</Link>
+        </Button>
+        <Button asChild variant="ghost">
+          <Link href="/news">News</Link>
+        </Button>
       </div>
       <BackgroundStripes />
     </footer>

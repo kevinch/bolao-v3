@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Button } from "@/components/ui/button"
 import { fetchBoloesByUserId } from "@/app/lib/data"
 import { auth } from "@clerk/nextjs/server"
 import { unstable_noStore as noStore } from "next/cache"
@@ -30,9 +31,9 @@ async function BoloesList() {
   if (data.length === 0) {
     return (
       <div className="flex items-center flex-col space-y-8 uppercase">
-        <Link className="underline hover:no-underline" href="/bolao/create">
-          Create Bolão
-        </Link>
+        <Button asChild size="lg">
+          <Link href="/bolao/create">Create bolão</Link>
+        </Button>
       </div>
     )
   }
@@ -60,10 +61,16 @@ async function BoloesList() {
 
   return (
     <Tabs defaultValue="account" className="">
-      <TabsList>
-        <TabsTrigger value="account">Active bolões</TabsTrigger>
-        <TabsTrigger value="password">Past bolões</TabsTrigger>
-      </TabsList>
+      <div style={{}} className="flex justify-between mb-4">
+        <TabsList>
+          <TabsTrigger value="account">Active bolões</TabsTrigger>
+          <TabsTrigger value="password">Past bolões</TabsTrigger>
+        </TabsList>
+
+        <Button asChild size="sm">
+          <Link href="/bolao/create">Create bolão</Link>
+        </Button>
+      </div>
       <TabsContent value="account">
         {activeGroup.map((el: Bolao) => (
           <BolaoCard key={el.id} bolao={el} userId={userId} />

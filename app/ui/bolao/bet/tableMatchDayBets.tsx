@@ -1,13 +1,10 @@
 import { FixtureData, Bet } from "@/app/lib/definitions"
 import ButtonsBet from "./buttonsBet"
-import {
-  findBetObj,
-  STATUSES_OPEN_TO_PLAY,
-  STYLES_BOX_SHADOW,
-} from "@/app/lib/utils"
+import { findBetObj, STATUSES_OPEN_TO_PLAY } from "@/app/lib/utils"
 import TeamCodeLogo from "@/app/ui/bolao/teamCodeLogo"
 import TeamScore from "@/app/ui/bolao/teamScore"
 import FixtureDate from "@/app/ui/bolao/fixtureDate"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 type TableProps = {
   fixtures: FixtureData[]
@@ -18,79 +15,87 @@ type TableProps = {
 function TableMatchDayBets({ fixtures, userBolaoId, bets }: TableProps) {
   if (fixtures) {
     return (
-      <div className={STYLES_BOX_SHADOW}>
-        {fixtures.map((fixtureData: FixtureData) => {
-          const statusShort = fixtureData.fixture.status.short
+      <Card>
+        <CardHeader>
+          <CardTitle>Bet on the next matches</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {fixtures.map((fixtureData: FixtureData, i: number) => {
+            const statusShort = fixtureData.fixture.status.short
 
-          const disabled = !STATUSES_OPEN_TO_PLAY.includes(statusShort)
+            const disabled = !STATUSES_OPEN_TO_PLAY.includes(statusShort)
 
-          const fixtureId = fixtureData.fixture.id.toString()
-          const homeBet: Bet | null = findBetObj({
-            bets,
-            fixtureId,
-            type: "home",
-          })
+            const fixtureId = fixtureData.fixture.id.toString()
+            const homeBet: Bet | null = findBetObj({
+              bets,
+              fixtureId,
+              type: "home",
+            })
 
-          const awayBet: Bet | null = findBetObj({
-            bets,
-            fixtureId,
-            type: "away",
-          })
+            const awayBet: Bet | null = findBetObj({
+              bets,
+              fixtureId,
+              type: "away",
+            })
 
-          return (
-            <div key={fixtureId} className="mb-4">
-              <FixtureDate
-                date={fixtureData.fixture.date.toString()}
-                status={fixtureData.fixture.status}
-              />
-
-              <div className="flex justify-center content-center">
-                <ButtonsBet
-                  fixtureId={fixtureId}
-                  type="home"
-                  userBolaoId={userBolaoId}
-                  betValue={homeBet?.value}
-                  betId={homeBet?.id}
-                  disabled={disabled}
+            return (
+              <div
+                key={fixtureId}
+                className={i < fixtures.length - 1 ? "mb-4" : "mb-0"}
+              >
+                <FixtureDate
+                  date={fixtureData.fixture.date.toString()}
+                  status={fixtureData.fixture.status}
                 />
 
-                <TeamCodeLogo
-                  logoSrc={fixtureData.teams.home.logo}
-                  name={fixtureData.teams.home.name}
-                />
-                <TeamScore
-                  score={fixtureData.score}
-                  goals={fixtureData.goals}
-                  type="home"
-                  status={statusShort}
-                />
+                <div className="flex justify-center content-center">
+                  <ButtonsBet
+                    fixtureId={fixtureId}
+                    type="home"
+                    userBolaoId={userBolaoId}
+                    betValue={homeBet?.value}
+                    betId={homeBet?.id}
+                    disabled={disabled}
+                  />
 
-                <span className="mx-3 text-xs content-center">&times;</span>
+                  <TeamCodeLogo
+                    logoSrc={fixtureData.teams.home.logo}
+                    name={fixtureData.teams.home.name}
+                  />
+                  <TeamScore
+                    score={fixtureData.score}
+                    goals={fixtureData.goals}
+                    type="home"
+                    status={statusShort}
+                  />
 
-                <TeamScore
-                  score={fixtureData.score}
-                  goals={fixtureData.goals}
-                  type="away"
-                  status={statusShort}
-                />
-                <TeamCodeLogo
-                  logoSrc={fixtureData.teams.away.logo}
-                  name={fixtureData.teams.away.name}
-                />
+                  <span className="mx-3 text-xs content-center">&times;</span>
 
-                <ButtonsBet
-                  fixtureId={fixtureId}
-                  type="away"
-                  userBolaoId={userBolaoId}
-                  betValue={awayBet?.value}
-                  betId={awayBet?.id}
-                  disabled={disabled}
-                />
+                  <TeamScore
+                    score={fixtureData.score}
+                    goals={fixtureData.goals}
+                    type="away"
+                    status={statusShort}
+                  />
+                  <TeamCodeLogo
+                    logoSrc={fixtureData.teams.away.logo}
+                    name={fixtureData.teams.away.name}
+                  />
+
+                  <ButtonsBet
+                    fixtureId={fixtureId}
+                    type="away"
+                    userBolaoId={userBolaoId}
+                    betValue={awayBet?.value}
+                    betId={awayBet?.id}
+                    disabled={disabled}
+                  />
+                </div>
               </div>
-            </div>
-          )
-        })}
-      </div>
+            )
+          })}
+        </CardContent>
+      </Card>
     )
   }
 

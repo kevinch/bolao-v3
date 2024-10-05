@@ -131,6 +131,4 @@ export const STATUSES_IN_PLAY = ["1H", "HT", "2H", "ET", "BT", "LIVE"]
 export const STATUSES_FINISHED = ["FT", "AET", "PEN", "CANC", ""]
 export const STATUSES_ERROR = ["CANC", "PST", "ABD", "AWD"]
 
-export const STYLES_CARD = "mb-6"
-export const STYLES_BOX_SHADOW = "shadow-md bg-white p-4 mb-6"
 export const STYLES_TABLE_SHADOW = "shadow-md bg-white p-0 mb-6"

@@ -4,7 +4,6 @@ import { ReactNode, useState, forwardRef } from "react"
 import Link from "next/link"
 import { format } from "date-fns"
 import CopyToClipboard from "./copyToClipboard"
-import { STYLES_CARD } from "@/app/lib/utils"
 import { updateBolao } from "@/app/lib/actions"
 import { deleteBolaoGroup } from "@/app/lib/controllerAdmin"
 import { Bolao } from "@/app/lib/definitions"
@@ -92,7 +91,7 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
   }
 
   return (
-    <Card className={STYLES_CARD}>
+    <Card className="mb-6">
       <CardHeader>
         <CardTitle>
           {bolao.name}&nbsp;
@@ -102,25 +101,19 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
 
       <CardFooter>
         <div className="flex justify-between w-full">
-          <div className="space-x-4">
-            <Link
-              className="underline hover:no-underline"
-              href={`/bolao/${bolao.id}/bet`}
-            >
-              Bet
-            </Link>
+          <div className="space-x-2">
+            <Button asChild variant="outline">
+              <Link href={`/bolao/${bolao.id}/bet`}>Bet</Link>
+            </Button>
 
-            <Link
-              className="underline hover:no-underline"
-              href={`/bolao/${bolao.id}/results`}
-            >
-              Results
-            </Link>
+            <Button asChild variant="outline">
+              <Link href={`/bolao/${bolao.id}/results`}>Results</Link>
+            </Button>
           </div>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon">
+              <Button variant="ghost" size="icon">
                 <DotsVerticalIcon className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>

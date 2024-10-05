@@ -3,6 +3,7 @@ import { fetchBolao, fetchUserBolao } from "@/app/lib/data"
 import PageTitle from "@/app/components/pageTitle"
 import { auth } from "@clerk/nextjs/server"
 import { createUserBolao } from "@/app/lib/actions"
+import { Button } from "@/components/ui/button"
 
 async function getData({
   bolaoId,
@@ -22,7 +23,6 @@ async function getData({
     const data = await createUserBolao(bolaoId)
 
     if (data.success) {
-      // TODO: update to toast
       resultText = "You were added to the bolão with success."
     } else {
       resultText = "Something went wrong while adding you to the bolão."
@@ -52,16 +52,17 @@ async function InvitePage({ params }: { params: { id: string } }) {
   return (
     <main>
       {/* TODO: format header like bet and standings pages */}
-      <PageTitle>Invite for "{data.bolao.name}"</PageTitle>
+      <PageTitle>
+        Invite <span className="lowercase">to</span>:
+        <br />
+        {data.bolao.name}
+      </PageTitle>
 
-      <p>{data.resultText}</p>
-      <p>
-        <Link
-          className="underline hover:no-underline"
-          href={`/bolao/${data.bolao.id}/bet`}
-        >
-          Start betting now
-        </Link>
+      <p className="text-center mb-6">{data.resultText}</p>
+      <p className="text-center">
+        <Button asChild>
+          <Link href={`/bolao/${data.bolao.id}/bet`}>Start betting now</Link>
+        </Button>
       </p>
     </main>
   )

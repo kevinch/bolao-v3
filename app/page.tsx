@@ -3,6 +3,7 @@ import BoloesList from "@/app/ui/home/boloesList"
 import { currentUser } from "@clerk/nextjs/server"
 import PageTitle from "./components/pageTitle"
 import { BoloesListSkeleton } from "@/app/ui/skeletons"
+import { Button } from "@/components/ui/button"
 
 import Link from "next/link"
 
@@ -34,12 +35,12 @@ async function Home() {
       <PageTitle>Simple soccer bets.</PageTitle>
 
       <div className="flex items-center flex-col space-y-8 uppercase">
-        <Link className="underline hover:no-underline" href="/sign-in">
-          Sign-in
-        </Link>
-        <Link className="underline hover:no-underline" href="/sign-up">
-          Sign-up
-        </Link>
+        <Button asChild>
+          <Link href="/sign-in">Login</Link>
+        </Button>
+        <Button asChild variant="secondary">
+          <Link href="/sign-up">Register</Link>
+        </Button>
       </div>
     </main>
   )
