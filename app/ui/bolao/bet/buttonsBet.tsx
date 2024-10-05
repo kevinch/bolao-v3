@@ -4,7 +4,8 @@ import { useState, useEffect } from "react"
 import { createBet, updateBet } from "@/app/lib/actions"
 import { INITIAL_BET_VALUE } from "@/app/lib/utils"
 import { BetResult } from "@/app/lib/definitions"
-import clsx from "clsx"
+import { Button } from "@/components/ui/button"
+import { PlusIcon, MinusIcon } from "@radix-ui/react-icons"
 
 type Props = {
   userBolaoId: string
@@ -14,8 +15,6 @@ type Props = {
   betId?: string
   disabled: boolean
 }
-
-const buttonHardStyles = { width: "26px", height: "26px" }
 
 function ButtonsBet({
   userBolaoId,
@@ -74,35 +73,25 @@ function ButtonsBet({
     }
   }
 
-  const buttonClasses = clsx("border px-2 mx-2 rounded-md", {
-    "bg-white border-teal-500": !disabled,
-    "bg-slate-50 border-slate-100": disabled,
-  })
-
-  const labelClasses = clsx("", {
-    "text-teal-500": !disabled,
-    "text-slate-500": disabled,
-  })
-
   return (
     <div className="flex items-center">
-      <button
-        style={buttonHardStyles}
+      <Button
+        size="icon"
+        variant={disabled ? "ghost" : "outline"}
         disabled={disabled}
-        className={buttonClasses}
         onClick={() => decrementCount()}
       >
-        <span className={labelClasses}>-</span>
-      </button>
-      <div>{value}</div>
-      <button
-        style={buttonHardStyles}
+        <MinusIcon />
+      </Button>
+      <div className="mx-2">{value}</div>
+      <Button
+        size="icon"
+        variant={disabled ? "ghost" : "outline"}
         disabled={disabled}
-        className={buttonClasses}
         onClick={() => incrementCount()}
       >
-        <span className={labelClasses}>+</span>
-      </button>
+        <PlusIcon />
+      </Button>
     </div>
   )
 }
