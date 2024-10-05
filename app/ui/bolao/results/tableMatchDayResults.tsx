@@ -8,9 +8,7 @@ import {
   STATUSES_IN_PLAY,
 } from "@/app/lib/utils"
 import { calcScore } from "@/app/lib/scoresCalcFactory"
-
 import { StickyTable, Row, Cell } from "react-sticky-table"
-
 import TeamCodeLogo from "@/app/ui/bolao/teamCodeLogo"
 import TeamScore from "@/app/ui/bolao/teamScore"
 import FixtureDate from "@/app/ui/bolao/fixtureDate"
@@ -47,7 +45,7 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
               })}
             </Row>
 
-            {fixtures.map((fixtureData: FixtureData) => {
+            {fixtures.map((fixtureData: FixtureData, i: number) => {
               const statusShort = fixtureData.fixture.status.short
               const canShowScores =
                 STATUSES_FINISHED.includes(statusShort) ||
@@ -75,7 +73,14 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
 
               return (
                 <Row key={fixtureData.fixture.id}>
-                  <Cell style={cellStyles}>
+                  <Cell
+                    style={{
+                      padding: 0,
+                      margin: 0,
+                      border: 0,
+                      backgroundColor: i % 2 !== 0 ? "rgb(248 250 252)" : "", //bg-slate-50
+                    }}
+                  >
                     <FixtureDate
                       date={fixtureData.fixture.date.toString()}
                       status={fixtureData.fixture.status}
@@ -137,7 +142,13 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
 
                     return (
                       <Cell
-                        style={cellStyles}
+                        style={{
+                          padding: 0,
+                          margin: 0,
+                          border: 0,
+                          backgroundColor:
+                            i % 2 !== 0 ? "rgb(248 250 252)" : "", //bg-slate-50
+                        }}
                         key={`${fixtureData.fixture.id}_${player.id}`}
                         className="text-center"
                       >

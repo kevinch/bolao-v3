@@ -10,7 +10,7 @@ type Props = {
 function BolaoLinks({ bolaoId }: Props) {
   return (
     <>
-      <div className="flex justify-center space-x-4 _mb-10">
+      <div className="flex justify-center space-x-4">
         <Button size="sm" asChild variant="ghost">
           <Link href={`/bolao/${bolaoId}/bet`}>BET</Link>
         </Button>

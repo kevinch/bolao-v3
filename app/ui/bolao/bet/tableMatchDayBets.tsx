@@ -5,6 +5,7 @@ import TeamCodeLogo from "@/app/ui/bolao/teamCodeLogo"
 import TeamScore from "@/app/ui/bolao/teamScore"
 import FixtureDate from "@/app/ui/bolao/fixtureDate"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import clsx from "clsx"
 
 type TableProps = {
   fixtures: FixtureData[]
@@ -41,7 +42,10 @@ function TableMatchDayBets({ fixtures, userBolaoId, bets }: TableProps) {
             return (
               <div
                 key={fixtureId}
-                className={i < fixtures.length - 1 ? "mb-4" : "mb-0"}
+                className={clsx("py-1", {
+                  "bg-slate-50": i % 2 !== 0,
+                  "mb-4": i < fixtures.length - 1,
+                })}
               >
                 <FixtureDate
                   date={fixtureData.fixture.date.toString()}

@@ -25,7 +25,7 @@ function Pagination({ currentRoundIndex, isLastRound, isFirstRound }: Props) {
   }
 
   return (
-    <div className="flex justify-center mb-10 items-center">
+    <div className="flex justify-center mb-4 items-center">
       {!isFirstRound && (
         <Button asChild size="icon" variant="outline">
           <Link href={createPageURL(-1)}>
