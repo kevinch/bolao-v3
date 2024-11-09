@@ -26,6 +26,8 @@ Open [http://localhost:3000](http://localhost:3000)
 - Auth: Clerk - [docs](https://clerk.com/docs/references/nextjs/overview) - [dashboard](https://dashboard.clerk.com/)
 - Repo: [github.com/kevinch/bolao-v3](https://github.com/kevinch/bolao-v3)
 - Data source: [api-football.com](https://www.api-football.com/documentation-v3) - [dashboard](https://dashboard.api-football.com/)
+- CMS: [prismic.io](https://prismic.io/)
+
 - ENV vars:
 
 ```
