@@ -5,7 +5,6 @@ import {
   findBetObj,
   INITIAL_BET_VALUE,
   STATUSES_FINISHED,
-  STATUSES_IN_PLAY,
 } from "@/app/lib/utils"
 import { calcScore } from "@/app/lib/scoresCalcFactory"
 import { StickyTable, Row, Cell } from "react-sticky-table"
@@ -47,9 +46,7 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
 
             {fixtures.map((fixtureData: FixtureData, i: number) => {
               const statusShort = fixtureData.fixture.status.short
-              const canShowScores =
-                STATUSES_FINISHED.includes(statusShort) ||
-                STATUSES_IN_PLAY.includes(statusShort)
+              const canShowScores = STATUSES_FINISHED.includes(statusShort)
 
               const getBet = ({
                 type,
@@ -159,7 +156,9 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
                           {showScores ? betHome : INITIAL_BET_VALUE}-
                           {showScores ? betAway : INITIAL_BET_VALUE}
                         </div>
-                        <div className="text-sm">{score} pts</div>
+                        {canShowScores && (
+                          <div className="text-sm">{`${score} pts`}</div>
+                        )}
                       </Cell>
                     )
                   })}
