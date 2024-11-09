@@ -21,7 +21,7 @@ type TableProps = {
   userId: string //Could be in context
 }
 
-const cellStyles = { padding: 0, margin: 0, border: 0 }
+const cellStyles = { padding: 0, margin: 0, border: 0, textAlign: "center" }
 
 function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
   if (fixtures) {
@@ -150,12 +150,11 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
                           margin: 0,
                           border: 0,
                           backgroundColor:
-                            i % 2 !== 0 ? "rgb(248 250 252)" : "", //bg-slate-50
+                            i % 2 !== 0 ? "rgb(248 250 252)" : "",
                         }}
                         key={`${fixtureData.fixture.id}_${player.id}`}
                         className="text-center"
                       >
-                        {/* <div className="text-sm">&nbsp;</div> */}
                         <div>
                           {showScores ? betHome : INITIAL_BET_VALUE}-
                           {showScores ? betAway : INITIAL_BET_VALUE}
