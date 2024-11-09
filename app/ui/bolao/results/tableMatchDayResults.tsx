@@ -75,39 +75,42 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
                 <Row key={fixtureData.fixture.id}>
                   <Cell
                     style={{
-                      padding: 0,
+                      padding: "8px 0",
                       margin: 0,
                       border: 0,
                       backgroundColor: i % 2 !== 0 ? "rgb(248 250 252)" : "", //bg-slate-50
                     }}
                   >
-                    <FixtureDate
-                      date={fixtureData.fixture.date.toString()}
-                      status={fixtureData.fixture.status}
-                    />
-
                     <div className="flex justify-center content-center">
                       <TeamCodeLogo
                         logoSrc={fixtureData.teams.home.logo}
                         name={fixtureData.teams.home.name}
                       />
-                      <TeamScore
-                        score={fixtureData.score}
-                        goals={fixtureData.goals}
-                        type="home"
-                        status={statusShort}
-                      />
+                      <div>
+                        <FixtureDate
+                          date={fixtureData.fixture.date.toString()}
+                          status={fixtureData.fixture.status}
+                        />
+                        <div style={{ display: "flex", flexDirection: "row" }}>
+                          <TeamScore
+                            score={fixtureData.score}
+                            goals={fixtureData.goals}
+                            type="home"
+                            status={statusShort}
+                          />
 
-                      <span className="mx-4 text-xs content-center">
-                        &times;
-                      </span>
+                          <span className="mx-3 text-xs content-center">
+                            &times;
+                          </span>
 
-                      <TeamScore
-                        score={fixtureData.score}
-                        goals={fixtureData.goals}
-                        type="away"
-                        status={statusShort}
-                      />
+                          <TeamScore
+                            score={fixtureData.score}
+                            goals={fixtureData.goals}
+                            type="away"
+                            status={statusShort}
+                          />
+                        </div>
+                      </div>
                       <TeamCodeLogo
                         logoSrc={fixtureData.teams.away.logo}
                         name={fixtureData.teams.away.name}
@@ -152,7 +155,7 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
                         key={`${fixtureData.fixture.id}_${player.id}`}
                         className="text-center"
                       >
-                        <div className="text-sm">&nbsp;</div>
+                        {/* <div className="text-sm">&nbsp;</div> */}
                         <div>
                           {showScores ? betHome : INITIAL_BET_VALUE}-
                           {showScores ? betAway : INITIAL_BET_VALUE}

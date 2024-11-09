@@ -48,11 +48,11 @@ function TableStandings({ standingsLeague }: TableProps) {
                 {standingGroup.map((el: Standing, j: number) => (
                   <tr
                     key={`standing_table_${i}_group${j}`}
-                    className={clsx("text-center py-5", {
+                    className={clsx("text-center", {
                       "bg-slate-50": el.rank % 2 !== 0,
                     })}
                   >
-                    <td className="py-3">{el.rank}</td>
+                    <td className="py-4">{el.rank}</td>
                     <td className="text-left">
                       <div className="flex items-center">
                         <Image

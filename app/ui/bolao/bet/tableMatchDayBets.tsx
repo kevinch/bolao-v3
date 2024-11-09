@@ -42,16 +42,10 @@ function TableMatchDayBets({ fixtures, userBolaoId, bets }: TableProps) {
             return (
               <div
                 key={fixtureId}
-                className={clsx("py-1", {
+                className={clsx("py-4", {
                   "bg-slate-50": i % 2 !== 0,
-                  "mb-4": i < fixtures.length - 1,
                 })}
               >
-                <FixtureDate
-                  date={fixtureData.fixture.date.toString()}
-                  status={fixtureData.fixture.status}
-                />
-
                 <div className="flex justify-center content-center">
                   <ButtonsBet
                     fixtureId={fixtureId}
@@ -66,21 +60,33 @@ function TableMatchDayBets({ fixtures, userBolaoId, bets }: TableProps) {
                     logoSrc={fixtureData.teams.home.logo}
                     name={fixtureData.teams.home.name}
                   />
-                  <TeamScore
-                    score={fixtureData.score}
-                    goals={fixtureData.goals}
-                    type="home"
-                    status={statusShort}
-                  />
 
-                  <span className="mx-3 text-xs content-center">&times;</span>
+                  <div>
+                    <FixtureDate
+                      date={fixtureData.fixture.date.toString()}
+                      status={fixtureData.fixture.status}
+                    />
+                    <div style={{ display: "flex", flexDirection: "row" }}>
+                      <TeamScore
+                        score={fixtureData.score}
+                        goals={fixtureData.goals}
+                        type="home"
+                        status={statusShort}
+                      />
 
-                  <TeamScore
-                    score={fixtureData.score}
-                    goals={fixtureData.goals}
-                    type="away"
-                    status={statusShort}
-                  />
+                      <span className="mx-3 text-xs content-center">
+                        &times;
+                      </span>
+
+                      <TeamScore
+                        score={fixtureData.score}
+                        goals={fixtureData.goals}
+                        type="away"
+                        status={statusShort}
+                      />
+                    </div>
+                  </div>
+
                   <TeamCodeLogo
                     logoSrc={fixtureData.teams.away.logo}
                     name={fixtureData.teams.away.name}
