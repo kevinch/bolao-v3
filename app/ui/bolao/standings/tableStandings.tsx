@@ -46,58 +46,73 @@ function TableStandings({ standingsLeague }: TableProps) {
               <Thead />
               <tbody>
                 {standingGroup.map((el: Standing, j: number) => (
-                  <tr
-                    key={`standing_table_${i}_group${j}`}
-                    className={clsx("text-center", {
-                      "bg-slate-50": el.rank % 2 !== 0,
-                    })}
-                  >
-                    <td className="py-4">{el.rank}</td>
-                    <td className="text-left">
-                      <div className="flex items-center">
-                        <Image
-                          src={el.team.logo}
-                          width={100} // Placeholder width
-                          height={100} // Placeholder height
-                          className="inline mr-2 max-h-[20px] max-w-[20px] object-contain"
-                          alt={`${el.team.name}'s logo`}
-                        />
-                        <span className="whitespace-normal break-word">
-                          {el.team.name}
+                  <>
+                    {(j === 0 ||
+                      el.description !== standingGroup[j - 1].description) && (
+                      <tr>
+                        <td colSpan={6}>
+                          <span
+                            className="pl-2 text-slate-400 _text-xs uppercase"
+                            style={{ fontSize: ".6rem" }}
+                          >
+                            {el.description ?? "-"}
+                          </span>
+                        </td>
+                      </tr>
+                    )}
+                    <tr
+                      key={`standing_table_${i}_group${j}`}
+                      className={clsx("text-center", {
+                        "bg-slate-50": el.rank % 2 !== 0,
+                      })}
+                    >
+                      <td className="py-4">{el.rank}</td>
+                      <td className="text-left">
+                        <div className="flex items-center">
+                          <Image
+                            src={el.team.logo}
+                            width={100} // Placeholder width
+                            height={100} // Placeholder height
+                            className="inline mr-2 max-h-[20px] max-w-[20px] object-contain"
+                            alt={`${el.team.name}'s logo`}
+                          />
+                          <span className="whitespace-normal break-word">
+                            {el.team.name}
+                          </span>
+                        </div>
+                      </td>
+                      <td>{el.all.played}</td>
+                      <td>{el.all.goals.for - el.all.goals.against}</td>
+                      <td className="font-bold">{el.points}</td>
+                      <td>
+                        <span
+                          style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "center",
+                          }}
+                        >
+                          {el.form
+                            .split("")
+                            .map((f) =>
+                              f.toLowerCase() === "w" ? (
+                                <CheckCircledIcon
+                                  color="green"
+                                  style={{ margin: "0 1px" }}
+                                />
+                              ) : f.toLowerCase() === "l" ? (
+                                <CrossCircledIcon
+                                  color="red"
+                                  style={{ margin: "0 1px" }}
+                                />
+                              ) : (
+                                <MinusCircledIcon style={{ margin: "0 1px" }} />
+                              )
+                            )}
                         </span>
-                      </div>
-                    </td>
-                    <td>{el.all.played}</td>
-                    <td>{el.all.goals.for - el.all.goals.against}</td>
-                    <td className="font-bold">{el.points}</td>
-                    <td>
-                      <span
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          justifyContent: "center",
-                        }}
-                      >
-                        {el.form
-                          .split("")
-                          .map((f) =>
-                            f.toLowerCase() === "w" ? (
-                              <CheckCircledIcon
-                                color="green"
-                                style={{ margin: "0 1px" }}
-                              />
-                            ) : f.toLowerCase() === "l" ? (
-                              <CrossCircledIcon
-                                color="red"
-                                style={{ margin: "0 1px" }}
-                              />
-                            ) : (
-                              <MinusCircledIcon style={{ margin: "0 1px" }} />
-                            )
-                          )}
-                      </span>
-                    </td>
-                  </tr>
+                      </td>
+                    </tr>
+                  </>
                 ))}
               </tbody>
             </table>
