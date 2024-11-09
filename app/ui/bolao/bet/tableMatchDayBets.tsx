@@ -18,7 +18,13 @@ function TableMatchDayBets({ fixtures, userBolaoId, bets }: TableProps) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Bet on the next matches</CardTitle>
+          <CardTitle>
+            {STATUSES_OPEN_TO_PLAY.includes(
+              fixtures[fixtures.length - 1].fixture.status.short
+            )
+              ? "Next games"
+              : "Previous games"}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           {fixtures.map((fixtureData: FixtureData, i: number) => {

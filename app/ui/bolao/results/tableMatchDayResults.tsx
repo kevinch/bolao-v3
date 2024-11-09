@@ -5,6 +5,7 @@ import {
   findBetObj,
   INITIAL_BET_VALUE,
   STATUSES_FINISHED,
+  STATUSES_OPEN_TO_PLAY,
 } from "@/app/lib/utils"
 import { calcScore } from "@/app/lib/scoresCalcFactory"
 import { StickyTable, Row, Cell } from "react-sticky-table"
@@ -27,7 +28,13 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Results</CardTitle>
+          <CardTitle>
+            {STATUSES_OPEN_TO_PLAY.includes(
+              fixtures[fixtures.length - 1].fixture.status.short
+            )
+              ? "Next games"
+              : "Previous games"}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <StickyTable borderWidth={0}>
