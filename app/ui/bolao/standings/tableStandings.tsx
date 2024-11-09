@@ -6,6 +6,11 @@ import {
 } from "@/app/lib/definitions"
 import clsx from "clsx"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  CheckCircledIcon,
+  CrossCircledIcon,
+  MinusCircledIcon,
+} from "@radix-ui/react-icons"
 
 type TableProps = {
   standingsLeague: StandingsLeague
@@ -19,14 +24,10 @@ function Thead() {
       <tr>
         <th>&nbsp;&nbsp;</th>
         <th className="font-normal text-xs py-3 text-left w-2/6">Club</th>
-        <th className={thClasses}>p</th>
-        <th className={thClasses}>w</th>
-        <th className={thClasses}>d</th>
-        <th className={thClasses}>l</th>
-        <th className={thClasses}>gf</th>
-        <th className={thClasses}>ga</th>
-        <th className={thClasses}>gd</th>
+        <th className={thClasses}>mp</th>
+        <th className={thClasses}>+/-</th>
         <th className={clsx("font-bold")}>pts</th>
+        <th className={thClasses}>form</th>
       </tr>
     </thead>
   )
@@ -67,13 +68,35 @@ function TableStandings({ standingsLeague }: TableProps) {
                       </div>
                     </td>
                     <td>{el.all.played}</td>
-                    <td>{el.all.win}</td>
-                    <td>{el.all.draw}</td>
-                    <td>{el.all.lose}</td>
-                    <td>{el.all.goals.for}</td>
-                    <td>{el.all.goals.against}</td>
                     <td>{el.all.goals.for - el.all.goals.against}</td>
                     <td className="font-bold">{el.points}</td>
+                    <td>
+                      <span
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "center",
+                        }}
+                      >
+                        {el.form
+                          .split("")
+                          .map((f) =>
+                            f.toLowerCase() === "w" ? (
+                              <CheckCircledIcon
+                                color="green"
+                                style={{ margin: "0 1px" }}
+                              />
+                            ) : f.toLowerCase() === "l" ? (
+                              <CrossCircledIcon
+                                color="red"
+                                style={{ margin: "0 1px" }}
+                              />
+                            ) : (
+                              <MinusCircledIcon style={{ margin: "0 1px" }} />
+                            )
+                          )}
+                      </span>
+                    </td>
                   </tr>
                 ))}
               </tbody>
