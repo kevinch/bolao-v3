@@ -94,6 +94,7 @@ function TableStandings({ standingsLeague }: TableProps) {
                         >
                           {el.form
                             .split("")
+                            .reverse()
                             .map((f) =>
                               f.toLowerCase() === "w" ? (
                                 <CheckCircledIcon
