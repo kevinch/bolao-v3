@@ -34,7 +34,7 @@ async function getData({
 
 async function InvitePage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
-  const { userId }: { userId: string | null } = auth()
+  const { userId }: { userId: string | null } = await auth()
 
   if (!userId) {
     return <p>Error while loading the bolão. Missing userid</p>

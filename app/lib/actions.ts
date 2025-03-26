@@ -34,7 +34,7 @@ export async function navigate(path: string) {
 export async function createBolao(
   formData: FormData
 ): Promise<CreateBolaoResult> {
-  const { userId }: { userId: string | null } = auth()
+  const { userId }: { userId: string | null } = await auth()
 
   const competitionId = formData.get("competitionId")
   const name = formData.get("name")
@@ -121,7 +121,7 @@ export async function updateBolao({
 export async function createUserBolao(
   bolaoId: number | string
 ): Promise<CreateUserBolaoResult> {
-  const { userId }: { userId: string | null } = auth()
+  const { userId }: { userId: string | null } = await auth()
 
   try {
     const data = await sql`

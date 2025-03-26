@@ -29,7 +29,8 @@ export async function getData({
 
   // Fetch players infos
   const userIds: string[] = usersBolao.map((el: UserBolao) => el.user_id)
-  const users = await clerkClient.users.getUserList({ userId: userIds })
+  const client = await clerkClient()
+  const users = await client.users.getUserList({ userId: userIds })
 
   const players: PlayersData[] = []
   users.data.map((el) => {

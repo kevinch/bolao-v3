@@ -14,7 +14,7 @@ async function BetPage(props: {
 }) {
   const searchParams = await props.searchParams
   const params = await props.params
-  const { userId }: { userId: string | null } = auth()
+  const { userId }: { userId: string | null } = await auth()
   const roundIndex: string = searchParams?.roundIndex || ""
 
   if (!userId) {
