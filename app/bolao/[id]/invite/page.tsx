@@ -32,7 +32,8 @@ async function getData({
   return { bolao, resultText }
 }
 
-async function InvitePage({ params }: { params: { id: string } }) {
+async function InvitePage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const { userId }: { userId: string | null } = auth()
 
   if (!userId) {

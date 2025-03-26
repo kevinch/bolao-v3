@@ -3,7 +3,8 @@ import BolaoPageTitle from "@/app/ui/bolao/bolaoPageTitle"
 import TableStandings from "@/app/ui/bolao/standings/tableStandings"
 import { getData } from "@/app/lib/controllerStandings"
 
-async function StandingsPage({ params }: { params: { id: string } }) {
+async function StandingsPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const data = await getData(params.id)
 
   if (!data) {

@@ -6,15 +6,14 @@ import BolaoLinks from "@/app/ui/bolao/bolaoLinks"
 import Pagination from "@/app/ui/bolao/bet/pagination"
 import TableMatchDayBets from "@/app/ui/bolao/bet/tableMatchDayBets"
 
-async function BetPage({
-  params,
-  searchParams,
-}: {
-  params: { id: string }
-  searchParams?: {
+async function BetPage(props: {
+  params: Promise<{ id: string }>
+  searchParams?: Promise<{
     roundIndex?: string
-  }
+  }>
 }) {
+  const searchParams = await props.searchParams
+  const params = await props.params
   const { userId }: { userId: string | null } = auth()
   const roundIndex: string = searchParams?.roundIndex || ""
 

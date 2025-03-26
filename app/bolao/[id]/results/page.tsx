@@ -5,15 +5,16 @@ import BolaoLinks from "@/app/ui/bolao/bolaoLinks"
 import Pagination from "@/app/ui/bolao/bet/pagination"
 import TableMatchDayResults from "@/app/ui/bolao/results/tableMatchDayResults"
 
-async function ResultsPage({
-  params,
-  searchParams,
-}: {
-  params: { id: string }
-  searchParams?: {
-    roundIndex?: string
+async function ResultsPage(
+  props: {
+    params: Promise<{ id: string }>
+    searchParams?: Promise<{
+      roundIndex?: string
+    }>
   }
-}) {
+) {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
   const { userId }: { userId: string | null } = auth()
   const roundIndex: string = searchParams?.roundIndex || ""
 

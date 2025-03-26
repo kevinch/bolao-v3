@@ -18,7 +18,8 @@ function Pagination({ currentRoundIndex, isLastRound, isFirstRound }: Props) {
   const createPageURL = (value: number) => {
     const newRound = currentRoundIndex + value
 
-    const params = new URLSearchParams(searchParams)
+    // const params = new URLSearchParams(searchParams)
+    const params = new URLSearchParams(searchParams.toString())
     params.set("roundIndex", newRound.toString())
 
     return `${pathname}?${params.toString()}`

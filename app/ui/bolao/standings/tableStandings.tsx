@@ -12,6 +12,7 @@ import {
   CrossCircledIcon,
   MinusCircledIcon,
 } from "@radix-ui/react-icons"
+import React from "react"
 
 type TableProps = {
   standingsLeague: StandingsLeague
@@ -97,7 +98,6 @@ function TableStandings({ standingsLeague }: TableProps) {
 
                   return (
                     <tr
-                      key={`standing_table_${i}_group${j}`}
                       className={clsx("text-center", {
                         "bg-slate-50": el.rank % 2 !== 0,
                       })}
@@ -145,7 +145,10 @@ function TableStandings({ standingsLeague }: TableProps) {
                                   style={{ margin: "0 1px" }}
                                 />
                               ) : (
-                                <MinusCircledIcon style={{ margin: "0 1px" }} />
+                                <MinusCircledIcon
+                                  key={`form_${k}`}
+                                  style={{ margin: "0 1px" }}
+                                />
                               )
                             )}
                         </span>
