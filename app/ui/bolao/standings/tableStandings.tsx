@@ -93,7 +93,7 @@ function TableStandings({ standingsLeague }: TableProps) {
                           }}
                         >
                           {el.form
-                            .split("")
+                            ?.split("")
                             .reverse()
                             .map((f) =>
                               f.toLowerCase() === "w" ? (
