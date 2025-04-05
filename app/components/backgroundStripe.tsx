@@ -6,13 +6,10 @@ function BackgroundStripe() {
 
   return (
     <div
+      className="w-full h-full opacity-25 bg-[rgba(255,255,255,0)]"
       style={{
-        width: "100%",
-        height: "100%",
-        opacity: 0.25,
         backgroundSize: "auto auto",
-        backgroundColor: "rgba(255, 255, 255, 0)",
-        backgroundImage: `repeating-linear-gradient(135deg, transparent, transparent 7px, ${themedColor} 7px, ${themedColor} 8px )`,
+        backgroundImage: `repeating-linear-gradient(135deg, transparent, transparent 7px, ${themedColor} 7px, ${themedColor} 8px)`,
       }}
     />
   )

@@ -95,7 +95,7 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
                           date={fixtureData.fixture.date.toString()}
                           status={fixtureData.fixture.status}
                         />
-                        <div style={{ display: "flex", flexDirection: "row" }}>
+                        <div className="flex flex-row">
                           <TeamScore
                             score={fixtureData.score}
                             goals={fixtureData.goals}

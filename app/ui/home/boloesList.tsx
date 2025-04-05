@@ -61,7 +61,7 @@ async function BoloesList() {
 
   return (
     <Tabs defaultValue="account" className="">
-      <div style={{}} className="flex justify-between mb-4">
+      <div className="flex justify-between mb-4">
         <TabsList>
           <TabsTrigger value="account">Active bolões</TabsTrigger>
           <TabsTrigger value="password">Past bolões</TabsTrigger>

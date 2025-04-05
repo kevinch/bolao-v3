@@ -120,14 +120,8 @@ function TableStandings({ standingsLeague }: TableProps) {
                       <td>{el.all.played}</td>
                       <td>{el.all.goals.for - el.all.goals.against}</td>
                       <td className="font-bold">{el.points}</td>
-                      <td style={{ width: "100px" }}>
-                        <span
-                          style={{
-                            display: "flex",
-                            flexDirection: "row",
-                            justifyContent: "center",
-                          }}
-                        >
+                      <td className="w-full">
+                        <span className="flex flex-row justify-center">
                           {el.form
                             ?.split("")
                             .reverse()
