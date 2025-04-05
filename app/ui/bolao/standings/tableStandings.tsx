@@ -18,11 +18,14 @@ type TableProps = {
 }
 
 const textColors = [
-  `text-blue-500`,
-  `text-cyan-500`,
-  `text-green-500`,
-  `text-orange-500`,
-  `text-violet-500`,
+  "text-blue-500",
+  "text-cyan-500",
+  "text-green-500",
+  "text-orange-500",
+  "text-violet-500",
+  "text-lime-500",
+  "text-fushia-500",
+  "text-indigo-500",
 ]
 
 const bgColors = [
@@ -31,6 +34,9 @@ const bgColors = [
   "bg-green-500",
   "bg-orange-500",
   "bg-violet-500",
+  "bg-lime-500",
+  "bg-fushia-500",
+  "bg-indigo-500",
 ]
 
 function getUniqueDescriptions(standings: Standing[][]): string[] {
