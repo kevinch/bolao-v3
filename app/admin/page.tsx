@@ -12,13 +12,12 @@ async function Admin() {
 
   if (user) {
     const client = await clerkClient()
-    client.users.getUser(user.id).then((user) => {
-      const role = user.privateMetadata.role as string
+    const userData = await client.users.getUser(user.id)
+    const role = userData.privateMetadata?.role || "guest"
 
-      if (role.toLowerCase() !== "admin") {
-        return navigate("/")
-      }
-    })
+    if (role !== "admin") {
+      return navigate("/")
+    }
   }
 
   const data = await getData()
