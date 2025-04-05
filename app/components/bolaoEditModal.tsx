@@ -14,15 +14,15 @@ import { Input } from "@/components/ui/input"
 interface SettingsDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  name: string
-  onNameChange: (name: string) => void
+  bolaoName: string
+  onNameChange: (bolaoName: string) => void
   onSubmit: () => void
 }
 
 export function BolaoEditModal({
   open,
   onOpenChange,
-  name,
+  bolaoName,
   onNameChange,
   onSubmit,
 }: SettingsDialogProps) {
@@ -49,7 +49,7 @@ export function BolaoEditModal({
         <div className="`">
           <Input
             type="text"
-            defaultValue={name}
+            defaultValue={bolaoName}
             onChange={(e) => onNameChange(e.target.value)}
           />
         </div>

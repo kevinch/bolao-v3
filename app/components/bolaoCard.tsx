@@ -163,7 +163,7 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
           <BolaoEditModal
             open={dialogEditOpen}
             onOpenChange={setDialogEditOpen}
-            name={bolao.name}
+            bolaoName={bolao.name}
             onNameChange={setName}
             onSubmit={handleUpdate}
           />
