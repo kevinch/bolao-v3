@@ -17,22 +17,20 @@ type TableProps = {
   standingsLeague: StandingsLeague
 }
 
-const colorStrengh = 500
-
 const textColors = [
-  `text-blue-${colorStrengh}`,
-  `text-cyan-${colorStrengh}`,
-  `text-green-${colorStrengh}`,
-  `text-orange-${colorStrengh}`,
-  `text-violet-${colorStrengh}`,
+  `text-blue-500`,
+  `text-cyan-500`,
+  `text-green-500`,
+  `text-orange-500`,
+  `text-violet-500`,
 ]
 
 const bgColors = [
-  `bg-blue-${colorStrengh}`,
-  `bg-cyan-${colorStrengh}`,
-  `bg-green-${colorStrengh}`,
-  `bg-orange-${colorStrengh}`,
-  `bg-violet-${colorStrengh}`,
+  "bg-blue-500",
+  "bg-cyan-500",
+  "bg-green-500",
+  "bg-orange-500",
+  "bg-violet-500",
 ]
 
 function getUniqueDescriptions(standings: Standing[][]): string[] {
@@ -116,7 +114,7 @@ function TableStandings({ standingsLeague }: TableProps) {
                       <td>{el.all.played}</td>
                       <td>{el.all.goals.for - el.all.goals.against}</td>
                       <td className="font-bold">{el.points}</td>
-                      <td>
+                      <td style={{ width: "100px" }}>
                         <span
                           style={{
                             display: "flex",
