@@ -5,7 +5,8 @@ import BolaoLinks from "@/app/ui/bolao/bolaoLinks"
 import { getData } from "@/app/lib/controllerLead"
 import { LeadData } from "@/app/lib/definitions"
 
-async function LeadPage({ params }: { params: { id: string } }) {
+async function LeadPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const data = await getData({ bolaoId: params.id })
 
   const unsortedLead: LeadData[] = calcLead({

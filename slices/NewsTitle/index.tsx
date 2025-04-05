@@ -1,15 +1,15 @@
-import { Content } from "@prismicio/client";
-import { SliceComponentProps } from "@prismicio/react";
+import { Content } from "@prismicio/client"
+import { SliceComponentProps } from "@prismicio/react"
 
 /**
  * Props for `NewsTitle`.
  */
-export type NewsTitleProps = SliceComponentProps<Content.NewsTitleSlice>;
+export type NewsTitleProps = SliceComponentProps<Content.NewsTitleSlice>
 
 /**
  * Component for "NewsTitle" Slices.
  */
-const NewsTitle = ({ slice }: NewsTitleProps): JSX.Element => {
+const NewsTitle = ({ slice }: NewsTitleProps) => {
   return (
     <section
       data-slice-type={slice.slice_type}
@@ -17,7 +17,7 @@ const NewsTitle = ({ slice }: NewsTitleProps): JSX.Element => {
     >
       Placeholder component for news_title (variation: {slice.variation}) Slices
     </section>
-  );
-};
+  )
+}
 
-export default NewsTitle;
+export default NewsTitle

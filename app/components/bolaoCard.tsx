@@ -1,6 +1,6 @@
 "use client"
 
-import { ReactNode, useState, forwardRef } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import { format } from "date-fns"
 import CopyToClipboard from "./copyToClipboard"
@@ -21,19 +21,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter,
-  DialogPortal,
-  DialogOverlay,
-  DialogClose,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
+
 import BolaoYearBadge from "@/app/components/bolaoYearBadge"
+import { BolaoEditModal } from "@/app/components/bolaoEditModal"
+import { BolaoDeleteModal } from "@/app/components/bolaoDeleteModal"
 import { useToast } from "@/hooks/use-toast"
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
@@ -53,7 +44,7 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
     }
   }
 
-  async function handleUpdateBolao() {
+  async function handleUpdate() {
     const data = { name, bolaoId: bolao.id }
 
     const result = await updateBolao(data)
@@ -72,7 +63,7 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
     }
   }
 
-  async function actionDelete(bolaoId: string) {
+  async function handleDelete(bolaoId: string) {
     const result = await deleteBolaoGroup(bolaoId)
 
     if (result.success) {
@@ -88,6 +79,24 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
         variant: "destructive",
       })
     }
+  }
+
+  const [dialogEditOpen, setDialogEditOpen] = useState(false)
+  const [dialogDeleteOpen, setDialogDeleteOpen] = useState(false)
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+
+  const handleOpenDialogEdit = () => {
+    setDropdownOpen(false) // Close the dropdown first
+    setTimeout(() => {
+      setDialogEditOpen(true) // Then open the dialog after a small delay
+    }, 10)
+  }
+
+  const handleOpenDialogDelete = () => {
+    setDropdownOpen(false) // Close the dropdown first
+    setTimeout(() => {
+      setDialogDeleteOpen(true) // Then open the dialog after a small delay
+    }, 10)
   }
 
   return (
@@ -111,7 +120,7 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
             </Button>
           </div>
 
-          <DropdownMenu>
+          <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
                 <DotsVerticalIcon className="h-4 w-4" />
@@ -121,68 +130,50 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
             <DropdownMenuContent className="w-56">
               <DropdownMenuGroup>
                 <DropdownMenuItem>
-                  <ClipboardCopyIcon className="h-4 w-4 mr-2" />
+                  <ClipboardCopyIcon className="h-4 w-4 mr-1" />
                   <CopyToClipboard bolaoId={bolao.id} />
                 </DropdownMenuItem>
 
                 {bolao.created_by === userId && (
                   <>
-                    <DialogItem
-                      triggerChildren={
-                        <>
-                          <Pencil2Icon className="h-4 w-4 mr-2" /> Edit
-                        </>
-                      }
+                    <DropdownMenuItem
+                      onSelect={(e) => {
+                        e.preventDefault()
+                        handleOpenDialogEdit()
+                      }}
                     >
-                      <DialogTitle className="DialogTitle">
-                        Edit this bolão's name
-                      </DialogTitle>
-                      <DialogDescription className="DialogDescription">
-                        <Input
-                          type="text"
-                          defaultValue={bolao.name}
-                          onChange={(e) => setName(e.target.value)}
-                        />
-                      </DialogDescription>
-
-                      <DialogFooter>
-                        <Button onClick={handleUpdateBolao}>Save</Button>
-                      </DialogFooter>
-                    </DialogItem>
-
-                    <DialogItem
-                      triggerChildren={
-                        <>
-                          <TrashIcon className="h-4 w-4 mr-2" color="red" />
-                          <span style={{ color: "red" }}> Delete</span>
-                        </>
-                      }
+                      <Pencil2Icon className="h-4 w-4 mr-1" />
+                      Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onSelect={(e) => {
+                        e.preventDefault()
+                        handleOpenDialogDelete()
+                      }}
                     >
-                      <DialogTitle className="DialogTitle">
-                        Delete bolão
-                      </DialogTitle>
-                      <DialogDescription className="DialogDescription">
-                        Are you sure you want to delete this bolão? This action
-                        cannot be undone. Bets will be deleted as well.
-                      </DialogDescription>
-                      <DialogFooter>
-                        <DialogClose asChild>
-                          <Button variant="secondary">Cancel</Button>
-                        </DialogClose>
-                        <Button
-                          disabled={disabledDelete}
-                          variant="destructive"
-                          onClick={() => actionDelete(bolao.id)}
-                        >
-                          Confirm
-                        </Button>
-                      </DialogFooter>
-                    </DialogItem>
+                      <TrashIcon className="h-4 w-4 mr-1" color="red" />
+                      <span className="text-red-500">Delete</span>
+                    </DropdownMenuItem>
                   </>
                 )}
               </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
+
+          <BolaoEditModal
+            open={dialogEditOpen}
+            onOpenChange={setDialogEditOpen}
+            bolaoName={bolao.name}
+            onNameChange={setName}
+            onSubmit={handleUpdate}
+          />
+          <BolaoDeleteModal
+            open={dialogDeleteOpen}
+            onOpenChange={setDialogDeleteOpen}
+            bolaoId={bolao.id}
+            disabledDelete={disabledDelete}
+            onSubmit={handleDelete}
+          />
         </div>
       </CardFooter>
     </Card>
@@ -190,41 +181,3 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
 }
 
 export default BolaoCard
-
-interface DialogItemProps {
-  triggerChildren: ReactNode
-  children: ReactNode
-  onSelect?: () => void
-  onOpenChange?: () => void
-}
-
-const DialogItem = forwardRef<HTMLDivElement, DialogItemProps>(
-  (props, forwardedRef) => {
-    const { triggerChildren, children, onSelect, onOpenChange, ...itemProps } =
-      props
-
-    return (
-      <Dialog onOpenChange={onOpenChange}>
-        <DialogTrigger asChild>
-          <DropdownMenuItem
-            {...itemProps}
-            ref={forwardedRef}
-            className="DropdownMenuItem"
-            onSelect={(event) => {
-              event.preventDefault()
-              onSelect && onSelect()
-            }}
-          >
-            <span style={{ cursor: "pointer", display: "contents" }}>
-              {triggerChildren}
-            </span>
-          </DropdownMenuItem>
-        </DialogTrigger>
-        <DialogPortal>
-          <DialogOverlay className="DialogOverlay" />
-          <DialogContent className="DialogContent">{children}</DialogContent>
-        </DialogPortal>
-      </Dialog>
-    )
-  }
-)

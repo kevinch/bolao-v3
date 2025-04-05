@@ -1,6 +1,7 @@
 import { createClient } from "@/prismicio"
 
-async function NewsPost({ params }: any) {
+async function NewsPost(props: any) {
+  const params = await props.params;
   const client = createClient()
   const document = await client.getByUID("news", params.uid)
 

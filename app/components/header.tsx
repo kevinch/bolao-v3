@@ -5,8 +5,8 @@ import Link from "next/link"
 import LogoSvg from "./logoSvg"
 import BackgroundStripes from "./backgroundStripes"
 
-function Header() {
-  const { userId }: { userId: string | null } = auth()
+async function Header() {
+  const { userId }: { userId: string | null } = await auth()
 
   return (
     <header>
