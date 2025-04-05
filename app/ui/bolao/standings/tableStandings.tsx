@@ -102,7 +102,7 @@ function TableStandings({ standingsLeague }: TableProps) {
                         "bg-slate-50": el.rank % 2 !== 0,
                       })}
                     >
-                      <td className={`py-4 ${rankinColor}`}>{el.rank}</td>
+                      <td className={`py-4 px-2 ${rankinColor}`}>{el.rank}</td>
                       <td className="text-left">
                         <div className="flex items-center">
                           <Image
@@ -118,7 +118,9 @@ function TableStandings({ standingsLeague }: TableProps) {
                         </div>
                       </td>
                       <td>{el.all.played}</td>
-                      <td>{el.all.goals.for - el.all.goals.against}</td>
+                      <td className="px-2">
+                        {el.all.goals.for - el.all.goals.against}
+                      </td>
                       <td className="font-bold">{el.points}</td>
                       <td className="w-full">
                         <span className="flex flex-row justify-center">
