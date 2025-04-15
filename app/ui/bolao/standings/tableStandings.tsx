@@ -58,7 +58,7 @@ function Thead() {
     <thead className="uppercase">
       <tr>
         <th>&nbsp;&nbsp;</th>
-        <th className="font-normal text-xs py-3 text-left w-2/6">Club</th>
+        <th className="font-normal text-xs py-3 text-left w-2/6">&nbsp;</th>
         <th className={thClasses}>mp</th>
         <th className={thClasses}>+/-</th>
         <th className={clsx("font-bold")}>pts</th>
@@ -80,7 +80,10 @@ function TableStandings({ standingsLeague }: TableProps) {
       <CardContent>
         {standingsLeague.standings.map(
           (standingGroup: StandingsGroup, i: number) => (
-            <table key={`standing_table_${i}`} className={"w-full text-xs"}>
+            <table
+              key={`standing_table_${i}`}
+              className={"w-full text-xs mb-2"}
+            >
               <Thead />
               <tbody>
                 {standingGroup.map((el: Standing, j: number) => {
@@ -112,7 +115,7 @@ function TableStandings({ standingsLeague }: TableProps) {
                             className="inline mr-2 max-h-[20px] max-w-[20px] object-contain"
                             alt={`${el.team.name}'s logo`}
                           />
-                          <span className="whitespace-normal break-word">
+                          <span className="whitespace-normal break-word pr-4">
                             {el.team.name}
                           </span>
                         </div>
