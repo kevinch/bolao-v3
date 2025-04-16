@@ -5,6 +5,7 @@ import {
   findBetObj,
   INITIAL_BET_VALUE,
   STATUSES_FINISHED,
+  STATUSES_IN_PLAY,
   STATUSES_OPEN_TO_PLAY,
 } from "@/app/lib/utils"
 import { calcScore } from "@/app/lib/scoresCalcFactory"
@@ -53,7 +54,9 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
 
             {fixtures.map((fixtureData: FixtureData, i: number) => {
               const statusShort = fixtureData.fixture.status.short
-              const canShowScores = STATUSES_FINISHED.includes(statusShort)
+              const canShowScores =
+                STATUSES_IN_PLAY.includes(statusShort) ||
+                STATUSES_FINISHED.includes(statusShort)
 
               const getBet = ({
                 type,
