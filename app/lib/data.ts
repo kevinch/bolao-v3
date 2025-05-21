@@ -344,12 +344,14 @@ export async function fetchStandings({
   const res = await fetch(url, requestOptions)
 
   if (!res.ok) {
-    // This will activate the closest `error.js` Error Boundary
     throw new Error("Failed to fetch data")
   }
 
   const data = await res.json()
 
-  // the shape of the data comes from the api's response
-  return data.response[0].league
+  if (Array.isArray(data.response) && data.response.length > 0) {
+    return data.response[0].league
+  } else {
+    return []
+  }
 }

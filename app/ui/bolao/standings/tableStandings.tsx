@@ -42,11 +42,12 @@ const bgColors = [
 function getUniqueDescriptions(standings: Standing[][]): string[] {
   const descriptions = new Set<string>()
 
-  standings.flat().forEach(({ description }) => {
-    if (description) {
-      descriptions.add(description)
-    }
-  })
+  standings &&
+    standings.flat().forEach(({ description }) => {
+      if (description) {
+        descriptions.add(description)
+      }
+    })
 
   return Array.from(descriptions)
 }
@@ -71,6 +72,21 @@ function Thead() {
 function TableStandings({ standingsLeague }: TableProps) {
   const standings = standingsLeague.standings
   const uniqueDescriptions = getUniqueDescriptions(standings)
+
+  if (!standings || standings.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Standings</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center text-slate-500 py-8">
+            No standings available.
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
 
   return (
     <Card>
