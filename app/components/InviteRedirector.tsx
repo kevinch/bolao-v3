@@ -5,16 +5,11 @@ import { useRouter } from "next/navigation"
 
 import { SESSION_STORAGE_INVITE_KEY } from "@/app/lib/utils"
 
-type Props = {
-  isAuthenticated: boolean
-}
-
-export default function InviteRedirector({ isAuthenticated }: Props) {
+export default function InviteRedirector() {
   const router = useRouter()
 
   useEffect(() => {
     if (
-      !isAuthenticated &&
       typeof window !== "undefined" &&
       window.location.hostname !== "localhost" &&
       window.location.hostname !== "127.0.0.1"
@@ -25,7 +20,7 @@ export default function InviteRedirector({ isAuthenticated }: Props) {
         router.replace(inviteLink)
       }
     }
-  }, [router, isAuthenticated])
+  }, [router])
 
   return null
 }

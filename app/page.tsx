@@ -9,12 +9,11 @@ import InviteRedirector from "@/app/components/InviteRedirector"
 
 async function Home() {
   const user = await currentUser()
-  const isAuthenticated = !!user
 
-  if (isAuthenticated) {
+  if (user) {
     return (
       <main>
-        <InviteRedirector isAuthenticated={isAuthenticated} />
+        <InviteRedirector />
         <PageTitle>
           Hey
           <br />
@@ -34,7 +33,7 @@ async function Home() {
 
   return (
     <main>
-      <InviteRedirector isAuthenticated={isAuthenticated} />
+      <InviteRedirector />
       <PageTitle>Simple soccer bets.</PageTitle>
 
       <div className="flex items-center flex-col space-y-8 uppercase">
