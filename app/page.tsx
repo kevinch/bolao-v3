@@ -4,15 +4,17 @@ import { currentUser } from "@clerk/nextjs/server"
 import PageTitle from "./components/pageTitle"
 import { BoloesListSkeleton } from "@/app/ui/skeletons"
 import { Button } from "@/components/ui/button"
-
 import Link from "next/link"
+import InviteRedirector from "@/app/components/InviteRedirector"
 
 async function Home() {
   const user = await currentUser()
+  const isAuthenticated = !!user
 
-  if (user) {
+  if (isAuthenticated) {
     return (
       <main>
+        <InviteRedirector isAuthenticated={isAuthenticated} />
         <PageTitle>
           Hey
           <br />
@@ -32,6 +34,7 @@ async function Home() {
 
   return (
     <main>
+      <InviteRedirector isAuthenticated={isAuthenticated} />
       <PageTitle>Simple soccer bets.</PageTitle>
 
       <div className="flex items-center flex-col space-y-8 uppercase">

@@ -132,3 +132,6 @@ export const STATUSES_FINISHED = ["FT", "AET", "PEN", "CANC", ""]
 export const STATUSES_ERROR = ["CANC", "PST", "ABD", "AWD"]
 
 export const STYLES_TABLE_SHADOW = "shadow-md bg-white p-0 mb-6"
+
+// Session Storage key for the invite bug/fix
+export const SESSION_STORAGE_INVITE_KEY = "bolaov3_invite_url"

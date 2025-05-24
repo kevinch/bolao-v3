@@ -39,7 +39,7 @@ async function BoloesList() {
   }
 
   const activeGroup: Bolao[] = []
-  const passiveGroup: Bolao[] = []
+  const pastGroup: Bolao[] = []
   const currentYear = new Date().getFullYear()
   const today = new Date()
 
@@ -50,12 +50,12 @@ async function BoloesList() {
       if (groupEndDate >= today) {
         activeGroup.push(el)
       } else {
-        passiveGroup.push(el)
+        pastGroup.push(el)
       }
     } else if (el.year === currentYear) {
       activeGroup.push(el)
     } else {
-      passiveGroup.push(el)
+      pastGroup.push(el)
     }
   })
 
@@ -72,13 +72,13 @@ async function BoloesList() {
         </Button>
       </div>
       <TabsContent value="account">
-        {activeGroup.map((el: Bolao) => (
-          <BolaoCard key={el.id} bolao={el} userId={userId} />
+        {activeGroup.map((el: Bolao, i: number) => (
+          <BolaoCard key={`active_${el.id}_${i}`} bolao={el} userId={userId} />
         ))}
       </TabsContent>
       <TabsContent value="password">
-        {passiveGroup.map((el: Bolao) => (
-          <BolaoCard key={el.id} bolao={el} userId={userId} />
+        {pastGroup.map((el: Bolao, i: number) => (
+          <BolaoCard key={`past_${el.id}_${i}`} bolao={el} userId={userId} />
         ))}
       </TabsContent>
     </Tabs>
