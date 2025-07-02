@@ -44,7 +44,9 @@ async function BoloesList() {
   const today = new Date()
 
   data.forEach((el: Bolao) => {
-    if (el.end) {
+    if (el.year === currentYear) {
+      activeGroup.push(el)
+    } else if (el.end) {
       const groupEndDate = new Date(el.end)
 
       if (groupEndDate >= today) {
@@ -52,8 +54,6 @@ async function BoloesList() {
       } else {
         pastGroup.push(el)
       }
-    } else if (el.year === currentYear) {
-      activeGroup.push(el)
     } else {
       pastGroup.push(el)
     }
