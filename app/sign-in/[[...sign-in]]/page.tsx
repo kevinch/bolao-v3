@@ -24,7 +24,7 @@ export default function Page() {
 
   return (
     <main>
-      <PageTitle>Login</PageTitle>
+      <PageTitle><h1>Login</h1></PageTitle>
 
       <div className="flex justify-center">
         <SignIn />
