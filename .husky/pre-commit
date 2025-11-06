@@ -1,5 +1,2 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 # Pre-commit hook - can add linting or other checks here if needed
 # For now, we'll just let it pass
