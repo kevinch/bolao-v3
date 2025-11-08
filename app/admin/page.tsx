@@ -1,28 +1,28 @@
-import { Suspense } from "react";
-import { getBoloes, getUsers } from "@/app/lib/controllerAdmin";
-import PageTitle from "@/app/components/pageTitle";
-import { BoloesListSkeleton } from "@/app/ui/skeletons";
-import { Bolao, User } from "@/app/lib/definitions";
-import AdminBolao from "@/app/components/adminBolao";
-import { clerkClient, currentUser } from "@clerk/nextjs/server";
-import { navigate } from "@/app/lib/actions";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Suspense } from "react"
+import { getBoloes, getUsers } from "@/app/lib/controllerAdmin"
+import PageTitle from "@/app/components/pageTitle"
+import { BoloesListSkeleton } from "@/app/ui/skeletons"
+import { Bolao, User } from "@/app/lib/definitions"
+import AdminBolao from "@/app/components/adminBolao"
+import { clerkClient, currentUser } from "@clerk/nextjs/server"
+import { navigate } from "@/app/lib/actions"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 async function Admin() {
-  const user = await currentUser();
+  const user = await currentUser()
 
   if (user) {
-    const client = await clerkClient();
-    const userData = await client.users.getUser(user.id);
-    const role = userData.privateMetadata?.role || "guest";
+    const client = await clerkClient()
+    const userData = await client.users.getUser(user.id)
+    const role = userData.privateMetadata?.role || "guest"
 
     if (role !== "admin") {
-      return navigate("/");
+      return navigate("/")
     }
   }
 
-  const dataBoloes = await getBoloes();
-  const dataUsers = await getUsers();
+  const dataBoloes = await getBoloes()
+  const dataUsers = await getUsers()
 
   return (
     <div>
@@ -43,7 +43,7 @@ async function Admin() {
 
           <TabsContent value="boloes">
             {dataBoloes.boloes.map((el: Bolao) => {
-              return <AdminBolao key={el.id} bolao={el} />;
+              return <AdminBolao key={el.id} bolao={el} />
             })}
           </TabsContent>
 
@@ -56,14 +56,14 @@ async function Admin() {
                     <div className="text-sm text-gray-600">ID: {el.id}</div>
                     <div className="text-sm text-gray-600">Role: {el.role}</div>
                   </div>
-                );
+                )
               })}
             </div>
           </TabsContent>
         </Tabs>
       </Suspense>
     </div>
-  );
+  )
 }
 
-export default Admin;
+export default Admin

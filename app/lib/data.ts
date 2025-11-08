@@ -1,33 +1,33 @@
-"use server";
+"use server"
 
-import { QueryResultRow } from "pg";
-import { unstable_noStore as noStore } from "next/cache";
-import { sql } from "@vercel/postgres";
-import { FOOTBALL_API_SPORTS } from "./utils";
-import { Bolao, Bet, User } from "./definitions";
-import { FOOTBALL_API_SPORTS_LEAGUES } from "./utils";
+import { QueryResultRow } from "pg"
+import { unstable_noStore as noStore } from "next/cache"
+import { sql } from "@vercel/postgres"
+import { FOOTBALL_API_SPORTS } from "./utils"
+import { Bolao, Bet, User } from "./definitions"
+import { FOOTBALL_API_SPORTS_LEAGUES } from "./utils"
 
 export async function fetchBoloes() {
-  noStore();
+  noStore()
 
   try {
     const data = await sql`SELECT *
       FROM boloes
       ORDER BY created_at DESC
-    `;
+    `
 
-    return data.rows as Bolao[];
+    return data.rows as Bolao[]
   } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch boloes.");
+    console.error("Database Error:", error)
+    throw new Error("Failed to fetch boloes.")
   }
 }
 
 export async function fetchBoloesByUserId(userId: string) {
-  noStore();
+  noStore()
 
   if (!userId) {
-    throw new Error("Missing userid.");
+    throw new Error("Missing userid.")
   }
 
   try {
@@ -36,28 +36,28 @@ export async function fetchBoloesByUserId(userId: string) {
       FROM boloes
       INNER JOIN user_bolao ON CAST(boloes.id AS VARCHAR) = user_bolao.bolao_id
       WHERE CAST(user_bolao.user_id AS VARCHAR) = ${userId}
-    `;
+    `
 
-    return data.rows as Bolao[];
+    return data.rows as Bolao[]
   } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch boloes by user id.");
+    console.error("Database Error:", error)
+    throw new Error("Failed to fetch boloes by user id.")
   }
 }
 
 export async function fetchBolao(bolaoId: string) {
-  noStore();
+  noStore()
 
   try {
     const data: { rows: QueryResultRow[] } = await sql`SELECT *
       FROM boloes
       WHERE CAST(id AS VARCHAR) = ${bolaoId}
-    `;
+    `
 
-    const row = data.rows[0];
+    const row = data.rows[0]
 
     if (!row) {
-      throw new Error("No bolao found for the given ID.");
+      throw new Error("No bolao found for the given ID.")
     }
 
     return {
@@ -69,25 +69,25 @@ export async function fetchBolao(bolaoId: string) {
       end: row.end,
       created_by: row.created_by,
       created_at: row.created_at,
-    };
+    }
   } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch bolao.");
+    console.error("Database Error:", error)
+    throw new Error("Failed to fetch bolao.")
   }
 }
 
 export async function fetchUsers() {
-  noStore();
+  noStore()
 
   try {
     const data = await sql`SELECT *
       FROM users
-    `;
+    `
 
-    return data.rows as User[];
+    return data.rows as User[]
   } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch users.");
+    console.error("Database Error:", error)
+    throw new Error("Failed to fetch users.")
   }
 }
 
@@ -95,13 +95,13 @@ export async function fetchUserBolao({
   bolaoId,
   userId,
 }: {
-  bolaoId: string;
-  userId: string;
+  bolaoId: string
+  userId: string
 }) {
-  noStore();
+  noStore()
 
   if (!userId || !bolaoId) {
-    throw new Error("Missing userid or bolaoId");
+    throw new Error("Missing userid or bolaoId")
   }
 
   try {
@@ -110,79 +110,79 @@ export async function fetchUserBolao({
       FROM user_bolao
       WHERE CAST(bolao_id AS VARCHAR) = ${bolaoId}
       AND CAST(user_id AS VARCHAR) = ${userId}
-    `;
+    `
 
-    const result = data.rows[0];
+    const result = data.rows[0]
 
-    return result as { id: string; bolao_id: string; user_id: string };
+    return result as { id: string; bolao_id: string; user_id: string }
   } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch user bolões.");
+    console.error("Database Error:", error)
+    throw new Error("Failed to fetch user bolões.")
   }
 }
 
 export async function fetchUsersBolao(bolaoId: string) {
-  noStore();
+  noStore()
 
   try {
     const data: { rows: QueryResultRow[] } = await sql`SELECT *
       FROM user_bolao
       WHERE CAST(bolao_id AS VARCHAR) = ${bolaoId}
-    `;
+    `
 
-    const rows = data.rows;
+    const rows = data.rows
 
     if (!rows) {
-      throw new Error("No user bolões found for the given ID.");
+      throw new Error("No user bolões found for the given ID.")
     }
 
-    return rows as [];
+    return rows as []
   } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch user bolões.");
+    console.error("Database Error:", error)
+    throw new Error("Failed to fetch user bolões.")
   }
 }
 
 export async function fetchLeagues() {
-  noStore();
+  noStore()
 
   return FOOTBALL_API_SPORTS_LEAGUES.sort((a, b) =>
     a.name.localeCompare(b.name)
-  );
+  )
 }
 
 export async function fetchLeague(leagueId: number) {
-  noStore();
+  noStore()
 
-  let token: string;
+  let token: string
 
   if (process.env.RAPID_API_KEY) {
-    token = process.env.RAPID_API_KEY;
+    token = process.env.RAPID_API_KEY
   } else {
-    throw new Error("RAPID_API_KEY environment variable is not set");
+    throw new Error("RAPID_API_KEY environment variable is not set")
   }
 
-  const myHeaders = new Headers();
-  myHeaders.append("x-rapidapi-key", token);
-  myHeaders.append("x-rapidapi-host", "v3.football.api-sports.io");
+  const myHeaders = new Headers()
+  myHeaders.append("x-rapidapi-key", token)
+  myHeaders.append("x-rapidapi-host", "v3.football.api-sports.io")
 
   const requestOptions = {
     method: "GET",
     headers: myHeaders,
-  };
+  }
 
-  const url = `${FOOTBALL_API_SPORTS}/leagues?id=${leagueId}`;
+  const url = `${FOOTBALL_API_SPORTS}/leagues?id=${leagueId}`
 
-  const res = await fetch(url, requestOptions);
+  const res = await fetch(url, requestOptions)
 
   if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary
-    throw new Error("Failed to fetch data");
+    throw new Error("Failed to fetch data")
   }
 
-  const data = await res.json();
+  const data = await res.json()
 
-  return data.response[0];
+  return data.response[0]
 }
 
 export async function fetchRounds({
@@ -190,44 +190,44 @@ export async function fetchRounds({
   year,
   current,
 }: {
-  leagueId: string;
-  year: number;
-  current?: boolean;
+  leagueId: string
+  year: number
+  current?: boolean
 }) {
-  noStore();
+  noStore()
 
-  let token: string;
+  let token: string
 
   if (process.env.RAPID_API_KEY) {
-    token = process.env.RAPID_API_KEY;
+    token = process.env.RAPID_API_KEY
   } else {
-    throw new Error("RAPID_API_KEY environment variable is not set");
+    throw new Error("RAPID_API_KEY environment variable is not set")
   }
 
-  const myHeaders = new Headers();
-  myHeaders.append("x-rapidapi-key", token);
-  myHeaders.append("x-rapidapi-host", "v3.football.api-sports.io");
+  const myHeaders = new Headers()
+  myHeaders.append("x-rapidapi-key", token)
+  myHeaders.append("x-rapidapi-host", "v3.football.api-sports.io")
 
   const requestOptions = {
     method: "GET",
     headers: myHeaders,
-  };
-
-  let url = `${FOOTBALL_API_SPORTS}/fixtures/rounds?league=${leagueId}&season=${year}`;
-  if (current) {
-    url += "&current=true";
   }
 
-  const res = await fetch(url, requestOptions);
+  let url = `${FOOTBALL_API_SPORTS}/fixtures/rounds?league=${leagueId}&season=${year}`
+  if (current) {
+    url += "&current=true"
+  }
+
+  const res = await fetch(url, requestOptions)
 
   if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary
-    throw new Error("Failed to fetch data");
+    throw new Error("Failed to fetch data")
   }
 
-  const data = await res.json();
+  const data = await res.json()
 
-  return data.response;
+  return data.response
 }
 
 export async function fetchFixtures({
@@ -235,97 +235,97 @@ export async function fetchFixtures({
   year,
   round,
 }: {
-  leagueId: string;
-  year: number;
-  round?: string;
+  leagueId: string
+  year: number
+  round?: string
 }) {
-  noStore();
+  noStore()
 
-  let token: string;
+  let token: string
 
   if (process.env.RAPID_API_KEY) {
-    token = process.env.RAPID_API_KEY;
+    token = process.env.RAPID_API_KEY
   } else {
-    throw new Error("RAPID_API_KEY environment variable is not set");
+    throw new Error("RAPID_API_KEY environment variable is not set")
   }
 
-  const myHeaders = new Headers();
-  myHeaders.append("x-rapidapi-key", token);
-  myHeaders.append("x-rapidapi-host", "v3.football.api-sports.io");
+  const myHeaders = new Headers()
+  myHeaders.append("x-rapidapi-key", token)
+  myHeaders.append("x-rapidapi-host", "v3.football.api-sports.io")
 
   const requestOptions = {
     method: "GET",
     headers: myHeaders,
-  };
-
-  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-  let url = `${FOOTBALL_API_SPORTS}/fixtures?league=${leagueId}&season=${year}&timezone=${timezone}`;
-  if (round) {
-    url += `&round=${round}`;
   }
 
-  const res = await fetch(url, requestOptions);
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+
+  let url = `${FOOTBALL_API_SPORTS}/fixtures?league=${leagueId}&season=${year}&timezone=${timezone}`
+  if (round) {
+    url += `&round=${round}`
+  }
+
+  const res = await fetch(url, requestOptions)
 
   if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary
-    throw new Error("Failed to fetch data");
+    throw new Error("Failed to fetch data")
   }
 
-  const data = await res.json();
+  const data = await res.json()
 
-  return data.response;
+  return data.response
 }
 
 export async function fetchUserBets(userBolaoId: string) {
-  noStore();
+  noStore()
 
   if (!userBolaoId) {
-    throw new Error("Missing userBolaoId");
+    throw new Error("Missing userBolaoId")
   }
 
   try {
     const data: { rows: QueryResultRow[] } = await sql`SELECT *
       FROM bets
       WHERE CAST(user_bolao_id AS VARCHAR) = ${userBolaoId}
-    `;
+    `
 
-    const result = data.rows;
+    const result = data.rows
 
     if (!result) {
-      throw new Error("No bets found for the given user_bolao_id.");
+      throw new Error("No bets found for the given user_bolao_id.")
     }
 
-    return result as Bet[];
+    return result as Bet[]
   } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch bets.");
+    console.error("Database Error:", error)
+    throw new Error("Failed to fetch bets.")
   }
 }
 
 export async function fetchUsersBets(userBoloesIds: string[]) {
-  noStore();
+  noStore()
 
   if (!userBoloesIds) {
-    throw new Error("Missing userBoloesIds");
+    throw new Error("Missing userBoloesIds")
   }
 
   try {
     const data: { rows: QueryResultRow[] } = await sql`SELECT *
       FROM bets
       WHERE CAST(user_bolao_id AS VARCHAR) = ANY(${userBoloesIds as any})
-    `;
+    `
 
-    const result = data.rows;
+    const result = data.rows
 
     if (!result) {
-      throw new Error("No bets found for the given user_bolao_id.");
+      throw new Error("No bets found for the given user_bolao_id.")
     }
 
-    return result as Bet[];
+    return result as Bet[]
   } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch bets.");
+    console.error("Database Error:", error)
+    throw new Error("Failed to fetch bets.")
   }
 }
 
@@ -333,41 +333,41 @@ export async function fetchStandings({
   leagueId,
   year,
 }: {
-  leagueId: string;
-  year: number;
+  leagueId: string
+  year: number
 }) {
-  noStore();
+  noStore()
 
-  let token: string;
+  let token: string
 
   if (process.env.RAPID_API_KEY) {
-    token = process.env.RAPID_API_KEY;
+    token = process.env.RAPID_API_KEY
   } else {
-    throw new Error("RAPID_API_KEY environment variable is not set");
+    throw new Error("RAPID_API_KEY environment variable is not set")
   }
 
-  const myHeaders = new Headers();
-  myHeaders.append("x-rapidapi-key", token);
-  myHeaders.append("x-rapidapi-host", "v3.football.api-sports.io");
+  const myHeaders = new Headers()
+  myHeaders.append("x-rapidapi-key", token)
+  myHeaders.append("x-rapidapi-host", "v3.football.api-sports.io")
 
   const requestOptions = {
     method: "GET",
     headers: myHeaders,
-  };
-
-  const url = `${FOOTBALL_API_SPORTS}/standings?league=${leagueId}&season=${year}`;
-
-  const res = await fetch(url, requestOptions);
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
   }
 
-  const data = await res.json();
+  const url = `${FOOTBALL_API_SPORTS}/standings?league=${leagueId}&season=${year}`
+
+  const res = await fetch(url, requestOptions)
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch data")
+  }
+
+  const data = await res.json()
 
   if (Array.isArray(data.response) && data.response.length > 0) {
-    return data.response[0].league;
+    return data.response[0].league
   } else {
-    return [];
+    return []
   }
 }
