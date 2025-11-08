@@ -13,7 +13,7 @@ async function Header() {
       <BackgroundStripes />
       <div className="flex justify-between mt-6">
         <div className="content-center">
-          <Link href={"/"}>
+          <Link href={"/"} data-testid="logo-link-header">
             <LogoSvg size={80} color="#666666" />
           </Link>
         </div>
