@@ -604,6 +604,13 @@
   resolved "https://registry.yarnpkg.com/@nolyfill/is-core-module/-/is-core-module-1.0.39.tgz#3dc35ba0f1e66b403c00b39344f870298ebb1c8e"
   integrity sha512-nn5ozdjYQpUCZlWGuxcJY/KpxkWQs4DcbMCmKojjyrYDEAGy4Ce19NN4v5MduafTwJlbKc99UA8YhSVqq9yPZA==
 
+"@playwright/test@^1.48.0":
+  version "1.56.1"
+  resolved "https://registry.yarnpkg.com/@playwright/test/-/test-1.56.1.tgz#6e3bf3d0c90c5cf94bf64bdb56fd15a805c8bd3f"
+  integrity sha512-vSMYtL/zOcFpvJCW71Q/OEGQb7KYBPAdKh35WNSkaZA75JlAO8ED8UN6GUNTm3drWomcbcqRPFqQbLae8yBTdg==
+  dependencies:
+    playwright "1.56.1"
+
 "@prismicio/api-renderer@^6.4.0":
   version "6.4.0"
   resolved "https://registry.yarnpkg.com/@prismicio/api-renderer/-/api-renderer-6.4.0.tgz#eadd759b2b7d8d4adb4bf79d3cc6d03233f1773e"
@@ -2844,6 +2851,11 @@ fs-extra@11.1.1:
     jsonfile "^6.0.1"
     universalify "^2.0.0"
 
+fsevents@2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-2.3.2.tgz#8a526f78b8fdf4623b709e0b975c52c24c02fd1a"
+  integrity sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==
+
 function-bind@^1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/function-bind/-/function-bind-1.1.2.tgz#2c02d864d97f3ea6c8830c464cbd11ab6eab7a1c"
@@ -3097,6 +3109,11 @@ human-signals@^4.3.0:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/human-signals/-/human-signals-4.3.1.tgz#ab7f811e851fca97ffbd2c1fe9a958964de321b2"
   integrity sha512-nZXjEF2nbo7lIw3mgYjItAfgQXog3OjJogSbKa2CQIIvSGWcKgeJnQlNXip6NglNzYH45nSRiEVimMvYL8DDqQ==
+
+husky@^9.1.7:
+  version "9.1.7"
+  resolved "https://registry.yarnpkg.com/husky/-/husky-9.1.7.tgz#d46a38035d101b46a70456a850ff4201344c0b2d"
+  integrity sha512-5gs5ytaNjBrh5Ow3zrvdUUY+0VxIuWVL4i9irt6friV+BqdCfmV11CQTWMiBYWHbXhco+J1kHfTOUkePhCDvMA==
 
 iconv-lite@0.4.24:
   version "0.4.24"
@@ -4229,6 +4246,20 @@ picomatch@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-4.0.2.tgz#77c742931e8f3b8820946c76cd0c1f13730d1dab"
   integrity sha512-M7BAV6Rlcy5u+m6oPhAPFgJTzAioX/6B0DxyvDlo9l8+T3nLKbrczg2WLUyzd45L8RqfUMyGPzekbMvX2Ldkwg==
+
+playwright-core@1.56.1:
+  version "1.56.1"
+  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.56.1.tgz#24a66481e5cd33a045632230aa2c4f0cb6b1db3d"
+  integrity sha512-hutraynyn31F+Bifme+Ps9Vq59hKuUCz7H1kDOcBs+2oGguKkWTU50bBWrtz34OUWmIwpBTWDxaRPXrIXkgvmQ==
+
+playwright@1.56.1:
+  version "1.56.1"
+  resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.56.1.tgz#62e3b99ddebed0d475e5936a152c88e68be55fbf"
+  integrity sha512-aFi5B0WovBHTEvpM3DzXTUaeN6eN0qWnTkKx4NQaH4Wvcmc153PdaY2UBdSYKaGYw+UyWXSVyxDUg5DoPEttjw==
+  dependencies:
+    playwright-core "1.56.1"
+  optionalDependencies:
+    fsevents "2.3.2"
 
 possible-typed-array-names@^1.0.0:
   version "1.1.0"

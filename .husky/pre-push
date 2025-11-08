@@ -1,0 +1,4 @@
+echo "Running e2e tests before push..."
+
+yarn test:e2e
+
