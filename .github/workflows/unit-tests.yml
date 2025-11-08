@@ -29,16 +29,3 @@ jobs:
 
       - name: Run unit tests
         run: yarn test
-
-      - name: Run unit tests with coverage
-        run: yarn test:coverage
-
-      - name: Upload coverage reports
-        uses: codecov/codecov-action@v4
-        if: success()
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage/coverage-final.json
-          flags: unittests
-          name: codecov-umbrella
-          fail_ci_if_error: false
