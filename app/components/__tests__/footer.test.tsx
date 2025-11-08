@@ -3,11 +3,6 @@ import { screen } from "@testing-library/dom"
 import { render } from "@testing-library/react"
 import Footer from "../footer"
 
-// Mock BackgroundStripes since it's a child component
-vi.mock("../backgroundStripes", () => ({
-  default: () => <div data-testid="background-stripes">Background Stripes</div>,
-}))
-
 describe("Footer", () => {
   it("should render 4 links", () => {
     render(<Footer />)
