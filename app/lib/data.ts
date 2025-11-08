@@ -13,6 +13,7 @@ export async function fetchBoloes() {
   try {
     const data = await sql`SELECT *
       FROM boloes
+      ORDER BY created_at DESC
     `;
 
     return data.rows as Bolao[];
