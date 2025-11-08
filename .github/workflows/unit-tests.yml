@@ -2,7 +2,7 @@ name: Unit Tests
 
 on:
   push:
-    branches: [main, develop, feat/**]
+    branches: [main, develop]
   pull_request:
     branches: [main, develop]
 
@@ -22,7 +22,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
+          cache: "yarn"
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
@@ -42,4 +42,3 @@ jobs:
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: false
-
