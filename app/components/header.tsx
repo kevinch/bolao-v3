@@ -19,7 +19,6 @@ async function Header() {
         </div>
         <div className="content-center">{userId && <UserButton />}</div>
       </div>
-      {/* <div className="text-right text-xs">{userId}</div> */}
     </header>
   )
 }
