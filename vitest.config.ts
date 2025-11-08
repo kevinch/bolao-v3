@@ -9,6 +9,18 @@ export default defineConfig({
     include: ["**/*.{test,spec}.{ts,tsx}"],
     exclude: ["node_modules", ".next", "tests/e2e/**"],
     pool: "forks",
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "json", "json-summary", "html"],
+      include: ["app/**/*.{ts,tsx}"],
+      exclude: [
+        "**/*.test.{ts,tsx}",
+        "**/*.spec.{ts,tsx}",
+        "**/__tests__/**",
+        "**/node_modules/**",
+        "**/.next/**",
+      ],
+    },
   },
   resolve: {
     alias: {
