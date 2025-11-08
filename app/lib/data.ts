@@ -4,7 +4,7 @@ import { QueryResultRow } from "pg"
 import { unstable_noStore as noStore } from "next/cache"
 import { sql } from "@vercel/postgres"
 import { FOOTBALL_API_SPORTS } from "./utils"
-import { Bolao, Bet } from "./definitions"
+import { Bolao, Bet, User } from "./definitions"
 import { FOOTBALL_API_SPORTS_LEAGUES } from "./utils"
 
 export async function fetchBoloes() {
@@ -13,6 +13,7 @@ export async function fetchBoloes() {
   try {
     const data = await sql`SELECT *
       FROM boloes
+      ORDER BY created_at DESC
     `
 
     return data.rows as Bolao[]
@@ -72,6 +73,21 @@ export async function fetchBolao(bolaoId: string) {
   } catch (error) {
     console.error("Database Error:", error)
     throw new Error("Failed to fetch bolao.")
+  }
+}
+
+export async function fetchUsers() {
+  noStore()
+
+  try {
+    const data = await sql`SELECT *
+      FROM users
+    `
+
+    return data.rows as User[]
+  } catch (error) {
+    console.error("Database Error:", error)
+    throw new Error("Failed to fetch users.")
   }
 }
 

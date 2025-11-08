@@ -1,9 +1,14 @@
-import { fetchBoloes, fetchUsersBolao, fetchUsersBets } from "@/app/lib/data"
+import {
+  fetchBoloes,
+  fetchUsersBolao,
+  fetchUsersBets,
+  fetchUsers,
+} from "@/app/lib/data"
 import { unstable_noStore as noStore } from "next/cache"
 import { deleteBolao, deleteUserBolao, deleteBet } from "./actions"
 import { UserBolao, Bet } from "./definitions"
 
-export async function getData() {
+export async function getBoloes() {
   noStore()
 
   const boloes = await fetchBoloes()
@@ -46,4 +51,14 @@ export async function deleteBolaoGroup(bolaoId: string) {
   const result = await deleteBolao(bolaoId)
 
   return result
+}
+
+export async function getUsers() {
+  noStore()
+
+  const users = await fetchUsers()
+
+  return {
+    users,
+  }
 }

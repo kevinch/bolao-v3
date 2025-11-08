@@ -44,12 +44,13 @@ function AdminBolao({ bolao }: { bolao: Bolao }) {
   const formatedDate = formatDateNews(bolao.created_at.toString())
 
   return (
-    <Card key={bolao.id} className="mb-8">
+    <Card key={bolao.id} className="mb-6">
       <CardHeader>
         <CardTitle>{bolao.name}</CardTitle>
       </CardHeader>
+
       <CardContent>
-        <div className="flex justify-between">
+        <div className="flex justify-between p-6 pt-0">
           <div>
             <div>Competition id: {bolao.competition_id}</div>
             <div>Id: ****{bolao.id.slice(-5)}</div>
