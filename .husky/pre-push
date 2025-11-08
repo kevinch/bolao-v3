@@ -1,4 +1,6 @@
-echo "Running e2e tests before push..."
+echo "Running unit tests before push..."
+yarn test
 
+echo "Running e2e tests before push..."
 yarn test:e2e
 
