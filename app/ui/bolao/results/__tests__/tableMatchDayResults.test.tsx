@@ -501,7 +501,7 @@ describe("TableMatchDayResults", () => {
 
     it("should hide other players bets when game is not started", () => {
       vi.mocked(utils.findBetObj).mockImplementation(
-        ({ userBolaoId }: { userBolaoId: string }) => {
+        ({ userBolaoId }: { bets: Bet[]; fixtureId: string; type: "home" | "away"; userBolaoId?: string }) => {
           if (userBolaoId === "userBolao1") return { value: 2 } as Bet
           return null
         }
