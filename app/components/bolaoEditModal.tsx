@@ -8,6 +8,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogClose,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 
@@ -54,6 +55,9 @@ export function BolaoEditModal({
           />
         </div>
         <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="secondary">Cancel</Button>
+          </DialogClose>
           <Button type="submit" onClick={onSubmit}>
             Save changes
           </Button>
