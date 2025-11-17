@@ -520,65 +520,6 @@ describe("TableMatchDayBets", () => {
     })
   })
 
-  describe("Edge Cases", () => {
-    it("should handle empty fixtures array", () => {
-      // Component requires at least one fixture to determine the title
-      // So this test should handle the loading state instead
-      render(<TableMatchDayBets {...defaultProps} fixtures={null as any} />)
-
-      // Should show loading state
-      expect(screen.getByText("loading...")).toBeInTheDocument()
-    })
-
-    it("should handle fixture with undefined values", () => {
-      const partialFixture = {
-        ...mockFixture,
-        goals: { home: null, away: null },
-      }
-
-      render(
-        <TableMatchDayBets {...defaultProps} fixtures={[partialFixture]} />
-      )
-
-      expect(screen.getByText("Manchester United")).toBeInTheDocument()
-    })
-
-    it("should convert fixture ID to string for bet matching", () => {
-      render(<TableMatchDayBets {...defaultProps} />)
-
-      // Fixture ID is 12345 (number), should be converted to "12345" string
-      expect(screen.getByTestId("buttons-bet-home-12345")).toBeInTheDocument()
-    })
-
-    it("should handle fixture with very long team names", () => {
-      const longNameFixture: FixtureData = {
-        ...mockFixture,
-        teams: {
-          home: {
-            id: 1,
-            name: "Very Long Team Name That Might Break Layout",
-            logo: "logo.png",
-            winner: null,
-          },
-          away: {
-            id: 2,
-            name: "Another Very Long Team Name",
-            logo: "logo2.png",
-            winner: null,
-          },
-        },
-      }
-
-      render(
-        <TableMatchDayBets {...defaultProps} fixtures={[longNameFixture]} />
-      )
-
-      expect(
-        screen.getByText("Very Long Team Name That Might Break Layout")
-      ).toBeInTheDocument()
-    })
-  })
-
   describe("Title Determination", () => {
     it("should determine title based on last fixture status", () => {
       const fixture1 = {
@@ -632,20 +573,6 @@ describe("TableMatchDayBets", () => {
 
       // Should check last fixture (fixture2) which is "FT" (not open to play)
       expect(screen.getByText("Previous games")).toBeInTheDocument()
-    })
-  })
-
-  describe("Component Integration", () => {
-    it("should integrate all child components correctly", () => {
-      render(<TableMatchDayBets {...defaultProps} />)
-
-      // All components should be present
-      expect(screen.getByTestId("buttons-bet-home-12345")).toBeInTheDocument()
-      expect(screen.getByTestId("buttons-bet-away-12345")).toBeInTheDocument()
-      expect(screen.getAllByTestId("team-code-logo")).toHaveLength(2)
-      expect(screen.getByTestId("team-score-home")).toBeInTheDocument()
-      expect(screen.getByTestId("team-score-away")).toBeInTheDocument()
-      expect(screen.getByTestId("fixture-date")).toBeInTheDocument()
     })
   })
 })

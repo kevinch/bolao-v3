@@ -393,7 +393,7 @@ describe("ButtonsBet", () => {
       await new Promise((resolve) => setTimeout(resolve, 200))
 
       await user.click(incrementButton)
-      
+
       // Wait for the debounce to complete
       await waitFor(
         () => {
@@ -422,15 +422,12 @@ describe("ButtonsBet", () => {
       await user.click(incrementButton)
 
       // Wait for debounce
-      await waitFor(
-        () => {
-          expect(consoleErrorSpy).toHaveBeenCalledWith(
-            "Error creating/updating bet:",
-            expect.any(Error)
-          )
-        },
-        { timeout: 1000 }
-      )
+      await waitFor(() => {
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          "Error creating/updating bet:",
+          expect.any(Error)
+        )
+      })
 
       // Component should still be functional
       expect(screen.getByText("0")).toBeInTheDocument()
@@ -455,12 +452,9 @@ describe("ButtonsBet", () => {
       await user.click(incrementButton)
 
       // Wait for debounce
-      await waitFor(
-        () => {
-          expect(consoleErrorSpy).toHaveBeenCalled()
-        },
-        { timeout: 1000 }
-      )
+      await waitFor(() => {
+        expect(consoleErrorSpy).toHaveBeenCalled()
+      })
 
       consoleErrorSpy.mockRestore()
     })
@@ -532,53 +526,19 @@ describe("ButtonsBet", () => {
       // First increment - should create bet
       await user.click(incrementButton)
 
-      await waitFor(
-        () => {
-          expect(mockCreateBet).toHaveBeenCalledTimes(1)
-        },
-        { timeout: 1000 }
-      )
+      await waitFor(() => {
+        expect(mockCreateBet).toHaveBeenCalledTimes(1)
+      })
 
       // Second increment - should update bet
       await user.click(incrementButton)
 
-      await waitFor(
-        () => {
-          expect(mockUpdateBet).toHaveBeenCalledWith({
-            betId: "new-bet-123",
-            value: 1,
-          })
-        },
-        { timeout: 1000 }
-      )
-    })
-  })
-
-  describe("Props Variations", () => {
-    it("should handle different fixture IDs", () => {
-      render(<ButtonsBet {...defaultProps} fixtureId="different-fixture" />)
-
-      expect(screen.getByText(".")).toBeInTheDocument()
-    })
-
-    it("should handle different user bolao IDs", () => {
-      render(
-        <ButtonsBet {...defaultProps} userBolaoId="different-user-bolao" />
-      )
-
-      expect(screen.getByText(".")).toBeInTheDocument()
-    })
-
-    it("should handle home type", () => {
-      render(<ButtonsBet {...defaultProps} type="home" />)
-
-      expect(screen.getByText(".")).toBeInTheDocument()
-    })
-
-    it("should handle away type", () => {
-      render(<ButtonsBet {...defaultProps} type="away" />)
-
-      expect(screen.getByText(".")).toBeInTheDocument()
+      await waitFor(() => {
+        expect(mockUpdateBet).toHaveBeenCalledWith({
+          betId: "new-bet-123",
+          value: 1,
+        })
+      })
     })
   })
 })

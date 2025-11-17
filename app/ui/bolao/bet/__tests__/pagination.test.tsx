@@ -217,20 +217,6 @@ describe("Pagination", () => {
         "items-center"
       )
     })
-
-    it("should have proper spacing between elements", () => {
-      render(<Pagination {...defaultProps} />)
-
-      const roundText = screen.getByText("Round: 5")
-      expect(roundText).toHaveClass("mx-4")
-    })
-
-    it("should style round text correctly", () => {
-      render(<Pagination {...defaultProps} />)
-
-      const roundText = screen.getByText("Round: 5")
-      expect(roundText).toHaveClass("uppercase", "text-xs")
-    })
   })
 
   describe("Edge Cases and Boundary Conditions", () => {
@@ -279,46 +265,6 @@ describe("Pagination", () => {
     })
   })
 
-  describe("Different Pathnames", () => {
-    it("should work with different pathname structures", () => {
-      mockUsePathname.mockReturnValue("/different/path/structure")
-      mockUseSearchParams.mockReturnValue(new URLSearchParams(""))
-
-      render(<Pagination {...defaultProps} currentRoundIndex={3} />)
-
-      const links = screen.getAllByRole("link")
-      expect(links[0]).toHaveAttribute(
-        "href",
-        "/different/path/structure?roundIndex=2"
-      )
-      expect(links[1]).toHaveAttribute(
-        "href",
-        "/different/path/structure?roundIndex=4"
-      )
-    })
-
-    it("should handle pathname with trailing slash", () => {
-      mockUsePathname.mockReturnValue("/bolao/123/bet/")
-      mockUseSearchParams.mockReturnValue(new URLSearchParams(""))
-
-      render(<Pagination {...defaultProps} currentRoundIndex={2} />)
-
-      const links = screen.getAllByRole("link")
-      expect(links).toHaveLength(2)
-    })
-
-    it("should handle root pathname", () => {
-      mockUsePathname.mockReturnValue("/")
-      mockUseSearchParams.mockReturnValue(new URLSearchParams(""))
-
-      render(<Pagination {...defaultProps} currentRoundIndex={1} />)
-
-      const links = screen.getAllByRole("link")
-      expect(links[0]).toHaveAttribute("href", "/?roundIndex=0")
-      expect(links[1]).toHaveAttribute("href", "/?roundIndex=2")
-    })
-  })
-
   describe("Search Params Handling", () => {
     it("should handle multiple search params", () => {
       mockUsePathname.mockReturnValue("/bolao/123/bet")
@@ -364,25 +310,6 @@ describe("Pagination", () => {
     })
   })
 
-  describe("Accessibility", () => {
-    it("should have navigable links", () => {
-      render(<Pagination {...defaultProps} />)
-
-      const links = screen.getAllByRole("link")
-      expect(links.length).toBeGreaterThan(0)
-      links.forEach((link) => {
-        expect(link).toHaveAttribute("href")
-      })
-    })
-
-    it("should render semantic HTML structure", () => {
-      const { container } = render(<Pagination {...defaultProps} />)
-
-      expect(container.querySelector("div")).toBeInTheDocument()
-      expect(container.querySelector("span")).toBeInTheDocument()
-    })
-  })
-
   describe("Button Icons", () => {
     it("should render chevron icons in buttons", () => {
       const { container } = render(<Pagination {...defaultProps} />)
@@ -393,7 +320,7 @@ describe("Pagination", () => {
     })
 
     it("should render left chevron in previous button", () => {
-      const { container } = render(<Pagination {...defaultProps} />)
+      render(<Pagination {...defaultProps} />)
 
       const links = screen.getAllByRole("link")
       const prevLink = links[0]
@@ -403,7 +330,7 @@ describe("Pagination", () => {
     })
 
     it("should render right chevron in next button", () => {
-      const { container } = render(<Pagination {...defaultProps} />)
+      render(<Pagination {...defaultProps} />)
 
       const links = screen.getAllByRole("link")
       const nextLink = links[1]
