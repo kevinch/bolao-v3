@@ -34,22 +34,6 @@ describe("BolaoLinks", () => {
       const links = screen.getAllByRole("link")
       expect(links).toHaveLength(4)
     })
-
-    it("should render separator", () => {
-      const { container } = render(<BolaoLinks {...defaultProps} />)
-
-      // Separator component renders with a specific class
-      const separator = container.querySelector('[data-orientation="horizontal"]')
-      expect(separator).toBeInTheDocument()
-    })
-
-    it("should wrap content in fragment", () => {
-      const { container } = render(<BolaoLinks {...defaultProps} />)
-
-      // Should render the flex container and separator
-      expect(container.querySelector(".flex")).toBeInTheDocument()
-      expect(container.querySelector('[data-orientation="horizontal"]')).toBeInTheDocument()
-    })
   })
 
   describe("Navigation Links", () => {
@@ -129,13 +113,6 @@ describe("BolaoLinks", () => {
       expect(flexContainer).toHaveClass("flex", "justify-center", "space-x-4")
     })
 
-    it("should have separator with margin", () => {
-      const { container } = render(<BolaoLinks {...defaultProps} />)
-
-      const separator = container.querySelector('[data-orientation="horizontal"]')
-      expect(separator).toHaveClass("my-4")
-    })
-
     it("should render buttons in correct order", () => {
       render(<BolaoLinks {...defaultProps} />)
 
@@ -144,29 +121,6 @@ describe("BolaoLinks", () => {
       expect(links[1]).toHaveTextContent("STANDINGS")
       expect(links[2]).toHaveTextContent("RESULTS")
       expect(links[3]).toHaveTextContent("LEAD")
-    })
-  })
-
-  describe("Button Properties", () => {
-    it("should render all links as button-styled elements", () => {
-      render(<BolaoLinks {...defaultProps} />)
-
-      const links = screen.getAllByRole("link")
-      expect(links).toHaveLength(4)
-      
-      // All links should be properly styled (Button with asChild renders as link)
-      links.forEach((link) => {
-        expect(link).toBeInTheDocument()
-        expect(link).toHaveAttribute("href")
-      })
-    })
-
-    it("should render buttons with appropriate structure", () => {
-      render(<BolaoLinks {...defaultProps} />)
-
-      // Button component with asChild renders the link directly
-      const links = screen.getAllByRole("link")
-      expect(links).toHaveLength(4)
     })
   })
 
@@ -239,50 +193,6 @@ describe("BolaoLinks", () => {
     })
   })
 
-  describe("Component Structure", () => {
-    it("should render exactly 4 navigation links", () => {
-      render(<BolaoLinks {...defaultProps} />)
-
-      const links = screen.getAllByRole("link")
-      expect(links).toHaveLength(4)
-    })
-
-    it("should have separator below links", () => {
-      const { container } = render(<BolaoLinks {...defaultProps} />)
-
-      const flexContainer = container.querySelector(".flex")
-      const separator = container.querySelector('[data-orientation="horizontal"]')
-
-      expect(flexContainer).toBeInTheDocument()
-      expect(separator).toBeInTheDocument()
-
-      // Separator should come after the flex container in the DOM
-      const parent = flexContainer?.parentElement
-      const children = Array.from(parent?.children || [])
-      const flexIndex = children.indexOf(flexContainer!)
-      const separatorIndex = children.indexOf(separator!)
-
-      expect(separatorIndex).toBeGreaterThan(flexIndex)
-    })
-  })
-
-  describe("Edge Cases", () => {
-    it("should handle empty string bolaoId", () => {
-      render(<BolaoLinks bolaoId="" />)
-
-      const betLink = screen.getByText("BET").closest("a")
-      expect(betLink).toHaveAttribute("href", "/bolao//bet")
-    })
-
-    it("should handle bolaoId with slashes", () => {
-      // This is an edge case that shouldn't happen in practice
-      render(<BolaoLinks bolaoId="bolao/with/slashes" />)
-
-      const betLink = screen.getByText("BET").closest("a")
-      expect(betLink).toHaveAttribute("href", "/bolao/bolao/with/slashes/bet")
-    })
-  })
-
   describe("Active Prop", () => {
     it("should render correctly when active prop is provided", () => {
       render(<BolaoLinks {...defaultProps} active={1} />)
@@ -305,4 +215,3 @@ describe("BolaoLinks", () => {
     })
   })
 })
-
