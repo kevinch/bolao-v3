@@ -423,9 +423,15 @@ describe("TableMatchDayResults", () => {
 
     it("should render multiple fixtures", () => {
       const fixtures = [
-        createMockFixture({ fixture: { ...createMockFixture().fixture, id: 1 } }),
-        createMockFixture({ fixture: { ...createMockFixture().fixture, id: 2 } }),
-        createMockFixture({ fixture: { ...createMockFixture().fixture, id: 3 } }),
+        createMockFixture({
+          fixture: { ...createMockFixture().fixture, id: 1 },
+        }),
+        createMockFixture({
+          fixture: { ...createMockFixture().fixture, id: 2 },
+        }),
+        createMockFixture({
+          fixture: { ...createMockFixture().fixture, id: 3 },
+        }),
       ]
 
       const { container } = render(
@@ -501,7 +507,14 @@ describe("TableMatchDayResults", () => {
 
     it("should hide other players bets when game is not started", () => {
       vi.mocked(utils.findBetObj).mockImplementation(
-        ({ userBolaoId }: { bets: Bet[]; fixtureId: string; type: "home" | "away"; userBolaoId?: string }) => {
+        ({
+          userBolaoId,
+        }: {
+          bets: Bet[]
+          fixtureId: string
+          type: "home" | "away"
+          userBolaoId?: string
+        }) => {
           if (userBolaoId === "userBolao1") return { value: 2 } as Bet
           return null
         }
@@ -609,7 +622,9 @@ describe("TableMatchDayResults", () => {
       )
 
       // Should display "5 pts" for calculated score
-      const scoreCells = container.querySelectorAll('[data-testid="sticky-cell"]')
+      const scoreCells = container.querySelectorAll(
+        '[data-testid="sticky-cell"]'
+      )
       const scoreText = Array.from(scoreCells).find((cell) =>
         cell.textContent?.includes("5 pts")
       )
@@ -679,7 +694,9 @@ describe("TableMatchDayResults", () => {
       )
 
       // Should NOT display pts for games not started
-      const scoreCells = container.querySelectorAll('[data-testid="sticky-cell"]')
+      const scoreCells = container.querySelectorAll(
+        '[data-testid="sticky-cell"]'
+      )
       const scoreText = Array.from(scoreCells).find((cell) =>
         cell.textContent?.includes("pts")
       )
@@ -762,9 +779,15 @@ describe("TableMatchDayResults", () => {
       vi.mocked(utils.findBetObj).mockReturnValue(null)
 
       const fixtures = [
-        createMockFixture({ fixture: { ...createMockFixture().fixture, id: 1 } }),
-        createMockFixture({ fixture: { ...createMockFixture().fixture, id: 2 } }),
-        createMockFixture({ fixture: { ...createMockFixture().fixture, id: 3 } }),
+        createMockFixture({
+          fixture: { ...createMockFixture().fixture, id: 1 },
+        }),
+        createMockFixture({
+          fixture: { ...createMockFixture().fixture, id: 2 },
+        }),
+        createMockFixture({
+          fixture: { ...createMockFixture().fixture, id: 3 },
+        }),
       ]
 
       const { container } = render(
@@ -778,7 +801,7 @@ describe("TableMatchDayResults", () => {
 
       const cells = container.querySelectorAll('[data-testid="sticky-cell"]')
       const cellsWithBg = Array.from(cells).filter((cell) => {
-        const style = (cell as HTMLElement).getAttribute('style')
+        const style = (cell as HTMLElement).getAttribute("style")
         return style?.includes("rgb(248") || style?.includes("248, 250, 252")
       })
 
@@ -789,8 +812,12 @@ describe("TableMatchDayResults", () => {
       vi.mocked(utils.findBetObj).mockReturnValue(null)
 
       const fixtures = [
-        createMockFixture({ fixture: { ...createMockFixture().fixture, id: 1 } }),
-        createMockFixture({ fixture: { ...createMockFixture().fixture, id: 2 } }),
+        createMockFixture({
+          fixture: { ...createMockFixture().fixture, id: 1 },
+        }),
+        createMockFixture({
+          fixture: { ...createMockFixture().fixture, id: 2 },
+        }),
       ]
 
       const { container } = render(
@@ -804,8 +831,11 @@ describe("TableMatchDayResults", () => {
 
       const cells = container.querySelectorAll('[data-testid="sticky-cell"]')
       const cellsWithoutBg = Array.from(cells).filter((cell) => {
-        const style = (cell as HTMLElement).getAttribute('style')
-        return !style || !style.includes("rgb(248") && !style.includes("248, 250, 252")
+        const style = (cell as HTMLElement).getAttribute("style")
+        return (
+          !style ||
+          (!style.includes("rgb(248") && !style.includes("248, 250, 252"))
+        )
       })
 
       expect(cellsWithoutBg.length).toBeGreaterThan(0)
@@ -834,7 +864,9 @@ describe("TableMatchDayResults", () => {
       )
 
       // Should still render but with no player columns
-      expect(container.querySelector('[data-testid="sticky-table"]')).toBeInTheDocument()
+      expect(
+        container.querySelector('[data-testid="sticky-table"]')
+      ).toBeInTheDocument()
     })
 
     it("should handle empty bets array", () => {
@@ -886,7 +918,8 @@ describe("TableMatchDayResults", () => {
         {
           id: "player1",
           firstName: null,
-          email: "very.long.email.address.that.is.really.quite.long@example.com",
+          email:
+            "very.long.email.address.that.is.really.quite.long@example.com",
           userBolaoId: "userBolao1",
         },
       ]
@@ -958,4 +991,3 @@ describe("TableMatchDayResults", () => {
     })
   })
 })
-
