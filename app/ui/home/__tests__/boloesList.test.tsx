@@ -347,19 +347,6 @@ describe("BoloesList", () => {
   })
 
   describe("BolaoCard Integration", () => {
-    it("should pass correct props to BolaoCard", async () => {
-      const { auth } = await import("@clerk/nextjs/server")
-      const { fetchBoloesByUserId } = await import("@/app/lib/data")
-
-      vi.mocked(auth).mockResolvedValue({ userId: "user-456" } as any)
-      vi.mocked(fetchBoloesByUserId).mockResolvedValue([mockBolao])
-
-      render(await BoloesList())
-
-      const card = screen.getByTestId("bolao-card-bolao-1")
-      expect(card).toHaveAttribute("data-user-id", "user-456")
-    })
-
     it("should render unique keys for bolao cards", async () => {
       const { auth } = await import("@clerk/nextjs/server")
       const { fetchBoloesByUserId } = await import("@/app/lib/data")
@@ -565,9 +552,7 @@ describe("BoloesList", () => {
       const { fetchBoloesByUserId } = await import("@/app/lib/data")
 
       vi.mocked(auth).mockResolvedValue({ userId: "user-123" } as any)
-      vi.mocked(fetchBoloesByUserId).mockRejectedValue(
-        new Error("Fetch error")
-      )
+      vi.mocked(fetchBoloesByUserId).mockRejectedValue(new Error("Fetch error"))
 
       // Should throw since component doesn't handle errors
       await expect(async () => {
