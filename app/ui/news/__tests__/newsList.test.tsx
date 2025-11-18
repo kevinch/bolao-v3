@@ -5,7 +5,7 @@ import type { NewsDocument } from "@/prismicio-types"
 
 // Mock formatDateNews utility
 vi.mock("@/app/lib/utils", () => ({
-  formatDateNews: vi.fn((dateString: string) => "January 15, 2024"),
+  formatDateNews: vi.fn((_dateString: string) => "January 15, 2024"),
 }))
 
 // Mock PrismicRichText
@@ -30,7 +30,9 @@ describe("NewsList", () => {
     alternate_languages: [],
     url: null,
     data: {
-      title: [{ type: "heading1" as const, text: "Test News Article", spans: [] }],
+      title: [
+        { type: "heading1" as const, text: "Test News Article", spans: [] },
+      ],
       content: [
         {
           type: "paragraph" as const,
@@ -105,7 +107,9 @@ describe("NewsList", () => {
     it("should have correct date styling classes", () => {
       const { container } = render(<NewsList documents={[mockNewsDocument]} />)
 
-      const dateElement = container.querySelector(".text-sm.mb-12.text-slate-500")
+      const dateElement = container.querySelector(
+        ".text-sm.mb-12.text-slate-500"
+      )
       expect(dateElement).toBeInTheDocument()
       expect(dateElement?.textContent).toBe("January 15, 2024")
     })
@@ -146,7 +150,9 @@ describe("NewsList", () => {
       const wrapper = container.querySelector(".mb-20")
       expect(wrapper?.querySelector("h2")).toBeInTheDocument()
       expect(wrapper?.querySelector(".text-sm")).toBeInTheDocument()
-      expect(wrapper?.querySelector('[data-testid="prismic-rich-text"]')).toBeInTheDocument()
+      expect(
+        wrapper?.querySelector('[data-testid="prismic-rich-text"]')
+      ).toBeInTheDocument()
     })
   })
 
@@ -158,7 +164,9 @@ describe("NewsList", () => {
           id: "news-1",
           data: {
             ...mockNewsDocument.data,
-            title: [{ type: "heading1" as const, text: "Article 1", spans: [] }],
+            title: [
+              { type: "heading1" as const, text: "Article 1", spans: [] },
+            ],
             content: [],
           },
         },
@@ -167,7 +175,9 @@ describe("NewsList", () => {
           id: "news-2",
           data: {
             ...mockNewsDocument.data,
-            title: [{ type: "heading1" as const, text: "Article 2", spans: [] }],
+            title: [
+              { type: "heading1" as const, text: "Article 2", spans: [] },
+            ],
             content: [],
           },
         },
@@ -176,7 +186,9 @@ describe("NewsList", () => {
           id: "news-3",
           data: {
             ...mockNewsDocument.data,
-            title: [{ type: "heading1" as const, text: "Article 3", spans: [] }],
+            title: [
+              { type: "heading1" as const, text: "Article 3", spans: [] },
+            ],
             content: [],
           },
         },
@@ -301,7 +313,9 @@ describe("NewsList", () => {
 
       render(<NewsList documents={[document]} />)
 
-      expect(screen.getByText("Special & Characters: <Test>")).toBeInTheDocument()
+      expect(
+        screen.getByText("Special & Characters: <Test>")
+      ).toBeInTheDocument()
     })
 
     it("should handle very long titles", () => {
@@ -338,7 +352,9 @@ describe("NewsList", () => {
 
       render(<NewsList documents={[document]} />)
 
-      expect(screen.getByText("Notícias sobre Futebol ⚽ 🏆")).toBeInTheDocument()
+      expect(
+        screen.getByText("Notícias sobre Futebol ⚽ 🏆")
+      ).toBeInTheDocument()
     })
   })
 
@@ -369,7 +385,9 @@ describe("NewsList", () => {
           first_publication_date: "2024-01-15T10:00:00+0000",
           data: {
             ...mockNewsDocument.data,
-            title: [{ type: "heading1" as const, text: "Article 1", spans: [] }],
+            title: [
+              { type: "heading1" as const, text: "Article 1", spans: [] },
+            ],
             content: [],
           },
         },
@@ -379,7 +397,9 @@ describe("NewsList", () => {
           first_publication_date: "2024-02-20T10:00:00+0000",
           data: {
             ...mockNewsDocument.data,
-            title: [{ type: "heading1" as const, text: "Article 2", spans: [] }],
+            title: [
+              { type: "heading1" as const, text: "Article 2", spans: [] },
+            ],
             content: [],
           },
         },
@@ -491,7 +511,9 @@ describe("NewsList", () => {
         id: `news-${i}`,
         data: {
           ...mockNewsDocument.data,
-          title: [{ type: "heading1" as const, text: `Article ${i}`, spans: [] }],
+          title: [
+            { type: "heading1" as const, text: `Article ${i}`, spans: [] },
+          ],
           content: [],
         },
       }))
@@ -530,7 +552,9 @@ describe("NewsList", () => {
           id: "news-1",
           data: {
             ...mockNewsDocument.data,
-            title: [{ type: "heading1" as const, text: "Article 1", spans: [] }],
+            title: [
+              { type: "heading1" as const, text: "Article 1", spans: [] },
+            ],
             content: [],
           },
         },
@@ -539,7 +563,9 @@ describe("NewsList", () => {
           id: "news-2",
           data: {
             ...mockNewsDocument.data,
-            title: [{ type: "heading1" as const, text: "Article 2", spans: [] }],
+            title: [
+              { type: "heading1" as const, text: "Article 2", spans: [] },
+            ],
             content: [],
           },
         },
@@ -552,4 +578,3 @@ describe("NewsList", () => {
     })
   })
 })
-
