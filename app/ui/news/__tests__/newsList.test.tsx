@@ -28,6 +28,7 @@ describe("NewsList", () => {
     linked_documents: [],
     lang: "en-us",
     alternate_languages: [],
+    url: null,
     data: {
       title: [{ type: "heading1" as const, text: "Test News Article", spans: [] }],
       content: [
@@ -37,6 +38,10 @@ describe("NewsList", () => {
           spans: [],
         },
       ],
+      slices: [],
+      meta_description: null,
+      meta_image: {},
+      meta_title: null,
     },
   }
 
@@ -152,6 +157,7 @@ describe("NewsList", () => {
           ...mockNewsDocument,
           id: "news-1",
           data: {
+            ...mockNewsDocument.data,
             title: [{ type: "heading1" as const, text: "Article 1", spans: [] }],
             content: [],
           },
@@ -160,6 +166,7 @@ describe("NewsList", () => {
           ...mockNewsDocument,
           id: "news-2",
           data: {
+            ...mockNewsDocument.data,
             title: [{ type: "heading1" as const, text: "Article 2", spans: [] }],
             content: [],
           },
@@ -168,6 +175,7 @@ describe("NewsList", () => {
           ...mockNewsDocument,
           id: "news-3",
           data: {
+            ...mockNewsDocument.data,
             title: [{ type: "heading1" as const, text: "Article 3", spans: [] }],
             content: [],
           },
@@ -240,9 +248,10 @@ describe("NewsList", () => {
 
   describe("Title Variations", () => {
     it("should handle title with multiple text elements", () => {
-      const document = {
+      const document: any = {
         ...mockNewsDocument,
         data: {
+          ...mockNewsDocument.data,
           title: [
             { type: "heading1" as const, text: "First Part", spans: [] },
             { type: "heading1" as const, text: "Second Part", spans: [] },
@@ -258,9 +267,10 @@ describe("NewsList", () => {
     })
 
     it("should handle empty title array", () => {
-      const document = {
+      const document: any = {
         ...mockNewsDocument,
         data: {
+          ...mockNewsDocument.data,
           title: [],
           content: [],
         },
@@ -274,9 +284,10 @@ describe("NewsList", () => {
     })
 
     it("should handle title with special characters", () => {
-      const document = {
+      const document: any = {
         ...mockNewsDocument,
         data: {
+          ...mockNewsDocument.data,
           title: [
             {
               type: "heading1" as const,
@@ -295,9 +306,10 @@ describe("NewsList", () => {
 
     it("should handle very long titles", () => {
       const longTitle = "A".repeat(200)
-      const document = {
+      const document: any = {
         ...mockNewsDocument,
         data: {
+          ...mockNewsDocument.data,
           title: [{ type: "heading1" as const, text: longTitle, spans: [] }],
           content: [],
         },
@@ -309,9 +321,10 @@ describe("NewsList", () => {
     })
 
     it("should handle title with Unicode characters", () => {
-      const document = {
+      const document: any = {
         ...mockNewsDocument,
         data: {
+          ...mockNewsDocument.data,
           title: [
             {
               type: "heading1" as const,
@@ -333,7 +346,7 @@ describe("NewsList", () => {
     it("should handle different date formats", () => {
       const document = {
         ...mockNewsDocument,
-        first_publication_date: "2023-12-25T23:59:59+0000",
+        first_publication_date: "2023-12-25T23:59:59+0000" as any,
       }
 
       render(<NewsList documents={[document]} />)
@@ -355,6 +368,7 @@ describe("NewsList", () => {
           id: "news-1",
           first_publication_date: "2024-01-15T10:00:00+0000",
           data: {
+            ...mockNewsDocument.data,
             title: [{ type: "heading1" as const, text: "Article 1", spans: [] }],
             content: [],
           },
@@ -364,6 +378,7 @@ describe("NewsList", () => {
           id: "news-2",
           first_publication_date: "2024-02-20T10:00:00+0000",
           data: {
+            ...mockNewsDocument.data,
             title: [{ type: "heading1" as const, text: "Article 2", spans: [] }],
             content: [],
           },
@@ -387,9 +402,10 @@ describe("NewsList", () => {
         },
       ]
 
-      const document = {
+      const document: any = {
         ...mockNewsDocument,
         data: {
+          ...mockNewsDocument.data,
           title: [{ type: "heading1" as const, text: "Test", spans: [] }],
           content,
         },
@@ -402,9 +418,10 @@ describe("NewsList", () => {
     })
 
     it("should handle empty content", () => {
-      const document = {
+      const document: any = {
         ...mockNewsDocument,
         data: {
+          ...mockNewsDocument.data,
           title: [{ type: "heading1" as const, text: "Test", spans: [] }],
           content: [],
         },
@@ -435,9 +452,10 @@ describe("NewsList", () => {
         },
       ]
 
-      const document = {
+      const document: any = {
         ...mockNewsDocument,
         data: {
+          ...mockNewsDocument.data,
           title: [{ type: "heading1" as const, text: "Test", spans: [] }],
           content: complexContent,
         },
@@ -452,9 +470,10 @@ describe("NewsList", () => {
 
   describe("Edge Cases", () => {
     it("should handle empty title array gracefully", () => {
-      const document = {
+      const document: any = {
         ...mockNewsDocument,
         data: {
+          ...mockNewsDocument.data,
           title: [],
           content: [],
         },
@@ -467,10 +486,11 @@ describe("NewsList", () => {
     })
 
     it("should handle very large number of documents", () => {
-      const documents = Array.from({ length: 100 }, (_, i) => ({
+      const documents: any = Array.from({ length: 100 }, (_, i) => ({
         ...mockNewsDocument,
         id: `news-${i}`,
         data: {
+          ...mockNewsDocument.data,
           title: [{ type: "heading1" as const, text: `Article ${i}`, spans: [] }],
           content: [],
         },
@@ -509,6 +529,7 @@ describe("NewsList", () => {
           ...mockNewsDocument,
           id: "news-1",
           data: {
+            ...mockNewsDocument.data,
             title: [{ type: "heading1" as const, text: "Article 1", spans: [] }],
             content: [],
           },
@@ -517,6 +538,7 @@ describe("NewsList", () => {
           ...mockNewsDocument,
           id: "news-2",
           data: {
+            ...mockNewsDocument.data,
             title: [{ type: "heading1" as const, text: "Article 2", spans: [] }],
             content: [],
           },
