@@ -64,18 +64,25 @@ describe("RootLayout", () => {
     })
 
     it("should have non-empty title", () => {
+      // Safely check that metadata.title is a non-empty string, accounting for possible types and null/undefined
       expect(metadata.title).toBeTruthy()
       expect(typeof metadata.title).toBe("string")
-      expect(metadata.title.length).toBeGreaterThan(0)
+      expect(
+        typeof metadata.title === "string"
+          ? metadata.title.length
+          : metadata.title?.toString().length
+      ).toBeGreaterThan(0)
     })
 
     it("should have non-empty description", () => {
+      // Safely check that metadata.description is a non-empty string, accounting for possible types and null/undefined
       expect(metadata.description).toBeTruthy()
       expect(typeof metadata.description).toBe("string")
-      expect(metadata.description.length).toBeGreaterThan(0)
-    })
-
-    it("should have SEO-friendly title length", () => {
+      expect(
+        typeof metadata.description === "string"
+          ? metadata.description.length
+          : 0
+      ).toBeGreaterThan(0)
       // Title should ideally be between 10 and 60 characters for SEO
       const titleLength = metadata.title?.toString().length || 0
       expect(titleLength).toBeGreaterThan(5)
@@ -100,16 +107,6 @@ describe("RootLayout", () => {
 
       expect(fontConfig).toBeDefined()
       expect(fontConfig.className).toBe("ibm-plex-sans-font")
-    })
-
-    it("should use weight 400 for the font", () => {
-      // This is implicitly tested through the mock
-      expect(true).toBe(true)
-    })
-
-    it("should use latin subset for the font", () => {
-      // This is implicitly tested through the mock
-      expect(true).toBe(true)
     })
   })
 
@@ -185,11 +182,6 @@ describe("RootLayout", () => {
       const expectedUrl = "https://cloud.umami.is/script.js"
       expect(expectedUrl).toBe("https://cloud.umami.is/script.js")
     })
-
-    it("should use async script loading", () => {
-      // Script should be loaded asynchronously for performance
-      expect(true).toBe(true)
-    })
   })
 
   describe("CSS Imports", () => {
@@ -202,30 +194,17 @@ describe("RootLayout", () => {
   describe("Type Safety", () => {
     it("should define children prop as ReactNode", async () => {
       const RootLayout = (await import("../layout")).default
-      
+
       // Function should accept children prop
       expect(RootLayout).toBeDefined()
-    })
-
-    it("should mark children prop as Readonly", () => {
-      // TypeScript enforces Readonly in the type definition
-      expect(true).toBe(true)
     })
   })
 
   describe("Layout Structure Validation", () => {
-    it("should have a root layout function that returns JSX", async () => {
-      const RootLayout = (await import("../layout")).default
-      const mockChildren = <div>Test</div>
-      
-      const result = RootLayout({ children: mockChildren })
-      expect(result).toBeDefined()
-    })
-
     it("should wrap content in ClerkProvider", async () => {
       const RootLayout = (await import("../layout")).default
       const mockChildren = <div>Test</div>
-      
+
       const result = RootLayout({ children: mockChildren })
       expect(result).toBeDefined()
     })
@@ -236,16 +215,6 @@ describe("RootLayout", () => {
       // The layout sets lang="en" on the html element
       const expectedLang = "en"
       expect(expectedLang).toBe("en")
-    })
-
-    it("should use semantic HTML structure", () => {
-      // Layout uses html, body elements correctly
-      expect(true).toBe(true)
-    })
-
-    it("should include analytics for tracking", () => {
-      // Vercel Analytics and Umami are configured
-      expect(true).toBe(true)
     })
   })
 
@@ -270,48 +239,6 @@ describe("RootLayout", () => {
       expect(classes).toContain("container")
       expect(classes).toContain("mx-auto")
       expect(classes).toContain("px-4")
-    })
-  })
-
-  describe("Component Order", () => {
-    it("should conceptually render Header before children", () => {
-      // In the layout, Header appears before {children}
-      expect(true).toBe(true)
-    })
-
-    it("should conceptually render Footer after children", () => {
-      // In the layout, Footer appears after {children}
-      expect(true).toBe(true)
-    })
-
-    it("should render utility components in correct order", () => {
-      // ServiceWorkerUnregister, Footer, Toaster, Analytics are in order
-      const components = [
-        "Header",
-        "Children",
-        "ServiceWorkerUnregister",
-        "Footer",
-        "Toaster",
-        "Analytics",
-      ]
-      expect(components).toHaveLength(6)
-    })
-  })
-
-  describe("Performance Considerations", () => {
-    it("should load analytics script asynchronously", () => {
-      // Using async attribute for non-blocking script load
-      expect(true).toBe(true)
-    })
-
-    it("should use Next.js Script component for optimized loading", () => {
-      // Next.js Script component provides automatic optimization
-      expect(true).toBe(true)
-    })
-
-    it("should use Google Fonts with optimization", () => {
-      // next/font/google provides automatic font optimization
-      expect(true).toBe(true)
     })
   })
 })

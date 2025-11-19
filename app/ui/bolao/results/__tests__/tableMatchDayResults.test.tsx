@@ -843,14 +843,6 @@ describe("TableMatchDayResults", () => {
   })
 
   describe("Edge Cases", () => {
-    it("should handle empty fixtures array gracefully", () => {
-      // Empty fixtures array should show loading state
-      // since the component checks `if (fixtures)` and empty array is truthy,
-      // but component will fail when accessing fixtures[fixtures.length - 1]
-      // So this is actually testing the actual behavior where empty array causes issues
-      expect(true).toBe(true) // This test documents current behavior
-    })
-
     it("should handle empty players array", () => {
       const fixtures = [createMockFixture()]
 
