@@ -163,20 +163,6 @@ describe("RootLayout", () => {
     })
   })
 
-  describe("Environment Variables", () => {
-    it("should reference NEXT_PUBLIC_UMAMI_ID environment variable", () => {
-      // The layout uses process.env.NEXT_PUBLIC_UMAMI_ID for analytics
-      // This test verifies the reference exists
-      expect(process.env).toBeDefined()
-    })
-
-    it("should handle undefined UMAMI_ID gracefully", () => {
-      // If UMAMI_ID is undefined, the app should still work
-      const umamiId = process.env.NEXT_PUBLIC_UMAMI_ID
-      expect(umamiId === undefined || typeof umamiId === "string").toBe(true)
-    })
-  })
-
   describe("Analytics Integration", () => {
     it("should configure Umami analytics script URL", () => {
       const expectedUrl = "https://cloud.umami.is/script.js"
@@ -197,48 +183,6 @@ describe("RootLayout", () => {
 
       // Function should accept children prop
       expect(RootLayout).toBeDefined()
-    })
-  })
-
-  describe("Layout Structure Validation", () => {
-    it("should wrap content in ClerkProvider", async () => {
-      const RootLayout = (await import("../layout")).default
-      const mockChildren = <div>Test</div>
-
-      const result = RootLayout({ children: mockChildren })
-      expect(result).toBeDefined()
-    })
-  })
-
-  describe("SEO and Accessibility", () => {
-    it("should set lang attribute for HTML element", () => {
-      // The layout sets lang="en" on the html element
-      const expectedLang = "en"
-      expect(expectedLang).toBe("en")
-    })
-  })
-
-  describe("Responsive Design", () => {
-    it("should use container class for responsive layout", () => {
-      const containerClass = "container"
-      expect(containerClass).toBe("container")
-    })
-
-    it("should use mx-auto for horizontal centering", () => {
-      const centeringClass = "mx-auto"
-      expect(centeringClass).toBe("mx-auto")
-    })
-
-    it("should use px-4 for horizontal padding", () => {
-      const paddingClass = "px-4"
-      expect(paddingClass).toBe("px-4")
-    })
-
-    it("should combine responsive classes correctly", () => {
-      const classes = "container mx-auto px-4"
-      expect(classes).toContain("container")
-      expect(classes).toContain("mx-auto")
-      expect(classes).toContain("px-4")
     })
   })
 })
