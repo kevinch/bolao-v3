@@ -19,6 +19,7 @@ export default defineConfig({
         "**/__tests__/**",
         "**/node_modules/**",
         "**/.next/**",
+        "**/app/api/**",
       ],
     },
   },
