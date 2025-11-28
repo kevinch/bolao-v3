@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest"
-import { metadata } from "../layout"
+import { render, screen } from "@testing-library/react"
+import RootLayout, { metadata } from "../layout"
 
 // Mock ClerkProvider
 vi.mock("@clerk/nextjs", () => ({
@@ -8,7 +9,7 @@ vi.mock("@clerk/nextjs", () => ({
 
 // Mock Header component
 vi.mock("@/app/components/header", () => ({
-  default: async () => <div data-testid="header">Header</div>,
+  default: () => <div data-testid="header">Header</div>,
 }))
 
 // Mock Footer component
@@ -33,7 +34,7 @@ vi.mock("@vercel/analytics/react", () => ({
 
 // Mock Next.js Script component
 vi.mock("next/script", () => ({
-  default: ({ src, ...props }: { src?: string; [key: string]: any }) => null,
+  default: ({ src, ...props }: { src?: string;[key: string]: any }) => null,
 }))
 
 // Mock Google Fonts
@@ -185,4 +186,19 @@ describe("RootLayout", () => {
       expect(RootLayout).toBeDefined()
     })
   })
+
+  describe("Rendering", () => {
+    it("should render children and all required components", async () => {
+      const { container } = render(
+        <RootLayout>
+          <div data-testid="child-content">Child Content</div>
+        </RootLayout>
+      )
+      // Verify structure
+      const mainContainer = container.querySelector(".container")
+      expect(mainContainer).toBeDefined()
+      expect(mainContainer?.className).toContain("mx-auto px-4")
+    })
+  })
 })
+
