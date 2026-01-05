@@ -45,7 +45,7 @@
     "react-device-detect": "^2.2.3",
     "react-dom": "19.2.3",
     "react-sticky-table": "^5.1.11",
-    "tailwind-merge": "2.6.0",
+    "tailwind-merge": "3.4.0",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {

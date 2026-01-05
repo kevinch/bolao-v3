@@ -17,7 +17,7 @@ async function Admin() {
     const role = userData.privateMetadata?.role || "guest"
 
     if (role !== "admin") {
-      return navigate("/")
+      navigate("/")
     }
   }
 
