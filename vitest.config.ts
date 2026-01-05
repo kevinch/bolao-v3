@@ -20,6 +20,8 @@ export default defineConfig({
         "**/node_modules/**",
         "**/.next/**",
         "**/app/api/**",
+        "**/*Svg.tsx",
+        "**/styles.ts",
       ],
     },
   },
