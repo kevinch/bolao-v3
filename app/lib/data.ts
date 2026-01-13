@@ -36,6 +36,7 @@ export async function fetchBoloesByUserId(userId: string) {
       FROM boloes
       INNER JOIN user_bolao ON CAST(boloes.id AS VARCHAR) = user_bolao.bolao_id
       WHERE CAST(user_bolao.user_id AS VARCHAR) = ${userId}
+      ORDER BY boloes.year DESC, boloes.start DESC
     `
 
     return data.rows as Bolao[]

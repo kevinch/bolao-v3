@@ -43,7 +43,16 @@ async function BoloesList() {
   const currentYear = new Date().getFullYear()
   const today = new Date()
 
-  data.forEach((el: Bolao) => {
+  const sortedData = [...data].sort((a, b) => {
+    if (b.year !== a.year) {
+      return b.year - a.year
+    }
+    const timeA = a.start ? new Date(a.start).getTime() : 0
+    const timeB = b.start ? new Date(b.start).getTime() : 0
+    return timeB - timeA
+  })
+
+  sortedData.forEach((el: Bolao) => {
     if (el.year === currentYear) {
       activeGroup.push(el)
     } else if (el.end) {

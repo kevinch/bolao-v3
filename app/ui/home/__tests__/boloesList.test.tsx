@@ -346,6 +346,63 @@ describe("BoloesList", () => {
     })
   })
 
+  describe("Sorting", () => {
+    it("should sort boloes descending by year and start date", async () => {
+      const { auth } = await import("@clerk/nextjs/server")
+      const { fetchBoloesByUserId } = await import("@/app/lib/data")
+
+      const currentYear = 2024
+      vi.setSystemTime(new Date(`${currentYear}-06-15`))
+
+      const testBoloes: Bolao[] = [
+        {
+          id: "year-2024-late",
+          name: "2024 Late",
+          competition_id: "c1",
+          created_by: "u1",
+          created_at: new Date(),
+          year: 2024,
+          start: "2024-12-01",
+        },
+        {
+          id: "year-2024-early",
+          name: "2024 Early",
+          competition_id: "c1",
+          created_by: "u1",
+          created_at: new Date(),
+          year: 2024,
+          start: "2024-01-01",
+        },
+        {
+          id: "year-2023-active",
+          name: "2023 Active",
+          competition_id: "c1",
+          created_by: "u1",
+          created_at: new Date(),
+          year: 2023,
+          end: "2025-01-01", // Active because ends in future
+          start: "2023-01-01",
+        },
+      ]
+
+      vi.mocked(auth).mockResolvedValue({ userId: "user-123" } as any)
+      vi.mocked(fetchBoloesByUserId).mockResolvedValue(testBoloes)
+
+      render(await BoloesList())
+
+      const cards = screen.getAllByTestId(/bolao-card-/)
+      expect(cards).toHaveLength(3)
+
+      // Expected order:
+      // 1. year-2024-late (year 2024, latest start)
+      // 2. year-2024-early (year 2024, earlier start)
+      // 3. year-2023-active (year 2023)
+      expect(cards[0]).toHaveAttribute("data-testid", "bolao-card-year-2024-late")
+      expect(cards[1]).toHaveAttribute("data-testid", "bolao-card-year-2024-early")
+      expect(cards[2]).toHaveAttribute("data-testid", "bolao-card-year-2023-active")
+    })
+  })
+
   describe("BolaoCard Integration", () => {
     it("should render unique keys for bolao cards", async () => {
       const { auth } = await import("@clerk/nextjs/server")
