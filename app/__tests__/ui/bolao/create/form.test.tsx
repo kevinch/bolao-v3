@@ -7,6 +7,12 @@ import { useToast } from "@/hooks/use-toast"
 // Mock dependencies
 vi.mock("@/app/lib/actions")
 vi.mock("@/hooks/use-toast")
+const mockPush = vi.fn()
+vi.mock("next/navigation", () => ({
+    useRouter: () => ({
+        push: mockPush,
+    }),
+}))
 vi.mock("@/components/ui/input", () => ({
     Input: (props: any) => <input {...props} />
 }))
@@ -121,6 +127,19 @@ describe("Form", () => {
                 description: "There was an issue with the creation.",
                 variant: "destructive"
             })
+        })
+    })
+
+    it("should redirect to the home page after successful creation", async () => {
+        (createBolao as any).mockResolvedValue({ success: true });
+
+        const { container } = render(<Form leagues={mockLeagues} />)
+
+        const form = container.querySelector("form")!
+        fireEvent.submit(form)
+
+        await waitFor(() => {
+            expect(mockPush).toHaveBeenCalledWith("/")
         })
     })
 })

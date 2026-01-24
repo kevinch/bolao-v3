@@ -16,6 +16,7 @@ import {
 import { ReloadIcon } from "@radix-ui/react-icons"
 import { League } from "@/app/lib/definitions"
 import { useToast } from "@/hooks/use-toast"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 type FormProps = {
@@ -24,6 +25,7 @@ type FormProps = {
 
 function Form({ leagues }: FormProps) {
   const { toast } = useToast()
+  const router = useRouter()
   const [loading, setLoading] = useState(false)
 
   const orderedLeaguesByCountryName = Object.values(
@@ -70,6 +72,7 @@ function Form({ leagues }: FormProps) {
         description: "The bolão was successfully created.",
         variant: "success",
       })
+      router.push("/")
     } else {
       toast({
         description: "There was an issue with the creation.",
