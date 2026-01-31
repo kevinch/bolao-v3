@@ -410,7 +410,7 @@ describe("ButtonsBet", () => {
       const mockCreateBet = vi.mocked(actions.createBet)
       const consoleErrorSpy = vi
         .spyOn(console, "error")
-        .mockImplementation(() => { })
+        .mockImplementation(() => {})
 
       mockCreateBet.mockRejectedValue(new Error("Network error"))
 
@@ -440,7 +440,7 @@ describe("ButtonsBet", () => {
       const mockUpdateBet = vi.mocked(actions.updateBet)
       const consoleErrorSpy = vi
         .spyOn(console, "error")
-        .mockImplementation(() => { })
+        .mockImplementation(() => {})
 
       mockUpdateBet.mockRejectedValue(new Error("Update failed"))
 
