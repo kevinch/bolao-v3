@@ -7,6 +7,7 @@ import Script from "next/script"
 import { Analytics } from "@vercel/analytics/react"
 import { Toaster } from "@/components/ui/toaster"
 import ServiceWorkerUnregister from "@/app/lib/serviceWorkerUnregister"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import "./globals.css"
 
 const Plex = IBM_Plex_Sans({ weight: "400", subsets: ["latin"] })
@@ -32,6 +33,7 @@ export default function RootLayout({
             <Footer />
             <Toaster />
             <Analytics />
+            <SpeedInsights />
           </div>
         </body>
 
