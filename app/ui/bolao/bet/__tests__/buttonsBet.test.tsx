@@ -410,7 +410,7 @@ describe("ButtonsBet", () => {
       const mockCreateBet = vi.mocked(actions.createBet)
       const consoleErrorSpy = vi
         .spyOn(console, "error")
-        .mockImplementation(() => {})
+        .mockImplementation(() => { })
 
       mockCreateBet.mockRejectedValue(new Error("Network error"))
 
@@ -440,7 +440,7 @@ describe("ButtonsBet", () => {
       const mockUpdateBet = vi.mocked(actions.updateBet)
       const consoleErrorSpy = vi
         .spyOn(console, "error")
-        .mockImplementation(() => {})
+        .mockImplementation(() => { })
 
       mockUpdateBet.mockRejectedValue(new Error("Update failed"))
 
@@ -539,6 +539,69 @@ describe("ButtonsBet", () => {
           value: 1,
         })
       })
+    })
+
+    it("should use current betIdValue during debounce (no stale closure)", async () => {
+      const user = userEvent.setup()
+      const mockCreateBet = vi.mocked(actions.createBet)
+      const mockUpdateBet = vi.mocked(actions.updateBet)
+
+      // Simulate slow createBet response
+      mockCreateBet.mockImplementation(
+        () =>
+          new Promise((resolve) =>
+            setTimeout(
+              () =>
+                resolve({
+                  id: "new-bet-456",
+                  user_bolao_id: "user-bolao-123",
+                  fixture_id: "fixture-456",
+                  value: 1,
+                  type: "home",
+                }),
+              100
+            )
+          )
+      )
+
+      mockUpdateBet.mockResolvedValue({
+        id: "new-bet-456",
+        user_bolao_id: "user-bolao-123",
+        fixture_id: "fixture-456",
+        value: 2,
+        type: "home",
+      })
+
+      render(<ButtonsBet {...defaultProps} />)
+
+      const buttons = screen.getAllByRole("button")
+      const incrementButton = buttons[1]
+
+      // Click to 1, then quickly to 2 before debounce completes
+      await user.click(incrementButton)
+      await user.click(incrementButton)
+
+      // Wait for createBet (first value)
+      await waitFor(
+        () => {
+          expect(mockCreateBet).toHaveBeenCalledTimes(1)
+        },
+        { timeout: 2000 }
+      )
+
+      // Wait for updateBet with the correct betId (regression test for stale closure)
+      await waitFor(
+        () => {
+          expect(mockUpdateBet).toHaveBeenCalledWith({
+            betId: "new-bet-456",
+            value: 1,
+          })
+        },
+        { timeout: 2000 }
+      )
+
+      // Should NOT have called createBet a second time
+      expect(mockCreateBet).toHaveBeenCalledTimes(1)
     })
   })
 })

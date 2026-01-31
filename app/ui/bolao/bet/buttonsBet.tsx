@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { createBet, updateBet } from "@/app/lib/actions"
 import { INITIAL_BET_VALUE } from "@/app/lib/utils"
 import { BetResult } from "@/app/lib/definitions"
@@ -29,7 +29,7 @@ function ButtonsBet({
   )
   const [betIdValue, setBetId] = useState(betId || null)
 
-  const setData = async () => {
+  const setData = useCallback(async () => {
     try {
       let result: BetResult
 
@@ -47,7 +47,7 @@ function ButtonsBet({
     } catch (error) {
       console.error("Error creating/updating bet:", error)
     }
-  }
+  }, [betIdValue, value, userBolaoId, type, fixtureId])
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -57,7 +57,7 @@ function ButtonsBet({
     }, 300)
 
     return () => clearTimeout(delayDebounceFn)
-  }, [value])
+  }, [value, setData])
 
   const incrementCount = () => {
     if (value === INITIAL_BET_VALUE) {
