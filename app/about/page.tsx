@@ -49,6 +49,7 @@ export default function About() {
         <Link
           className="underline hover:no-underline"
           href="https://www.linkedin.com/in/kevinchevallier/"
+          target="_blank"
         >
           LinkedIn
         </Link>
@@ -68,6 +69,29 @@ export default function About() {
         The app is built with NextJS, Typescript and React, hosted at Vercel and
         uses Postgres for the database. It uses Prismic.io for the headless CMS
         and Clerk for the auth management.
+      </p>
+
+      <h2 className={h2Classes}>Soccer coverage</h2>
+      <p className={pClasses}>
+        The app uses the API of{" "}
+        <Link
+          href="https://api-sports.io/sports/football"
+          className="underline hover:no-underline"
+          target="_blank"
+        >
+          api-football.com
+        </Link>{" "}
+        to get the latest fixtures and results. For now just a handful of
+        leagues are available, but upon request more could be added. Feel free
+        to reach me at{" "}
+        <Link
+          className="underline hover:no-underline"
+          href="https://www.linkedin.com/in/kevinchevallier/"
+          target="_blank"
+        >
+          LinkedIn
+        </Link>
+        .
       </p>
     </div>
   )

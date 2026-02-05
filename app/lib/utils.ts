@@ -15,15 +15,20 @@ export const FOOTBALL_API_SPORTS_LEAGUES = [
     id: 3,
   },
   { name: "UEFA Europa Conference League", countryName: "World", id: 848 },
-  // {
-  //   name: "Euro Championship",
-  //   countryName: "World",
-  //   id: 4,
-  // },
+  {
+    name: "Euro Championship",
+    countryName: "World",
+    id: 4,
+  },
   {
     name: "Ligue 1",
     countryName: "France",
     id: 61,
+  },
+  {
+    name: "Coupe de France",
+    countryName: "France",
+    id: 66,
   },
   {
     name: "Serie A",
@@ -31,15 +36,40 @@ export const FOOTBALL_API_SPORTS_LEAGUES = [
     id: 71,
   },
   {
+    name: "Serie B",
+    countryName: "Brazil",
+    id: 72,
+  },
+  {
+    name: "Serie C",
+    countryName: "Brazil",
+    id: 75,
+  },
+  {
     name: "Premier League",
     countryName: "England",
     id: 39,
   },
-  // {
-  //   name: "Copa America",
-  //   countryName: "World",
-  //   id: 9,
-  // },
+  {
+    name: "Primeira Liga",
+    countryName: "Portugal",
+    id: 94,
+  },
+  {
+    name: "La Liga",
+    countryName: "Spain",
+    id: 140,
+  },
+  {
+    name: "Copa do Brasil",
+    countryName: "Brazil",
+    id: 73,
+  },
+  {
+    name: "Copa America",
+    countryName: "World",
+    id: 9,
+  },
   {
     name: "CONMEBOL Libertadores",
     countryName: "World",
@@ -47,9 +77,6 @@ export const FOOTBALL_API_SPORTS_LEAGUES = [
   },
   { name: "FIFA Club World Cup", countryName: "World", id: 15 },
   { name: "World Cup", countryName: "World", id: 1 },
-
-  // { name: "Olympics Men", countryName: "World", id: 480 },
-  // { name: "Olympics Women", countryName: "World", id: 524 },
 ]
 
 export const getCurrentSeasonObject = (

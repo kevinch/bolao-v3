@@ -89,6 +89,16 @@ describe("About Page", () => {
       expect(heading).toBeInTheDocument()
     })
 
+    it("should render 'Soccer coverage' section heading", () => {
+      render(<About />)
+
+      const heading = screen.getByRole("heading", {
+        level: 2,
+        name: "Soccer coverage",
+      })
+      expect(heading).toBeInTheDocument()
+    })
+
     it("should have correct styling classes on section headings", () => {
       const { container } = render(<About />)
 
@@ -107,7 +117,7 @@ describe("About Page", () => {
       const h2s = screen.getAllByRole("heading", { level: 2 })
 
       expect(h1).toBeInTheDocument()
-      expect(h2s).toHaveLength(3)
+      expect(h2s).toHaveLength(4)
     })
 
     it("should have descriptive link text", () => {
