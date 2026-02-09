@@ -4,13 +4,10 @@ import {
   fetchUsersBets,
   fetchUsers,
 } from "@/app/lib/data"
-import { unstable_noStore as noStore } from "next/cache"
 import { deleteBolao, deleteUserBolao, deleteBet } from "./actions"
 import { UserBolao, Bet } from "./definitions"
 
 export async function getBoloes() {
-  noStore()
-
   const boloes = await fetchBoloes()
 
   return {
@@ -54,8 +51,6 @@ export async function deleteBolaoGroup(bolaoId: string) {
 }
 
 export async function getUsers() {
-  noStore()
-
   const users = await fetchUsers()
 
   return {

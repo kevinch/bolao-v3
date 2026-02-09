@@ -8,11 +8,6 @@ vi.mock("@/app/lib/data", () => ({
   fetchStandings: vi.fn(),
 }))
 
-// Mock Next.js cache
-vi.mock("next/cache", () => ({
-  unstable_noStore: vi.fn(),
-}))
-
 describe("controllerStandings", () => {
   const mockBolao: Bolao = {
     id: "bolao-1",
@@ -57,18 +52,6 @@ describe("controllerStandings", () => {
         bolao: mockBolao,
         standingsLeague: mockStandingsLeague,
       })
-    })
-
-    it("should call noStore to disable caching", async () => {
-      const { fetchBolao, fetchStandings } = await import("@/app/lib/data")
-      const { unstable_noStore } = await import("next/cache")
-
-      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
-      vi.mocked(fetchStandings).mockResolvedValue(mockStandingsLeague)
-
-      await getData("bolao-1")
-
-      expect(unstable_noStore).toHaveBeenCalled()
     })
 
     it("should extract year from bolao", async () => {
