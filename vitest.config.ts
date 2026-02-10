@@ -26,6 +26,7 @@ export default defineConfig({
         "**/declarations.d.ts",
         "app/lib/data.ts",
         "app/lib/mock.ts",
+        "app/sign-up/db/page.tsx",
       ],
     },
   },

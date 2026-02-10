@@ -146,45 +146,140 @@ describe("Home Page", () => {
       expect(screen.getByTestId("invite-redirector")).toBeInTheDocument()
     })
 
-    it("should display welcome message for unauthenticated user", async () => {
+    it("should display hero title for unauthenticated user", async () => {
       const { currentUser } = await import("@clerk/nextjs/server")
       vi.mocked(currentUser).mockResolvedValue(null)
 
       render(await Home())
 
-      expect(screen.getByText("Simple soccer bets.")).toBeInTheDocument()
+      expect(
+        screen.getByText("Soccer betting pools with friends.")
+      ).toBeInTheDocument()
     })
 
-    it("should render Login button with correct link", async () => {
+    it("should display hero subtitle with value propositions", async () => {
       const { currentUser } = await import("@clerk/nextjs/server")
       vi.mocked(currentUser).mockResolvedValue(null)
 
       render(await Home())
 
-      const loginLink = screen.getByRole("link", { name: /Login/i })
+      expect(screen.getByText(/Compete on predictions/i)).toBeInTheDocument()
+      expect(
+        screen.getByText(/Track results in real-time/i)
+      ).toBeInTheDocument()
+      expect(screen.getByText(/Win bragging rights/i)).toBeInTheDocument()
+    })
+
+    it("should render GET STARTED button with correct link", async () => {
+      const { currentUser } = await import("@clerk/nextjs/server")
+      vi.mocked(currentUser).mockResolvedValue(null)
+
+      render(await Home())
+
+      const getStartedLinks = screen.getAllByRole("link", {
+        name: /GET STARTED/i,
+      })
+      expect(getStartedLinks.length).toBeGreaterThan(0)
+      expect(getStartedLinks[0]).toHaveAttribute("href", "/sign-up")
+    })
+
+    it("should render LOGIN button with correct link", async () => {
+      const { currentUser } = await import("@clerk/nextjs/server")
+      vi.mocked(currentUser).mockResolvedValue(null)
+
+      render(await Home())
+
+      const loginLink = screen.getByRole("link", { name: /^LOGIN$/i })
       expect(loginLink).toBeInTheDocument()
       expect(loginLink).toHaveAttribute("href", "/sign-in")
     })
 
-    it("should render Register button with correct link", async () => {
+    it("should render Learn more about Bolão.io link", async () => {
       const { currentUser } = await import("@clerk/nextjs/server")
       vi.mocked(currentUser).mockResolvedValue(null)
 
       render(await Home())
 
-      const registerLink = screen.getByRole("link", { name: /Register/i })
-      expect(registerLink).toBeInTheDocument()
-      expect(registerLink).toHaveAttribute("href", "/sign-up")
+      const aboutLink = screen.getByRole("link", {
+        name: /Learn more about Bolão\.io/i,
+      })
+      expect(aboutLink).toBeInTheDocument()
+      expect(aboutLink).toHaveAttribute("href", "/about")
     })
 
-    it("should render buttons in uppercase container", async () => {
+    it("should display What is a bolão section", async () => {
       const { currentUser } = await import("@clerk/nextjs/server")
       vi.mocked(currentUser).mockResolvedValue(null)
 
-      const { container } = render(await Home())
+      render(await Home())
 
-      const upperCaseDiv = container.querySelector(".uppercase")
-      expect(upperCaseDiv).toBeInTheDocument()
+      expect(
+        screen.getByRole("heading", { name: /What is a bolão\?/i })
+      ).toBeInTheDocument()
+      expect(
+        screen.getByText(/In Brazil, a bolão is a betting pool/i)
+      ).toBeInTheDocument()
+      expect(screen.getByText(/just friendly competition/i)).toBeInTheDocument()
+    })
+
+    it("should display How it works section with 3 steps", async () => {
+      const { currentUser } = await import("@clerk/nextjs/server")
+      vi.mocked(currentUser).mockResolvedValue(null)
+
+      render(await Home())
+
+      expect(
+        screen.getByRole("heading", { name: /How it works/i })
+      ).toBeInTheDocument()
+      expect(
+        screen.getByRole("heading", { name: /Create or Join/i })
+      ).toBeInTheDocument()
+      expect(
+        screen.getByRole("heading", { name: /Make Predictions/i })
+      ).toBeInTheDocument()
+      expect(
+        screen.getByRole("heading", { name: /Track & Win/i })
+      ).toBeInTheDocument()
+    })
+
+    it("should display Why Bolão.io features section", async () => {
+      const { currentUser } = await import("@clerk/nextjs/server")
+      vi.mocked(currentUser).mockResolvedValue(null)
+
+      render(await Home())
+
+      expect(
+        screen.getByRole("heading", { name: /Why Bolão\.io\?/i })
+      ).toBeInTheDocument()
+      expect(
+        screen.getByRole("heading", { name: /Multiple Leagues/i })
+      ).toBeInTheDocument()
+      expect(
+        screen.getByRole("heading", { name: /Works Everywhere/i })
+      ).toBeInTheDocument()
+      expect(
+        screen.getByRole("heading", { name: /Completely Free/i })
+      ).toBeInTheDocument()
+      expect(
+        screen.getByRole("heading", { name: /Real-Time Updates/i })
+      ).toBeInTheDocument()
+    })
+
+    it("should display Ready to start CTA section", async () => {
+      const { currentUser } = await import("@clerk/nextjs/server")
+      vi.mocked(currentUser).mockResolvedValue(null)
+
+      render(await Home())
+
+      expect(
+        screen.getByRole("heading", { name: /Ready to start\?/i })
+      ).toBeInTheDocument()
+      expect(
+        screen.getByText(/Create your first bolão in minutes/i)
+      ).toBeInTheDocument()
+      expect(
+        screen.getByRole("link", { name: /GET STARTED FOR FREE/i })
+      ).toBeInTheDocument()
     })
 
     it("should not render BoloesList when user is not authenticated", async () => {
@@ -203,6 +298,16 @@ describe("Home Page", () => {
       render(await Home())
 
       expect(screen.getByTestId("page-title")).toBeInTheDocument()
+    })
+
+    it("should render main element with max-width wrapper", async () => {
+      const { currentUser } = await import("@clerk/nextjs/server")
+      vi.mocked(currentUser).mockResolvedValue(null)
+
+      const { container } = render(await Home())
+
+      const mainElement = container.querySelector("main.max-w-4xl")
+      expect(mainElement).toBeInTheDocument()
     })
   })
 
@@ -307,11 +412,13 @@ describe("Home Page", () => {
 
       render(await Home())
 
-      const loginLink = screen.getByRole("link", { name: /Login/i })
-      const registerLink = screen.getByRole("link", { name: /Register/i })
+      const loginLink = screen.getByRole("link", { name: /^LOGIN$/i })
+      const aboutLink = screen.getByRole("link", {
+        name: /Learn more about Bolão\.io/i,
+      })
 
-      expect(loginLink.textContent).toBe("Login")
-      expect(registerLink.textContent).toBe("Register")
+      expect(loginLink.textContent).toBe("LOGIN")
+      expect(aboutLink.textContent).toBe("Learn more about Bolão.io")
     })
 
     it("should use br tag for greeting line break", async () => {
@@ -325,6 +432,19 @@ describe("Home Page", () => {
 
       const brElement = container.querySelector("br")
       expect(brElement).toBeInTheDocument()
+    })
+
+    it("should have proper heading hierarchy in unauthenticated view", async () => {
+      const { currentUser } = await import("@clerk/nextjs/server")
+      vi.mocked(currentUser).mockResolvedValue(null)
+
+      const { container } = render(await Home())
+
+      const h2Elements = container.querySelectorAll("h2")
+      const h3Elements = container.querySelectorAll("h3")
+
+      expect(h2Elements.length).toBeGreaterThan(0)
+      expect(h3Elements.length).toBeGreaterThan(0)
     })
   })
 

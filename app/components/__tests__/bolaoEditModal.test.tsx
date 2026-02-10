@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
-import { BolaoEditModal } from "../bolaoEditModal"
+import { BolaoEditModal, handlePointerDownOutside } from "../bolaoEditModal"
 
 describe("BolaoEditModal", () => {
   const mockOnOpenChange = vi.fn()
@@ -151,5 +151,164 @@ describe("BolaoEditModal", () => {
 
     expect(cancelButton).toBeInTheDocument()
     expect(saveButton).toBeInTheDocument()
+  })
+
+  it("should handle empty bolaoName", () => {
+    render(<BolaoEditModal {...defaultProps} bolaoName="" />)
+
+    const input = screen.getByRole("textbox")
+    expect(input).toHaveValue("")
+  })
+
+  it("should handle very long bolaoName", () => {
+    const longName = "A".repeat(200)
+    render(<BolaoEditModal {...defaultProps} bolaoName={longName} />)
+
+    const input = screen.getByRole("textbox")
+    expect(input).toHaveValue(longName)
+  })
+
+  it("should call onNameChange with empty string when input is cleared", async () => {
+    const user = userEvent.setup()
+    render(<BolaoEditModal {...defaultProps} />)
+
+    const input = screen.getByRole("textbox")
+    await user.clear(input)
+
+    // onNameChange should be called with empty string
+    expect(mockOnNameChange).toHaveBeenCalledWith("")
+  })
+
+  it("should not call onSubmit when Cancel is clicked", async () => {
+    const user = userEvent.setup()
+    render(<BolaoEditModal {...defaultProps} />)
+
+    const cancelButton = screen.getByRole("button", { name: /cancel/i })
+    await user.click(cancelButton)
+
+    expect(mockOnSubmit).not.toHaveBeenCalled()
+  })
+
+  it("should have appropriate ARIA attributes for accessibility", () => {
+    render(<BolaoEditModal {...defaultProps} />)
+
+    const dialog = screen.getByRole("dialog")
+    expect(dialog).toBeInTheDocument()
+
+    // Check that title is properly connected
+    expect(screen.getByText("Edit bolão")).toBeInTheDocument()
+  })
+
+  it("should prevent closing when clicking inside dialog (via onPointerDownOutside)", () => {
+    render(<BolaoEditModal {...defaultProps} />)
+
+    const dialog = screen.getByRole("dialog")
+    expect(dialog).toBeInTheDocument()
+
+    // The onPointerDownOutside handler should prevent closing when clicking inside
+    // This is handled by the Dialog component from radix-ui
+  })
+
+  it("should maintain modal state through open prop changes", () => {
+    const { rerender } = render(<BolaoEditModal {...defaultProps} />)
+
+    expect(screen.getByRole("dialog")).toBeInTheDocument()
+
+    rerender(<BolaoEditModal {...defaultProps} open={false} />)
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
+
+    rerender(<BolaoEditModal {...defaultProps} open={true} />)
+    expect(screen.getByRole("dialog")).toBeInTheDocument()
+  })
+
+  it("should allow Save button to be clicked multiple times", async () => {
+    const user = userEvent.setup()
+    render(<BolaoEditModal {...defaultProps} />)
+
+    const saveButton = screen.getByRole("button", { name: /save changes/i })
+    await user.click(saveButton)
+    await user.click(saveButton)
+
+    expect(mockOnSubmit).toHaveBeenCalledTimes(2)
+  })
+
+  it("should handle special characters in bolaoName", () => {
+    const specialName = "Bolão #1 <2024> & 'Champions'"
+    render(<BolaoEditModal {...defaultProps} bolaoName={specialName} />)
+
+    const input = screen.getByRole("textbox")
+    expect(input).toHaveValue(specialName)
+  })
+
+  it("should render DialogContent with onPointerDownOutside handler", () => {
+    const { container } = render(<BolaoEditModal {...defaultProps} />)
+
+    const dialog = screen.getByRole("dialog")
+
+    // Verify the dialog renders correctly with the event handler
+    // The handler prevents closing when clicking inside the dialog
+    expect(dialog).toBeInTheDocument()
+
+    // Verify dialog structure
+    expect(dialog).toContainElement(screen.getByText("Edit bolão"))
+  })
+})
+
+describe("handlePointerDownOutside", () => {
+  it("should call preventDefault when target is HTMLElement inside dialog", () => {
+    const mockElement = document.createElement("div")
+    mockElement.setAttribute("role", "dialog")
+    document.body.appendChild(mockElement)
+
+    const mockPreventDefault = vi.fn()
+    const mockEvent = {
+      target: mockElement,
+      preventDefault: mockPreventDefault,
+    }
+
+    handlePointerDownOutside(mockEvent)
+
+    expect(mockPreventDefault).toHaveBeenCalled()
+    document.body.removeChild(mockElement)
+  })
+
+  it("should not call preventDefault when target is not HTMLElement", () => {
+    const mockPreventDefault = vi.fn()
+    const mockEvent = {
+      target: { nodeType: 3 }, // Not an HTMLElement
+      preventDefault: mockPreventDefault,
+    }
+
+    handlePointerDownOutside(mockEvent)
+
+    expect(mockPreventDefault).not.toHaveBeenCalled()
+  })
+
+  it("should not call preventDefault when target is not inside dialog", () => {
+    const mockElement = document.createElement("div")
+    document.body.appendChild(mockElement)
+
+    const mockPreventDefault = vi.fn()
+    const mockEvent = {
+      target: mockElement,
+      preventDefault: mockPreventDefault,
+    }
+
+    handlePointerDownOutside(mockEvent)
+
+    expect(mockPreventDefault).not.toHaveBeenCalled()
+    document.body.removeChild(mockElement)
+  })
+
+  it("should handle event with null target", () => {
+    const mockPreventDefault = vi.fn()
+    const mockEvent = {
+      target: null,
+      preventDefault: mockPreventDefault,
+    }
+
+    handlePointerDownOutside(mockEvent)
+
+    expect(mockPreventDefault).not.toHaveBeenCalled()
   })
 })

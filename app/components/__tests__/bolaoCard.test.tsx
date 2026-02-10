@@ -4,6 +4,8 @@ import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
 import BolaoCard from "../bolaoCard"
 import type { Bolao } from "@/app/lib/definitions"
+import { updateBolao } from "@/app/lib/actions"
+import { deleteBolaoGroup } from "@/app/lib/controllerAdmin"
 
 // Mock actions
 vi.mock("@/app/lib/actions", () => ({
@@ -48,19 +50,39 @@ vi.mock("../bolaoEditModal", () => ({
   BolaoEditModal: ({
     open,
     bolaoName,
+    onSubmit,
   }: {
     open: boolean
     bolaoName: string
+    onSubmit: () => void
   }) =>
     open ? (
-      <div data-testid="edit-modal">Edit Modal for {bolaoName}</div>
+      <div data-testid="edit-modal">
+        Edit Modal for {bolaoName}
+        <button onClick={onSubmit} data-testid="edit-submit">
+          Submit Edit
+        </button>
+      </div>
     ) : null,
 }))
 
 vi.mock("../bolaoDeleteModal", () => ({
-  BolaoDeleteModal: ({ open, bolaoId }: { open: boolean; bolaoId: string }) =>
+  BolaoDeleteModal: ({
+    open,
+    bolaoId,
+    onSubmit,
+  }: {
+    open: boolean
+    bolaoId: string
+    onSubmit: (id: string) => void
+  }) =>
     open ? (
-      <div data-testid="delete-modal">Delete Modal for {bolaoId}</div>
+      <div data-testid="delete-modal">
+        Delete Modal for {bolaoId}
+        <button onClick={() => onSubmit(bolaoId)} data-testid="delete-submit">
+          Submit Delete
+        </button>
+      </div>
     ) : null,
 }))
 
@@ -190,5 +212,172 @@ describe("BolaoCard", () => {
 
     // The component should still render (date formatting is internal)
     expect(screen.getByText(/Champions League 2024/i)).toBeInTheDocument()
+  })
+
+  it("should display only year when no start/end dates", () => {
+    const bolaoWithoutDates: Bolao = {
+      ...mockBolao,
+      start: undefined,
+      end: undefined,
+    }
+
+    render(<BolaoCard bolao={bolaoWithoutDates} userId="user-789" />)
+
+    expect(screen.getByText(/Champions League 2024/i)).toBeInTheDocument()
+  })
+
+  it("should display year when start and end years are the same", () => {
+    const bolaoSameYear: Bolao = {
+      ...mockBolao,
+      start: "2024-01-01",
+      end: "2024-12-31",
+    }
+
+    render(<BolaoCard bolao={bolaoSameYear} userId="user-789" />)
+
+    expect(screen.getByText(/Champions League 2024/i)).toBeInTheDocument()
+  })
+
+  it("should call updateBolao and show success toast on successful edit", async () => {
+    const user = userEvent.setup()
+    const mockUpdateBolao = vi.mocked(updateBolao)
+    mockUpdateBolao.mockResolvedValue({ success: true })
+
+    render(<BolaoCard bolao={mockBolao} userId="user-456" />)
+
+    // Open dropdown and click Edit
+    const dropdownButton = screen.getByRole("button", { name: "" })
+    await user.click(dropdownButton)
+    const editButton = await screen.findByText("Edit")
+    await user.click(editButton)
+
+    // Wait for modal to appear
+    await waitFor(() => {
+      expect(screen.getByTestId("edit-modal")).toBeInTheDocument()
+    })
+
+    // Click the submit button in the modal
+    const submitButton = screen.getByTestId("edit-submit")
+    await user.click(submitButton)
+
+    // Verify updateBolao was called
+    await waitFor(() => {
+      expect(mockUpdateBolao).toHaveBeenCalledWith({
+        name: "Champions League 2024",
+        bolaoId: "bolao-123",
+      })
+      expect(mockToast).toHaveBeenCalledWith({
+        title: "Success",
+        description: "The bolão was successfully updated.",
+        variant: "success",
+      })
+    })
+  })
+
+  it("should show error toast on failed edit", async () => {
+    const user = userEvent.setup()
+    const mockUpdateBolao = vi.mocked(updateBolao)
+    mockUpdateBolao.mockResolvedValue({ success: false, message: "Error" })
+
+    render(<BolaoCard bolao={mockBolao} userId="user-456" />)
+
+    // Open dropdown and click Edit
+    const dropdownButton = screen.getByRole("button", { name: "" })
+    await user.click(dropdownButton)
+    const editButton = await screen.findByText("Edit")
+    await user.click(editButton)
+
+    // Wait for modal and click submit
+    await waitFor(() => {
+      expect(screen.getByTestId("edit-modal")).toBeInTheDocument()
+    })
+    const submitButton = screen.getByTestId("edit-submit")
+    await user.click(submitButton)
+
+    // Verify error toast was shown
+    await waitFor(() => {
+      expect(mockToast).toHaveBeenCalledWith({
+        description: "There was an issue with the update.",
+        variant: "destructive",
+      })
+    })
+  })
+
+  it("should call deleteBolaoGroup and show success toast on successful delete", async () => {
+    const user = userEvent.setup()
+    const mockDeleteBolaoGroup = vi.mocked(deleteBolaoGroup)
+    mockDeleteBolaoGroup.mockResolvedValue({ success: true, message: "" })
+
+    render(<BolaoCard bolao={mockBolao} userId="user-456" />)
+
+    // Open dropdown and click Delete
+    const dropdownButton = screen.getByRole("button", { name: "" })
+    await user.click(dropdownButton)
+    const deleteButton = await screen.findByText("Delete")
+    await user.click(deleteButton)
+
+    // Wait for modal and click submit
+    await waitFor(() => {
+      expect(screen.getByTestId("delete-modal")).toBeInTheDocument()
+    })
+    const submitButton = screen.getByTestId("delete-submit")
+    await user.click(submitButton)
+
+    // Verify deleteBolaoGroup was called
+    await waitFor(() => {
+      expect(mockDeleteBolaoGroup).toHaveBeenCalledWith("bolao-123")
+      expect(mockToast).toHaveBeenCalledWith({
+        title: "Success",
+        description: "The bolão was successfully deleted.",
+        variant: "success",
+      })
+    })
+  })
+
+  it("should show error toast on failed delete", async () => {
+    const user = userEvent.setup()
+    const mockDeleteBolaoGroup = vi.mocked(deleteBolaoGroup)
+    mockDeleteBolaoGroup.mockResolvedValue({ success: false, message: "Error" })
+
+    render(<BolaoCard bolao={mockBolao} userId="user-456" />)
+
+    // Open dropdown and click Delete
+    const dropdownButton = screen.getByRole("button", { name: "" })
+    await user.click(dropdownButton)
+    const deleteButton = await screen.findByText("Delete")
+    await user.click(deleteButton)
+
+    // Wait for modal and click submit
+    await waitFor(() => {
+      expect(screen.getByTestId("delete-modal")).toBeInTheDocument()
+    })
+    const submitButton = screen.getByTestId("delete-submit")
+    await user.click(submitButton)
+
+    // Verify error toast was shown
+    await waitFor(() => {
+      expect(mockToast).toHaveBeenCalledWith({
+        description: "There was an issue with the creation.",
+        variant: "destructive",
+      })
+    })
+  })
+
+  it("should render both modals as closed by default", () => {
+    render(<BolaoCard bolao={mockBolao} userId="user-456" />)
+
+    // Modals should not be visible initially
+    expect(screen.queryByTestId("edit-modal")).not.toBeInTheDocument()
+    expect(screen.queryByTestId("delete-modal")).not.toBeInTheDocument()
+  })
+
+  it("should show Bet and Results links for all users", () => {
+    render(<BolaoCard bolao={mockBolao} userId="different-user" />)
+
+    const betLink = screen.getByRole("link", { name: /bet/i })
+    const resultsLink = screen.getByRole("link", { name: /results/i })
+
+    expect(betLink).toBeInTheDocument()
+    expect(resultsLink).toBeInTheDocument()
   })
 })
