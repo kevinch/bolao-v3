@@ -4,7 +4,11 @@ import NewsList from "../ui/news/newsList"
 
 async function News() {
   const client = createClient()
-  const documents = await client.getAllByType("news")
+  const documents = await client.getAllByType("news", {
+    orderings: [
+      { field: "document.first_publication_date", direction: "desc" },
+    ],
+  })
 
   return (
     <div className="news-container">
