@@ -20,6 +20,16 @@ interface SettingsDialogProps {
   onSubmit: () => void
 }
 
+export const handlePointerDownOutside = (e: any) => {
+  // Prevent closing when clicking inside the dialog
+  if (
+    e.target instanceof HTMLElement &&
+    e.target.closest('[role="dialog"]')
+  ) {
+    e.preventDefault()
+  }
+}
+
 export function BolaoEditModal({
   open,
   onOpenChange,
@@ -29,17 +39,7 @@ export function BolaoEditModal({
 }: SettingsDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        onPointerDownOutside={(e) => {
-          // Prevent closing when clicking inside the dialog
-          if (
-            e.target instanceof HTMLElement &&
-            e.target.closest('[role="dialog"]')
-          ) {
-            e.preventDefault()
-          }
-        }}
-      >
+      <DialogContent onPointerDownOutside={handlePointerDownOutside}>
         <DialogHeader>
           <DialogTitle>Edit bolão</DialogTitle>
           <DialogDescription className="DialogDescription">

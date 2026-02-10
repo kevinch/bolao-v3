@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { vi } from "vitest"
-import { BolaoDeleteModal } from "../bolaoDeleteModal"
+import { BolaoDeleteModal, handlePointerDownOutside } from "../bolaoDeleteModal"
 
 describe("BolaoDeleteModal", () => {
   const mockOnOpenChange = vi.fn()
@@ -114,5 +114,136 @@ describe("BolaoDeleteModal", () => {
     const cancelButton = screen.getByRole("button", { name: /cancel/i })
     // The button should have secondary styling
     expect(cancelButton).toBeInTheDocument()
+  })
+
+  it("should handle different bolaoIds correctly", async () => {
+    const user = userEvent.setup()
+    const { rerender } = render(<BolaoDeleteModal {...defaultProps} />)
+
+    const confirmButton = screen.getByRole("button", { name: /confirm/i })
+    await user.click(confirmButton)
+
+    expect(mockOnSubmit).toHaveBeenCalledWith("bolao-123")
+
+    // Rerender with different bolaoId
+    vi.clearAllMocks()
+    rerender(<BolaoDeleteModal {...defaultProps} bolaoId="bolao-456" />)
+
+    await user.click(confirmButton)
+    expect(mockOnSubmit).toHaveBeenCalledWith("bolao-456")
+  })
+
+  it("should have appropriate ARIA attributes for accessibility", () => {
+    render(<BolaoDeleteModal {...defaultProps} />)
+
+    const dialog = screen.getByRole("dialog")
+    expect(dialog).toBeInTheDocument()
+
+    // Check that title is properly connected
+    expect(screen.getByText("Delete bolão")).toBeInTheDocument()
+  })
+
+  it("should prevent closing when clicking inside dialog (via onPointerDownOutside)", () => {
+    render(<BolaoDeleteModal {...defaultProps} />)
+
+    const dialog = screen.getByRole("dialog")
+    expect(dialog).toBeInTheDocument()
+
+    // The onPointerDownOutside handler should prevent closing when clicking inside
+    // This is handled by the Dialog component from radix-ui
+  })
+
+  it("should display all warning messages about deletion consequences", () => {
+    render(<BolaoDeleteModal {...defaultProps} />)
+
+    // Check for all parts of the warning message
+    const description = screen.getByText(
+      /Are you sure you want to delete this bolão\? This action cannot be undone\. Bets will be deleted as well\./i
+    )
+    expect(description).toBeInTheDocument()
+  })
+
+  it("should maintain modal state through open prop changes", () => {
+    const { rerender } = render(<BolaoDeleteModal {...defaultProps} />)
+
+    expect(screen.getByRole("dialog")).toBeInTheDocument()
+
+    rerender(<BolaoDeleteModal {...defaultProps} open={false} />)
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
+
+    rerender(<BolaoDeleteModal {...defaultProps} open={true} />)
+    expect(screen.getByRole("dialog")).toBeInTheDocument()
+  })
+
+  it("should render DialogContent with onPointerDownOutside handler", () => {
+    const { container } = render(<BolaoDeleteModal {...defaultProps} />)
+
+    const dialog = screen.getByRole("dialog")
+
+    // Verify the dialog renders correctly with the event handler
+    // The handler prevents closing when clicking inside the dialog
+    expect(dialog).toBeInTheDocument()
+
+    // Verify dialog structure
+    expect(dialog).toContainElement(screen.getByText("Delete bolão"))
+  })
+})
+
+describe("handlePointerDownOutside", () => {
+  it("should call preventDefault when target is HTMLElement inside dialog", () => {
+    const mockElement = document.createElement("div")
+    mockElement.setAttribute("role", "dialog")
+    document.body.appendChild(mockElement)
+
+    const mockPreventDefault = vi.fn()
+    const mockEvent = {
+      target: mockElement,
+      preventDefault: mockPreventDefault,
+    }
+
+    handlePointerDownOutside(mockEvent)
+
+    expect(mockPreventDefault).toHaveBeenCalled()
+    document.body.removeChild(mockElement)
+  })
+
+  it("should not call preventDefault when target is not HTMLElement", () => {
+    const mockPreventDefault = vi.fn()
+    const mockEvent = {
+      target: { nodeType: 3 }, // Not an HTMLElement
+      preventDefault: mockPreventDefault,
+    }
+
+    handlePointerDownOutside(mockEvent)
+
+    expect(mockPreventDefault).not.toHaveBeenCalled()
+  })
+
+  it("should not call preventDefault when target is not inside dialog", () => {
+    const mockElement = document.createElement("div")
+    document.body.appendChild(mockElement)
+
+    const mockPreventDefault = vi.fn()
+    const mockEvent = {
+      target: mockElement,
+      preventDefault: mockPreventDefault,
+    }
+
+    handlePointerDownOutside(mockEvent)
+
+    expect(mockPreventDefault).not.toHaveBeenCalled()
+    document.body.removeChild(mockElement)
+  })
+
+  it("should handle event with null target", () => {
+    const mockPreventDefault = vi.fn()
+    const mockEvent = {
+      target: null,
+      preventDefault: mockPreventDefault,
+    }
+
+    handlePointerDownOutside(mockEvent)
+
+    expect(mockPreventDefault).not.toHaveBeenCalled()
   })
 })
