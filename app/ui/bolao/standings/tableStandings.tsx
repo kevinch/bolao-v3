@@ -1,5 +1,3 @@
-import React from "react"
-import Image from "next/image"
 import {
   Standing,
   StandingsGroup,
@@ -12,6 +10,7 @@ import {
   CrossCircledIcon,
   MinusCircledIcon,
 } from "@radix-ui/react-icons"
+import { TeamCrest } from "./teamCrest"
 
 type TableProps = {
   standingsLeague: StandingsLeague
@@ -124,11 +123,8 @@ function TableStandings({ standingsLeague }: TableProps) {
                       <td className={`py-4 px-2 ${rankinColor}`}>{el.rank}</td>
                       <td className="text-left">
                         <div className="flex items-center">
-                          <Image
+                          <TeamCrest
                             src={el.team.logo}
-                            width={100} // Placeholder width
-                            height={100} // Placeholder height
-                            className="inline mr-2 max-h-[20px] max-w-[20px] object-contain"
                             alt={`${el.team.name}'s logo`}
                           />
                           <span className="whitespace-normal break-word pr-4">
