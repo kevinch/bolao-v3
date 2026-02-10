@@ -16,11 +16,6 @@ vi.mock("@clerk/nextjs/server", () => ({
   clerkClient: vi.fn(),
 }))
 
-// Mock Next.js cache
-vi.mock("next/cache", () => ({
-  unstable_noStore: vi.fn(),
-}))
-
 // Mock utility functions
 vi.mock("@/app/lib/utils", () => ({
   sortFixtures: vi.fn((fixtures) => fixtures),
@@ -148,35 +143,6 @@ describe("controllerResults", () => {
       expect(result.fixtures).toEqual([mockFixture])
       expect(result.players).toHaveLength(2)
       expect(result.bets).toEqual(mockBets)
-    })
-
-    it("should call noStore to disable caching", async () => {
-      const {
-        fetchBolao,
-        fetchUsersBolao,
-        fetchRounds,
-        fetchFixtures,
-        fetchUsersBets,
-      } = await import("@/app/lib/data")
-      const { clerkClient } = await import("@clerk/nextjs/server")
-      const { unstable_noStore } = await import("next/cache")
-
-      const mockClient = {
-        users: {
-          getUserList: vi.fn().mockResolvedValue({ data: [] }),
-        },
-      }
-
-      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
-      vi.mocked(fetchUsersBolao).mockResolvedValue([] as any)
-      vi.mocked(fetchRounds).mockResolvedValue(mockRounds)
-      vi.mocked(fetchFixtures).mockResolvedValue([])
-      vi.mocked(fetchUsersBets).mockResolvedValue([])
-      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
-
-      await getData({ bolaoId: "bolao-1" })
-
-      expect(unstable_noStore).toHaveBeenCalled()
     })
 
     it("should fetch bolao and usersBolao in parallel", async () => {
@@ -636,9 +602,8 @@ describe("controllerResults", () => {
     })
 
     it("should propagate errors from Clerk client", async () => {
-      const { fetchBolao, fetchUsersBolao, fetchRounds } = await import(
-        "@/app/lib/data"
-      )
+      const { fetchBolao, fetchUsersBolao, fetchRounds } =
+        await import("@/app/lib/data")
       const { clerkClient } = await import("@clerk/nextjs/server")
       const error = new Error("Clerk API error")
 

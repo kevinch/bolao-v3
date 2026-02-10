@@ -17,11 +17,6 @@ vi.mock("@/app/lib/actions", () => ({
   deleteBet: vi.fn(),
 }))
 
-// Mock Next.js cache
-vi.mock("next/cache", () => ({
-  unstable_noStore: vi.fn(),
-}))
-
 describe("controllerAdmin", () => {
   const mockBolao: Bolao = {
     id: "bolao-1",
@@ -67,17 +62,6 @@ describe("controllerAdmin", () => {
 
       expect(fetchBoloes).toHaveBeenCalled()
       expect(result).toEqual({ boloes })
-    })
-
-    it("should call noStore to disable caching", async () => {
-      const { fetchBoloes } = await import("@/app/lib/data")
-      const { unstable_noStore } = await import("next/cache")
-
-      vi.mocked(fetchBoloes).mockResolvedValue([mockBolao])
-
-      await getBoloes()
-
-      expect(unstable_noStore).toHaveBeenCalled()
     })
 
     it("should return empty array when no boloes exist", async () => {
@@ -129,17 +113,6 @@ describe("controllerAdmin", () => {
       expect(result).toEqual({ users })
     })
 
-    it("should call noStore to disable caching", async () => {
-      const { fetchUsers } = await import("@/app/lib/data")
-      const { unstable_noStore } = await import("next/cache")
-
-      vi.mocked(fetchUsers).mockResolvedValue([mockUser])
-
-      await getUsers()
-
-      expect(unstable_noStore).toHaveBeenCalled()
-    })
-
     it("should return empty array when no users exist", async () => {
       const { fetchUsers } = await import("@/app/lib/data")
 
@@ -179,9 +152,8 @@ describe("controllerAdmin", () => {
   describe("deleteBolaoGroup", () => {
     it("should delete bolao and all related data in correct order", async () => {
       const { fetchUsersBolao, fetchUsersBets } = await import("@/app/lib/data")
-      const { deleteBolao, deleteUserBolao, deleteBet } = await import(
-        "@/app/lib/actions"
-      )
+      const { deleteBolao, deleteUserBolao, deleteBet } =
+        await import("@/app/lib/actions")
 
       const usersBolao = [
         mockUserBolao,
@@ -222,9 +194,8 @@ describe("controllerAdmin", () => {
 
     it("should fetch user_boloes for the given bolao", async () => {
       const { fetchUsersBolao, fetchUsersBets } = await import("@/app/lib/data")
-      const { deleteBolao, deleteUserBolao, deleteBet } = await import(
-        "@/app/lib/actions"
-      )
+      const { deleteBolao, deleteUserBolao, deleteBet } =
+        await import("@/app/lib/actions")
 
       vi.mocked(fetchUsersBolao).mockResolvedValue([mockUserBolao] as any)
       vi.mocked(fetchUsersBets).mockResolvedValue([mockBet])
@@ -243,9 +214,8 @@ describe("controllerAdmin", () => {
 
     it("should extract user_bolao IDs correctly", async () => {
       const { fetchUsersBolao, fetchUsersBets } = await import("@/app/lib/data")
-      const { deleteBolao, deleteUserBolao, deleteBet } = await import(
-        "@/app/lib/actions"
-      )
+      const { deleteBolao, deleteUserBolao, deleteBet } =
+        await import("@/app/lib/actions")
 
       const usersBolao = [
         { id: "ub-1", bolao_id: "bolao-1", user_id: "user-1" },
@@ -269,9 +239,8 @@ describe("controllerAdmin", () => {
 
     it("should fetch bets for user_boloes", async () => {
       const { fetchUsersBolao, fetchUsersBets } = await import("@/app/lib/data")
-      const { deleteBolao, deleteUserBolao, deleteBet } = await import(
-        "@/app/lib/actions"
-      )
+      const { deleteBolao, deleteUserBolao, deleteBet } =
+        await import("@/app/lib/actions")
 
       vi.mocked(fetchUsersBolao).mockResolvedValue([mockUserBolao] as any)
       vi.mocked(fetchUsersBets).mockResolvedValue([mockBet])
@@ -290,9 +259,8 @@ describe("controllerAdmin", () => {
 
     it("should delete all bets in parallel", async () => {
       const { fetchUsersBolao, fetchUsersBets } = await import("@/app/lib/data")
-      const { deleteBolao, deleteUserBolao, deleteBet } = await import(
-        "@/app/lib/actions"
-      )
+      const { deleteBolao, deleteUserBolao, deleteBet } =
+        await import("@/app/lib/actions")
 
       const bets = [
         { ...mockBet, id: "bet-1" },
@@ -320,9 +288,8 @@ describe("controllerAdmin", () => {
 
     it("should delete all user_boloes in parallel", async () => {
       const { fetchUsersBolao, fetchUsersBets } = await import("@/app/lib/data")
-      const { deleteBolao, deleteUserBolao, deleteBet } = await import(
-        "@/app/lib/actions"
-      )
+      const { deleteBolao, deleteUserBolao, deleteBet } =
+        await import("@/app/lib/actions")
 
       const usersBolao = [
         { id: "ub-1", bolao_id: "bolao-1", user_id: "user-1" },
@@ -347,9 +314,8 @@ describe("controllerAdmin", () => {
 
     it("should delete bets before user_boloes", async () => {
       const { fetchUsersBolao, fetchUsersBets } = await import("@/app/lib/data")
-      const { deleteBolao, deleteUserBolao, deleteBet } = await import(
-        "@/app/lib/actions"
-      )
+      const { deleteBolao, deleteUserBolao, deleteBet } =
+        await import("@/app/lib/actions")
 
       const deletionOrder: string[] = []
 
@@ -397,9 +363,8 @@ describe("controllerAdmin", () => {
 
     it("should return result from deleteBolao", async () => {
       const { fetchUsersBolao, fetchUsersBets } = await import("@/app/lib/data")
-      const { deleteBolao, deleteUserBolao, deleteBet } = await import(
-        "@/app/lib/actions"
-      )
+      const { deleteBolao, deleteUserBolao, deleteBet } =
+        await import("@/app/lib/actions")
 
       vi.mocked(fetchUsersBolao).mockResolvedValue([mockUserBolao] as any)
       vi.mocked(fetchUsersBets).mockResolvedValue([mockBet])
@@ -422,9 +387,8 @@ describe("controllerAdmin", () => {
 
     it("should handle bolao with no user_boloes", async () => {
       const { fetchUsersBolao, fetchUsersBets } = await import("@/app/lib/data")
-      const { deleteBolao, deleteUserBolao, deleteBet } = await import(
-        "@/app/lib/actions"
-      )
+      const { deleteBolao, deleteUserBolao, deleteBet } =
+        await import("@/app/lib/actions")
 
       vi.mocked(fetchUsersBolao).mockResolvedValue([])
       vi.mocked(fetchUsersBets).mockResolvedValue([])
@@ -444,9 +408,8 @@ describe("controllerAdmin", () => {
 
     it("should handle user_boloes with no bets", async () => {
       const { fetchUsersBolao, fetchUsersBets } = await import("@/app/lib/data")
-      const { deleteBolao, deleteUserBolao, deleteBet } = await import(
-        "@/app/lib/actions"
-      )
+      const { deleteBolao, deleteUserBolao, deleteBet } =
+        await import("@/app/lib/actions")
 
       vi.mocked(fetchUsersBolao).mockResolvedValue([mockUserBolao] as any)
       vi.mocked(fetchUsersBets).mockResolvedValue([])
@@ -466,9 +429,8 @@ describe("controllerAdmin", () => {
 
     it("should handle large number of deletions", async () => {
       const { fetchUsersBolao, fetchUsersBets } = await import("@/app/lib/data")
-      const { deleteBolao, deleteUserBolao, deleteBet } = await import(
-        "@/app/lib/actions"
-      )
+      const { deleteBolao, deleteUserBolao, deleteBet } =
+        await import("@/app/lib/actions")
 
       // Create 50 user_boloes with 10 bets each = 500 bets
       const usersBolao = Array.from({ length: 50 }, (_, i) => ({
@@ -556,9 +518,8 @@ describe("controllerAdmin", () => {
 
     it("should propagate errors from deleteBolao", async () => {
       const { fetchUsersBolao, fetchUsersBets } = await import("@/app/lib/data")
-      const { deleteBolao, deleteUserBolao, deleteBet } = await import(
-        "@/app/lib/actions"
-      )
+      const { deleteBolao, deleteUserBolao, deleteBet } =
+        await import("@/app/lib/actions")
       const error = new Error("Failed to delete bolao")
 
       vi.mocked(fetchUsersBolao).mockResolvedValue([mockUserBolao] as any)

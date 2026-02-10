@@ -8,7 +8,6 @@ import {
 import { sortFixtures, cleanRounds } from "@/app/lib/utils"
 import { Bet, UserBolao, PlayersData } from "@/app/lib/definitions"
 import { clerkClient } from "@clerk/nextjs/server"
-import { unstable_noStore as noStore } from "next/cache"
 
 export async function getData({
   bolaoId,
@@ -17,8 +16,6 @@ export async function getData({
   bolaoId: string
   roundParam?: string
 }) {
-  noStore()
-
   const [bolao, usersBolao] = await Promise.all([
     fetchBolao(bolaoId),
     fetchUsersBolao(bolaoId),

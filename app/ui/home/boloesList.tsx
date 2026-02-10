@@ -3,13 +3,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { fetchBoloesByUserId } from "@/app/lib/data"
 import { auth } from "@clerk/nextjs/server"
-import { unstable_noStore as noStore } from "next/cache"
 import { Bolao } from "@/app/lib/definitions"
 import BolaoCard from "@/app/components/bolaoCard"
 
 async function getData(userId: string) {
-  noStore()
-
   const result = await fetchBoloesByUserId(userId)
 
   return result

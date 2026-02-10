@@ -1,15 +1,12 @@
 "use server"
 
 import { QueryResultRow } from "pg"
-import { unstable_noStore as noStore } from "next/cache"
 import { sql } from "@vercel/postgres"
 import { FOOTBALL_API_SPORTS } from "./utils"
 import { Bolao, Bet, User } from "./definitions"
 import { FOOTBALL_API_SPORTS_LEAGUES } from "./utils"
 
 export async function fetchBoloes() {
-  noStore()
-
   try {
     const data = await sql`SELECT *
       FROM boloes
@@ -24,8 +21,6 @@ export async function fetchBoloes() {
 }
 
 export async function fetchBoloesByUserId(userId: string) {
-  noStore()
-
   if (!userId) {
     throw new Error("Missing userid.")
   }
@@ -47,8 +42,6 @@ export async function fetchBoloesByUserId(userId: string) {
 }
 
 export async function fetchBolao(bolaoId: string) {
-  noStore()
-
   try {
     const data: { rows: QueryResultRow[] } = await sql`SELECT *
       FROM boloes
@@ -78,8 +71,6 @@ export async function fetchBolao(bolaoId: string) {
 }
 
 export async function fetchUsers() {
-  noStore()
-
   try {
     const data = await sql`SELECT *
       FROM users
@@ -99,8 +90,6 @@ export async function fetchUserBolao({
   bolaoId: string
   userId: string
 }) {
-  noStore()
-
   if (!userId || !bolaoId) {
     throw new Error("Missing userid or bolaoId")
   }
@@ -123,8 +112,6 @@ export async function fetchUserBolao({
 }
 
 export async function fetchUsersBolao(bolaoId: string) {
-  noStore()
-
   try {
     const data: { rows: QueryResultRow[] } = await sql`SELECT *
       FROM user_bolao
@@ -145,16 +132,12 @@ export async function fetchUsersBolao(bolaoId: string) {
 }
 
 export async function fetchLeagues() {
-  noStore()
-
   return FOOTBALL_API_SPORTS_LEAGUES.sort((a, b) =>
     a.name.localeCompare(b.name)
   )
 }
 
 export async function fetchLeague(leagueId: number) {
-  noStore()
-
   let token: string
 
   if (process.env.RAPID_API_KEY) {
@@ -195,8 +178,6 @@ export async function fetchRounds({
   year: number
   current?: boolean
 }) {
-  noStore()
-
   let token: string
 
   if (process.env.RAPID_API_KEY) {
@@ -240,8 +221,6 @@ export async function fetchFixtures({
   year: number
   round?: string
 }) {
-  noStore()
-
   let token: string
 
   if (process.env.RAPID_API_KEY) {
@@ -279,8 +258,6 @@ export async function fetchFixtures({
 }
 
 export async function fetchUserBets(userBolaoId: string) {
-  noStore()
-
   if (!userBolaoId) {
     throw new Error("Missing userBolaoId")
   }
@@ -305,8 +282,6 @@ export async function fetchUserBets(userBolaoId: string) {
 }
 
 export async function fetchUsersBets(userBoloesIds: string[]) {
-  noStore()
-
   if (!userBoloesIds) {
     throw new Error("Missing userBoloesIds")
   }
@@ -337,8 +312,6 @@ export async function fetchStandings({
   leagueId: string
   year: number
 }) {
-  noStore()
-
   let token: string
 
   if (process.env.RAPID_API_KEY) {

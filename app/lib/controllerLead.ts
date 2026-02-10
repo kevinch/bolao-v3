@@ -6,11 +6,8 @@ import {
 } from "@/app/lib/data"
 import { FixtureData, UserBolao, PlayersData, Bet } from "./definitions"
 import { clerkClient } from "@clerk/nextjs/server"
-import { unstable_noStore as noStore } from "next/cache"
 
 export async function getData({ bolaoId }: { bolaoId: string }) {
-  noStore()
-
   const [bolao, usersBolao] = await Promise.all([
     fetchBolao(bolaoId),
     fetchUsersBolao(bolaoId),

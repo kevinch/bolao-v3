@@ -13,11 +13,6 @@ vi.mock("@/app/lib/data", () => ({
   fetchBoloesByUserId: vi.fn(),
 }))
 
-// Mock Next.js cache
-vi.mock("next/cache", () => ({
-  unstable_noStore: vi.fn(),
-}))
-
 // Mock Next.js Link
 vi.mock("next/link", () => ({
   default: ({
@@ -397,9 +392,18 @@ describe("BoloesList", () => {
       // 1. year-2024-late (year 2024, latest start)
       // 2. year-2024-early (year 2024, earlier start)
       // 3. year-2023-active (year 2023)
-      expect(cards[0]).toHaveAttribute("data-testid", "bolao-card-year-2024-late")
-      expect(cards[1]).toHaveAttribute("data-testid", "bolao-card-year-2024-early")
-      expect(cards[2]).toHaveAttribute("data-testid", "bolao-card-year-2023-active")
+      expect(cards[0]).toHaveAttribute(
+        "data-testid",
+        "bolao-card-year-2024-late"
+      )
+      expect(cards[1]).toHaveAttribute(
+        "data-testid",
+        "bolao-card-year-2024-early"
+      )
+      expect(cards[2]).toHaveAttribute(
+        "data-testid",
+        "bolao-card-year-2023-active"
+      )
     })
   })
 
@@ -591,19 +595,6 @@ describe("BoloesList", () => {
   })
 
   describe("Data Fetching", () => {
-    it("should call noStore to disable caching", async () => {
-      const { auth } = await import("@clerk/nextjs/server")
-      const { fetchBoloesByUserId } = await import("@/app/lib/data")
-      const { unstable_noStore } = await import("next/cache")
-
-      vi.mocked(auth).mockResolvedValue({ userId: "user-123" } as any)
-      vi.mocked(fetchBoloesByUserId).mockResolvedValue([mockBolao])
-
-      render(await BoloesList())
-
-      expect(unstable_noStore).toHaveBeenCalled()
-    })
-
     it("should handle data fetching errors gracefully", async () => {
       const { auth } = await import("@clerk/nextjs/server")
       const { fetchBoloesByUserId } = await import("@/app/lib/data")
