@@ -6,7 +6,6 @@ import Footer from "@/app/components/footer"
 import Script from "next/script"
 import { Analytics } from "@vercel/analytics/react"
 import { Toaster } from "@/components/ui/toaster"
-import ServiceWorkerUnregister from "@/app/lib/serviceWorkerUnregister"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import "./globals.css"
 
@@ -29,7 +28,6 @@ export default function RootLayout({
           <div className="container mx-auto px-4">
             <Header />
             {children}
-            <ServiceWorkerUnregister />
             <Footer />
             <Toaster />
             <Analytics />

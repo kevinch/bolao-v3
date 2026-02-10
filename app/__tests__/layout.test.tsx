@@ -17,11 +17,6 @@ vi.mock("@/app/components/footer", () => ({
   default: () => <div data-testid="footer">Footer</div>,
 }))
 
-// Mock ServiceWorkerUnregister component
-vi.mock("@/app/lib/serviceWorkerUnregister", () => ({
-  default: () => <div data-testid="service-worker-unregister" />,
-}))
-
 // Mock Toaster component
 vi.mock("@/components/ui/toaster", () => ({
   Toaster: () => <div data-testid="toaster">Toaster</div>,
@@ -34,7 +29,7 @@ vi.mock("@vercel/analytics/react", () => ({
 
 // Mock Next.js Script component
 vi.mock("next/script", () => ({
-  default: ({ src, ...props }: { src?: string;[key: string]: any }) => null,
+  default: ({ src, ...props }: { src?: string; [key: string]: any }) => null,
 }))
 
 // Mock Google Fonts
@@ -122,13 +117,6 @@ describe("RootLayout", () => {
       expect(Footer).toBeDefined()
     })
 
-    it("should import ServiceWorkerUnregister component", async () => {
-      const ServiceWorkerUnregister = (
-        await import("@/app/lib/serviceWorkerUnregister")
-      ).default
-      expect(ServiceWorkerUnregister).toBeDefined()
-    })
-
     it("should import Toaster component", async () => {
       const { Toaster } = await import("@/components/ui/toaster")
       expect(Toaster).toBeDefined()
@@ -201,4 +189,3 @@ describe("RootLayout", () => {
     })
   })
 })
-
