@@ -50,7 +50,11 @@ describe("News", () => {
 
         // Verify client methods were called
         expect(createClient).toHaveBeenCalledOnce()
-        expect(mockClient.getAllByType).toHaveBeenCalledWith("news")
+        expect(mockClient.getAllByType).toHaveBeenCalledWith("news", {
+            orderings: [
+                { field: "document.first_publication_date", direction: "desc" }
+            ]
+        })
     })
 
     it("should render page with news list even when documents are empty", async () => {
