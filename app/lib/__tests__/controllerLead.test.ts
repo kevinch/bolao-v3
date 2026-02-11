@@ -104,12 +104,10 @@ describe("controllerLead", () => {
             data: [
               {
                 id: "user-1",
-                firstName: "John",
                 emailAddresses: [{ emailAddress: "john@example.com" }],
               },
               {
                 id: "user-2",
-                firstName: "Jane",
                 emailAddresses: [{ emailAddress: "jane@example.com" }],
               },
             ],
@@ -163,7 +161,6 @@ describe("controllerLead", () => {
         data: [
           {
             id: "user-1",
-            firstName: "John",
             emailAddresses: [{ emailAddress: "john@example.com" }],
           },
         ],
@@ -197,7 +194,6 @@ describe("controllerLead", () => {
             data: [
               {
                 id: "user-1",
-                firstName: "John",
                 emailAddresses: [{ emailAddress: "john@example.com" }],
               },
             ],
@@ -215,7 +211,6 @@ describe("controllerLead", () => {
 
       expect(result.players[0]).toEqual({
         id: "user-1",
-        firstName: "John",
         email: "john@example.com",
         userBolaoId: "ub-1",
       })
@@ -321,34 +316,6 @@ describe("controllerLead", () => {
       )
     })
 
-    it("should handle users with null firstName", async () => {
-      const { fetchBolao, fetchUsersBolao, fetchFixtures, fetchUsersBets } =
-        await import("@/app/lib/data")
-      const { clerkClient } = await import("@clerk/nextjs/server")
 
-      const mockClient = {
-        users: {
-          getUserList: vi.fn().mockResolvedValue({
-            data: [
-              {
-                id: "user-1",
-                firstName: null,
-                emailAddresses: [{ emailAddress: "john@example.com" }],
-              },
-            ],
-          }),
-        },
-      }
-
-      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
-      vi.mocked(fetchUsersBolao).mockResolvedValue([mockUsersBolao[0]] as any)
-      vi.mocked(fetchFixtures).mockResolvedValue([])
-      vi.mocked(fetchUsersBets).mockResolvedValue([])
-      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
-
-      const result = await getData({ bolaoId: "bolao-1" })
-
-      expect(result.players[0].firstName).toBeNull()
-    })
   })
 })

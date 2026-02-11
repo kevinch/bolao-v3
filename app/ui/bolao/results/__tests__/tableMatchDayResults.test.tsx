@@ -96,19 +96,16 @@ describe("TableMatchDayResults", () => {
   const mockPlayers: PlayersData[] = [
     {
       id: "player1",
-      firstName: "John",
       email: "john@example.com",
       userBolaoId: "userBolao1",
     },
     {
       id: "player2",
-      firstName: null,
       email: "jane@example.com",
       userBolaoId: "userBolao2",
     },
     {
       id: "player3",
-      firstName: "Mike",
       email: "mike@example.com",
       userBolaoId: "userBolao3",
     },
@@ -319,7 +316,7 @@ describe("TableMatchDayResults", () => {
   })
 
   describe("Player Names Display", () => {
-    it("should display player first names when available", () => {
+    it("should display player email usernames", () => {
       const fixtures = [createMockFixture()]
 
       render(
@@ -331,11 +328,11 @@ describe("TableMatchDayResults", () => {
         />
       )
 
-      expect(screen.getByText("John")).toBeInTheDocument()
-      expect(screen.getByText("Mike")).toBeInTheDocument()
+      expect(screen.getByText("john")).toBeInTheDocument()
+      expect(screen.getByText("mike")).toBeInTheDocument()
     })
 
-    it("should display email username when first name is null", () => {
+    it("should display email username for all players", () => {
       const fixtures = [createMockFixture()]
 
       render(
@@ -347,7 +344,7 @@ describe("TableMatchDayResults", () => {
         />
       )
 
-      // Player2 has no first name, should show email part before @
+      // All players show email part before @
       expect(screen.getByText("jane")).toBeInTheDocument()
     })
 
@@ -363,9 +360,9 @@ describe("TableMatchDayResults", () => {
       )
 
       // Check that all player names are rendered
-      expect(screen.getByText("John")).toBeInTheDocument()
+      expect(screen.getByText("john")).toBeInTheDocument()
       expect(screen.getByText("jane")).toBeInTheDocument()
-      expect(screen.getByText("Mike")).toBeInTheDocument()
+      expect(screen.getByText("mike")).toBeInTheDocument()
     })
   })
 
@@ -909,7 +906,6 @@ describe("TableMatchDayResults", () => {
       const playersWithLongEmail: PlayersData[] = [
         {
           id: "player1",
-          firstName: null,
           email:
             "very.long.email.address.that.is.really.quite.long@example.com",
           userBolaoId: "userBolao1",

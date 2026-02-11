@@ -64,7 +64,7 @@ export const calcLead = ({
     total = total + totalMatchDay
 
     lead.push({
-      name: player.firstName || player.email.split("@")[0],
+      name: player.email.split("@")[0],
       total,
     })
   })
