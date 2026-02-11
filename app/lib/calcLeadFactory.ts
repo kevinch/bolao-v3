@@ -1,6 +1,6 @@
 import { Bet, FixtureData, PlayersData } from "./definitions"
 import { calcScore } from "./scoresCalcFactory"
-import { STATUSES_FINISHED, findBetObj } from "./utils"
+import { STATUSES_FINISHED, findBetObj, getEmailUsername } from "./utils"
 
 const getTotal = ({
   fixtures,
@@ -64,7 +64,7 @@ export const calcLead = ({
     total = total + totalMatchDay
 
     lead.push({
-      name: player.email.split("@")[0],
+      name: getEmailUsername(player.email),
       total,
     })
   })

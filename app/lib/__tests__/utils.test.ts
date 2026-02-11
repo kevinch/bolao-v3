@@ -7,6 +7,7 @@ import {
   cleanRounds,
   findBetObj,
   isNil,
+  getEmailUsername,
   INITIAL_BET_VALUE,
   STATUSES_OPEN_TO_PLAY,
   STATUSES_IN_PLAY,
@@ -356,6 +357,28 @@ describe("utils", () => {
       expect(isNil(true)).toBe(false)
       expect(isNil([1, 2, 3])).toBe(false)
       expect(isNil({ key: "value" })).toBe(false)
+    })
+  })
+
+  describe("getEmailUsername", () => {
+    it("should extract username from email", () => {
+      expect(getEmailUsername("john@example.com")).toBe("john")
+    })
+
+    it("should handle email with dots", () => {
+      expect(getEmailUsername("john.doe@example.com")).toBe("john.doe")
+    })
+
+    it("should handle email with numbers", () => {
+      expect(getEmailUsername("user123@example.com")).toBe("user123")
+    })
+
+    it("should handle email with special characters", () => {
+      expect(getEmailUsername("user+tag@example.com")).toBe("user+tag")
+    })
+
+    it("should handle email with underscores", () => {
+      expect(getEmailUsername("user_name@example.com")).toBe("user_name")
     })
   })
 
