@@ -112,12 +112,12 @@ describe("controllerResults", () => {
             data: [
               {
                 id: "user-1",
-                firstName: "John",
+                username: null,
                 emailAddresses: [{ emailAddress: "john@example.com" }],
               },
               {
                 id: "user-2",
-                firstName: "Jane",
+                username: null,
                 emailAddresses: [{ emailAddress: "jane@example.com" }],
               },
             ],
@@ -435,8 +435,13 @@ describe("controllerResults", () => {
         data: [
           {
             id: "user-1",
-            firstName: "John",
-            emailAddresses: [{ emailAddress: "john@example.com" }],
+            username: null,
+            emailAddresses: [{ emailAddress: "user1@example.com" }],
+          },
+          {
+            id: "user-2",
+            username: null,
+            emailAddresses: [{ emailAddress: "user2@example.com" }],
           },
         ],
       })
@@ -475,7 +480,7 @@ describe("controllerResults", () => {
             data: [
               {
                 id: "user-1",
-                firstName: "John",
+                username: null,
                 emailAddresses: [{ emailAddress: "john@example.com" }],
               },
             ],
@@ -494,7 +499,7 @@ describe("controllerResults", () => {
 
       expect(result.players[0]).toEqual({
         id: "user-1",
-        firstName: "John",
+        username: null,
         email: "john@example.com",
         userBolaoId: "ub-1",
       })
@@ -615,42 +620,6 @@ describe("controllerResults", () => {
       await expect(getData({ bolaoId: "bolao-1" })).rejects.toThrow(
         "Clerk API error"
       )
-    })
-
-    it("should handle users with null firstName", async () => {
-      const {
-        fetchBolao,
-        fetchUsersBolao,
-        fetchRounds,
-        fetchFixtures,
-        fetchUsersBets,
-      } = await import("@/app/lib/data")
-      const { clerkClient } = await import("@clerk/nextjs/server")
-
-      const mockClient = {
-        users: {
-          getUserList: vi.fn().mockResolvedValue({
-            data: [
-              {
-                id: "user-1",
-                firstName: null,
-                emailAddresses: [{ emailAddress: "john@example.com" }],
-              },
-            ],
-          }),
-        },
-      }
-
-      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
-      vi.mocked(fetchUsersBolao).mockResolvedValue([mockUsersBolao[0]] as any)
-      vi.mocked(fetchRounds).mockResolvedValue(mockRounds)
-      vi.mocked(fetchFixtures).mockResolvedValue([])
-      vi.mocked(fetchUsersBets).mockResolvedValue([])
-      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
-
-      const result = await getData({ bolaoId: "bolao-1" })
-
-      expect(result.players[0].firstName).toBeNull()
     })
 
     it("should handle multiple fixtures and bets", async () => {

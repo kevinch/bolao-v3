@@ -32,11 +32,11 @@ describe("calcLead", () => {
     expect(result).toEqual([])
   })
 
-  it("should calculate lead with player firstName when available", () => {
+  it("should calculate lead with player email username", () => {
     const players: PlayersData[] = [
       {
         id: "user-1",
-        firstName: "John",
+        username: null,
         email: "john@example.com",
         userBolaoId: "userbolao-1",
       },
@@ -48,17 +48,17 @@ describe("calcLead", () => {
 
     expect(result).toEqual([
       {
-        name: "John",
+        name: "john",
         total: 0,
       },
     ])
   })
 
-  it("should use email username when firstName is null", () => {
+  it("should use email username for player name", () => {
     const players: PlayersData[] = [
       {
         id: "user-1",
-        firstName: null,
+        username: null,
         email: "john.doe@example.com",
         userBolaoId: "userbolao-1",
       },
@@ -76,11 +76,43 @@ describe("calcLead", () => {
     ])
   })
 
+  it("should prefer username over email when username is available", () => {
+    const players: PlayersData[] = [
+      {
+        id: "user-1",
+        username: "johndoe",
+        email: "john@example.com",
+        userBolaoId: "userbolao-1",
+      },
+      {
+        id: "user-2",
+        username: null,
+        email: "jane@example.com",
+        userBolaoId: "userbolao-2",
+      },
+    ]
+    const fixtures: FixtureData[] = []
+    const bets: Bet[] = []
+
+    const result = calcLead({ players, fixtures, bets })
+
+    expect(result).toEqual([
+      {
+        name: "johndoe",
+        total: 0,
+      },
+      {
+        name: "jane",
+        total: 0,
+      },
+    ])
+  })
+
   it("should calculate total points for a single player with one finished fixture", () => {
     const players: PlayersData[] = [
       {
         id: "user-1",
-        firstName: "John",
+        username: null,
         email: "john@example.com",
         userBolaoId: "userbolao-1",
       },
@@ -169,7 +201,7 @@ describe("calcLead", () => {
 
     expect(result).toEqual([
       {
-        name: "John",
+        name: "john",
         total: 5,
       },
     ])
@@ -179,13 +211,13 @@ describe("calcLead", () => {
     const players: PlayersData[] = [
       {
         id: "user-1",
-        firstName: "John",
+        username: null,
         email: "john@example.com",
         userBolaoId: "userbolao-1",
       },
       {
         id: "user-2",
-        firstName: "Jane",
+        username: null,
         email: "jane@example.com",
         userBolaoId: "userbolao-2",
       },
@@ -272,8 +304,8 @@ describe("calcLead", () => {
     const result = calcLead({ players, fixtures, bets })
 
     expect(result).toEqual([
-      { name: "John", total: 5 },
-      { name: "Jane", total: 3 },
+      { name: "john", total: 5 },
+      { name: "jane", total: 3 },
     ])
   })
 
@@ -281,7 +313,8 @@ describe("calcLead", () => {
     const players: PlayersData[] = [
       {
         id: "user-1",
-        firstName: "John",
+        username: null,
+
         email: "john@example.com",
         userBolaoId: "userbolao-1",
       },
@@ -385,7 +418,7 @@ describe("calcLead", () => {
 
     expect(result).toEqual([
       {
-        name: "John",
+        name: "john",
         total: 5,
       },
     ])
@@ -395,7 +428,8 @@ describe("calcLead", () => {
     const players: PlayersData[] = [
       {
         id: "user-1",
-        firstName: "John",
+        username: null,
+
         email: "john@example.com",
         userBolaoId: "userbolao-1",
       },
@@ -445,7 +479,7 @@ describe("calcLead", () => {
     expect(mockCalcScore).not.toHaveBeenCalled()
     expect(result).toEqual([
       {
-        name: "John",
+        name: "john",
         total: 0,
       },
     ])
@@ -455,7 +489,8 @@ describe("calcLead", () => {
     const players: PlayersData[] = [
       {
         id: "user-1",
-        firstName: "John",
+        username: null,
+
         email: "john@example.com",
         userBolaoId: "userbolao-1",
       },
@@ -513,7 +548,7 @@ describe("calcLead", () => {
     expect(mockCalcScore).not.toHaveBeenCalled()
     expect(result).toEqual([
       {
-        name: "John",
+        name: "john",
         total: 0,
       },
     ])
@@ -523,7 +558,8 @@ describe("calcLead", () => {
     const players: PlayersData[] = [
       {
         id: "user-1",
-        firstName: "John",
+        username: null,
+
         email: "john@example.com",
         userBolaoId: "userbolao-1",
       },
@@ -589,7 +625,7 @@ describe("calcLead", () => {
     expect(mockCalcScore).not.toHaveBeenCalled()
     expect(result).toEqual([
       {
-        name: "John",
+        name: "john",
         total: 0,
       },
     ])
@@ -599,7 +635,8 @@ describe("calcLead", () => {
     const players: PlayersData[] = [
       {
         id: "user-1",
-        firstName: "John",
+        username: null,
+
         email: "john@example.com",
         userBolaoId: "userbolao-1",
       },
@@ -665,7 +702,7 @@ describe("calcLead", () => {
     expect(mockCalcScore).not.toHaveBeenCalled()
     expect(result).toEqual([
       {
-        name: "John",
+        name: "john",
         total: 0,
       },
     ])
@@ -675,7 +712,8 @@ describe("calcLead", () => {
     const players: PlayersData[] = [
       {
         id: "user-1",
-        firstName: "John",
+        username: null,
+
         email: "john@example.com",
         userBolaoId: "userbolao-1",
       },
@@ -794,7 +832,7 @@ describe("calcLead", () => {
     expect(mockCalcScore).toHaveBeenCalledTimes(2)
     expect(result).toEqual([
       {
-        name: "John",
+        name: "john",
         total: 15, // 5 + 10
       },
     ])
@@ -804,7 +842,8 @@ describe("calcLead", () => {
     const players: PlayersData[] = [
       {
         id: "user-1",
-        firstName: "John",
+        username: null,
+
         email: "john@example.com",
         userBolaoId: "userbolao-1",
       },
@@ -920,7 +959,7 @@ describe("calcLead", () => {
 
     expect(result).toEqual([
       {
-        name: "John",
+        name: "john",
         total: 20,
       },
     ])
@@ -930,7 +969,8 @@ describe("calcLead", () => {
     const players: PlayersData[] = [
       {
         id: "user-1",
-        firstName: "John",
+        username: null,
+
         email: "john@example.com",
         userBolaoId: "userbolao-1",
       },
@@ -1003,7 +1043,7 @@ describe("calcLead", () => {
 
     expect(result).toEqual([
       {
-        name: "John",
+        name: "john",
         total: 10,
       },
     ])

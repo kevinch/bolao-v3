@@ -151,6 +151,10 @@ export const findBetObj = ({
 
 export const isNil = (value: any) => value === null || value === undefined
 
+export const getEmailUsername = (email: string): string => {
+  return email.split("@")[0]
+}
+
 // FIXTURES STATUSES
 // api-football.com/documentation-v3#tag/Fixtures/operation/get-fixtures-rounds
 export const STATUSES_OPEN_TO_PLAY = ["TBD", "NS", "PST", "AWD"]

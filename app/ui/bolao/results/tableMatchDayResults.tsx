@@ -7,6 +7,7 @@ import {
   STATUSES_FINISHED,
   STATUSES_IN_PLAY,
   STATUSES_OPEN_TO_PLAY,
+  getEmailUsername,
 } from "@/app/lib/utils"
 import { calcScore } from "@/app/lib/scoresCalcFactory"
 import { StickyTable, Row, Cell } from "react-sticky-table"
@@ -45,7 +46,7 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
                 return (
                   <Cell style={cellStyles} key={player.id}>
                     <span className="font-semibold text-sm px-2">
-                      {player.firstName || player.email.split("@")[0]}
+                      {player.username || getEmailUsername(player.email)}
                     </span>
                   </Cell>
                 )
