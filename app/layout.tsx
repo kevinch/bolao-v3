@@ -9,7 +9,12 @@ import { Toaster } from "@/components/ui/toaster"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import "./globals.css"
 
-const Plex = IBM_Plex_Sans({ weight: "400", subsets: ["latin"] })
+const Plex = IBM_Plex_Sans({
+  weight: "400",
+  subsets: ["latin"],
+  display: "swap",
+  preload: true,
+})
 
 export const metadata: Metadata = {
   title: "Bolão.io v3",
