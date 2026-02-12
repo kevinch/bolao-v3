@@ -14,6 +14,11 @@ vi.mock("@clerk/nextjs", () => ({
   UserButton: () => <div data-testid="user-button">User Button</div>,
 }))
 
+// Mock UserButtonWrapper component
+vi.mock("../userButtonWrapper", () => ({
+  default: () => <div data-testid="user-button">User Button</div>,
+}))
+
 // Mock LogoSvg component
 vi.mock("../logoSvg", () => ({
   default: ({ size, color }: { size: number; color: string }) => (

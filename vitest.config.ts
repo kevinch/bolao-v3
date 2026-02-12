@@ -27,6 +27,7 @@ export default defineConfig({
         "app/lib/data.ts",
         "app/lib/mock.ts",
         "app/sign-up/db/page.tsx",
+        "app/components/userButtonWrapper.tsx",
       ],
     },
   },

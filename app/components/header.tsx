@@ -1,9 +1,9 @@
-import { UserButton } from "@clerk/nextjs"
 import { auth } from "@clerk/nextjs/server"
 import Link from "next/link"
 
 import LogoSvg from "./logoSvg"
 import BackgroundStripes from "./backgroundStripes"
+import UserButtonWrapper from "./userButtonWrapper"
 
 async function Header() {
   const { userId }: { userId: string | null } = await auth()
@@ -17,7 +17,7 @@ async function Header() {
             <LogoSvg size={80} color="#666666" />
           </Link>
         </div>
-        <div className="content-center">{userId && <UserButton />}</div>
+        <div className="content-center">{userId && <UserButtonWrapper />}</div>
       </div>
     </header>
   )
