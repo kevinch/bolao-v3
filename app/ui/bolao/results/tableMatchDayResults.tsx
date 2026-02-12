@@ -46,7 +46,7 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
                 return (
                   <Cell style={cellStyles} key={player.id}>
                     <span className="font-semibold text-sm px-2">
-                      {getEmailUsername(player.email)}
+                      {player.username || getEmailUsername(player.email)}
                     </span>
                   </Cell>
                 )

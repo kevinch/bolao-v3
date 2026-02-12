@@ -64,7 +64,7 @@ export const calcLead = ({
     total = total + totalMatchDay
 
     lead.push({
-      name: getEmailUsername(player.email),
+      name: player.username || getEmailUsername(player.email),
       total,
     })
   })

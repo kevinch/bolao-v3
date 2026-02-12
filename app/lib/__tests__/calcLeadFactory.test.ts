@@ -36,6 +36,7 @@ describe("calcLead", () => {
     const players: PlayersData[] = [
       {
         id: "user-1",
+        username: null,
         email: "john@example.com",
         userBolaoId: "userbolao-1",
       },
@@ -57,6 +58,7 @@ describe("calcLead", () => {
     const players: PlayersData[] = [
       {
         id: "user-1",
+        username: null,
         email: "john.doe@example.com",
         userBolaoId: "userbolao-1",
       },
@@ -74,10 +76,43 @@ describe("calcLead", () => {
     ])
   })
 
+  it("should prefer username over email when username is available", () => {
+    const players: PlayersData[] = [
+      {
+        id: "user-1",
+        username: "johndoe",
+        email: "john@example.com",
+        userBolaoId: "userbolao-1",
+      },
+      {
+        id: "user-2",
+        username: null,
+        email: "jane@example.com",
+        userBolaoId: "userbolao-2",
+      },
+    ]
+    const fixtures: FixtureData[] = []
+    const bets: Bet[] = []
+
+    const result = calcLead({ players, fixtures, bets })
+
+    expect(result).toEqual([
+      {
+        name: "johndoe",
+        total: 0,
+      },
+      {
+        name: "jane",
+        total: 0,
+      },
+    ])
+  })
+
   it("should calculate total points for a single player with one finished fixture", () => {
     const players: PlayersData[] = [
       {
         id: "user-1",
+        username: null,
         email: "john@example.com",
         userBolaoId: "userbolao-1",
       },
@@ -176,11 +211,13 @@ describe("calcLead", () => {
     const players: PlayersData[] = [
       {
         id: "user-1",
+        username: null,
         email: "john@example.com",
         userBolaoId: "userbolao-1",
       },
       {
         id: "user-2",
+        username: null,
         email: "jane@example.com",
         userBolaoId: "userbolao-2",
       },
@@ -276,7 +313,8 @@ describe("calcLead", () => {
     const players: PlayersData[] = [
       {
         id: "user-1",
-        
+        username: null,
+
         email: "john@example.com",
         userBolaoId: "userbolao-1",
       },
@@ -390,7 +428,8 @@ describe("calcLead", () => {
     const players: PlayersData[] = [
       {
         id: "user-1",
-        
+        username: null,
+
         email: "john@example.com",
         userBolaoId: "userbolao-1",
       },
@@ -450,7 +489,8 @@ describe("calcLead", () => {
     const players: PlayersData[] = [
       {
         id: "user-1",
-        
+        username: null,
+
         email: "john@example.com",
         userBolaoId: "userbolao-1",
       },
@@ -518,7 +558,8 @@ describe("calcLead", () => {
     const players: PlayersData[] = [
       {
         id: "user-1",
-        
+        username: null,
+
         email: "john@example.com",
         userBolaoId: "userbolao-1",
       },
@@ -594,7 +635,8 @@ describe("calcLead", () => {
     const players: PlayersData[] = [
       {
         id: "user-1",
-        
+        username: null,
+
         email: "john@example.com",
         userBolaoId: "userbolao-1",
       },
@@ -670,7 +712,8 @@ describe("calcLead", () => {
     const players: PlayersData[] = [
       {
         id: "user-1",
-        
+        username: null,
+
         email: "john@example.com",
         userBolaoId: "userbolao-1",
       },
@@ -799,7 +842,8 @@ describe("calcLead", () => {
     const players: PlayersData[] = [
       {
         id: "user-1",
-        
+        username: null,
+
         email: "john@example.com",
         userBolaoId: "userbolao-1",
       },
@@ -925,7 +969,8 @@ describe("calcLead", () => {
     const players: PlayersData[] = [
       {
         id: "user-1",
-        
+        username: null,
+
         email: "john@example.com",
         userBolaoId: "userbolao-1",
       },

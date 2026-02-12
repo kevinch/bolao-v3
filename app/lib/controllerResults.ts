@@ -38,6 +38,7 @@ export async function getData({
 
     const obj = {
       id: el.id,
+      username: el.username,
       email: el.emailAddresses[0].emailAddress,
       userBolaoId: userBolaoObj.id,
     }

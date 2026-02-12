@@ -161,7 +161,13 @@ describe("controllerLead", () => {
         data: [
           {
             id: "user-1",
-            emailAddresses: [{ emailAddress: "john@example.com" }],
+            username: null,
+            emailAddresses: [{ emailAddress: "user1@example.com" }],
+          },
+          {
+            id: "user-2",
+            username: null,
+            emailAddresses: [{ emailAddress: "user2@example.com" }],
           },
         ],
       })
@@ -194,6 +200,7 @@ describe("controllerLead", () => {
             data: [
               {
                 id: "user-1",
+                username: null,
                 emailAddresses: [{ emailAddress: "john@example.com" }],
               },
             ],
@@ -211,6 +218,7 @@ describe("controllerLead", () => {
 
       expect(result.players[0]).toEqual({
         id: "user-1",
+        username: null,
         email: "john@example.com",
         userBolaoId: "ub-1",
       })
@@ -315,7 +323,5 @@ describe("controllerLead", () => {
         "Clerk API error"
       )
     })
-
-
   })
 })

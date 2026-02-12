@@ -204,6 +204,7 @@ type StandingGames = {
 
 export type PlayersData = {
   id: string
+  username: string | null
   email: string
   userBolaoId: string
 }

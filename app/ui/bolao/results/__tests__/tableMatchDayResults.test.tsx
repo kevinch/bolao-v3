@@ -96,16 +96,19 @@ describe("TableMatchDayResults", () => {
   const mockPlayers: PlayersData[] = [
     {
       id: "player1",
+      username: null,
       email: "john@example.com",
       userBolaoId: "userBolao1",
     },
     {
       id: "player2",
+      username: null,
       email: "jane@example.com",
       userBolaoId: "userBolao2",
     },
     {
       id: "player3",
+      username: null,
       email: "mike@example.com",
       userBolaoId: "userBolao3",
     },
@@ -363,6 +366,39 @@ describe("TableMatchDayResults", () => {
       expect(screen.getByText("john")).toBeInTheDocument()
       expect(screen.getByText("jane")).toBeInTheDocument()
       expect(screen.getByText("mike")).toBeInTheDocument()
+    })
+
+    it("should prefer username over email when username is available", () => {
+      const playersWithUsername: PlayersData[] = [
+        {
+          id: "player1",
+          username: "johndoe",
+          email: "john@example.com",
+          userBolaoId: "userBolao1",
+        },
+        {
+          id: "player2",
+          username: null,
+          email: "jane@example.com",
+          userBolaoId: "userBolao2",
+        },
+      ]
+
+      const fixtures = [createMockFixture()]
+
+      render(
+        <TableMatchDayResults
+          fixtures={fixtures}
+          bets={[]}
+          players={playersWithUsername}
+          userId="player1"
+        />
+      )
+
+      // Player1 has username, should display "johndoe"
+      expect(screen.getByText("johndoe")).toBeInTheDocument()
+      // Player2 has no username, should display email part "jane"
+      expect(screen.getByText("jane")).toBeInTheDocument()
     })
   })
 
@@ -906,6 +942,7 @@ describe("TableMatchDayResults", () => {
       const playersWithLongEmail: PlayersData[] = [
         {
           id: "player1",
+      username: null,
           email:
             "very.long.email.address.that.is.really.quite.long@example.com",
           userBolaoId: "userBolao1",
