@@ -27,7 +27,7 @@ function TeamCodeLogo({ name, logoSrc }: Props) {
     <Image
       width={100} // Placeholder width
       height={100} // Placeholder height
-      className="max-h-[20px] max-w-[20px] object-contain"
+      className="max-h-5 max-w-5 object-contain"
       src={logoSrc}
       alt={`${name}'s logo`}
     />

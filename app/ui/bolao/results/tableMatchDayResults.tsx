@@ -23,7 +23,13 @@ type TableProps = {
   userId: string //Could be in context
 }
 
-const cellStyles = { padding: 0, margin: 0, border: 0, textAlign: "center" }
+const cellStyles = {
+  padding: 0,
+  margin: 0,
+  border: 0,
+  textAlign: "center",
+  backgroundColor: "transparent",
+}
 
 function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
   if (fixtures) {

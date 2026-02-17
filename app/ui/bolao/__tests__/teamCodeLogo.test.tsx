@@ -127,7 +127,7 @@ describe("TeamCodeLogo", () => {
       render(<TeamCodeLogo {...defaultProps} />)
 
       const logo = screen.getByTestId("team-logo")
-      expect(logo).toHaveClass("max-h-[20px]", "max-w-[20px]", "object-contain")
+      expect(logo).toHaveClass("max-h-5", "max-w-5", "object-contain")
     })
 
     it("should render image with Next.js Image component", () => {
