@@ -27,7 +27,16 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      appearance={{
+        elements: {
+          footerAction: "hidden",
+        },
+        layout: {
+          shimmer: false,
+        },
+      }}
+    >
       <html lang="en">
         <body className={Plex.className}>
           <div className="container mx-auto px-4">
