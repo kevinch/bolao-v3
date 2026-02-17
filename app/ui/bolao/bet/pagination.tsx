@@ -7,11 +7,17 @@ import { ChevronRightIcon, ChevronLeftIcon } from "@radix-ui/react-icons"
 
 type Props = {
   currentRoundIndex: number
+  currentRoundName: string
   isLastRound: boolean
   isFirstRound: boolean
 }
 
-function Pagination({ currentRoundIndex, isLastRound, isFirstRound }: Props) {
+function Pagination({
+  currentRoundIndex,
+  currentRoundName,
+  isLastRound,
+  isFirstRound,
+}: Props) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
@@ -35,7 +41,9 @@ function Pagination({ currentRoundIndex, isLastRound, isFirstRound }: Props) {
         </Button>
       )}
 
-      <span className="uppercase text-xs mx-4">Round: {currentRoundIndex}</span>
+      <span className="text-xs mx-4 lowercase first-letter:uppercase">
+        {currentRoundName}
+      </span>
 
       {!isLastRound && (
         <Button asChild size="icon" variant="outline">

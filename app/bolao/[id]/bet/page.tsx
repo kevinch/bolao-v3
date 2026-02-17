@@ -1,6 +1,5 @@
 import { getData } from "@/app/lib/controllerBet"
 import { auth } from "@clerk/nextjs/server"
-
 import BolaoPageTitle from "@/app/ui/bolao/bolaoPageTitle"
 import BolaoLinks from "@/app/ui/bolao/bolaoLinks"
 import Pagination from "@/app/ui/bolao/bet/pagination"
@@ -50,6 +49,7 @@ async function BetPage(props: {
         isLastRound={data.isLastRound}
         isFirstRound={data.isFirstRound}
         currentRoundIndex={currentRoundIndex}
+        currentRoundName={data.currentRound}
       />
 
       <TableMatchDayBets
