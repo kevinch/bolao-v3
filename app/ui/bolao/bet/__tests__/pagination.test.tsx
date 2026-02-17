@@ -25,6 +25,7 @@ vi.mock("next/link", () => ({
 describe("Pagination", () => {
   const defaultProps = {
     currentRoundIndex: 5,
+    currentRoundName: "Regular Season - 5",
     isLastRound: false,
     isFirstRound: false,
   }
@@ -35,10 +36,10 @@ describe("Pagination", () => {
   })
 
   describe("Component Rendering", () => {
-    it("should render the current round index", () => {
+    it("should render the current round name", () => {
       render(<Pagination {...defaultProps} />)
 
-      expect(screen.getByText("Round: 5")).toBeInTheDocument()
+      expect(screen.getByText("Regular Season - 5")).toBeInTheDocument()
     })
 
     it("should render previous and next buttons when not at boundaries", () => {
@@ -48,11 +49,12 @@ describe("Pagination", () => {
       expect(links).toHaveLength(2)
     })
 
-    it("should display round text in uppercase", () => {
+    it("should display round text with lowercase and first letter uppercase", () => {
       render(<Pagination {...defaultProps} />)
 
-      const roundText = screen.getByText("Round: 5")
-      expect(roundText).toHaveClass("uppercase")
+      const roundText = screen.getByText("Regular Season - 5")
+      expect(roundText).toHaveClass("lowercase")
+      expect(roundText).toHaveClass("first-letter:uppercase")
     })
   })
 
@@ -145,27 +147,51 @@ describe("Pagination", () => {
 
   describe("Different Round Values", () => {
     it("should handle round index 1", () => {
-      render(<Pagination {...defaultProps} currentRoundIndex={1} />)
+      render(
+        <Pagination
+          {...defaultProps}
+          currentRoundIndex={1}
+          currentRoundName="Round 1"
+        />
+      )
 
-      expect(screen.getByText("Round: 1")).toBeInTheDocument()
+      expect(screen.getByText("Round 1")).toBeInTheDocument()
     })
 
     it("should handle round index 0", () => {
-      render(<Pagination {...defaultProps} currentRoundIndex={0} />)
+      render(
+        <Pagination
+          {...defaultProps}
+          currentRoundIndex={0}
+          currentRoundName="Preliminary Round"
+        />
+      )
 
-      expect(screen.getByText("Round: 0")).toBeInTheDocument()
+      expect(screen.getByText("Preliminary Round")).toBeInTheDocument()
     })
 
     it("should handle double-digit round index", () => {
-      render(<Pagination {...defaultProps} currentRoundIndex={15} />)
+      render(
+        <Pagination
+          {...defaultProps}
+          currentRoundIndex={15}
+          currentRoundName="Regular Season - 15"
+        />
+      )
 
-      expect(screen.getByText("Round: 15")).toBeInTheDocument()
+      expect(screen.getByText("Regular Season - 15")).toBeInTheDocument()
     })
 
     it("should handle large round index", () => {
-      render(<Pagination {...defaultProps} currentRoundIndex={38} />)
+      render(
+        <Pagination
+          {...defaultProps}
+          currentRoundIndex={38}
+          currentRoundName="Regular Season - 38"
+        />
+      )
 
-      expect(screen.getByText("Round: 38")).toBeInTheDocument()
+      expect(screen.getByText("Regular Season - 38")).toBeInTheDocument()
     })
 
     it("should calculate previous round correctly for round 1", () => {
@@ -225,6 +251,7 @@ describe("Pagination", () => {
         <Pagination
           {...defaultProps}
           currentRoundIndex={1}
+          currentRoundName="Round 1"
           isFirstRound={true}
           isLastRound={false}
         />
@@ -240,6 +267,7 @@ describe("Pagination", () => {
         <Pagination
           {...defaultProps}
           currentRoundIndex={10}
+          currentRoundName="Regular Season - 10"
           isFirstRound={false}
           isLastRound={true}
         />
@@ -255,12 +283,13 @@ describe("Pagination", () => {
         <Pagination
           {...defaultProps}
           currentRoundIndex={1}
+          currentRoundName="Round 1"
           isFirstRound={true}
           isLastRound={true}
         />
       )
 
-      expect(screen.getByText("Round: 1")).toBeInTheDocument()
+      expect(screen.getByText("Round 1")).toBeInTheDocument()
       expect(screen.queryAllByRole("link")).toHaveLength(0)
     })
   })
