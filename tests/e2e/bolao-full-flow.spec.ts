@@ -59,19 +59,22 @@ test("Full bolão flow: create, navigate, and delete a bolão", async ({
   // Submit the form to create the bolão
   await page.getByRole("button", { name: "Create" }).click()
 
-  // Verify the success toast appears (targeting the div element specifically)
-  await expect(
-    page.locator("div").getByText("The bolão was successfully created.")
-  ).toBeVisible()
-
-  // Navigate back to home page using the logo link in the header
-  await page.getByTestId("logo-link-header").click()
+  // Wait for redirect to home page after successful creation
+  await page.waitForURL("http://localhost:3000/")
 
   // Verify the newly created bolão appears on the home page
-  await expect(page.getByRole("heading", { name: "my test e2e" })).toBeVisible()
+  await page
+    .getByRole("tabpanel", { name: "Active bolões" })
+    .getByRole("heading", { name: "my test e2e" })
+    .first()
+    .waitFor({ state: "visible" })
 
-  // Navigate to the Results page for the bolão
-  await page.getByRole("link", { name: "Results" }).click()
+  // Navigate to the Results page for the bolão (using the first card's Results link)
+  await page
+    .getByRole("tabpanel", { name: "Active bolões" })
+    .getByRole("link", { name: "Results" })
+    .first()
+    .click()
 
   // Verify the Results page displays the bolão name and competition
   await expect(page.getByText("my test e2eSerie A")).toBeVisible()
@@ -109,10 +112,11 @@ test("Full bolão flow: create, navigate, and delete a bolão", async ({
   await page.getByTestId("logo-link-header").click()
 
   // Clean up: Delete the test bolão
-  // Open the dropdown menu for the bolão card
+  // Open the dropdown menu for the first bolão card with "my test e2e" name
   await page
     .getByRole("tabpanel", { name: "Active bolões" })
     .getByRole("button")
+    .first()
     .click()
 
   // Click the Delete option from the dropdown menu
