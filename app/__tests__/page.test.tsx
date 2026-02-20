@@ -7,6 +7,12 @@ vi.mock("@clerk/nextjs/server", () => ({
   currentUser: vi.fn(),
 }))
 
+// Mock i18n helper to return English messages
+import en from "@/messages/en.json"
+vi.mock("@/app/lib/i18n", () => ({
+  getMessages: vi.fn(() => Promise.resolve(en)),
+}))
+
 // Mock PageTitle component
 vi.mock("@/app/components/pageTitle", () => ({
   default: ({ children }: { children: React.ReactNode }) => (
