@@ -726,14 +726,18 @@ describe("TableMatchDayResults", () => {
         />
       )
 
-      // Should NOT display pts for games not started
-      const scoreCells = container.querySelectorAll(
-        '[data-testid="sticky-cell"]'
-      )
-      const scoreText = Array.from(scoreCells).find((cell) =>
-        cell.textContent?.includes("pts")
-      )
-      expect(scoreText).toBeFalsy()
+      // Should NOT display pts for individual fixtures not started (totals row will show 0 pts)
+      const rows = container.querySelectorAll('[data-testid="sticky-row"]')
+      // Check fixture rows (exclude header row and totals row)
+      const fixtureRows = Array.from(rows).slice(1, -1)
+
+      fixtureRows.forEach((row) => {
+        const cells = row.querySelectorAll('[data-testid="sticky-cell"]')
+        const hasIndividualPoints = Array.from(cells).some((cell) =>
+          cell.textContent?.match(/\d+ pts/)
+        )
+        expect(hasIndividualPoints).toBe(false)
+      })
     })
 
     it("should use halftime score when fulltime is not available", () => {
@@ -942,7 +946,7 @@ describe("TableMatchDayResults", () => {
       const playersWithLongEmail: PlayersData[] = [
         {
           id: "player1",
-      username: null,
+          username: null,
           email:
             "very.long.email.address.that.is.really.quite.long@example.com",
           userBolaoId: "userBolao1",
@@ -1013,6 +1017,338 @@ describe("TableMatchDayResults", () => {
 
       // All players showing same bets should work fine
       expect(screen.getByTestId("sticky-table")).toBeInTheDocument()
+    })
+  })
+
+  describe("Totals Row", () => {
+    it("should render totals row with correct structure", () => {
+      vi.mocked(utils.findBetObj).mockReturnValue(null)
+
+      const fixtures = [createMockFixture()]
+
+      const { container } = render(
+        <TableMatchDayResults
+          fixtures={fixtures}
+          bets={[]}
+          players={mockPlayers}
+          userId="player1"
+        />
+      )
+
+      const rows = container.querySelectorAll('[data-testid="sticky-row"]')
+      // 1 header row + 1 fixture row + 1 totals row
+      expect(rows.length).toBeGreaterThanOrEqual(3)
+
+      const lastRow = rows[rows.length - 1]
+      expect(lastRow.textContent).toContain("Total:")
+    })
+
+    it("should display 0 pts for each player when no finished fixtures", () => {
+      vi.mocked(utils.findBetObj).mockReturnValue({ value: 2 } as Bet)
+
+      const fixtures = [
+        createMockFixture({
+          fixture: {
+            ...createMockFixture().fixture,
+            status: { long: "Not Started", short: "NS", elapsed: 0 },
+          },
+        }),
+      ]
+
+      render(
+        <TableMatchDayResults
+          fixtures={fixtures}
+          bets={[]}
+          players={mockPlayers}
+          userId="player1"
+        />
+      )
+
+      const totalsText = screen.getAllByText("0 pts")
+      // Should have 3 players with 0 pts in totals row
+      expect(totalsText.length).toBeGreaterThanOrEqual(3)
+    })
+
+    it("should calculate totals correctly for finished fixtures", () => {
+      vi.mocked(utils.findBetObj).mockImplementation(
+        ({
+          userBolaoId,
+          type,
+        }: {
+          bets: Bet[]
+          fixtureId: string
+          type: "home" | "away"
+          userBolaoId?: string
+        }) => {
+          if (userBolaoId === "userBolao1") return { value: 2 } as Bet
+          if (userBolaoId === "userBolao2") return { value: 1 } as Bet
+          return { value: 0 } as Bet
+        }
+      )
+
+      vi.mocked(scoresCalcFactory.calcScore).mockImplementation(
+        ({ betHome, betAway }) => {
+          if (betHome === 2 && betAway === 2) return 200
+          if (betHome === 1 && betAway === 1) return 150
+          return 0
+        }
+      )
+
+      const fixtures = [
+        createMockFixture({
+          fixture: {
+            ...createMockFixture().fixture,
+            status: { long: "Match Finished", short: "FT", elapsed: 90 },
+          },
+          score: {
+            halftime: { home: 1, away: 0 },
+            fulltime: { home: 2, away: 1 },
+            extratime: { home: null, away: null },
+            penalty: { home: null, away: null },
+          },
+        }),
+      ]
+
+      const { container } = render(
+        <TableMatchDayResults
+          fixtures={fixtures}
+          bets={[createMockBet()]}
+          players={mockPlayers}
+          userId="player1"
+        />
+      )
+
+      // Check totals row (last row)
+      const rows = container.querySelectorAll('[data-testid="sticky-row"]')
+      const totalsRow = rows[rows.length - 1]
+
+      expect(totalsRow.textContent).toContain("200 pts")
+      expect(totalsRow.textContent).toContain("150 pts")
+    })
+
+    it("should only count STATUSES_FINISHED, not STATUSES_IN_PLAY", () => {
+      vi.mocked(utils.findBetObj).mockReturnValue({ value: 2 } as Bet)
+      vi.mocked(scoresCalcFactory.calcScore).mockReturnValue(100)
+
+      const fixtures = [
+        createMockFixture({
+          fixture: {
+            ...createMockFixture().fixture,
+            id: 1,
+            status: { long: "First Half", short: "1H", elapsed: 30 },
+          },
+        }),
+        createMockFixture({
+          fixture: {
+            ...createMockFixture().fixture,
+            id: 2,
+            status: { long: "Match Finished", short: "FT", elapsed: 90 },
+          },
+        }),
+      ]
+
+      const { container } = render(
+        <TableMatchDayResults
+          fixtures={fixtures}
+          bets={[createMockBet()]}
+          players={mockPlayers}
+          userId="player1"
+        />
+      )
+
+      // Check totals row specifically (last row)
+      const rows = container.querySelectorAll('[data-testid="sticky-row"]')
+      const totalsRow = rows[rows.length - 1]
+
+      // Should show 100 pts in totals (only 1 finished fixture), not 200 pts
+      expect(totalsRow.textContent).toContain("100 pts")
+      expect(totalsRow.textContent).not.toContain("200 pts")
+    })
+
+    it("should calculate totals with multiple finished fixtures", () => {
+      vi.mocked(utils.findBetObj).mockReturnValue({ value: 2 } as Bet)
+      vi.mocked(scoresCalcFactory.calcScore).mockReturnValue(80)
+
+      const fixtures = [
+        createMockFixture({
+          fixture: {
+            ...createMockFixture().fixture,
+            id: 1,
+            status: { long: "Match Finished", short: "FT", elapsed: 90 },
+          },
+        }),
+        createMockFixture({
+          fixture: {
+            ...createMockFixture().fixture,
+            id: 2,
+            status: { long: "Match Finished", short: "FT", elapsed: 90 },
+          },
+        }),
+        createMockFixture({
+          fixture: {
+            ...createMockFixture().fixture,
+            id: 3,
+            status: { long: "Match Finished", short: "FT", elapsed: 90 },
+          },
+        }),
+      ]
+
+      const { container } = render(
+        <TableMatchDayResults
+          fixtures={fixtures}
+          bets={[createMockBet()]}
+          players={mockPlayers}
+          userId="player1"
+        />
+      )
+
+      // Check totals row specifically (last row)
+      const rows = container.querySelectorAll('[data-testid="sticky-row"]')
+      const totalsRow = rows[rows.length - 1]
+
+      // 3 fixtures * 80 pts each = 240 pts total
+      expect(totalsRow.textContent).toContain("240 pts")
+    })
+
+    it("should handle missing bets gracefully in totals", () => {
+      vi.mocked(utils.findBetObj).mockImplementation(
+        ({
+          type,
+        }: {
+          bets: Bet[]
+          fixtureId: string
+          type: "home" | "away"
+        }) => {
+          if (type === "home") return { value: 2 } as Bet
+          return null // Missing away bet
+        }
+      )
+
+      const fixtures = [
+        createMockFixture({
+          fixture: {
+            ...createMockFixture().fixture,
+            status: { long: "Match Finished", short: "FT", elapsed: 90 },
+          },
+        }),
+      ]
+
+      render(
+        <TableMatchDayResults
+          fixtures={fixtures}
+          bets={[]}
+          players={mockPlayers}
+          userId="player1"
+        />
+      )
+
+      // Should show 0 pts when bets are incomplete
+      expect(screen.getAllByText("0 pts").length).toBeGreaterThan(0)
+    })
+
+    it("should apply distinct styling to totals row", () => {
+      vi.mocked(utils.findBetObj).mockReturnValue(null)
+
+      const fixtures = [createMockFixture()]
+
+      const { container } = render(
+        <TableMatchDayResults
+          fixtures={fixtures}
+          bets={[]}
+          players={mockPlayers}
+          userId="player1"
+        />
+      )
+
+      const rows = container.querySelectorAll('[data-testid="sticky-row"]')
+      const lastRow = rows[rows.length - 1]
+      const cells = lastRow.querySelectorAll('[data-testid="sticky-cell"]')
+
+      // Check that totals row cells have border-top style
+      cells.forEach((cell) => {
+        const style = (cell as HTMLElement).getAttribute("style")
+        expect(style).toContain("border")
+      })
+    })
+
+    it("should display totals for all players", () => {
+      vi.mocked(utils.findBetObj).mockReturnValue({ value: 2 } as Bet)
+      vi.mocked(scoresCalcFactory.calcScore).mockReturnValue(50)
+
+      const fixtures = [
+        createMockFixture({
+          fixture: {
+            ...createMockFixture().fixture,
+            status: { long: "Match Finished", short: "FT", elapsed: 90 },
+          },
+        }),
+      ]
+
+      const { container } = render(
+        <TableMatchDayResults
+          fixtures={fixtures}
+          bets={[createMockBet()]}
+          players={mockPlayers}
+          userId="player1"
+        />
+      )
+
+      const rows = container.querySelectorAll('[data-testid="sticky-row"]')
+      const totalsRow = rows[rows.length - 1]
+      const totalCells = totalsRow.querySelectorAll(
+        '[data-testid="sticky-cell"]'
+      )
+
+      // 1 "Total:" cell + 3 player total cells
+      expect(totalCells.length).toBe(4)
+      expect(totalsRow.textContent).toContain("Total:")
+      expect(totalsRow.textContent).toContain("50 pts")
+    })
+
+    it("should handle different scores for different players", () => {
+      vi.mocked(utils.findBetObj).mockImplementation(
+        ({
+          userBolaoId,
+        }: {
+          bets: Bet[]
+          fixtureId: string
+          type: "home" | "away"
+          userBolaoId?: string
+        }) => {
+          return { value: userBolaoId === "userBolao1" ? 2 : 1 } as Bet
+        }
+      )
+
+      vi.mocked(scoresCalcFactory.calcScore).mockImplementation(
+        ({ betHome }) => {
+          return betHome === 2 ? 100 : 50
+        }
+      )
+
+      const fixtures = [
+        createMockFixture({
+          fixture: {
+            ...createMockFixture().fixture,
+            status: { long: "Match Finished", short: "FT", elapsed: 90 },
+          },
+        }),
+      ]
+
+      const { container } = render(
+        <TableMatchDayResults
+          fixtures={fixtures}
+          bets={[createMockBet()]}
+          players={mockPlayers}
+          userId="player1"
+        />
+      )
+
+      // Check totals row specifically (last row)
+      const rows = container.querySelectorAll('[data-testid="sticky-row"]')
+      const totalsRow = rows[rows.length - 1]
+
+      expect(totalsRow.textContent).toContain("100 pts")
+      expect(totalsRow.textContent).toContain("50 pts")
     })
   })
 })
