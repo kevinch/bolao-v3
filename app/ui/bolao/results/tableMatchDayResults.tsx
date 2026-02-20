@@ -31,7 +31,53 @@ const cellStyles = {
   backgroundColor: "transparent",
 }
 
+const totalsCellStyles = {
+  ...cellStyles,
+  borderTop: "1px solid rgb(226 232 240)", // border-slate-200
+  padding: "12px 0",
+  fontWeight: 600,
+}
+
 function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
+  // Calculate totals per player for finished fixtures only
+  const calculatePlayerTotal = (userBolaoId: string): number => {
+    let total = 0
+
+    fixtures.forEach((fixtureData) => {
+      if (STATUSES_FINISHED.includes(fixtureData.fixture.status.short)) {
+        const homeBetObj = findBetObj({
+          bets,
+          fixtureId: fixtureData.fixture.id.toString(),
+          type: "home",
+          userBolaoId,
+        })
+
+        const awayBetObj = findBetObj({
+          bets,
+          fixtureId: fixtureData.fixture.id.toString(),
+          type: "away",
+          userBolaoId,
+        })
+
+        if (
+          homeBetObj?.value !== undefined &&
+          awayBetObj?.value !== undefined
+        ) {
+          const fixtureScore = calcScore({
+            resultHome: fixtureData.score.fulltime.home || 0,
+            resultAway: fixtureData.score.fulltime.away || 0,
+            betHome: homeBetObj.value,
+            betAway: awayBetObj.value,
+          })
+
+          total = total + fixtureScore
+        }
+      }
+    })
+
+    return total
+  }
+
   if (fixtures) {
     return (
       <Card>
@@ -183,12 +229,23 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
               )
             })}
 
-            {/* <Row>
-            <Cell>total:</Cell>
-            {players.map(() => (
-              <Cell>...pts</Cell>
-            ))}
-          </Row> */}
+            <Row>
+              <Cell style={totalsCellStyles}>
+                <div className="text-left pl-6">Total:</div>
+              </Cell>
+              {players.map((player) => {
+                const total = calculatePlayerTotal(player.userBolaoId)
+                return (
+                  <Cell
+                    style={totalsCellStyles}
+                    key={`total_${player.id}`}
+                    className="text-center"
+                  >
+                    <div className="text-sm">{`${total} pts`}</div>
+                  </Cell>
+                )
+              })}
+            </Row>
           </StickyTable>
         </CardContent>
       </Card>
