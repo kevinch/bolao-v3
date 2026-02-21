@@ -113,5 +113,11 @@
     "nextGames": "Next games",
     "previousGames": "Previous games",
     "loading": "loading..."
+  },
+  "resultsPage": {
+    "nextGames": "Next games",
+    "previousGames": "Previous games",
+    "total": "Total:",
+    "loading": "loading..."
   }
 }

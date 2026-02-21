@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations, useLocale } from "next-intl"
 import { FixtureData, Bet, PlayersData } from "@/app/lib/definitions"
 import {
   findBetObj,
@@ -39,6 +40,9 @@ const totalsCellStyles = {
 }
 
 function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
+  const t = useTranslations("resultsPage")
+  const locale = useLocale()
+
   // Calculate totals per player for finished fixtures only
   const calculatePlayerTotal = (userBolaoId: string): number => {
     let total = 0
@@ -86,8 +90,8 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
             {STATUSES_OPEN_TO_PLAY.includes(
               fixtures[fixtures.length - 1].fixture.status.short
             )
-              ? "Next games"
-              : "Previous games"}
+              ? t("nextGames")
+              : t("previousGames")}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -150,6 +154,7 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
                         <FixtureDate
                           date={fixtureData.fixture.date.toString()}
                           status={fixtureData.fixture.status}
+                          locale={locale}
                         />
                         <div className="flex flex-row">
                           <TeamScore
@@ -231,7 +236,7 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
 
             <Row>
               <Cell style={totalsCellStyles}>
-                <div className="text-left pl-6">Total:</div>
+                <div className="text-left pl-6">{t("total")}</div>
               </Cell>
               {players.map((player) => {
                 const total = calculatePlayerTotal(player.userBolaoId)
@@ -252,7 +257,7 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
     )
   }
 
-  return <p>loading...</p>
+  return <p>{t("loading")}</p>
 }
 
 export default TableMatchDayResults

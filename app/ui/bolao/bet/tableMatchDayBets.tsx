@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server"
+import { getTranslations, getLocale } from "next-intl/server"
 import { FixtureData, Bet } from "@/app/lib/definitions"
 import ButtonsBet from "./buttonsBet"
 import { findBetObj, STATUSES_OPEN_TO_PLAY } from "@/app/lib/utils"
@@ -16,6 +16,7 @@ type TableProps = {
 
 async function TableMatchDayBets({ fixtures, userBolaoId, bets }: TableProps) {
   const t = await getTranslations("betPage")
+  const locale = await getLocale()
 
   if (fixtures) {
     return (
@@ -74,6 +75,7 @@ async function TableMatchDayBets({ fixtures, userBolaoId, bets }: TableProps) {
                     <FixtureDate
                       date={fixtureData.fixture.date.toString()}
                       status={fixtureData.fixture.status}
+                      locale={locale}
                     />
                     <div style={{ display: "flex", flexDirection: "row" }}>
                       <TeamScore

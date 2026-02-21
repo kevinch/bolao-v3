@@ -113,5 +113,11 @@
     "nextGames": "Próximos jogos",
     "previousGames": "Jogos anteriores",
     "loading": "carregando..."
+  },
+  "resultsPage": {
+    "nextGames": "Próximos jogos",
+    "previousGames": "Jogos anteriores",
+    "total": "Total:",
+    "loading": "carregando..."
   }
 }

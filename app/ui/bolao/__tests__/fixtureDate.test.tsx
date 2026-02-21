@@ -45,7 +45,7 @@ describe("FixtureDate", () => {
 
       render(<FixtureDate date={mockDate} status={status} />)
 
-      expect(mockFormatDateFixtures).toHaveBeenCalledWith(mockDate)
+      expect(mockFormatDateFixtures).toHaveBeenCalledWith(mockDate, "en")
     })
 
     it("should display formatted date for TBD status", () => {
