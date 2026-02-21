@@ -177,11 +177,10 @@ describe("RootLayout", () => {
 
   describe("Rendering", () => {
     it("should render children and all required components", async () => {
-      const { container } = render(
-        <RootLayout>
-          <div data-testid="child-content">Child Content</div>
-        </RootLayout>
-      )
+      const Layout = await RootLayout({
+        children: <div data-testid="child-content">Child Content</div>,
+      })
+      const { container } = render(Layout)
       // Verify structure
       const mainContainer = container.querySelector(".container")
       expect(mainContainer).toBeDefined()

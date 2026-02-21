@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect, vi } from "vitest"
-import About from "../page"
+import AboutPage from "../page"
 
 // Mock Next.js Link
 vi.mock("next/link", () => ({
@@ -34,24 +34,30 @@ vi.mock("@/app/components/pageTitle", () => ({
   ),
 }))
 
+// Helper to render async server components
+async function renderAbout() {
+  const About = await AboutPage()
+  return render(About)
+}
+
 describe("About Page", () => {
   describe("Component Rendering", () => {
-    it("should render without crashing", () => {
-      render(<About />)
+    it("should render without crashing", async () => {
+      await renderAbout()
 
       expect(screen.getByText("About")).toBeInTheDocument()
     })
 
-    it("should render PageTitle with center prop", () => {
-      render(<About />)
+    it("should render PageTitle with center prop", async () => {
+      await renderAbout()
 
       const pageTitle = screen.getByTestId("page-title")
       expect(pageTitle).toBeInTheDocument()
       expect(pageTitle).toHaveAttribute("data-center", "true")
     })
 
-    it("should render main heading", () => {
-      render(<About />)
+    it("should render main heading", async () => {
+      await renderAbout()
 
       const heading = screen.getByRole("heading", { level: 1, name: "About" })
       expect(heading).toBeInTheDocument()
@@ -59,8 +65,8 @@ describe("About Page", () => {
   })
 
   describe("Section Headings", () => {
-    it("should render 'Bolão?' section heading", () => {
-      render(<About />)
+    it("should render 'Bolão?' section heading", async () => {
+      await renderAbout()
 
       const heading = screen.getByRole("heading", {
         level: 2,
@@ -69,8 +75,8 @@ describe("About Page", () => {
       expect(heading).toBeInTheDocument()
     })
 
-    it("should render 'Who's behind this?' section heading", () => {
-      render(<About />)
+    it("should render 'Who's behind this?' section heading", async () => {
+      await renderAbout()
 
       const heading = screen.getByRole("heading", {
         level: 2,
@@ -79,8 +85,8 @@ describe("About Page", () => {
       expect(heading).toBeInTheDocument()
     })
 
-    it("should render 'On the tech side' section heading", () => {
-      render(<About />)
+    it("should render 'On the tech side' section heading", async () => {
+      await renderAbout()
 
       const heading = screen.getByRole("heading", {
         level: 2,
@@ -89,8 +95,8 @@ describe("About Page", () => {
       expect(heading).toBeInTheDocument()
     })
 
-    it("should render 'Soccer coverage' section heading", () => {
-      render(<About />)
+    it("should render 'Soccer coverage' section heading", async () => {
+      await renderAbout()
 
       const heading = screen.getByRole("heading", {
         level: 2,
@@ -99,8 +105,8 @@ describe("About Page", () => {
       expect(heading).toBeInTheDocument()
     })
 
-    it("should have correct styling classes on section headings", () => {
-      const { container } = render(<About />)
+    it("should have correct styling classes on section headings", async () => {
+      const { container } = await renderAbout()
 
       const headings = container.querySelectorAll("h2")
       headings.forEach((heading) => {
@@ -110,8 +116,8 @@ describe("About Page", () => {
   })
 
   describe("Accessibility", () => {
-    it("should use semantic HTML with proper heading hierarchy", () => {
-      render(<About />)
+    it("should use semantic HTML with proper heading hierarchy", async () => {
+      await renderAbout()
 
       const h1 = screen.getByRole("heading", { level: 1 })
       const h2s = screen.getAllByRole("heading", { level: 2 })
@@ -120,8 +126,8 @@ describe("About Page", () => {
       expect(h2s).toHaveLength(4)
     })
 
-    it("should have descriptive link text", () => {
-      render(<About />)
+    it("should have descriptive link text", async () => {
+      await renderAbout()
 
       const links = screen.getAllByRole("link")
       links.forEach((link) => {
@@ -130,8 +136,8 @@ describe("About Page", () => {
       })
     })
 
-    it("should have all links accessible via keyboard", () => {
-      render(<About />)
+    it("should have all links accessible via keyboard", async () => {
+      await renderAbout()
 
       const links = screen.getAllByRole("link")
       links.forEach((link) => {
