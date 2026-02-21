@@ -1,0 +1,44 @@
+{
+  "common": {
+    "home": "Início",
+    "about": "Sobre",
+    "news": "Notícias",
+    "createBolao": "Criar bolão"
+  },
+  "home": {
+    "greeting": "E aí",
+    "hero": "Bolões de futebol com os amigos.",
+    "tagline1": "Compete com palpites.",
+    "tagline2": "Acompanhe resultados em tempo real.",
+    "tagline3": "Ganhe o direito de se gabar.",
+    "getStarted": "COMEÇAR",
+    "login": "ENTRAR",
+    "learnMore": "Saiba mais sobre o Bolão.io",
+    "whatIsBolao": "O que é um bolão?",
+    "whatIsBolaoDesc": "No Brasil, um bolão é uma aposta entre amigos sobre campeonatos de futebol. É muito popular durante a Copa do Mundo e grandes torneios. Este app facilita criar e gerenciar o seu próprio - sem dinheiro envolvido, apenas competição amigável!",
+    "howItWorks": "Como funciona",
+    "step1Title": "Crie ou Participe",
+    "step1Desc": "Comece um novo bolão para qualquer liga suportada ou entre com um link de convite.",
+    "step2Title": "Faça Palpites",
+    "step2Desc": "Preveja resultados das partidas antes de começarem. Atualize a qualquer momento antes do início.",
+    "step3Title": "Acompanhe & Vença",
+    "step3Desc": "Veja o placar atualizar conforme os jogos terminam. Veja quem é o campeão!",
+    "whyBolao": "Por que Bolão.io?",
+    "featureLeagues": "Múltiplas Ligas",
+    "featureLeaguesDesc": "Principais ligas de futebol com atualizações automáticas de jogos",
+    "featureEverywhere": "Funciona em Qualquer Lugar",
+    "featureEverywhereDesc": "Sem app para baixar - funciona em qualquer dispositivo com navegador",
+    "featureFree": "Completamente Grátis",
+    "featureFreeDesc": "Sem assinaturas, sem custos ocultos, sem dinheiro envolvido",
+    "featureRealtime": "Atualizações em Tempo Real",
+    "featureRealtimeDesc": "Placares e classificações atualizam automaticamente quando os jogos terminam",
+    "readyToStart": "Pronto para começar?",
+    "createFirstBolao": "Crie seu primeiro bolão em minutos.",
+    "getStartedFree": "COMEÇAR DE GRAÇA"
+  },
+  "language": {
+    "switchTo": "Trocar idioma",
+    "en": "English",
+    "pt-br": "Português (BR)"
+  }
+}

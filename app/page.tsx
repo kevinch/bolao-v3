@@ -1,4 +1,5 @@
 import { Suspense } from "react"
+import { getTranslations } from "next-intl/server"
 import BoloesList from "@/app/ui/home/boloesList"
 import { currentUser } from "@clerk/nextjs/server"
 import PageTitle from "./components/pageTitle"
@@ -11,13 +12,14 @@ const sectionSpaceing = "mb-18"
 
 async function Home() {
   const user = await currentUser()
+  const t = await getTranslations("home")
 
   if (user) {
     return (
       <main>
         <InviteRedirector />
         <PageTitle>
-          Hey
+          {t("greeting")}
           <br />
           <span className="font-bold">
             {user.username
@@ -39,21 +41,21 @@ async function Home() {
 
       {/* Hero Section */}
       <div className={`text-center ${sectionSpaceing}`}>
-        <PageTitle>Soccer betting pools with friends.</PageTitle>
+        <PageTitle>{t("hero")}</PageTitle>
         <p className="text-xl text-gray-600 dark:text-gray-300 mt-4 mb-8">
-          Compete on predictions.
+          {t("tagline1")}
           <br />
-          Track results in real-time.
+          {t("tagline2")}
           <br />
-          Win bragging rights.
+          {t("tagline3")}
         </p>
 
         <div className="flex items-center justify-center gap-4 mb-4">
           <Button asChild>
-            <Link href="/sign-up">GET STARTED</Link>
+            <Link href="/sign-up">{t("getStarted")}</Link>
           </Button>
           <Button asChild variant="secondary">
-            <Link href="/sign-in">LOGIN</Link>
+            <Link href="/sign-in">{t("login")}</Link>
           </Button>
         </div>
 
@@ -61,47 +63,43 @@ async function Home() {
           href="/about"
           className="text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 underline"
         >
-          Learn more about Bolão.io
+          {t("learnMore")}
         </Link>
       </div>
 
       {/* What is a Bolão? */}
       <section className={`${sectionSpaceing} text-center`}>
-        <h2 className="text-2xl font-bold mb-4">What is a bolão?</h2>
+        <h2 className="text-2xl font-bold mb-4">{t("whatIsBolao")}</h2>
         <p className="text-gray-700 dark:text-gray-300 max-w-2xl mx-auto">
-          In Brazil, a bolão is a betting pool between friends around soccer
-          championships. It&apos;s very popular during the World Cup and major
-          tournaments. This app makes it easy to create and manage your own -{" "}
-          <strong>no money involved</strong>, just friendly competition!
+          {t("whatIsBolaoDesc")}
         </p>
       </section>
 
       {/* How it Works */}
       <section className={`${sectionSpaceing}`}>
-        <h2 className="text-2xl font-bold mb-6 text-center">How it works</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">
+          {t("howItWorks")}
+        </h2>
         <div className="grid md:grid-cols-3 gap-8">
           <div className="text-center">
             <div className="text-4xl font-bold text-primary mb-2">1</div>
-            <h3 className="font-semibold mb-2">Create or Join</h3>
+            <h3 className="font-semibold mb-2">{t("step1Title")}</h3>
             <p className="text-gray-600 dark:text-gray-400">
-              Start a new bolão for any supported league or join one with an
-              invite link.
+              {t("step1Desc")}
             </p>
           </div>
           <div className="text-center">
             <div className="text-4xl font-bold text-primary mb-2">2</div>
-            <h3 className="font-semibold mb-2">Make Predictions</h3>
+            <h3 className="font-semibold mb-2">{t("step2Title")}</h3>
             <p className="text-gray-600 dark:text-gray-400">
-              Predict match results before they start. Update anytime before
-              kickoff.
+              {t("step2Desc")}
             </p>
           </div>
           <div className="text-center">
             <div className="text-4xl font-bold text-primary mb-2">3</div>
-            <h3 className="font-semibold mb-2">Track & Win</h3>
+            <h3 className="font-semibold mb-2">{t("step3Title")}</h3>
             <p className="text-gray-600 dark:text-gray-400">
-              Watch the leaderboard update as matches finish. See who reigns
-              supreme!
+              {t("step3Desc")}
             </p>
           </div>
         </div>
@@ -109,37 +107,37 @@ async function Home() {
 
       {/* Features */}
       <section className={`${sectionSpaceing}`}>
-        <h2 className="text-2xl font-bold mb-6 text-center">Why Bolão.io?</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">{t("whyBolao")}</h2>
         <div className="grid md:grid-cols-2 gap-8 max-w-2xl mx-auto">
           <div className="flex gap-3">
             <div>
-              <h3 className="font-semibold mb-1">Multiple Leagues</h3>
+              <h3 className="font-semibold mb-1">{t("featureLeagues")}</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Major soccer leagues supported with automatic fixture updates
+                {t("featureLeaguesDesc")}
               </p>
             </div>
           </div>
           <div className="flex gap-3">
             <div>
-              <h3 className="font-semibold mb-1">Works Everywhere</h3>
+              <h3 className="font-semibold mb-1">{t("featureEverywhere")}</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                No app to download - works on any device with a browser
+                {t("featureEverywhereDesc")}
               </p>
             </div>
           </div>
           <div className="flex gap-3">
             <div>
-              <h3 className="font-semibold mb-1">Completely Free</h3>
+              <h3 className="font-semibold mb-1">{t("featureFree")}</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                No subscriptions, no hidden costs, no money involved
+                {t("featureFreeDesc")}
               </p>
             </div>
           </div>
           <div className="flex gap-3">
             <div>
-              <h3 className="font-semibold mb-1">Real-Time Updates</h3>
+              <h3 className="font-semibold mb-1">{t("featureRealtime")}</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Scores and standings refresh automatically as games end
+                {t("featureRealtimeDesc")}
               </p>
             </div>
           </div>
@@ -148,12 +146,12 @@ async function Home() {
 
       {/* CTA */}
       <section className="text-center">
-        <h2 className="text-2xl font-bold mb-4">Ready to start?</h2>
+        <h2 className="text-2xl font-bold mb-4">{t("readyToStart")}</h2>
         <p className="text-gray-600 dark:text-gray-400 mb-6">
-          Create your first bolão in minutes.
+          {t("createFirstBolao")}
         </p>
         <Button asChild size="lg">
-          <Link href="/sign-up">GET STARTED FOR FREE</Link>
+          <Link href="/sign-up">{t("getStartedFree")}</Link>
         </Button>
       </section>
     </main>

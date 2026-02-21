@@ -1,0 +1,44 @@
+{
+  "common": {
+    "home": "Home",
+    "about": "About",
+    "news": "News",
+    "createBolao": "Create bolão"
+  },
+  "home": {
+    "greeting": "Hey",
+    "hero": "Soccer betting pools with friends.",
+    "tagline1": "Compete on predictions.",
+    "tagline2": "Track results in real-time.",
+    "tagline3": "Win bragging rights.",
+    "getStarted": "GET STARTED",
+    "login": "LOGIN",
+    "learnMore": "Learn more about Bolão.io",
+    "whatIsBolao": "What is a bolão?",
+    "whatIsBolaoDesc": "In Brazil, a bolão is a betting pool between friends around soccer championships. It's very popular during the World Cup and major tournaments. This app makes it easy to create and manage your own - no money involved, just friendly competition!",
+    "howItWorks": "How it works",
+    "step1Title": "Create or Join",
+    "step1Desc": "Start a new bolão for any supported league or join one with an invite link.",
+    "step2Title": "Make Predictions",
+    "step2Desc": "Predict match results before they start. Update anytime before kickoff.",
+    "step3Title": "Track & Win",
+    "step3Desc": "Watch the leaderboard update as matches finish. See who reigns supreme!",
+    "whyBolao": "Why Bolão.io?",
+    "featureLeagues": "Multiple Leagues",
+    "featureLeaguesDesc": "Major soccer leagues supported with automatic fixture updates",
+    "featureEverywhere": "Works Everywhere",
+    "featureEverywhereDesc": "No app to download - works on any device with a browser",
+    "featureFree": "Completely Free",
+    "featureFreeDesc": "No subscriptions, no hidden costs, no money involved",
+    "featureRealtime": "Real-Time Updates",
+    "featureRealtimeDesc": "Scores and standings refresh automatically as games end",
+    "readyToStart": "Ready to start?",
+    "createFirstBolao": "Create your first bolão in minutes.",
+    "getStartedFree": "GET STARTED FOR FREE"
+  },
+  "language": {
+    "switchTo": "Switch language",
+    "en": "English",
+    "pt-br": "Português (BR)"
+  }
+}

@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
 import { IBM_Plex_Sans } from "next/font/google"
 import { ClerkProvider } from "@clerk/nextjs"
+import { NextIntlClientProvider } from "next-intl"
+import { getLocale, getMessages } from "next-intl/server"
 import Header from "@/app/components/header"
 import Footer from "@/app/components/footer"
 import Script from "next/script"
@@ -21,11 +23,14 @@ export const metadata: Metadata = {
   description: "Free soccer bets with friends.",
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const locale = await getLocale()
+  const messages = await getMessages()
+
   return (
     <ClerkProvider
       appearance={{
@@ -37,16 +42,18 @@ export default function RootLayout({
         },
       }}
     >
-      <html lang="en">
+      <html lang={locale}>
         <body className={Plex.className}>
-          <div className="container mx-auto px-4">
-            <Header />
-            {children}
-            <Footer />
-            <Toaster />
-            <Analytics />
-            <SpeedInsights />
-          </div>
+          <NextIntlClientProvider messages={messages}>
+            <div className="container mx-auto px-4">
+              <Header />
+              {children}
+              <Footer />
+              <Toaster />
+              <Analytics />
+              <SpeedInsights />
+            </div>
+          </NextIntlClientProvider>
         </body>
 
         <Script
