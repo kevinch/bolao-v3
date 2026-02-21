@@ -100,5 +100,18 @@
     "description": "Tem certeza que deseja excluir este bolão? Esta ação não pode ser desfeita. Os palpites também serão excluídos.",
     "cancel": "Cancelar",
     "confirm": "Confirmar"
+  },
+  "bolaoLinks": {
+    "bet": "APOSTAR",
+    "standings": "CLASSIFICAÇÃO",
+    "results": "RESULTADOS",
+    "lead": "LIDERANÇA"
+  },
+  "betPage": {
+    "errorMissingUser": "Erro ao carregar a página de apostas. Usuário não encontrado.",
+    "errorNoData": "Erro ao carregar a página de apostas. Sem dados.",
+    "nextGames": "Próximos jogos",
+    "previousGames": "Jogos anteriores",
+    "loading": "carregando..."
   }
 }

@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server"
 import { getData } from "@/app/lib/controllerBet"
 import { auth } from "@clerk/nextjs/server"
 import BolaoPageTitle from "@/app/ui/bolao/bolaoPageTitle"
@@ -15,9 +16,10 @@ async function BetPage(props: {
   const params = await props.params
   const { userId }: { userId: string | null } = await auth()
   const roundIndex: string = searchParams?.roundIndex || ""
+  const t = await getTranslations("betPage")
 
   if (!userId) {
-    return <p>Error while loading the bet page. Missing userid.</p>
+    return <p>{t("errorMissingUser")}</p>
   }
 
   const data = await getData({
@@ -27,7 +29,7 @@ async function BetPage(props: {
   })
 
   if (!data) {
-    return <p>Error while loading the bet page. No data.</p>
+    return <p>{t("errorNoData")}</p>
   }
 
   const currentRoundIndex =

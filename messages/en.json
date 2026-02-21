@@ -100,5 +100,18 @@
     "description": "Are you sure you want to delete this bolão? This action cannot be undone. Bets will be deleted as well.",
     "cancel": "Cancel",
     "confirm": "Confirm"
+  },
+  "bolaoLinks": {
+    "bet": "BET",
+    "standings": "STANDINGS",
+    "results": "RESULTS",
+    "lead": "LEAD"
+  },
+  "betPage": {
+    "errorMissingUser": "Error while loading the bet page. Missing userid.",
+    "errorNoData": "Error while loading the bet page. No data.",
+    "nextGames": "Next games",
+    "previousGames": "Previous games",
+    "loading": "loading..."
   }
 }

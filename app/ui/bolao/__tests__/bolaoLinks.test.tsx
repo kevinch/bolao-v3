@@ -13,14 +13,20 @@ vi.mock("next/link", () => ({
   }) => <a href={href}>{children}</a>,
 }))
 
+// Helper to render async server component
+async function renderBolaoLinks(props: { bolaoId: string; active?: number }) {
+  const Component = await BolaoLinks(props)
+  return render(Component)
+}
+
 describe("BolaoLinks", () => {
   const defaultProps = {
     bolaoId: "bolao-123",
   }
 
   describe("Component Rendering", () => {
-    it("should render all navigation links", () => {
-      render(<BolaoLinks {...defaultProps} />)
+    it("should render all navigation links", async () => {
+      await renderBolaoLinks(defaultProps)
 
       expect(screen.getByText("BET")).toBeInTheDocument()
       expect(screen.getByText("STANDINGS")).toBeInTheDocument()
@@ -28,8 +34,8 @@ describe("BolaoLinks", () => {
       expect(screen.getByText("LEAD")).toBeInTheDocument()
     })
 
-    it("should render links as buttons", () => {
-      render(<BolaoLinks {...defaultProps} />)
+    it("should render links as buttons", async () => {
+      await renderBolaoLinks(defaultProps)
 
       const links = screen.getAllByRole("link")
       expect(links).toHaveLength(4)
@@ -37,15 +43,15 @@ describe("BolaoLinks", () => {
   })
 
   describe("Navigation Links", () => {
-    it("should have correct href for BET link", () => {
-      render(<BolaoLinks {...defaultProps} />)
+    it("should have correct href for BET link", async () => {
+      await renderBolaoLinks(defaultProps)
 
       const betLink = screen.getByText("BET").closest("a")
       expect(betLink).toHaveAttribute("href", "/bolao/bolao-123/bet")
     })
 
-    it("should have correct href for STANDINGS link", () => {
-      render(<BolaoLinks {...defaultProps} />)
+    it("should have correct href for STANDINGS link", async () => {
+      await renderBolaoLinks(defaultProps)
 
       const standingsLink = screen.getByText("STANDINGS").closest("a")
       expect(standingsLink).toHaveAttribute(
@@ -54,15 +60,15 @@ describe("BolaoLinks", () => {
       )
     })
 
-    it("should have correct href for RESULTS link", () => {
-      render(<BolaoLinks {...defaultProps} />)
+    it("should have correct href for RESULTS link", async () => {
+      await renderBolaoLinks(defaultProps)
 
       const resultsLink = screen.getByText("RESULTS").closest("a")
       expect(resultsLink).toHaveAttribute("href", "/bolao/bolao-123/results")
     })
 
-    it("should have correct href for LEAD link", () => {
-      render(<BolaoLinks {...defaultProps} />)
+    it("should have correct href for LEAD link", async () => {
+      await renderBolaoLinks(defaultProps)
 
       const leadLink = screen.getByText("LEAD").closest("a")
       expect(leadLink).toHaveAttribute("href", "/bolao/bolao-123/lead")
@@ -70,9 +76,9 @@ describe("BolaoLinks", () => {
   })
 
   describe("Different Bolao IDs", () => {
-    it("should use provided bolaoId in all links", () => {
+    it("should use provided bolaoId in all links", async () => {
       const customBolaoId = "custom-bolao-456"
-      render(<BolaoLinks bolaoId={customBolaoId} />)
+      await renderBolaoLinks({ bolaoId: customBolaoId })
 
       const links = screen.getAllByRole("link")
       links.forEach((link) => {
@@ -80,23 +86,23 @@ describe("BolaoLinks", () => {
       })
     })
 
-    it("should handle numeric bolaoId", () => {
-      render(<BolaoLinks bolaoId="12345" />)
+    it("should handle numeric bolaoId", async () => {
+      await renderBolaoLinks({ bolaoId: "12345" })
 
       const betLink = screen.getByText("BET").closest("a")
       expect(betLink).toHaveAttribute("href", "/bolao/12345/bet")
     })
 
-    it("should handle bolaoId with special characters", () => {
-      render(<BolaoLinks bolaoId="bolao-test_123" />)
+    it("should handle bolaoId with special characters", async () => {
+      await renderBolaoLinks({ bolaoId: "bolao-test_123" })
 
       const betLink = screen.getByText("BET").closest("a")
       expect(betLink).toHaveAttribute("href", "/bolao/bolao-test_123/bet")
     })
 
-    it("should handle UUID-style bolaoId", () => {
+    it("should handle UUID-style bolaoId", async () => {
       const uuid = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
-      render(<BolaoLinks bolaoId={uuid} />)
+      await renderBolaoLinks({ bolaoId: uuid })
 
       const links = screen.getAllByRole("link")
       links.forEach((link) => {
@@ -106,15 +112,15 @@ describe("BolaoLinks", () => {
   })
 
   describe("Layout and Styling", () => {
-    it("should have flex container with centered content", () => {
-      const { container } = render(<BolaoLinks {...defaultProps} />)
+    it("should have flex container with centered content", async () => {
+      const { container } = await renderBolaoLinks(defaultProps)
 
       const flexContainer = container.querySelector(".flex")
       expect(flexContainer).toHaveClass("flex", "justify-center", "space-x-4")
     })
 
-    it("should render buttons in correct order", () => {
-      render(<BolaoLinks {...defaultProps} />)
+    it("should render buttons in correct order", async () => {
+      await renderBolaoLinks(defaultProps)
 
       const links = screen.getAllByRole("link")
       expect(links[0]).toHaveTextContent("BET")
@@ -125,8 +131,8 @@ describe("BolaoLinks", () => {
   })
 
   describe("Link Text", () => {
-    it("should display link text in uppercase", () => {
-      render(<BolaoLinks {...defaultProps} />)
+    it("should display link text in uppercase", async () => {
+      await renderBolaoLinks(defaultProps)
 
       expect(screen.getByText("BET")).toBeInTheDocument()
       expect(screen.getByText("STANDINGS")).toBeInTheDocument()
@@ -142,8 +148,8 @@ describe("BolaoLinks", () => {
   })
 
   describe("Accessibility", () => {
-    it("should have all links accessible by role", () => {
-      render(<BolaoLinks {...defaultProps} />)
+    it("should have all links accessible by role", async () => {
+      await renderBolaoLinks(defaultProps)
 
       const links = screen.getAllByRole("link")
       expect(links).toHaveLength(4)
@@ -153,8 +159,8 @@ describe("BolaoLinks", () => {
       })
     })
 
-    it("should have descriptive link text", () => {
-      render(<BolaoLinks {...defaultProps} />)
+    it("should have descriptive link text", async () => {
+      await renderBolaoLinks(defaultProps)
 
       const betLink = screen.getByRole("link", { name: /BET/i })
       const standingsLink = screen.getByRole("link", { name: /STANDINGS/i })
@@ -169,8 +175,8 @@ describe("BolaoLinks", () => {
   })
 
   describe("Navigation Structure", () => {
-    it("should have consistent URL pattern for all links", () => {
-      render(<BolaoLinks {...defaultProps} />)
+    it("should have consistent URL pattern for all links", async () => {
+      await renderBolaoLinks(defaultProps)
 
       const links = screen.getAllByRole("link")
       const urlPattern = /^\/bolao\/bolao-123\/(bet|standings|results|lead)$/
@@ -181,8 +187,8 @@ describe("BolaoLinks", () => {
       })
     })
 
-    it("should have unique paths for each link", () => {
-      render(<BolaoLinks {...defaultProps} />)
+    it("should have unique paths for each link", async () => {
+      await renderBolaoLinks(defaultProps)
 
       const links = screen.getAllByRole("link")
       const hrefs = links.map((link) => link.getAttribute("href"))
@@ -194,8 +200,8 @@ describe("BolaoLinks", () => {
   })
 
   describe("Active Prop", () => {
-    it("should render correctly when active prop is provided", () => {
-      render(<BolaoLinks {...defaultProps} active={1} />)
+    it("should render correctly when active prop is provided", async () => {
+      await renderBolaoLinks({ ...defaultProps, active: 1 })
 
       // Component should still render all links normally
       expect(screen.getByText("BET")).toBeInTheDocument()
@@ -204,8 +210,8 @@ describe("BolaoLinks", () => {
       expect(screen.getByText("LEAD")).toBeInTheDocument()
     })
 
-    it("should render correctly when active prop is not provided", () => {
-      render(<BolaoLinks {...defaultProps} />)
+    it("should render correctly when active prop is not provided", async () => {
+      await renderBolaoLinks(defaultProps)
 
       // Component should render all links normally
       expect(screen.getByText("BET")).toBeInTheDocument()
