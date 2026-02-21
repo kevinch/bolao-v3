@@ -4,7 +4,8 @@ import en from '../messages/en.json'
 
 // Helper to get nested translation value
 function getNestedValue(obj: Record<string, any>, path: string): string {
-  return path.split('.').reduce((acc, key) => acc?.[key], obj) ?? path
+  const result = path.split('.').reduce((acc, key) => acc?.[key], obj)
+  return typeof result === 'string' ? result : path
 }
 
 // Mock next-intl (client-side)

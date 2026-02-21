@@ -55,5 +55,17 @@
     "techDesc2": "O app é construído com NextJS, Typescript e React, hospedado na Vercel e usa Postgres para o banco de dados. Usa Prismic.io para o CMS headless e Clerk para gerenciamento de autenticação.",
     "coverageTitle": "Cobertura de futebol",
     "coverageDesc": "O app usa a API do <apiLink>api-football.com</apiLink> para obter os últimos jogos e resultados. Por enquanto, apenas algumas ligas estão disponíveis, mas mediante solicitação mais podem ser adicionadas. Fique à vontade para me contatar no <linkedinLink>LinkedIn</linkedinLink>."
+  },
+  "createBolao": {
+    "title": "Criar bolão",
+    "nameLabel": "Nome:",
+    "namePlaceholder": "Escolha um nome para seu bolão",
+    "competitionLabel": "Competição:",
+    "competitionPlaceholder": "Selecione uma competição",
+    "submitButton": "Criar",
+    "loadingButton": "Aguarde",
+    "successTitle": "Sucesso",
+    "successMessage": "O bolão foi criado com sucesso.",
+    "errorMessage": "Houve um problema na criação."
   }
 }

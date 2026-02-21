@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { createBolao } from "@/app/lib/actions"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -24,6 +25,7 @@ type FormProps = {
 }
 
 function Form({ leagues }: FormProps) {
+  const t = useTranslations("createBolao")
   const { toast } = useToast()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
@@ -68,14 +70,14 @@ function Form({ leagues }: FormProps) {
 
     if (result.success) {
       toast({
-        title: "Success",
-        description: "The bolão was successfully created.",
+        title: t("successTitle"),
+        description: t("successMessage"),
         variant: "success",
       })
       router.push("/")
     } else {
       toast({
-        description: "There was an issue with the creation.",
+        description: t("errorMessage"),
         variant: "destructive",
       })
     }
@@ -84,21 +86,21 @@ function Form({ leagues }: FormProps) {
   return (
     <form onSubmit={handleSubmit}>
       <div className="mb-6">
-        <Label htmlFor="name">Name:</Label>
+        <Label htmlFor="name">{t("nameLabel")}</Label>
         <Input
           type="text"
           id="name"
           name="name"
           required
-          placeholder="Choose a name for your bolão"
+          placeholder={t("namePlaceholder")}
         />
       </div>
 
       <div className="mb-6">
-        <Label htmlFor="competitionId">Competition:</Label>
+        <Label htmlFor="competitionId">{t("competitionLabel")}</Label>
         <Select name="competitionId" required>
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select a competition" />
+            <SelectValue placeholder={t("competitionPlaceholder")} />
           </SelectTrigger>
           <SelectContent>
             {finalOrderedResult.map((el: League[], index: number) => (
@@ -118,10 +120,10 @@ function Form({ leagues }: FormProps) {
       {loading ? (
         <Button disabled>
           <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-          Please wait
+          {t("loadingButton")}
         </Button>
       ) : (
-        <Button type="submit">Create</Button>
+        <Button type="submit">{t("submitButton")}</Button>
       )}
     </form>
   )
