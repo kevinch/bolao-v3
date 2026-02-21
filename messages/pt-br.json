@@ -119,5 +119,14 @@
     "previousGames": "Jogos anteriores",
     "total": "Total:",
     "loading": "carregando..."
+  },
+  "standingsPage": {
+    "error": "Erro ao carregar a classificação.",
+    "title": "Classificação",
+    "noStandings": "Classificação não disponível.",
+    "matchesPlayed": "j",
+    "goalDifference": "sg",
+    "points": "pts",
+    "form": "forma"
   }
 }

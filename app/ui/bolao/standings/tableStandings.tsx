@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server"
 import {
   Standing,
   StandingsGroup,
@@ -14,6 +15,15 @@ import { TeamCrest } from "./teamCrest"
 
 type TableProps = {
   standingsLeague: StandingsLeague
+}
+
+type TheadProps = {
+  labels: {
+    matchesPlayed: string
+    goalDifference: string
+    points: string
+    form: string
+  }
 }
 
 const textColors = [
@@ -53,34 +63,42 @@ function getUniqueDescriptions(standings: Standing[][]): string[] {
 
 const thClasses = "font-normal text-xs py-3"
 
-function Thead() {
+function Thead({ labels }: TheadProps) {
   return (
     <thead className="uppercase">
       <tr>
         <th>&nbsp;&nbsp;</th>
         <th className="font-normal text-xs py-3 text-left w-2/6">&nbsp;</th>
-        <th className={thClasses}>mp</th>
-        <th className={thClasses}>+/-</th>
-        <th className={clsx("font-bold")}>pts</th>
-        <th className={thClasses}>form</th>
+        <th className={thClasses}>{labels.matchesPlayed}</th>
+        <th className={thClasses}>{labels.goalDifference}</th>
+        <th className={clsx("font-bold")}>{labels.points}</th>
+        <th className={thClasses}>{labels.form}</th>
       </tr>
     </thead>
   )
 }
 
-function TableStandings({ standingsLeague }: TableProps) {
+async function TableStandings({ standingsLeague }: TableProps) {
+  const t = await getTranslations("standingsPage")
   const standings = standingsLeague.standings
   const uniqueDescriptions = getUniqueDescriptions(standings)
+
+  const theadLabels = {
+    matchesPlayed: t("matchesPlayed"),
+    goalDifference: t("goalDifference"),
+    points: t("points"),
+    form: t("form"),
+  }
 
   if (!standings || standings.length === 0) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Standings</CardTitle>
+          <CardTitle>{t("title")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center text-slate-500 py-8">
-            No standings available.
+            {t("noStandings")}
           </div>
         </CardContent>
       </Card>
@@ -90,7 +108,7 @@ function TableStandings({ standingsLeague }: TableProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Standings</CardTitle>
+        <CardTitle>{t("title")}</CardTitle>
       </CardHeader>
       <CardContent>
         {standingsLeague.standings.map(
@@ -99,7 +117,7 @@ function TableStandings({ standingsLeague }: TableProps) {
               key={`standing_table_${i}`}
               className={"w-full text-xs mb-2"}
             >
-              <Thead />
+              <Thead labels={theadLabels} />
               <tbody>
                 {standingGroup.map((el: Standing, j: number) => {
                   const rankinkDescriptionIndex = uniqueDescriptions.findIndex(

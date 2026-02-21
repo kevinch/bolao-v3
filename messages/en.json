@@ -119,5 +119,14 @@
     "previousGames": "Previous games",
     "total": "Total:",
     "loading": "loading..."
+  },
+  "standingsPage": {
+    "error": "Error while loading the standings.",
+    "title": "Standings",
+    "noStandings": "No standings available.",
+    "matchesPlayed": "mp",
+    "goalDifference": "+/-",
+    "points": "pts",
+    "form": "form"
   }
 }
