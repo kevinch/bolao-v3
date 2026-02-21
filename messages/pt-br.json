@@ -67,5 +67,38 @@
     "successTitle": "Sucesso",
     "successMessage": "O bolão foi criado com sucesso.",
     "errorMessage": "Houve um problema na criação."
+  },
+  "bolaoList": {
+    "activeBoloes": "Bolões ativos",
+    "pastBoloes": "Bolões passados",
+    "createBolao": "Criar bolão"
+  },
+  "bolaoCard": {
+    "bet": "Apostar",
+    "results": "Resultados",
+    "copyInviteLink": "Copiar link de convite",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "updateSuccessTitle": "Sucesso",
+    "updateSuccessMessage": "O bolão foi atualizado com sucesso.",
+    "updateErrorMessage": "Houve um problema na atualização.",
+    "deleteSuccessTitle": "Sucesso",
+    "deleteSuccessMessage": "O bolão foi excluído com sucesso.",
+    "deleteErrorMessage": "Houve um problema na exclusão.",
+    "copySuccessTitle": "Sucesso",
+    "copySuccessMessage": "O link foi copiado para a área de transferência.",
+    "copyErrorMessage": "Falha ao copiar o link para a área de transferência."
+  },
+  "bolaoEditModal": {
+    "title": "Editar bolão",
+    "description": "Atualize o nome do seu bolão",
+    "cancel": "Cancelar",
+    "saveChanges": "Salvar alterações"
+  },
+  "bolaoDeleteModal": {
+    "title": "Excluir bolão",
+    "description": "Tem certeza que deseja excluir este bolão? Esta ação não pode ser desfeita. Os palpites também serão excluídos.",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar"
   }
 }

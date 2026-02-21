@@ -67,5 +67,38 @@
     "successTitle": "Success",
     "successMessage": "The bolão was successfully created.",
     "errorMessage": "There was an issue with the creation."
+  },
+  "bolaoList": {
+    "activeBoloes": "Active bolões",
+    "pastBoloes": "Past bolões",
+    "createBolao": "Create bolão"
+  },
+  "bolaoCard": {
+    "bet": "Bet",
+    "results": "Results",
+    "copyInviteLink": "Copy invite link",
+    "edit": "Edit",
+    "delete": "Delete",
+    "updateSuccessTitle": "Success",
+    "updateSuccessMessage": "The bolão was successfully updated.",
+    "updateErrorMessage": "There was an issue with the update.",
+    "deleteSuccessTitle": "Success",
+    "deleteSuccessMessage": "The bolão was successfully deleted.",
+    "deleteErrorMessage": "There was an issue with the deletion.",
+    "copySuccessTitle": "Success",
+    "copySuccessMessage": "The link was copied to the clipboard.",
+    "copyErrorMessage": "Failed to copy the link to the clipboard."
+  },
+  "bolaoEditModal": {
+    "title": "Edit bolão",
+    "description": "Update your bolão's name",
+    "cancel": "Cancel",
+    "saveChanges": "Save changes"
+  },
+  "bolaoDeleteModal": {
+    "title": "Delete bolão",
+    "description": "Are you sure you want to delete this bolão? This action cannot be undone. Bets will be deleted as well.",
+    "cancel": "Cancel",
+    "confirm": "Confirm"
   }
 }

@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -37,13 +38,15 @@ export function BolaoEditModal({
   onNameChange,
   onSubmit,
 }: SettingsDialogProps) {
+  const t = useTranslations("bolaoEditModal")
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent onPointerDownOutside={handlePointerDownOutside}>
         <DialogHeader>
-          <DialogTitle>Edit bolão</DialogTitle>
+          <DialogTitle>{t("title")}</DialogTitle>
           <DialogDescription className="DialogDescription">
-            Update your bolão's name
+            {t("description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -56,10 +59,10 @@ export function BolaoEditModal({
         </div>
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="secondary">Cancel</Button>
+            <Button variant="secondary">{t("cancel")}</Button>
           </DialogClose>
           <Button type="submit" onClick={onSubmit}>
-            Save changes
+            {t("saveChanges")}
           </Button>
         </DialogFooter>
       </DialogContent>
