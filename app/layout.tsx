@@ -44,7 +44,7 @@ export default async function RootLayout({
     >
       <html lang={locale}>
         <body className={Plex.className}>
-          <NextIntlClientProvider messages={messages}>
+          <NextIntlClientProvider locale={locale} messages={messages}>
             <div className="container mx-auto px-4">
               <Header />
               {children}

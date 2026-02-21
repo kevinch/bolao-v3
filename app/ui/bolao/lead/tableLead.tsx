@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server"
 import clsx from "clsx"
 import { LeadData } from "@/app/lib/definitions"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -8,20 +9,22 @@ type TableProps = {
   data: LeadData[]
 }
 
-function TableLead({ data }: TableProps) {
+async function TableLead({ data }: TableProps) {
+  const t = await getTranslations("leadPage")
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Players lead</CardTitle>
+        <CardTitle>{t("title")}</CardTitle>
       </CardHeader>
       <CardContent>
         <table className="w-full text-xs">
           <thead className="uppercase">
             <tr>
               <th className={paddingVertical} />
-              <th className={`${paddingVertical} text-left pl-2`}>player</th>
-              <th className={`${paddingVertical} text-right`}>score</th>
-              <th className={`${paddingVertical} text-right pr-3`}>needs</th>
+              <th className={`${paddingVertical} text-left pl-2`}>{t("player")}</th>
+              <th className={`${paddingVertical} text-right`}>{t("score")}</th>
+              <th className={`${paddingVertical} text-right pr-3`}>{t("needs")}</th>
             </tr>
           </thead>
           <tbody className="f7">

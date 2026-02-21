@@ -128,5 +128,11 @@
     "goalDifference": "sg",
     "points": "pts",
     "form": "forma"
+  },
+  "leadPage": {
+    "title": "Liderança",
+    "player": "jogador",
+    "score": "pontos",
+    "needs": "faltam"
   }
 }

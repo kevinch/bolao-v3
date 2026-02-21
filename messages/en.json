@@ -128,5 +128,11 @@
     "goalDifference": "+/-",
     "points": "pts",
     "form": "form"
+  },
+  "leadPage": {
+    "title": "Players lead",
+    "player": "player",
+    "score": "score",
+    "needs": "needs"
   }
 }
