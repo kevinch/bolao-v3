@@ -40,5 +40,20 @@
     "switchTo": "Switch language",
     "en": "English",
     "pt-br": "Português (BR)"
+  },
+  "about": {
+    "title": "About",
+    "bolaoTitle": "Bolão?",
+    "bolaoDesc1": "In Brazil, a bolão is a betting pool between friends usually around soccer championships. It is very popular during the World Cup and other major tournaments. For the pronunciation check this",
+    "wikiPage": "wiki page",
+    "bolaoDesc2": "We started around 2016 doing them on a piece of paper and I decided to try a digital solution. It does not involve money even if most friends like to agree on a prize for the winner. But that's something the app does not deal with.",
+    "bolaoDesc3": "After much research of existing solutions, I came to the reality that none of them was what I expected in terms of UX, design and functionality. That's when I started writing code, around 2017. The app has been growing ever since, fixing mistakes, going through massive updates and design changes. This very version you are on is the major 3, or the third big iteration of the application.",
+    "whoTitle": "Who's behind this?",
+    "whoDesc": "This is a one person project. My name is Kevin and I'm a software developer and former web designer living in Rio de Janeiro - Brazil. If you really want to know more about me, head to",
+    "techTitle": "On the tech side",
+    "techDesc1": "As stated before, this is a web app, which means no Android or iOS extra app to download. Just open your browser at https://bolao.io. This allows me to constantly roll out changes without the users having to update their native apps.",
+    "techDesc2": "The app is built with NextJS, Typescript and React, hosted at Vercel and uses Postgres for the database. It uses Prismic.io for the headless CMS and Clerk for the auth management.",
+    "coverageTitle": "Soccer coverage",
+    "coverageDesc": "The app uses the API of <apiLink>api-football.com</apiLink> to get the latest fixtures and results. For now just a handful of leagues are available, but upon request more could be added. Feel free to reach me at <linkedinLink>LinkedIn</linkedinLink>."
   }
 }
