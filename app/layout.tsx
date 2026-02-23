@@ -23,6 +23,12 @@ export const metadata: Metadata = {
   description: "Free soccer bets with friends.",
 }
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#ffffff",
+}
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -43,6 +49,11 @@ export default async function RootLayout({
       }}
     >
       <html lang={locale}>
+        <head>
+          <link rel="preconnect" href="https://clerk.bolao.io" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+          <link rel="dns-prefetch" href="https://media.api-sports.io" />
+        </head>
         <body className={Plex.className}>
           <NextIntlClientProvider locale={locale} messages={messages}>
             <div className="container mx-auto px-4">
@@ -57,9 +68,9 @@ export default async function RootLayout({
         </body>
 
         <Script
-          async
           src="https://cloud.umami.is/script.js"
           data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
+          strategy="lazyOnload"
         />
       </html>
     </ClerkProvider>
