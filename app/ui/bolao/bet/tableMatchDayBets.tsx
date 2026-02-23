@@ -71,13 +71,13 @@ async function TableMatchDayBets({ fixtures, userBolaoId, bets }: TableProps) {
                     name={fixtureData.teams.home.name}
                   />
 
-                  <div>
+                  <div className="flex flex-col items-center">
                     <FixtureDate
                       date={fixtureData.fixture.date.toString()}
                       status={fixtureData.fixture.status}
                       locale={locale}
                     />
-                    <div style={{ display: "flex", flexDirection: "row" }}>
+                    <div className="flex flex-row">
                       <TeamScore
                         score={fixtureData.score}
                         goals={fixtureData.goals}
