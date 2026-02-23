@@ -1,5 +1,11 @@
 import { Season, FixtureData, Bet } from "./definitions"
 import { format } from "date-fns"
+import { enUS, ptBR } from "date-fns/locale"
+
+const dateFnsLocales: Record<string, typeof enUS> = {
+  en: enUS,
+  "pt-br": ptBR,
+}
 
 export const FOOTBALL_API_SPORTS = "https://v3.football.api-sports.io"
 
@@ -95,9 +101,13 @@ export const sortFixtures = (fixtures: FixtureData[]) => {
   })
 }
 
-export const formatDateFixtures = (dateString: string): string => {
+export const formatDateFixtures = (
+  dateString: string,
+  locale: string = "en"
+): string => {
   const date = new Date(dateString)
-  return format(date, "LLL do H:mm", {})
+  const dateFnsLocale = dateFnsLocales[locale] || enUS
+  return format(date, "LLL do H:mm", { locale: dateFnsLocale })
 }
 
 export const formatDateNews = (dateString: string) => {

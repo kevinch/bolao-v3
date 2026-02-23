@@ -1,0 +1,138 @@
+{
+  "common": {
+    "home": "Início",
+    "about": "Sobre",
+    "news": "Notícias",
+    "createBolao": "Criar bolão"
+  },
+  "home": {
+    "greeting": "E aí",
+    "hero": "Bolões de futebol com os amigos.",
+    "tagline1": "Compete com palpites.",
+    "tagline2": "Acompanhe resultados em tempo real.",
+    "tagline3": "Ganhe o direito de se gabar.",
+    "getStarted": "COMEÇAR",
+    "login": "ENTRAR",
+    "learnMore": "Saiba mais sobre o Bolão.io",
+    "whatIsBolao": "O que é um bolão?",
+    "whatIsBolaoDesc": "No Brasil, um bolão é uma aposta entre amigos sobre campeonatos de futebol. É muito popular durante a Copa do Mundo e grandes torneios. Este app facilita criar e gerenciar o seu próprio - sem dinheiro envolvido, apenas competição amigável!",
+    "howItWorks": "Como funciona",
+    "step1Title": "Crie ou Participe",
+    "step1Desc": "Comece um novo bolão para qualquer liga suportada ou entre com um link de convite.",
+    "step2Title": "Faça Palpites",
+    "step2Desc": "Preveja resultados das partidas antes de começarem. Atualize a qualquer momento antes do início.",
+    "step3Title": "Acompanhe & Vença",
+    "step3Desc": "Veja o placar atualizar conforme os jogos terminam. Veja quem é o campeão!",
+    "whyBolao": "Por que Bolão.io?",
+    "featureLeagues": "Múltiplas Ligas",
+    "featureLeaguesDesc": "Principais ligas de futebol com atualizações automáticas de jogos",
+    "featureEverywhere": "Funciona em Qualquer Lugar",
+    "featureEverywhereDesc": "Sem app para baixar - funciona em qualquer dispositivo com navegador",
+    "featureFree": "Completamente Grátis",
+    "featureFreeDesc": "Sem assinaturas, sem custos ocultos, sem dinheiro envolvido",
+    "featureRealtime": "Atualizações em Tempo Real",
+    "featureRealtimeDesc": "Placares e classificações atualizam automaticamente quando os jogos terminam",
+    "readyToStart": "Pronto para começar?",
+    "createFirstBolao": "Crie seu primeiro bolão em minutos.",
+    "getStartedFree": "COMEÇAR DE GRAÇA"
+  },
+  "language": {
+    "switchTo": "Trocar idioma",
+    "en": "English",
+    "pt-br": "Português (BR)"
+  },
+  "about": {
+    "title": "Sobre",
+    "bolaoTitle": "Bolão?",
+    "bolaoDesc1": "No Brasil, um bolão é uma aposta entre amigos geralmente sobre campeonatos de futebol. É muito popular durante a Copa do Mundo e outros grandes torneios. Para a pronúncia, confira esta",
+    "wikiPage": "página wiki",
+    "bolaoDesc2": "Começamos por volta de 2016 fazendo em papel e decidi tentar uma solução digital. Não envolve dinheiro, mesmo que a maioria dos amigos goste de combinar um prêmio para o vencedor. Mas isso é algo que o app não gerencia.",
+    "bolaoDesc3": "Depois de muita pesquisa sobre soluções existentes, cheguei à realidade de que nenhuma era o que eu esperava em termos de UX, design e funcionalidade. Foi quando comecei a programar, por volta de 2017. O app tem crescido desde então, corrigindo erros, passando por atualizações massivas e mudanças de design. Esta versão em que você está é a major 3, ou a terceira grande iteração da aplicação.",
+    "whoTitle": "Quem está por trás disso?",
+    "whoDesc": "Este é um projeto de uma pessoa só. Meu nome é Kevin e sou desenvolvedor de software e ex-web designer morando no Rio de Janeiro - Brasil. Se você realmente quer saber mais sobre mim, acesse",
+    "techTitle": "No lado técnico",
+    "techDesc1": "Como dito antes, este é um web app, o que significa que não há app extra para Android ou iOS para baixar. Basta abrir seu navegador em https://bolao.io. Isso me permite lançar mudanças constantemente sem que os usuários precisem atualizar seus apps nativos.",
+    "techDesc2": "O app é construído com NextJS, Typescript e React, hospedado na Vercel e usa Postgres para o banco de dados. Usa Prismic.io para o CMS headless e Clerk para gerenciamento de autenticação.",
+    "coverageTitle": "Cobertura de futebol",
+    "coverageDesc": "O app usa a API do <apiLink>api-football.com</apiLink> para obter os últimos jogos e resultados. Por enquanto, apenas algumas ligas estão disponíveis, mas mediante solicitação mais podem ser adicionadas. Fique à vontade para me contatar no <linkedinLink>LinkedIn</linkedinLink>."
+  },
+  "createBolao": {
+    "title": "Criar bolão",
+    "nameLabel": "Nome:",
+    "namePlaceholder": "Escolha um nome para seu bolão",
+    "competitionLabel": "Competição:",
+    "competitionPlaceholder": "Selecione uma competição",
+    "submitButton": "Criar",
+    "loadingButton": "Aguarde",
+    "successTitle": "Sucesso",
+    "successMessage": "O bolão foi criado com sucesso.",
+    "errorMessage": "Houve um problema na criação."
+  },
+  "bolaoList": {
+    "activeBoloes": "Bolões ativos",
+    "pastBoloes": "Bolões passados",
+    "createBolao": "Criar bolão"
+  },
+  "bolaoCard": {
+    "bet": "Apostar",
+    "results": "Resultados",
+    "copyInviteLink": "Copiar link de convite",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "updateSuccessTitle": "Sucesso",
+    "updateSuccessMessage": "O bolão foi atualizado com sucesso.",
+    "updateErrorMessage": "Houve um problema na atualização.",
+    "deleteSuccessTitle": "Sucesso",
+    "deleteSuccessMessage": "O bolão foi excluído com sucesso.",
+    "deleteErrorMessage": "Houve um problema na exclusão.",
+    "copySuccessTitle": "Sucesso",
+    "copySuccessMessage": "O link foi copiado para a área de transferência.",
+    "copyErrorMessage": "Falha ao copiar o link para a área de transferência."
+  },
+  "bolaoEditModal": {
+    "title": "Editar bolão",
+    "description": "Atualize o nome do seu bolão",
+    "cancel": "Cancelar",
+    "saveChanges": "Salvar alterações"
+  },
+  "bolaoDeleteModal": {
+    "title": "Excluir bolão",
+    "description": "Tem certeza que deseja excluir este bolão? Esta ação não pode ser desfeita. Os palpites também serão excluídos.",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar"
+  },
+  "bolaoLinks": {
+    "bet": "APOSTAR",
+    "standings": "CLASSIFICAÇÃO",
+    "results": "RESULTADOS",
+    "lead": "LIDERANÇA"
+  },
+  "betPage": {
+    "errorMissingUser": "Erro ao carregar a página de apostas. Usuário não encontrado.",
+    "errorNoData": "Erro ao carregar a página de apostas. Sem dados.",
+    "nextGames": "Próximos jogos",
+    "previousGames": "Jogos anteriores",
+    "loading": "carregando..."
+  },
+  "resultsPage": {
+    "nextGames": "Próximos jogos",
+    "previousGames": "Jogos anteriores",
+    "total": "Total:",
+    "loading": "carregando..."
+  },
+  "standingsPage": {
+    "error": "Erro ao carregar a classificação.",
+    "title": "Classificação",
+    "noStandings": "Classificação não disponível.",
+    "matchesPlayed": "j",
+    "goalDifference": "sg",
+    "points": "pts",
+    "form": "forma"
+  },
+  "leadPage": {
+    "title": "Liderança",
+    "player": "jogador",
+    "score": "pontos",
+    "needs": "faltam"
+  }
+}

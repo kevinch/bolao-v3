@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { getTranslations } from "next-intl/server"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { fetchBoloesByUserId } from "@/app/lib/data"
@@ -14,6 +15,7 @@ async function getData(userId: string) {
 
 async function BoloesList() {
   const { userId }: { userId: string | null } = await auth() // could go to context?
+  const t = await getTranslations("bolaoList")
 
   if (!userId) {
     return
@@ -29,7 +31,7 @@ async function BoloesList() {
     return (
       <div className="flex items-center flex-col space-y-8 uppercase">
         <Button asChild size="lg">
-          <Link href="/bolao/create">Create bolão</Link>
+          <Link href="/bolao/create">{t("createBolao")}</Link>
         </Button>
       </div>
     )
@@ -69,12 +71,12 @@ async function BoloesList() {
     <Tabs defaultValue="account" className="">
       <div className="flex justify-between mb-4">
         <TabsList>
-          <TabsTrigger value="account">Active bolões</TabsTrigger>
-          <TabsTrigger value="password">Past bolões</TabsTrigger>
+          <TabsTrigger value="account">{t("activeBoloes")}</TabsTrigger>
+          <TabsTrigger value="password">{t("pastBoloes")}</TabsTrigger>
         </TabsList>
 
         <Button asChild size="sm">
-          <Link href="/bolao/create">Create bolão</Link>
+          <Link href="/bolao/create">{t("createBolao")}</Link>
         </Button>
       </div>
       <TabsContent value="account">

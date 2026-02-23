@@ -1,0 +1,138 @@
+{
+  "common": {
+    "home": "Home",
+    "about": "About",
+    "news": "News",
+    "createBolao": "Create bolão"
+  },
+  "home": {
+    "greeting": "Hey",
+    "hero": "Soccer betting pools with friends.",
+    "tagline1": "Compete on predictions.",
+    "tagline2": "Track results in real-time.",
+    "tagline3": "Win bragging rights.",
+    "getStarted": "GET STARTED",
+    "login": "LOGIN",
+    "learnMore": "Learn more about Bolão.io",
+    "whatIsBolao": "What is a bolão?",
+    "whatIsBolaoDesc": "In Brazil, a bolão is a betting pool between friends around soccer championships. It's very popular during the World Cup and major tournaments. This app makes it easy to create and manage your own - no money involved, just friendly competition!",
+    "howItWorks": "How it works",
+    "step1Title": "Create or Join",
+    "step1Desc": "Start a new bolão for any supported league or join one with an invite link.",
+    "step2Title": "Make Predictions",
+    "step2Desc": "Predict match results before they start. Update anytime before kickoff.",
+    "step3Title": "Track & Win",
+    "step3Desc": "Watch the leaderboard update as matches finish. See who reigns supreme!",
+    "whyBolao": "Why Bolão.io?",
+    "featureLeagues": "Multiple Leagues",
+    "featureLeaguesDesc": "Major soccer leagues supported with automatic fixture updates",
+    "featureEverywhere": "Works Everywhere",
+    "featureEverywhereDesc": "No app to download - works on any device with a browser",
+    "featureFree": "Completely Free",
+    "featureFreeDesc": "No subscriptions, no hidden costs, no money involved",
+    "featureRealtime": "Real-Time Updates",
+    "featureRealtimeDesc": "Scores and standings refresh automatically as games end",
+    "readyToStart": "Ready to start?",
+    "createFirstBolao": "Create your first bolão in minutes.",
+    "getStartedFree": "GET STARTED FOR FREE"
+  },
+  "language": {
+    "switchTo": "Switch language",
+    "en": "English",
+    "pt-br": "Português (BR)"
+  },
+  "about": {
+    "title": "About",
+    "bolaoTitle": "Bolão?",
+    "bolaoDesc1": "In Brazil, a bolão is a betting pool between friends usually around soccer championships. It is very popular during the World Cup and other major tournaments. For the pronunciation check this",
+    "wikiPage": "wiki page",
+    "bolaoDesc2": "We started around 2016 doing them on a piece of paper and I decided to try a digital solution. It does not involve money even if most friends like to agree on a prize for the winner. But that's something the app does not deal with.",
+    "bolaoDesc3": "After much research of existing solutions, I came to the reality that none of them was what I expected in terms of UX, design and functionality. That's when I started writing code, around 2017. The app has been growing ever since, fixing mistakes, going through massive updates and design changes. This very version you are on is the major 3, or the third big iteration of the application.",
+    "whoTitle": "Who's behind this?",
+    "whoDesc": "This is a one person project. My name is Kevin and I'm a software developer and former web designer living in Rio de Janeiro - Brazil. If you really want to know more about me, head to",
+    "techTitle": "On the tech side",
+    "techDesc1": "As stated before, this is a web app, which means no Android or iOS extra app to download. Just open your browser at https://bolao.io. This allows me to constantly roll out changes without the users having to update their native apps.",
+    "techDesc2": "The app is built with NextJS, Typescript and React, hosted at Vercel and uses Postgres for the database. It uses Prismic.io for the headless CMS and Clerk for the auth management.",
+    "coverageTitle": "Soccer coverage",
+    "coverageDesc": "The app uses the API of <apiLink>api-football.com</apiLink> to get the latest fixtures and results. For now just a handful of leagues are available, but upon request more could be added. Feel free to reach me at <linkedinLink>LinkedIn</linkedinLink>."
+  },
+  "createBolao": {
+    "title": "Create bolão",
+    "nameLabel": "Name:",
+    "namePlaceholder": "Choose a name for your bolão",
+    "competitionLabel": "Competition:",
+    "competitionPlaceholder": "Select a competition",
+    "submitButton": "Create",
+    "loadingButton": "Please wait",
+    "successTitle": "Success",
+    "successMessage": "The bolão was successfully created.",
+    "errorMessage": "There was an issue with the creation."
+  },
+  "bolaoList": {
+    "activeBoloes": "Active bolões",
+    "pastBoloes": "Past bolões",
+    "createBolao": "Create bolão"
+  },
+  "bolaoCard": {
+    "bet": "Bet",
+    "results": "Results",
+    "copyInviteLink": "Copy invite link",
+    "edit": "Edit",
+    "delete": "Delete",
+    "updateSuccessTitle": "Success",
+    "updateSuccessMessage": "The bolão was successfully updated.",
+    "updateErrorMessage": "There was an issue with the update.",
+    "deleteSuccessTitle": "Success",
+    "deleteSuccessMessage": "The bolão was successfully deleted.",
+    "deleteErrorMessage": "There was an issue with the deletion.",
+    "copySuccessTitle": "Success",
+    "copySuccessMessage": "The link was copied to the clipboard.",
+    "copyErrorMessage": "Failed to copy the link to the clipboard."
+  },
+  "bolaoEditModal": {
+    "title": "Edit bolão",
+    "description": "Update your bolão's name",
+    "cancel": "Cancel",
+    "saveChanges": "Save changes"
+  },
+  "bolaoDeleteModal": {
+    "title": "Delete bolão",
+    "description": "Are you sure you want to delete this bolão? This action cannot be undone. Bets will be deleted as well.",
+    "cancel": "Cancel",
+    "confirm": "Confirm"
+  },
+  "bolaoLinks": {
+    "bet": "BET",
+    "standings": "STANDINGS",
+    "results": "RESULTS",
+    "lead": "LEAD"
+  },
+  "betPage": {
+    "errorMissingUser": "Error while loading the bet page. Missing userid.",
+    "errorNoData": "Error while loading the bet page. No data.",
+    "nextGames": "Next games",
+    "previousGames": "Previous games",
+    "loading": "loading..."
+  },
+  "resultsPage": {
+    "nextGames": "Next games",
+    "previousGames": "Previous games",
+    "total": "Total:",
+    "loading": "loading..."
+  },
+  "standingsPage": {
+    "error": "Error while loading the standings.",
+    "title": "Standings",
+    "noStandings": "No standings available.",
+    "matchesPlayed": "mp",
+    "goalDifference": "+/-",
+    "points": "pts",
+    "form": "form"
+  },
+  "leadPage": {
+    "title": "Players lead",
+    "player": "player",
+    "score": "score",
+    "needs": "needs"
+  }
+}

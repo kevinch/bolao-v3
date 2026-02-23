@@ -20,6 +20,12 @@ vi.mock("next/image", () => ({
   }) => <img src={src} alt={alt} {...props} />,
 }))
 
+// Helper to render async server component
+async function renderTableStandings(props: { standingsLeague: StandingsLeague }) {
+  const Component = await TableStandings(props)
+  return render(Component)
+}
+
 describe("TableStandings", () => {
   const mockTeam = {
     id: 1,
@@ -87,30 +93,30 @@ describe("TableStandings", () => {
   })
 
   describe("Empty States", () => {
-    it("should render empty state when standings is empty array", () => {
+    it("should render empty state when standings is empty array", async () => {
       const mockStandingsLeague = createMockStandingsLeague([])
-      render(<TableStandings standingsLeague={mockStandingsLeague} />)
+      await renderTableStandings({ standingsLeague: mockStandingsLeague })
 
       expect(screen.getByText("Standings")).toBeInTheDocument()
       expect(screen.getByText("No standings available.")).toBeInTheDocument()
     })
 
-    it("should render empty state when standings is undefined", () => {
+    it("should render empty state when standings is undefined", async () => {
       const mockStandingsLeague = {
         ...createMockStandingsLeague([]),
         standings: undefined as any,
       }
-      render(<TableStandings standingsLeague={mockStandingsLeague} />)
+      await renderTableStandings({ standingsLeague: mockStandingsLeague })
 
       expect(screen.getByText("No standings available.")).toBeInTheDocument()
     })
   })
 
   describe("Table Structure", () => {
-    it("should render table headers correctly", () => {
+    it("should render table headers correctly", async () => {
       const standing = createMockStanding()
       const mockStandingsLeague = createMockStandingsLeague([[standing]])
-      render(<TableStandings standingsLeague={mockStandingsLeague} />)
+      await renderTableStandings({ standingsLeague: mockStandingsLeague })
 
       // Headers are lowercase but styled with uppercase CSS class
       expect(screen.getByText("mp")).toBeInTheDocument()
@@ -119,10 +125,10 @@ describe("TableStandings", () => {
       expect(screen.getByText("form")).toBeInTheDocument()
     })
 
-    it("should render a single standing correctly", () => {
+    it("should render a single standing correctly", async () => {
       const standing = createMockStanding()
       const mockStandingsLeague = createMockStandingsLeague([[standing]])
-      render(<TableStandings standingsLeague={mockStandingsLeague} />)
+      await renderTableStandings({ standingsLeague: mockStandingsLeague })
 
       expect(screen.getByText("Manchester City")).toBeInTheDocument()
       expect(screen.getByText("1")).toBeInTheDocument() // rank
@@ -131,10 +137,10 @@ describe("TableStandings", () => {
       expect(screen.getByText("30")).toBeInTheDocument() // points
     })
 
-    it("should render team logo with correct attributes", () => {
+    it("should render team logo with correct attributes", async () => {
       const standing = createMockStanding()
       const mockStandingsLeague = createMockStandingsLeague([[standing]])
-      render(<TableStandings standingsLeague={mockStandingsLeague} />)
+      await renderTableStandings({ standingsLeague: mockStandingsLeague })
 
       const logo = screen.getByAltText("Manchester City's logo")
       expect(logo).toBeInTheDocument()
@@ -143,7 +149,7 @@ describe("TableStandings", () => {
   })
 
   describe("Multiple Teams", () => {
-    it("should render multiple teams in a single group", () => {
+    it("should render multiple teams in a single group", async () => {
       const standings = [
         createMockStanding({
           rank: 1,
@@ -162,14 +168,14 @@ describe("TableStandings", () => {
         }),
       ]
       const mockStandingsLeague = createMockStandingsLeague([standings])
-      render(<TableStandings standingsLeague={mockStandingsLeague} />)
+      await renderTableStandings({ standingsLeague: mockStandingsLeague })
 
       expect(screen.getByText("Team A")).toBeInTheDocument()
       expect(screen.getByText("Team B")).toBeInTheDocument()
       expect(screen.getByText("Team C")).toBeInTheDocument()
     })
 
-    it("should render multiple groups", () => {
+    it("should render multiple groups", async () => {
       const group1 = [
         createMockStanding({
           rank: 1,
@@ -191,7 +197,7 @@ describe("TableStandings", () => {
         }),
       ]
       const mockStandingsLeague = createMockStandingsLeague([group1, group2])
-      render(<TableStandings standingsLeague={mockStandingsLeague} />)
+      await renderTableStandings({ standingsLeague: mockStandingsLeague })
 
       expect(screen.getByText("Group A Team 1")).toBeInTheDocument()
       expect(screen.getByText("Group A Team 2")).toBeInTheDocument()
@@ -199,7 +205,7 @@ describe("TableStandings", () => {
       expect(screen.getByText("Group B Team 2")).toBeInTheDocument()
     })
 
-    it("should apply alternating background colors based on rank", () => {
+    it("should apply alternating background colors based on rank", async () => {
       const standings = [
         createMockStanding({
           rank: 1,
@@ -215,9 +221,7 @@ describe("TableStandings", () => {
         }),
       ]
       const mockStandingsLeague = createMockStandingsLeague([standings])
-      const { container } = render(
-        <TableStandings standingsLeague={mockStandingsLeague} />
-      )
+      const { container } = await renderTableStandings({ standingsLeague: mockStandingsLeague })
 
       const rows = container.querySelectorAll("tbody tr")
       expect(rows[0]).toHaveClass("bg-slate-50") // rank 1 (odd)
@@ -227,7 +231,7 @@ describe("TableStandings", () => {
   })
 
   describe("Goal Difference Calculation", () => {
-    it("should calculate and display positive goal difference", () => {
+    it("should calculate and display positive goal difference", async () => {
       const standing = createMockStanding({
         all: {
           played: 10,
@@ -238,12 +242,12 @@ describe("TableStandings", () => {
         },
       })
       const mockStandingsLeague = createMockStandingsLeague([[standing]])
-      render(<TableStandings standingsLeague={mockStandingsLeague} />)
+      await renderTableStandings({ standingsLeague: mockStandingsLeague })
 
       expect(screen.getByText("15")).toBeInTheDocument() // 25 - 10
     })
 
-    it("should calculate and display negative goal difference", () => {
+    it("should calculate and display negative goal difference", async () => {
       const standing = createMockStanding({
         all: {
           played: 10,
@@ -254,12 +258,12 @@ describe("TableStandings", () => {
         },
       })
       const mockStandingsLeague = createMockStandingsLeague([[standing]])
-      render(<TableStandings standingsLeague={mockStandingsLeague} />)
+      await renderTableStandings({ standingsLeague: mockStandingsLeague })
 
       expect(screen.getByText("-15")).toBeInTheDocument() // 10 - 25
     })
 
-    it("should display zero goal difference", () => {
+    it("should display zero goal difference", async () => {
       const standing = createMockStanding({
         all: {
           played: 10,
@@ -270,55 +274,47 @@ describe("TableStandings", () => {
         },
       })
       const mockStandingsLeague = createMockStandingsLeague([[standing]])
-      render(<TableStandings standingsLeague={mockStandingsLeague} />)
+      await renderTableStandings({ standingsLeague: mockStandingsLeague })
 
       expect(screen.getByText("0")).toBeInTheDocument() // 15 - 15
     })
   })
 
   describe("Form Display", () => {
-    it("should render form with wins (W) as green check icons", () => {
+    it("should render form with wins (W) as green check icons", async () => {
       const standing = createMockStanding({ form: "WWW" })
       const mockStandingsLeague = createMockStandingsLeague([[standing]])
-      const { container } = render(
-        <TableStandings standingsLeague={mockStandingsLeague} />
-      )
+      const { container } = await renderTableStandings({ standingsLeague: mockStandingsLeague })
 
       // Should have 3 CheckCircledIcon elements (rendered by Radix UI with fill="green")
       const checkIcons = container.querySelectorAll('[fill="green"]')
       expect(checkIcons).toHaveLength(3)
     })
 
-    it("should render form with losses (L) as red cross icons", () => {
+    it("should render form with losses (L) as red cross icons", async () => {
       const standing = createMockStanding({ form: "LLL" })
       const mockStandingsLeague = createMockStandingsLeague([[standing]])
-      const { container } = render(
-        <TableStandings standingsLeague={mockStandingsLeague} />
-      )
+      const { container } = await renderTableStandings({ standingsLeague: mockStandingsLeague })
 
       // Should have 3 CrossCircledIcon elements (rendered by Radix UI with fill="red")
       const crossIcons = container.querySelectorAll('[fill="red"]')
       expect(crossIcons).toHaveLength(3)
     })
 
-    it("should render form with draws (D) as minus icons", () => {
+    it("should render form with draws (D) as minus icons", async () => {
       const standing = createMockStanding({ form: "DDD" })
       const mockStandingsLeague = createMockStandingsLeague([[standing]])
-      const { container } = render(
-        <TableStandings standingsLeague={mockStandingsLeague} />
-      )
+      const { container } = await renderTableStandings({ standingsLeague: mockStandingsLeague })
 
       // MinusCircledIcon doesn't have a color attribute, so check for SVG elements
       const formCell = container.querySelector("td:last-child span")
       expect(formCell?.children).toHaveLength(3)
     })
 
-    it("should render mixed form results in reverse order", () => {
+    it("should render mixed form results in reverse order", async () => {
       const standing = createMockStanding({ form: "WDLWD" })
       const mockStandingsLeague = createMockStandingsLeague([[standing]])
-      const { container } = render(
-        <TableStandings standingsLeague={mockStandingsLeague} />
-      )
+      const { container } = await renderTableStandings({ standingsLeague: mockStandingsLeague })
 
       // Form should be displayed in reverse: DWLDW
       // Should have 2 wins, 2 draws, 1 loss
@@ -328,21 +324,19 @@ describe("TableStandings", () => {
       expect(crossIcons).toHaveLength(1)
     })
 
-    it("should handle empty form string", () => {
+    it("should handle empty form string", async () => {
       const standing = createMockStanding({ form: "" })
       const mockStandingsLeague = createMockStandingsLeague([[standing]])
-      const { container } = render(
-        <TableStandings standingsLeague={mockStandingsLeague} />
-      )
+      const { container } = await renderTableStandings({ standingsLeague: mockStandingsLeague })
 
       const formCell = container.querySelector("td:last-child span")
       expect(formCell?.children).toHaveLength(0)
     })
 
-    it("should handle undefined form", () => {
+    it("should handle undefined form", async () => {
       const standing = createMockStanding({ form: undefined as any })
       const mockStandingsLeague = createMockStandingsLeague([[standing]])
-      render(<TableStandings standingsLeague={mockStandingsLeague} />)
+      await renderTableStandings({ standingsLeague: mockStandingsLeague })
 
       // Should not crash
       expect(screen.getByText("Manchester City")).toBeInTheDocument()
@@ -350,35 +344,31 @@ describe("TableStandings", () => {
   })
 
   describe("Descriptions and Colors", () => {
-    it("should apply blue color for promotion descriptions", () => {
+    it("should apply blue color for promotion descriptions", async () => {
       const standing = createMockStanding({
         rank: 1,
         description: "Promotion - Champions League (Group Stage)",
       })
       const mockStandingsLeague = createMockStandingsLeague([[standing]])
-      const { container } = render(
-        <TableStandings standingsLeague={mockStandingsLeague} />
-      )
+      const { container } = await renderTableStandings({ standingsLeague: mockStandingsLeague })
 
       const rankCell = container.querySelector("td:first-child")
       expect(rankCell).toHaveClass("text-blue-500")
     })
 
-    it("should apply red color for relegation descriptions", () => {
+    it("should apply red color for relegation descriptions", async () => {
       const standing = createMockStanding({
         rank: 18,
         description: "Relegation",
       })
       const mockStandingsLeague = createMockStandingsLeague([[standing]])
-      const { container } = render(
-        <TableStandings standingsLeague={mockStandingsLeague} />
-      )
+      const { container } = await renderTableStandings({ standingsLeague: mockStandingsLeague })
 
       const rankCell = container.querySelector("td:first-child")
       expect(rankCell).toHaveClass("text-red-500")
     })
 
-    it("should apply different colors for different descriptions", () => {
+    it("should apply different colors for different descriptions", async () => {
       const standings = [
         createMockStanding({
           rank: 1,
@@ -397,9 +387,7 @@ describe("TableStandings", () => {
         }),
       ]
       const mockStandingsLeague = createMockStandingsLeague([standings])
-      const { container } = render(
-        <TableStandings standingsLeague={mockStandingsLeague} />
-      )
+      const { container } = await renderTableStandings({ standingsLeague: mockStandingsLeague })
 
       const rankCells = container.querySelectorAll("td:first-child")
       expect(rankCells[0]).toHaveClass("text-blue-500") // First unique description
@@ -407,7 +395,7 @@ describe("TableStandings", () => {
       expect(rankCells[2]).toHaveClass("text-green-500") // Third unique description
     })
 
-    it("should render legend with all unique descriptions", () => {
+    it("should render legend with all unique descriptions", async () => {
       const standings = [
         createMockStanding({
           rank: 1,
@@ -426,7 +414,7 @@ describe("TableStandings", () => {
         }),
       ]
       const mockStandingsLeague = createMockStandingsLeague([standings])
-      render(<TableStandings standingsLeague={mockStandingsLeague} />)
+      await renderTableStandings({ standingsLeague: mockStandingsLeague })
 
       // Should only have 2 unique descriptions in legend
       expect(
@@ -441,26 +429,22 @@ describe("TableStandings", () => {
       expect(legendItems).toHaveLength(1)
     })
 
-    it("should not render legend items for teams without descriptions", () => {
+    it("should not render legend items for teams without descriptions", async () => {
       const standing = createMockStanding({ description: "" })
       const mockStandingsLeague = createMockStandingsLeague([[standing]])
-      const { container } = render(
-        <TableStandings standingsLeague={mockStandingsLeague} />
-      )
+      const { container } = await renderTableStandings({ standingsLeague: mockStandingsLeague })
 
       // Legend container should exist but be empty
       const legendContainer = container.querySelector(".px-4.py-2")
       expect(legendContainer?.children).toHaveLength(0)
     })
 
-    it("should apply correct background colors in legend", () => {
+    it("should apply correct background colors in legend", async () => {
       const standing = createMockStanding({
         description: "Relegation",
       })
       const mockStandingsLeague = createMockStandingsLeague([[standing]])
-      const { container } = render(
-        <TableStandings standingsLeague={mockStandingsLeague} />
-      )
+      const { container } = await renderTableStandings({ standingsLeague: mockStandingsLeague })
 
       const legendSquare = container.querySelector(".bg-red-500")
       expect(legendSquare).toBeInTheDocument()
@@ -468,7 +452,7 @@ describe("TableStandings", () => {
   })
 
   describe("Multiple Groups with Descriptions", () => {
-    it("should collect unique descriptions from all groups", () => {
+    it("should collect unique descriptions from all groups", async () => {
       const group1 = [
         createMockStanding({
           rank: 1,
@@ -489,7 +473,7 @@ describe("TableStandings", () => {
         }),
       ]
       const mockStandingsLeague = createMockStandingsLeague([group1, group2])
-      render(<TableStandings standingsLeague={mockStandingsLeague} />)
+      await renderTableStandings({ standingsLeague: mockStandingsLeague })
 
       expect(screen.getByText("Group Winner")).toBeInTheDocument()
       expect(screen.getByText("Runner-up")).toBeInTheDocument()
@@ -503,7 +487,7 @@ describe("TableStandings", () => {
   })
 
   describe("Edge Cases", () => {
-    it("should handle team names with special characters", () => {
+    it("should handle team names with special characters", async () => {
       const standing = createMockStanding({
         team: {
           id: 1,
@@ -512,14 +496,14 @@ describe("TableStandings", () => {
         },
       })
       const mockStandingsLeague = createMockStandingsLeague([[standing]])
-      render(<TableStandings standingsLeague={mockStandingsLeague} />)
+      await renderTableStandings({ standingsLeague: mockStandingsLeague })
 
       expect(
         screen.getByText("Team with 'quotes' & symbols")
       ).toBeInTheDocument()
     })
 
-    it("should handle very long team names", () => {
+    it("should handle very long team names", async () => {
       const standing = createMockStanding({
         team: {
           id: 1,
@@ -528,7 +512,7 @@ describe("TableStandings", () => {
         },
       })
       const mockStandingsLeague = createMockStandingsLeague([[standing]])
-      render(<TableStandings standingsLeague={mockStandingsLeague} />)
+      await renderTableStandings({ standingsLeague: mockStandingsLeague })
 
       expect(
         screen.getByText(
@@ -537,7 +521,7 @@ describe("TableStandings", () => {
       ).toBeInTheDocument()
     })
 
-    it("should handle zero points and zero games played", () => {
+    it("should handle zero points and zero games played", async () => {
       const standing = createMockStanding({
         points: 0,
         all: {
@@ -549,13 +533,13 @@ describe("TableStandings", () => {
         },
       })
       const mockStandingsLeague = createMockStandingsLeague([[standing]])
-      render(<TableStandings standingsLeague={mockStandingsLeague} />)
+      await renderTableStandings({ standingsLeague: mockStandingsLeague })
 
       const zeroes = screen.getAllByText("0")
       expect(zeroes.length).toBeGreaterThan(0)
     })
 
-    it("should handle large numbers for goals", () => {
+    it("should handle large numbers for goals", async () => {
       const standing = createMockStanding({
         all: {
           played: 38,
@@ -566,7 +550,7 @@ describe("TableStandings", () => {
         },
       })
       const mockStandingsLeague = createMockStandingsLeague([[standing]])
-      render(<TableStandings standingsLeague={mockStandingsLeague} />)
+      await renderTableStandings({ standingsLeague: mockStandingsLeague })
 
       expect(screen.getByText("80")).toBeInTheDocument() // Goal difference: 100 - 20
     })

@@ -47,6 +47,16 @@ vi.mock("@/app/ui/bolao/fixtureDate", () => ({
   ),
 }))
 
+// Helper to render async server component
+async function renderTableMatchDayBets(props: {
+  fixtures: FixtureData[]
+  userBolaoId: string
+  bets: Bet[]
+}) {
+  const Component = await TableMatchDayBets(props)
+  return render(Component)
+}
+
 describe("TableMatchDayBets", () => {
   const mockFixture: FixtureData = {
     fixture: {
@@ -106,26 +116,26 @@ describe("TableMatchDayBets", () => {
   }
 
   describe("Component Rendering", () => {
-    it("should render the component with fixtures", () => {
-      render(<TableMatchDayBets {...defaultProps} />)
+    it("should render the component with fixtures", async () => {
+      await renderTableMatchDayBets(defaultProps)
 
       expect(screen.getByText("Next games")).toBeInTheDocument()
     })
 
-    it("should render Card components", () => {
-      const { container } = render(<TableMatchDayBets {...defaultProps} />)
+    it("should render Card components", async () => {
+      const { container } = await renderTableMatchDayBets(defaultProps)
 
       expect(container.querySelector(".rounded-xl")).toBeInTheDocument()
     })
 
-    it("should display title based on fixture status", () => {
-      render(<TableMatchDayBets {...defaultProps} />)
+    it("should display title based on fixture status", async () => {
+      await renderTableMatchDayBets(defaultProps)
 
       // Status "NS" is in STATUSES_OPEN_TO_PLAY, so should show "Next games"
       expect(screen.getByText("Next games")).toBeInTheDocument()
     })
 
-    it("should show 'Previous games' for finished fixtures", () => {
+    it("should show 'Previous games' for finished fixtures", async () => {
       const finishedFixture = {
         ...mockFixture,
         fixture: {
@@ -134,22 +144,20 @@ describe("TableMatchDayBets", () => {
         },
       }
 
-      render(
-        <TableMatchDayBets {...defaultProps} fixtures={[finishedFixture]} />
-      )
+      await renderTableMatchDayBets({ ...defaultProps, fixtures: [finishedFixture] })
 
       expect(screen.getByText("Previous games")).toBeInTheDocument()
     })
 
-    it("should render loading state when fixtures is falsy", () => {
-      render(<TableMatchDayBets {...defaultProps} fixtures={null as any} />)
+    it("should render loading state when fixtures is falsy", async () => {
+      await renderTableMatchDayBets({ ...defaultProps, fixtures: null as any })
 
       expect(screen.getByText("loading...")).toBeInTheDocument()
     })
   })
 
   describe("Multiple Fixtures", () => {
-    it("should render multiple fixtures", () => {
+    it("should render multiple fixtures", async () => {
       const fixture2: FixtureData = {
         ...mockFixture,
         fixture: { ...mockFixture.fixture, id: 67890 },
@@ -169,18 +177,16 @@ describe("TableMatchDayBets", () => {
         },
       }
 
-      render(
-        <TableMatchDayBets
-          {...defaultProps}
-          fixtures={[mockFixture, fixture2]}
-        />
-      )
+      await renderTableMatchDayBets({
+        ...defaultProps,
+        fixtures: [mockFixture, fixture2],
+      })
 
       expect(screen.getByText("Manchester United")).toBeInTheDocument()
       expect(screen.getByText("Chelsea")).toBeInTheDocument()
     })
 
-    it("should apply alternating background colors", () => {
+    it("should apply alternating background colors", async () => {
       const fixture2: FixtureData = {
         ...mockFixture,
         fixture: { ...mockFixture.fixture, id: 67890 },
@@ -191,12 +197,10 @@ describe("TableMatchDayBets", () => {
         fixture: { ...mockFixture.fixture, id: 11111 },
       }
 
-      const { container } = render(
-        <TableMatchDayBets
-          {...defaultProps}
-          fixtures={[mockFixture, fixture2, fixture3]}
-        />
-      )
+      const { container } = await renderTableMatchDayBets({
+        ...defaultProps,
+        fixtures: [mockFixture, fixture2, fixture3],
+      })
 
       const fixtureContainers = container.querySelectorAll(".py-4")
 
@@ -212,28 +216,28 @@ describe("TableMatchDayBets", () => {
   })
 
   describe("ButtonsBet Integration", () => {
-    it("should render home and away bet buttons", () => {
-      render(<TableMatchDayBets {...defaultProps} />)
+    it("should render home and away bet buttons", async () => {
+      await renderTableMatchDayBets(defaultProps)
 
       expect(screen.getByTestId("buttons-bet-home-12345")).toBeInTheDocument()
       expect(screen.getByTestId("buttons-bet-away-12345")).toBeInTheDocument()
     })
 
-    it("should pass correct props to home ButtonsBet", () => {
-      render(<TableMatchDayBets {...defaultProps} />)
+    it("should pass correct props to home ButtonsBet", async () => {
+      await renderTableMatchDayBets(defaultProps)
 
       const homeButtons = screen.getByTestId("buttons-bet-home-12345")
       expect(homeButtons).toHaveAttribute("data-disabled", "false")
     })
 
-    it("should pass correct props to away ButtonsBet", () => {
-      render(<TableMatchDayBets {...defaultProps} />)
+    it("should pass correct props to away ButtonsBet", async () => {
+      await renderTableMatchDayBets(defaultProps)
 
       const awayButtons = screen.getByTestId("buttons-bet-away-12345")
       expect(awayButtons).toHaveAttribute("data-disabled", "false")
     })
 
-    it("should disable buttons for finished fixtures", () => {
+    it("should disable buttons for finished fixtures", async () => {
       const finishedFixture = {
         ...mockFixture,
         fixture: {
@@ -242,9 +246,7 @@ describe("TableMatchDayBets", () => {
         },
       }
 
-      render(
-        <TableMatchDayBets {...defaultProps} fixtures={[finishedFixture]} />
-      )
+      await renderTableMatchDayBets({ ...defaultProps, fixtures: [finishedFixture] })
 
       const homeButtons = screen.getByTestId("buttons-bet-home-12345")
       const awayButtons = screen.getByTestId("buttons-bet-away-12345")
@@ -253,7 +255,7 @@ describe("TableMatchDayBets", () => {
       expect(awayButtons).toHaveAttribute("data-disabled", "true")
     })
 
-    it("should enable buttons for open fixtures", () => {
+    it("should enable buttons for open fixtures", async () => {
       const openFixture = {
         ...mockFixture,
         fixture: {
@@ -262,7 +264,7 @@ describe("TableMatchDayBets", () => {
         },
       }
 
-      render(<TableMatchDayBets {...defaultProps} fixtures={[openFixture]} />)
+      await renderTableMatchDayBets({ ...defaultProps, fixtures: [openFixture] })
 
       const homeButtons = screen.getByTestId("buttons-bet-home-12345")
       const awayButtons = screen.getByTestId("buttons-bet-away-12345")
@@ -273,27 +275,27 @@ describe("TableMatchDayBets", () => {
   })
 
   describe("Team Display", () => {
-    it("should display home team", () => {
-      render(<TableMatchDayBets {...defaultProps} />)
+    it("should display home team", async () => {
+      await renderTableMatchDayBets(defaultProps)
 
       expect(screen.getByText("Manchester United")).toBeInTheDocument()
     })
 
-    it("should display away team", () => {
-      render(<TableMatchDayBets {...defaultProps} />)
+    it("should display away team", async () => {
+      await renderTableMatchDayBets(defaultProps)
 
       expect(screen.getByText("Liverpool")).toBeInTheDocument()
     })
 
-    it("should render TeamCodeLogo for both teams", () => {
-      render(<TableMatchDayBets {...defaultProps} />)
+    it("should render TeamCodeLogo for both teams", async () => {
+      await renderTableMatchDayBets(defaultProps)
 
       const teamLogos = screen.getAllByTestId("team-code-logo")
       expect(teamLogos).toHaveLength(2)
     })
 
-    it("should pass correct props to home team logo", () => {
-      render(<TableMatchDayBets {...defaultProps} />)
+    it("should pass correct props to home team logo", async () => {
+      await renderTableMatchDayBets(defaultProps)
 
       const teamLogos = screen.getAllByTestId("team-code-logo")
       const homeTeamLogo = teamLogos[0]
@@ -302,8 +304,8 @@ describe("TableMatchDayBets", () => {
       expect(homeTeamLogo).toHaveAttribute("data-logo", "man-utd-logo.png")
     })
 
-    it("should pass correct props to away team logo", () => {
-      render(<TableMatchDayBets {...defaultProps} />)
+    it("should pass correct props to away team logo", async () => {
+      await renderTableMatchDayBets(defaultProps)
 
       const teamLogos = screen.getAllByTestId("team-code-logo")
       const awayTeamLogo = teamLogos[1]
@@ -314,21 +316,21 @@ describe("TableMatchDayBets", () => {
   })
 
   describe("Score Display", () => {
-    it("should render team scores", () => {
-      render(<TableMatchDayBets {...defaultProps} />)
+    it("should render team scores", async () => {
+      await renderTableMatchDayBets(defaultProps)
 
       expect(screen.getByTestId("team-score-home")).toBeInTheDocument()
       expect(screen.getByTestId("team-score-away")).toBeInTheDocument()
     })
 
-    it("should display score separator", () => {
-      render(<TableMatchDayBets {...defaultProps} />)
+    it("should display score separator", async () => {
+      await renderTableMatchDayBets(defaultProps)
 
       expect(screen.getByText("×")).toBeInTheDocument()
     })
 
-    it("should pass correct status to team scores", () => {
-      render(<TableMatchDayBets {...defaultProps} />)
+    it("should pass correct status to team scores", async () => {
+      await renderTableMatchDayBets(defaultProps)
 
       const homeScore = screen.getByTestId("team-score-home")
       const awayScore = screen.getByTestId("team-score-away")
@@ -339,14 +341,14 @@ describe("TableMatchDayBets", () => {
   })
 
   describe("Fixture Date Display", () => {
-    it("should render fixture date", () => {
-      render(<TableMatchDayBets {...defaultProps} />)
+    it("should render fixture date", async () => {
+      await renderTableMatchDayBets(defaultProps)
 
       expect(screen.getByTestId("fixture-date")).toBeInTheDocument()
     })
 
-    it("should pass correct date to FixtureDate component", () => {
-      render(<TableMatchDayBets {...defaultProps} />)
+    it("should pass correct date to FixtureDate component", async () => {
+      await renderTableMatchDayBets(defaultProps)
 
       const fixtureDate = screen.getByTestId("fixture-date")
       expect(fixtureDate).toHaveAttribute("data-date")
@@ -354,7 +356,7 @@ describe("TableMatchDayBets", () => {
   })
 
   describe("Bet Matching", () => {
-    it("should match home bet correctly", () => {
+    it("should match home bet correctly", async () => {
       const homeBet: Bet = {
         id: "bet-home-123",
         user_bolao_id: "user-bolao-1",
@@ -363,12 +365,12 @@ describe("TableMatchDayBets", () => {
         type: "home",
       }
 
-      render(<TableMatchDayBets {...defaultProps} bets={[homeBet]} />)
+      await renderTableMatchDayBets({ ...defaultProps, bets: [homeBet] })
 
       expect(screen.getByTestId("buttons-bet-home-12345")).toBeInTheDocument()
     })
 
-    it("should match away bet correctly", () => {
+    it("should match away bet correctly", async () => {
       const awayBet: Bet = {
         id: "bet-away-123",
         user_bolao_id: "user-bolao-1",
@@ -377,19 +379,19 @@ describe("TableMatchDayBets", () => {
         type: "away",
       }
 
-      render(<TableMatchDayBets {...defaultProps} bets={[awayBet]} />)
+      await renderTableMatchDayBets({ ...defaultProps, bets: [awayBet] })
 
       expect(screen.getByTestId("buttons-bet-away-12345")).toBeInTheDocument()
     })
 
-    it("should handle fixtures with no bets", () => {
-      render(<TableMatchDayBets {...defaultProps} bets={[]} />)
+    it("should handle fixtures with no bets", async () => {
+      await renderTableMatchDayBets({ ...defaultProps, bets: [] })
 
       expect(screen.getByTestId("buttons-bet-home-12345")).toBeInTheDocument()
       expect(screen.getByTestId("buttons-bet-away-12345")).toBeInTheDocument()
     })
 
-    it("should handle multiple bets for different fixtures", () => {
+    it("should handle multiple bets for different fixtures", async () => {
       const fixture2: FixtureData = {
         ...mockFixture,
         fixture: { ...mockFixture.fixture, id: 67890 },
@@ -403,13 +405,11 @@ describe("TableMatchDayBets", () => {
         type: "home",
       }
 
-      render(
-        <TableMatchDayBets
-          {...defaultProps}
-          fixtures={[mockFixture, fixture2]}
-          bets={[mockBet, bet2]}
-        />
-      )
+      await renderTableMatchDayBets({
+        ...defaultProps,
+        fixtures: [mockFixture, fixture2],
+        bets: [mockBet, bet2],
+      })
 
       expect(screen.getByTestId("buttons-bet-home-12345")).toBeInTheDocument()
       expect(screen.getByTestId("buttons-bet-home-67890")).toBeInTheDocument()
@@ -417,7 +417,7 @@ describe("TableMatchDayBets", () => {
   })
 
   describe("Fixture Status Handling", () => {
-    it("should handle TBD status (open to play)", () => {
+    it("should handle TBD status (open to play)", async () => {
       const tbdFixture = {
         ...mockFixture,
         fixture: {
@@ -426,13 +426,13 @@ describe("TableMatchDayBets", () => {
         },
       }
 
-      render(<TableMatchDayBets {...defaultProps} fixtures={[tbdFixture]} />)
+      await renderTableMatchDayBets({ ...defaultProps, fixtures: [tbdFixture] })
 
       const homeButtons = screen.getByTestId("buttons-bet-home-12345")
       expect(homeButtons).toHaveAttribute("data-disabled", "false")
     })
 
-    it("should handle NS status (open to play)", () => {
+    it("should handle NS status (open to play)", async () => {
       const nsFixture = {
         ...mockFixture,
         fixture: {
@@ -441,13 +441,13 @@ describe("TableMatchDayBets", () => {
         },
       }
 
-      render(<TableMatchDayBets {...defaultProps} fixtures={[nsFixture]} />)
+      await renderTableMatchDayBets({ ...defaultProps, fixtures: [nsFixture] })
 
       const homeButtons = screen.getByTestId("buttons-bet-home-12345")
       expect(homeButtons).toHaveAttribute("data-disabled", "false")
     })
 
-    it("should handle PST status (open to play)", () => {
+    it("should handle PST status (open to play)", async () => {
       const pstFixture = {
         ...mockFixture,
         fixture: {
@@ -456,13 +456,13 @@ describe("TableMatchDayBets", () => {
         },
       }
 
-      render(<TableMatchDayBets {...defaultProps} fixtures={[pstFixture]} />)
+      await renderTableMatchDayBets({ ...defaultProps, fixtures: [pstFixture] })
 
       const homeButtons = screen.getByTestId("buttons-bet-home-12345")
       expect(homeButtons).toHaveAttribute("data-disabled", "false")
     })
 
-    it("should handle 1H status (not open to play)", () => {
+    it("should handle 1H status (not open to play)", async () => {
       const playingFixture = {
         ...mockFixture,
         fixture: {
@@ -471,15 +471,13 @@ describe("TableMatchDayBets", () => {
         },
       }
 
-      render(
-        <TableMatchDayBets {...defaultProps} fixtures={[playingFixture]} />
-      )
+      await renderTableMatchDayBets({ ...defaultProps, fixtures: [playingFixture] })
 
       const homeButtons = screen.getByTestId("buttons-bet-home-12345")
       expect(homeButtons).toHaveAttribute("data-disabled", "true")
     })
 
-    it("should handle FT status (not open to play)", () => {
+    it("should handle FT status (not open to play)", async () => {
       const finishedFixture = {
         ...mockFixture,
         fixture: {
@@ -488,9 +486,7 @@ describe("TableMatchDayBets", () => {
         },
       }
 
-      render(
-        <TableMatchDayBets {...defaultProps} fixtures={[finishedFixture]} />
-      )
+      await renderTableMatchDayBets({ ...defaultProps, fixtures: [finishedFixture] })
 
       const homeButtons = screen.getByTestId("buttons-bet-home-12345")
       expect(homeButtons).toHaveAttribute("data-disabled", "true")
@@ -498,22 +494,22 @@ describe("TableMatchDayBets", () => {
   })
 
   describe("Layout and Structure", () => {
-    it("should have proper flex container for fixture content", () => {
-      const { container } = render(<TableMatchDayBets {...defaultProps} />)
+    it("should have proper flex container for fixture content", async () => {
+      const { container } = await renderTableMatchDayBets(defaultProps)
 
       const flexContainer = container.querySelector(".flex.justify-center")
       expect(flexContainer).toBeInTheDocument()
     })
 
-    it("should render fixtures in CardContent", () => {
-      const { container } = render(<TableMatchDayBets {...defaultProps} />)
+    it("should render fixtures in CardContent", async () => {
+      const { container } = await renderTableMatchDayBets(defaultProps)
 
       // CardContent has class "pt-0"
       expect(container.querySelector(".pt-0")).toBeInTheDocument()
     })
 
-    it("should apply padding to fixture containers", () => {
-      const { container } = render(<TableMatchDayBets {...defaultProps} />)
+    it("should apply padding to fixture containers", async () => {
+      const { container } = await renderTableMatchDayBets(defaultProps)
 
       const fixtureContainer = container.querySelector(".py-4")
       expect(fixtureContainer).toBeInTheDocument()
@@ -521,7 +517,7 @@ describe("TableMatchDayBets", () => {
   })
 
   describe("Title Determination", () => {
-    it("should determine title based on last fixture status", () => {
+    it("should determine title based on last fixture status", async () => {
       const fixture1 = {
         ...mockFixture,
         fixture: {
@@ -540,15 +536,13 @@ describe("TableMatchDayBets", () => {
         },
       }
 
-      render(
-        <TableMatchDayBets {...defaultProps} fixtures={[fixture1, fixture2]} />
-      )
+      await renderTableMatchDayBets({ ...defaultProps, fixtures: [fixture1, fixture2] })
 
       // Should check last fixture (fixture2) which is "NS" (open to play)
       expect(screen.getByText("Next games")).toBeInTheDocument()
     })
 
-    it("should show 'Previous games' when last fixture is finished", () => {
+    it("should show 'Previous games' when last fixture is finished", async () => {
       const fixture1 = {
         ...mockFixture,
         fixture: {
@@ -567,9 +561,7 @@ describe("TableMatchDayBets", () => {
         },
       }
 
-      render(
-        <TableMatchDayBets {...defaultProps} fixtures={[fixture1, fixture2]} />
-      )
+      await renderTableMatchDayBets({ ...defaultProps, fixtures: [fixture1, fixture2] })
 
       // Should check last fixture (fixture2) which is "FT" (not open to play)
       expect(screen.getByText("Previous games")).toBeInTheDocument()

@@ -1,3 +1,4 @@
+import { getTranslations, getLocale } from "next-intl/server"
 import { FixtureData, Bet } from "@/app/lib/definitions"
 import ButtonsBet from "./buttonsBet"
 import { findBetObj, STATUSES_OPEN_TO_PLAY } from "@/app/lib/utils"
@@ -13,7 +14,10 @@ type TableProps = {
   bets: Bet[]
 }
 
-function TableMatchDayBets({ fixtures, userBolaoId, bets }: TableProps) {
+async function TableMatchDayBets({ fixtures, userBolaoId, bets }: TableProps) {
+  const t = await getTranslations("betPage")
+  const locale = await getLocale()
+
   if (fixtures) {
     return (
       <Card>
@@ -22,8 +26,8 @@ function TableMatchDayBets({ fixtures, userBolaoId, bets }: TableProps) {
             {STATUSES_OPEN_TO_PLAY.includes(
               fixtures[fixtures.length - 1].fixture.status.short
             )
-              ? "Next games"
-              : "Previous games"}
+              ? t("nextGames")
+              : t("previousGames")}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -67,12 +71,13 @@ function TableMatchDayBets({ fixtures, userBolaoId, bets }: TableProps) {
                     name={fixtureData.teams.home.name}
                   />
 
-                  <div>
+                  <div className="flex flex-col items-center">
                     <FixtureDate
                       date={fixtureData.fixture.date.toString()}
                       status={fixtureData.fixture.status}
+                      locale={locale}
                     />
-                    <div style={{ display: "flex", flexDirection: "row" }}>
+                    <div className="flex flex-row">
                       <TeamScore
                         score={fixtureData.score}
                         goals={fixtureData.goals}
@@ -115,7 +120,7 @@ function TableMatchDayBets({ fixtures, userBolaoId, bets }: TableProps) {
     )
   }
 
-  return <p>loading...</p>
+  return <p>{t("loading")}</p>
 }
 
 export default TableMatchDayBets

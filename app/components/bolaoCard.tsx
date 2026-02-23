@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 import { format } from "date-fns"
 import CopyToClipboard from "./copyToClipboard"
 import { updateBolao } from "@/app/lib/actions"
@@ -29,6 +30,7 @@ import { useToast } from "@/hooks/use-toast"
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
 function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
+  const t = useTranslations("bolaoCard")
   const [name, setName] = useState(bolao.name)
   const [disabledDelete, setDisabledDelete] = useState(false)
   const { toast } = useToast()
@@ -51,13 +53,13 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
 
     if (result.success) {
       toast({
-        title: "Success",
-        description: "The bolão was successfully updated.",
+        title: t("updateSuccessTitle"),
+        description: t("updateSuccessMessage"),
         variant: "success",
       })
     } else {
       toast({
-        description: "There was an issue with the update.",
+        description: t("updateErrorMessage"),
         variant: "destructive",
       })
     }
@@ -69,13 +71,13 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
     if (result.success) {
       setDisabledDelete(true)
       toast({
-        title: "Success",
-        description: "The bolão was successfully deleted.",
+        title: t("deleteSuccessTitle"),
+        description: t("deleteSuccessMessage"),
         variant: "success",
       })
     } else {
       toast({
-        description: "There was an issue with the creation.",
+        description: t("deleteErrorMessage"),
         variant: "destructive",
       })
     }
@@ -112,11 +114,11 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
         <div className="flex justify-between w-full">
           <div className="space-x-2">
             <Button asChild variant="outline">
-              <Link href={`/bolao/${bolao.id}/bet`}>Bet</Link>
+              <Link href={`/bolao/${bolao.id}/bet`}>{t("bet")}</Link>
             </Button>
 
             <Button asChild variant="outline">
-              <Link href={`/bolao/${bolao.id}/results`}>Results</Link>
+              <Link href={`/bolao/${bolao.id}/results`}>{t("results")}</Link>
             </Button>
           </div>
 
@@ -143,7 +145,7 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
                       }}
                     >
                       <Pencil2Icon className="h-4 w-4 mr-1" />
-                      Edit
+                      {t("edit")}
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onSelect={(e) => {
@@ -152,7 +154,7 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
                       }}
                     >
                       <TrashIcon className="h-4 w-4 mr-1" color="red" />
-                      <span className="text-red-500">Delete</span>
+                      <span className="text-red-500">{t("delete")}</span>
                     </DropdownMenuItem>
                   </>
                 )}

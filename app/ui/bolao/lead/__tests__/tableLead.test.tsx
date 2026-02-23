@@ -3,33 +3,39 @@ import { describe, it, expect } from "vitest"
 import TableLead from "../tableLead"
 import type { LeadData } from "@/app/lib/definitions"
 
+// Helper to render async server component
+async function renderTableLead(props: { data: LeadData[] }) {
+  const Component = await TableLead(props)
+  return render(Component)
+}
+
 describe("TableLead", () => {
   describe("Component Rendering", () => {
-    it("should render the component with title", () => {
+    it("should render the component with title", async () => {
       const mockData: LeadData[] = [
         { name: "John Doe", total: 100 },
         { name: "Jane Smith", total: 90 },
       ]
 
-      render(<TableLead data={mockData} />)
+      await renderTableLead({ data: mockData })
 
       expect(screen.getByText("Players lead")).toBeInTheDocument()
     })
 
-    it("should render table headers correctly", () => {
+    it("should render table headers correctly", async () => {
       const mockData: LeadData[] = [{ name: "John Doe", total: 100 }]
 
-      render(<TableLead data={mockData} />)
+      await renderTableLead({ data: mockData })
 
       expect(screen.getByText("player")).toBeInTheDocument()
       expect(screen.getByText("score")).toBeInTheDocument()
       expect(screen.getByText("needs")).toBeInTheDocument()
     })
 
-    it("should render empty table when data array is empty", () => {
+    it("should render empty table when data array is empty", async () => {
       const mockData: LeadData[] = []
 
-      render(<TableLead data={mockData} />)
+      await renderTableLead({ data: mockData })
 
       expect(screen.getByText("Players lead")).toBeInTheDocument()
       expect(screen.queryByText("01")).not.toBeInTheDocument()
@@ -37,53 +43,53 @@ describe("TableLead", () => {
   })
 
   describe("Player Data Display", () => {
-    it("should display all players with correct names", () => {
+    it("should display all players with correct names", async () => {
       const mockData: LeadData[] = [
         { name: "John Doe", total: 100 },
         { name: "Jane Smith", total: 90 },
         { name: "Bob Johnson", total: 80 },
       ]
 
-      render(<TableLead data={mockData} />)
+      await renderTableLead({ data: mockData })
 
       expect(screen.getByText("John Doe")).toBeInTheDocument()
       expect(screen.getByText("Jane Smith")).toBeInTheDocument()
       expect(screen.getByText("Bob Johnson")).toBeInTheDocument()
     })
 
-    it("should display player scores correctly", () => {
+    it("should display player scores correctly", async () => {
       const mockData: LeadData[] = [
         { name: "John Doe", total: 100 },
         { name: "Jane Smith", total: 90 },
       ]
 
-      render(<TableLead data={mockData} />)
+      await renderTableLead({ data: mockData })
 
       expect(screen.getByText("100")).toBeInTheDocument()
       expect(screen.getByText("90")).toBeInTheDocument()
     })
 
-    it("should display player rankings with zero-padded numbers", () => {
+    it("should display player rankings with zero-padded numbers", async () => {
       const mockData: LeadData[] = [
         { name: "Player 1", total: 100 },
         { name: "Player 2", total: 90 },
         { name: "Player 3", total: 80 },
       ]
 
-      render(<TableLead data={mockData} />)
+      await renderTableLead({ data: mockData })
 
       expect(screen.getByText("01")).toBeInTheDocument()
       expect(screen.getByText("02")).toBeInTheDocument()
       expect(screen.getByText("03")).toBeInTheDocument()
     })
 
-    it("should handle double-digit rankings correctly", () => {
+    it("should handle double-digit rankings correctly", async () => {
       const mockData: LeadData[] = Array.from({ length: 12 }, (_, i) => ({
         name: `Player ${i + 1}`,
         total: 100 - i,
       }))
 
-      const { container } = render(<TableLead data={mockData} />)
+      const { container } = await renderTableLead({ data: mockData })
 
       expect(screen.getByText("01")).toBeInTheDocument()
       expect(screen.getByText("09")).toBeInTheDocument()
@@ -96,13 +102,13 @@ describe("TableLead", () => {
   })
 
   describe("Points Needed Calculation", () => {
-    it("should show '-' for the leader (no points needed)", () => {
+    it("should show '-' for the leader (no points needed)", async () => {
       const mockData: LeadData[] = [
         { name: "Leader", total: 100 },
         { name: "Second", total: 90 },
       ]
 
-      const { container } = render(<TableLead data={mockData} />)
+      const { container } = await renderTableLead({ data: mockData })
 
       // The leader should have a dash
       const rows = container.querySelectorAll("tbody tr")
@@ -110,18 +116,18 @@ describe("TableLead", () => {
       expect(leaderRow.textContent).toContain("-")
     })
 
-    it("should calculate correct points needed for second place", () => {
+    it("should calculate correct points needed for second place", async () => {
       const mockData: LeadData[] = [
         { name: "Leader", total: 100 },
         { name: "Second", total: 90 },
       ]
 
-      render(<TableLead data={mockData} />)
+      await renderTableLead({ data: mockData })
 
       expect(screen.getByText("10")).toBeInTheDocument()
     })
 
-    it("should calculate correct points needed for multiple players", () => {
+    it("should calculate correct points needed for multiple players", async () => {
       const mockData: LeadData[] = [
         { name: "Leader", total: 100 },
         { name: "Second", total: 95 },
@@ -129,21 +135,21 @@ describe("TableLead", () => {
         { name: "Fourth", total: 70 },
       ]
 
-      render(<TableLead data={mockData} />)
+      await renderTableLead({ data: mockData })
 
       expect(screen.getByText("5")).toBeInTheDocument()
       expect(screen.getByText("15")).toBeInTheDocument()
       expect(screen.getByText("30")).toBeInTheDocument()
     })
 
-    it("should handle players with the same score as the leader", () => {
+    it("should handle players with the same score as the leader", async () => {
       const mockData: LeadData[] = [
         { name: "Leader 1", total: 100 },
         { name: "Leader 2", total: 100 },
         { name: "Third", total: 90 },
       ]
 
-      const { container } = render(<TableLead data={mockData} />)
+      const { container } = await renderTableLead({ data: mockData })
 
       const rows = container.querySelectorAll("tbody tr")
       // Both leaders should have a dash
@@ -155,13 +161,13 @@ describe("TableLead", () => {
       expect(screen.getByText("10")).toBeInTheDocument()
     })
 
-    it("should handle zero score scenarios", () => {
+    it("should handle zero score scenarios", async () => {
       const mockData: LeadData[] = [
         { name: "Leader", total: 50 },
         { name: "Player", total: 0 },
       ]
 
-      const { container } = render(<TableLead data={mockData} />)
+      const { container } = await renderTableLead({ data: mockData })
 
       // Check that both "50" values exist (one in score column, one in needs column)
       const allFifties = screen.getAllByText("50")
@@ -170,7 +176,7 @@ describe("TableLead", () => {
   })
 
   describe("Styling and Layout", () => {
-    it("should apply alternating row background colors", () => {
+    it("should apply alternating row background colors", async () => {
       const mockData: LeadData[] = [
         { name: "Player 1", total: 100 },
         { name: "Player 2", total: 90 },
@@ -178,7 +184,7 @@ describe("TableLead", () => {
         { name: "Player 4", total: 70 },
       ]
 
-      const { container } = render(<TableLead data={mockData} />)
+      const { container } = await renderTableLead({ data: mockData })
 
       const rows = container.querySelectorAll("tbody tr")
 
@@ -195,10 +201,10 @@ describe("TableLead", () => {
       expect(rows[3]).toHaveClass("bg-slate-50")
     })
 
-    it("should render table with correct structure", () => {
+    it("should render table with correct structure", async () => {
       const mockData: LeadData[] = [{ name: "John Doe", total: 100 }]
 
-      const { container } = render(<TableLead data={mockData} />)
+      const { container } = await renderTableLead({ data: mockData })
 
       const table = container.querySelector("table")
       expect(table).toBeInTheDocument()
@@ -212,10 +218,10 @@ describe("TableLead", () => {
       expect(tbody).toBeInTheDocument()
     })
 
-    it("should have correct number of columns", () => {
+    it("should have correct number of columns", async () => {
       const mockData: LeadData[] = [{ name: "Player", total: 100 }]
 
-      const { container } = render(<TableLead data={mockData} />)
+      const { container } = await renderTableLead({ data: mockData })
 
       const headerCells = container.querySelectorAll("thead th")
       expect(headerCells).toHaveLength(4) // rank, player, score, needs
@@ -226,10 +232,10 @@ describe("TableLead", () => {
   })
 
   describe("Edge Cases", () => {
-    it("should handle single player", () => {
+    it("should handle single player", async () => {
       const mockData: LeadData[] = [{ name: "Only Player", total: 100 }]
 
-      const { container } = render(<TableLead data={mockData} />)
+      const { container } = await renderTableLead({ data: mockData })
 
       expect(screen.getByText("Only Player")).toBeInTheDocument()
       expect(screen.getByText("100")).toBeInTheDocument()
@@ -239,39 +245,39 @@ describe("TableLead", () => {
       expect(rows).toHaveLength(1)
     })
 
-    it("should handle large number of players", () => {
+    it("should handle large number of players", async () => {
       const mockData: LeadData[] = Array.from({ length: 50 }, (_, i) => ({
         name: `Player ${i + 1}`,
         total: 500 - i * 10,
       }))
 
-      const { container } = render(<TableLead data={mockData} />)
+      const { container } = await renderTableLead({ data: mockData })
 
       const rows = container.querySelectorAll("tbody tr")
       expect(rows).toHaveLength(50)
     })
 
-    it("should handle players with special characters in names", () => {
+    it("should handle players with special characters in names", async () => {
       const mockData: LeadData[] = [
         { name: "O'Connor", total: 100 },
         { name: "José García", total: 90 },
         { name: "李明", total: 80 },
       ]
 
-      render(<TableLead data={mockData} />)
+      await renderTableLead({ data: mockData })
 
       expect(screen.getByText("O'Connor")).toBeInTheDocument()
       expect(screen.getByText("José García")).toBeInTheDocument()
       expect(screen.getByText("李明")).toBeInTheDocument()
     })
 
-    it("should handle empty player names", () => {
+    it("should handle empty player names", async () => {
       const mockData: LeadData[] = [
         { name: "", total: 100 },
         { name: "Player 2", total: 90 },
       ]
 
-      render(<TableLead data={mockData} />)
+      await renderTableLead({ data: mockData })
 
       expect(screen.getByText("Player 2")).toBeInTheDocument()
       const rows = screen.getAllByRole("row")
@@ -279,14 +285,14 @@ describe("TableLead", () => {
       expect(rows.length).toBeGreaterThan(0)
     })
 
-    it("should handle all players with zero score", () => {
+    it("should handle all players with zero score", async () => {
       const mockData: LeadData[] = [
         { name: "Player 1", total: 0 },
         { name: "Player 2", total: 0 },
         { name: "Player 3", total: 0 },
       ]
 
-      const { container } = render(<TableLead data={mockData} />)
+      const { container } = await renderTableLead({ data: mockData })
 
       const rows = container.querySelectorAll("tbody tr")
       // All players should show dash since they're all tied for first
@@ -297,7 +303,7 @@ describe("TableLead", () => {
   })
 
   describe("Data Integrity", () => {
-    it("should maintain correct player order from input data", () => {
+    it("should maintain correct player order from input data", async () => {
       const mockData: LeadData[] = [
         { name: "Alice", total: 100 },
         { name: "Bob", total: 90 },
@@ -305,7 +311,7 @@ describe("TableLead", () => {
         { name: "David", total: 70 },
       ]
 
-      const { container } = render(<TableLead data={mockData} />)
+      const { container } = await renderTableLead({ data: mockData })
 
       const playerNames = container.querySelectorAll(".leadtable-playername")
       expect(playerNames[0].textContent).toBe("Alice")
@@ -314,10 +320,10 @@ describe("TableLead", () => {
       expect(playerNames[3].textContent).toBe("David")
     })
 
-    it("should preserve player data when rendering", () => {
+    it("should preserve player data when rendering", async () => {
       const mockData: LeadData[] = [{ name: "Test Player", total: 42 }]
 
-      render(<TableLead data={mockData} />)
+      await renderTableLead({ data: mockData })
 
       expect(screen.getByText("Test Player")).toBeInTheDocument()
       expect(screen.getByText("42")).toBeInTheDocument()
@@ -326,10 +332,10 @@ describe("TableLead", () => {
   })
 
   describe("Accessibility", () => {
-    it("should have proper table structure for screen readers", () => {
+    it("should have proper table structure for screen readers", async () => {
       const mockData: LeadData[] = [{ name: "Player", total: 100 }]
 
-      const { container } = render(<TableLead data={mockData} />)
+      const { container } = await renderTableLead({ data: mockData })
 
       const table = container.querySelector("table")
       const thead = container.querySelector("thead")
@@ -340,10 +346,10 @@ describe("TableLead", () => {
       expect(tbody).toBeInTheDocument()
     })
 
-    it("should render within Card component structure", () => {
+    it("should render within Card component structure", async () => {
       const mockData: LeadData[] = [{ name: "Player", total: 100 }]
 
-      render(<TableLead data={mockData} />)
+      await renderTableLead({ data: mockData })
 
       // Card components render proper semantic structure
       expect(screen.getByText("Players lead")).toBeInTheDocument()

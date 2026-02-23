@@ -357,7 +357,7 @@ describe("BolaoCard", () => {
     // Verify error toast was shown
     await waitFor(() => {
       expect(mockToast).toHaveBeenCalledWith({
-        description: "There was an issue with the creation.",
+        description: "There was an issue with the deletion.",
         variant: "destructive",
       })
     })
