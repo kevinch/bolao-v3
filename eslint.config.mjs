@@ -17,4 +17,11 @@ export default defineConfig([
       "react/no-unescaped-entities": "off",
     },
   },
+  {
+    files: ["**/__tests__/**/*.{ts,tsx}", "**/*.test.{ts,tsx}"],
+    rules: {
+      // Mocks for next/image intentionally render <img> in tests
+      "@next/next/no-img-element": "off",
+    },
+  },
 ]);
