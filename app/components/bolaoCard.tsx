@@ -52,6 +52,7 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
     const result = await updateBolao(data)
 
     if (result.success) {
+      setDialogEditOpen(false)
       toast({
         title: t("updateSuccessTitle"),
         description: t("updateSuccessMessage"),
