@@ -1,6 +1,7 @@
 "use server"
 
 import { sql } from "@vercel/postgres"
+import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { auth } from "@clerk/nextjs/server"
 import { fetchLeague } from "./data"
@@ -107,6 +108,8 @@ export async function updateBolao({
     const result = {
       success: true,
     }
+
+    revalidatePath("/")
 
     return result
   } catch (error) {

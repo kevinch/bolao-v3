@@ -10,6 +10,11 @@ vi.mock("next/navigation", () => ({
   redirect: vi.fn(),
 }))
 
+// Mock next/cache
+vi.mock("next/cache", () => ({
+  revalidatePath: vi.fn(),
+}))
+
 // Mock @clerk/nextjs/server
 vi.mock("@clerk/nextjs/server", () => ({
   auth: vi.fn(),
@@ -39,6 +44,7 @@ import {
 } from "../actions"
 import { sql } from "@vercel/postgres"
 import { redirect } from "next/navigation"
+import { revalidatePath } from "next/cache"
 import { auth } from "@clerk/nextjs/server"
 import { fetchLeague } from "../data"
 import { getCurrentSeasonObject } from "../utils"
@@ -253,6 +259,7 @@ describe("actions", () => {
       expect(name).toBe("Updated Name")
       expect(bolaoId).toBe("bolao-1")
       expect(result).toEqual({ success: true })
+      expect(revalidatePath).toHaveBeenCalledWith("/")
     })
 
     it("should handle database errors", async () => {
@@ -267,6 +274,7 @@ describe("actions", () => {
         success: false,
         message: "Database Error: failed to update a bolao.",
       })
+      expect(revalidatePath).not.toHaveBeenCalled()
     })
   })
 
