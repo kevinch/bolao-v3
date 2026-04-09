@@ -455,6 +455,7 @@ describe("actions", () => {
         message: "bolao deleted",
         success: true,
       })
+      expect(revalidatePath).toHaveBeenCalledWith("/")
     })
 
     it("should handle database errors", async () => {
@@ -466,6 +467,7 @@ describe("actions", () => {
         message: "Database Error: failed to delete a bolao.",
         success: false,
       })
+      expect(revalidatePath).not.toHaveBeenCalled()
     })
 
     it("should return RETURNING data", async () => {
@@ -475,6 +477,7 @@ describe("actions", () => {
       const result = await deleteBolao("bolao-1")
 
       expect(result.data).toEqual(deletedData)
+      expect(revalidatePath).toHaveBeenCalledWith("/")
     })
   })
 

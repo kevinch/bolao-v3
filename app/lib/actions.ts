@@ -213,6 +213,8 @@ export async function deleteBolao(bolaoId: string) {
 
     const data = result.rows
 
+    revalidatePath("/")
+
     return {
       data,
       message: "bolao deleted",

@@ -96,8 +96,8 @@
     "saveChanges": "Salvar alterações"
   },
   "bolaoDeleteModal": {
-    "title": "Excluir bolão",
-    "description": "Tem certeza que deseja excluir este bolão? Esta ação não pode ser desfeita. Os palpites também serão excluídos.",
+    "title": "Excluir {name}?",
+    "description": "Esta ação não pode ser desfeita. Todos os palpites deste bolão serão removidos.",
     "cancel": "Cancelar",
     "confirm": "Confirmar"
   },

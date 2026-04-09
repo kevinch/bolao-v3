@@ -74,6 +74,8 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
 
     if (result.success) {
       setDisabledDelete(true)
+      setDialogDeleteOpen(false)
+      router.refresh()
       toast({
         title: t("deleteSuccessTitle"),
         description: t("deleteSuccessMessage"),
@@ -177,6 +179,7 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
             open={dialogDeleteOpen}
             onOpenChange={setDialogDeleteOpen}
             bolaoId={bolao.id}
+            bolaoName={bolao.name}
             disabledDelete={disabledDelete}
             onSubmit={handleDelete}
           />

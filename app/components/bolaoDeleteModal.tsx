@@ -18,6 +18,7 @@ interface SettingsDialogProps {
   onSubmit: (bolaoId: string) => void
   disabledDelete: boolean
   bolaoId: string
+  bolaoName: string
 }
 
 export const handlePointerDownOutside = (e: any) => {
@@ -33,6 +34,7 @@ export function BolaoDeleteModal({
   onSubmit,
   disabledDelete,
   bolaoId,
+  bolaoName,
 }: SettingsDialogProps) {
   const t = useTranslations("bolaoDeleteModal")
 
@@ -40,7 +42,7 @@ export function BolaoDeleteModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent onPointerDownOutside={handlePointerDownOutside}>
         <DialogHeader>
-          <DialogTitle>{t("title")}</DialogTitle>
+          <DialogTitle>{t("title", { name: bolaoName })}</DialogTitle>
           <DialogDescription className="DialogDescription">
             {t("description")}
           </DialogDescription>

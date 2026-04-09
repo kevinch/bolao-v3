@@ -335,6 +335,7 @@ describe("BolaoCard", () => {
     // Verify deleteBolaoGroup was called
     await waitFor(() => {
       expect(mockDeleteBolaoGroup).toHaveBeenCalledWith("bolao-123")
+      expect(mockRouterRefresh).toHaveBeenCalled()
       expect(mockToast).toHaveBeenCalledWith({
         title: "Success",
         description: "The bolão was successfully deleted.",
