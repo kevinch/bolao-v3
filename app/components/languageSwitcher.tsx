@@ -18,6 +18,8 @@ export default function LanguageSwitcher() {
   const [isPending, startTransition] = useTransition()
 
   function setLocale(locale: Locale) {
+    // next-intl: persist locale on user action (not during render)
+    // eslint-disable-next-line react-hooks/immutability -- document.cookie is the intended API
     document.cookie = `NEXT_LOCALE=${locale};path=/;max-age=31536000`
     startTransition(() => {
       router.refresh()
