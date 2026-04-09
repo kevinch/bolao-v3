@@ -96,8 +96,8 @@
     "saveChanges": "Save changes"
   },
   "bolaoDeleteModal": {
-    "title": "Delete bolão",
-    "description": "Are you sure you want to delete this bolão? This action cannot be undone. Bets will be deleted as well.",
+    "title": "Delete {name}?",
+    "description": "This action cannot be undone. All bets in this bolão will be removed.",
     "cancel": "Cancel",
     "confirm": "Confirm"
   },

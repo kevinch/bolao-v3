@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { format } from "date-fns"
 import CopyToClipboard from "./copyToClipboard"
@@ -31,6 +32,7 @@ import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
 function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
   const t = useTranslations("bolaoCard")
+  const router = useRouter()
   const [name, setName] = useState(bolao.name)
   const [disabledDelete, setDisabledDelete] = useState(false)
   const { toast } = useToast()
@@ -52,6 +54,8 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
     const result = await updateBolao(data)
 
     if (result.success) {
+      setDialogEditOpen(false)
+      router.refresh()
       toast({
         title: t("updateSuccessTitle"),
         description: t("updateSuccessMessage"),
@@ -70,6 +74,8 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
 
     if (result.success) {
       setDisabledDelete(true)
+      setDialogDeleteOpen(false)
+      router.refresh()
       toast({
         title: t("deleteSuccessTitle"),
         description: t("deleteSuccessMessage"),
@@ -173,6 +179,7 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
             open={dialogDeleteOpen}
             onOpenChange={setDialogDeleteOpen}
             bolaoId={bolao.id}
+            bolaoName={bolao.name}
             disabledDelete={disabledDelete}
             onSubmit={handleDelete}
           />

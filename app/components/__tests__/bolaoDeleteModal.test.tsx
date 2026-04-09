@@ -12,6 +12,7 @@ describe("BolaoDeleteModal", () => {
     onSubmit: mockOnSubmit,
     disabledDelete: false,
     bolaoId: "bolao-123",
+    bolaoName: "Champions League 2024",
   }
 
   beforeEach(() => {
@@ -22,7 +23,9 @@ describe("BolaoDeleteModal", () => {
     render(<BolaoDeleteModal {...defaultProps} />)
 
     expect(screen.getByRole("dialog")).toBeInTheDocument()
-    expect(screen.getByText("Delete bolão")).toBeInTheDocument()
+    expect(
+      screen.getByText("Delete Champions League 2024?")
+    ).toBeInTheDocument()
   })
 
   it("should not render modal when open is false", () => {
@@ -34,20 +37,18 @@ describe("BolaoDeleteModal", () => {
   it("should display correct title", () => {
     render(<BolaoDeleteModal {...defaultProps} />)
 
-    expect(screen.getByText("Delete bolão")).toBeInTheDocument()
+    expect(
+      screen.getByText("Delete Champions League 2024?")
+    ).toBeInTheDocument()
   })
 
   it("should display warning description about deletion", () => {
     render(<BolaoDeleteModal {...defaultProps} />)
 
     expect(
-      screen.getByText(/Are you sure you want to delete this bolão?/i)
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText(/This action cannot be undone/i)
-    ).toBeInTheDocument()
-    expect(
-      screen.getByText(/Bets will be deleted as well/i)
+      screen.getByText(
+        /This action cannot be undone\. All bets in this bolão will be removed\./i
+      )
     ).toBeInTheDocument()
   })
 
@@ -140,7 +141,9 @@ describe("BolaoDeleteModal", () => {
     expect(dialog).toBeInTheDocument()
 
     // Check that title is properly connected
-    expect(screen.getByText("Delete bolão")).toBeInTheDocument()
+    expect(
+      screen.getByText("Delete Champions League 2024?")
+    ).toBeInTheDocument()
   })
 
   it("should prevent closing when clicking inside dialog (via onPointerDownOutside)", () => {
@@ -156,9 +159,8 @@ describe("BolaoDeleteModal", () => {
   it("should display all warning messages about deletion consequences", () => {
     render(<BolaoDeleteModal {...defaultProps} />)
 
-    // Check for all parts of the warning message
     const description = screen.getByText(
-      /Are you sure you want to delete this bolão\? This action cannot be undone\. Bets will be deleted as well\./i
+      /This action cannot be undone\. All bets in this bolão will be removed\./i
     )
     expect(description).toBeInTheDocument()
   })
@@ -185,7 +187,9 @@ describe("BolaoDeleteModal", () => {
     expect(dialog).toBeInTheDocument()
 
     // Verify dialog structure
-    expect(dialog).toContainElement(screen.getByText("Delete bolão"))
+    expect(dialog).toContainElement(
+      screen.getByText("Delete Champions League 2024?")
+    )
   })
 })
 

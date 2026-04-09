@@ -8,18 +8,32 @@ function getNestedValue(obj: Record<string, any>, path: string): string {
   return typeof result === 'string' ? result : path
 }
 
+function interpolate(
+  template: string,
+  values?: Record<string, string | number | Date>
+): string {
+  if (!values) return template
+  return Object.entries(values).reduce(
+    (acc, [k, v]) => acc.replaceAll(`{${k}}`, String(v)),
+    template
+  )
+}
+
 // Mock next-intl (client-side)
 vi.mock('next-intl', () => {
   const React = require('react')
   return {
     useTranslations: (namespace?: string) => {
-      const t = (key: string) => {
+      const t = (
+        key: string,
+        values?: Record<string, string | number | Date>
+      ) => {
         const fullPath = namespace ? `${namespace}.${key}` : key
-        return getNestedValue(en, fullPath)
+        return interpolate(getNestedValue(en, fullPath), values)
       }
       t.rich = (key: string, values?: Record<string, any>) => {
         const fullPath = namespace ? `${namespace}.${key}` : key
-        return getNestedValue(en, fullPath)
+        return interpolate(getNestedValue(en, fullPath), values)
       }
       return t
     },
@@ -32,13 +46,16 @@ vi.mock('next-intl', () => {
 vi.mock('next-intl/server', () => {
   return {
     getTranslations: async (namespace?: string) => {
-      const t = (key: string) => {
+      const t = (
+        key: string,
+        values?: Record<string, string | number | Date>
+      ) => {
         const fullPath = namespace ? `${namespace}.${key}` : key
-        return getNestedValue(en, fullPath)
+        return interpolate(getNestedValue(en, fullPath), values)
       }
       t.rich = (key: string, values?: Record<string, any>) => {
         const fullPath = namespace ? `${namespace}.${key}` : key
-        return getNestedValue(en, fullPath)
+        return interpolate(getNestedValue(en, fullPath), values)
       }
       return t
     },

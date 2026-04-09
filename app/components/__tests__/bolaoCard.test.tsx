@@ -33,6 +33,14 @@ vi.mock("date-fns", () => ({
   }),
 }))
 
+const { mockRouterRefresh } = vi.hoisted(() => ({
+  mockRouterRefresh: vi.fn(),
+}))
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ refresh: mockRouterRefresh }),
+}))
+
 // Mock child components
 vi.mock("../copyToClipboard", () => ({
   default: ({ bolaoId }: { bolaoId: string }) => (
@@ -266,6 +274,7 @@ describe("BolaoCard", () => {
         name: "Champions League 2024",
         bolaoId: "bolao-123",
       })
+      expect(mockRouterRefresh).toHaveBeenCalled()
       expect(mockToast).toHaveBeenCalledWith({
         title: "Success",
         description: "The bolão was successfully updated.",
@@ -326,6 +335,7 @@ describe("BolaoCard", () => {
     // Verify deleteBolaoGroup was called
     await waitFor(() => {
       expect(mockDeleteBolaoGroup).toHaveBeenCalledWith("bolao-123")
+      expect(mockRouterRefresh).toHaveBeenCalled()
       expect(mockToast).toHaveBeenCalledWith({
         title: "Success",
         description: "The bolão was successfully deleted.",
