@@ -14,10 +14,9 @@ export default function Page() {
    */
   const searchParams = useSearchParams()
   const redirectUrl = searchParams.get("redirect_url")
-  const endsWithInvite = redirectUrl?.endsWith("invite")
 
   useEffect(() => {
-    if (redirectUrl && endsWithInvite) {
+    if (redirectUrl?.endsWith("invite")) {
       sessionStorage.setItem(SESSION_STORAGE_INVITE_KEY, redirectUrl)
     }
   }, [redirectUrl])
