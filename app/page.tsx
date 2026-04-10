@@ -8,6 +8,9 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import InviteRedirector from "@/app/components/InviteRedirector"
 
+// ISR: revalidate cached page every 5 minutes
+export const revalidate = 300
+
 const sectionSpaceing = "mb-18"
 
 async function Home() {
