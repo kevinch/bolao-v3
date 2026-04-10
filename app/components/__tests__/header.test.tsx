@@ -21,8 +21,8 @@ vi.mock("../userButtonWrapper", () => ({
 
 // Mock LogoSvg component
 vi.mock("../logoSvg", () => ({
-  default: ({ size, color }: { size: number; color: string }) => (
-    <div data-testid="logo-svg" data-size={size} data-color={color}>
+  default: ({ size }: { size: number }) => (
+    <div data-testid="logo-svg" data-size={size}>
       Logo
     </div>
   ),
@@ -38,6 +38,8 @@ describe("Header", () => {
     const logoLink = screen.getByTestId("logo-link-header")
     expect(logoLink).toBeInTheDocument()
     expect(logoLink).toHaveAttribute("href", "/")
+    expect(logoLink.className).toContain("text-muted-foreground")
+    expect(logoLink.className).toContain("transition-colors")
   })
 
   it("should render LogoSvg with correct props", async () => {
@@ -49,7 +51,6 @@ describe("Header", () => {
     const logoSvg = screen.getByTestId("logo-svg")
     expect(logoSvg).toBeInTheDocument()
     expect(logoSvg).toHaveAttribute("data-size", "80")
-    expect(logoSvg).toHaveAttribute("data-color", "#666666")
   })
 
   it("should render UserButton when user is authenticated", async () => {
