@@ -115,20 +115,17 @@ export const formatDateNews = (dateString: string) => {
   return format(date, "PPP", {})
 }
 
-const ROUNDS_TO_REMOVE = [
-  "Preliminary Round",
-  "1st Qualifying Round",
-  "2nd Qualifying Round",
-  "3rd Qualifying Round",
-  "Play-offs",
+const ROUNDS_TO_REMOVE: RegExp[] = [
+  /^Preliminary Round$/,
+  /^Play-offs$/,
+  /^\d+(?:st|nd|rd|th) Qualifying Round$/,
+  /^Qualification Round \d+$/,
 ]
 
 export const cleanRounds = (rounds: string[]): string[] => {
-  const filteredRounds: string[] = rounds.filter(
-    (round: string) => !ROUNDS_TO_REMOVE.includes(round)
+  return rounds.filter(
+    (round) => !ROUNDS_TO_REMOVE.some((pattern) => pattern.test(round))
   )
-
-  return filteredRounds
 }
 
 export const INITIAL_BET_VALUE = "."

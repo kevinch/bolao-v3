@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
 import { useTransition } from "react"
+import { GlobeIcon } from "@radix-ui/react-icons"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -29,8 +30,13 @@ export default function LanguageSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" disabled={isPending}>
-          🌐
+        <Button
+          variant="ghost"
+          size="sm"
+          disabled={isPending}
+          aria-label={t("switchTo")}
+        >
+          <GlobeIcon className="h-4 w-4 text-foreground" aria-hidden />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
