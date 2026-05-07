@@ -6,6 +6,7 @@ import TeamCodeLogo from "@/app/ui/bolao/teamCodeLogo"
 import TeamScore from "@/app/ui/bolao/teamScore"
 import FixtureDate from "@/app/ui/bolao/fixtureDate"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { clerkClient, currentUser } from "@clerk/nextjs/server"
 import clsx from "clsx"
 
 type TableProps = {
@@ -17,6 +18,14 @@ type TableProps = {
 async function TableMatchDayBets({ fixtures, userBolaoId, bets }: TableProps) {
   const t = await getTranslations("betPage")
   const locale = await getLocale()
+  let isAdmin = false
+  const user = await currentUser()
+  if (user) {
+    const client = await clerkClient()
+    const userData = await client.users.getUser(user.id)
+    const role = userData.privateMetadata?.role || "guest"
+    isAdmin = role === "admin"
+  }
 
   if (fixtures) {
     return (
@@ -34,7 +43,8 @@ async function TableMatchDayBets({ fixtures, userBolaoId, bets }: TableProps) {
           {fixtures.map((fixtureData: FixtureData, i: number) => {
             const statusShort = fixtureData.fixture.status.short
 
-            const disabled = !STATUSES_OPEN_TO_PLAY.includes(statusShort)
+            const fixtureClosed = !STATUSES_OPEN_TO_PLAY.includes(statusShort)
+            const disabled = !isAdmin && fixtureClosed
 
             const fixtureId = fixtureData.fixture.id.toString()
             const homeBet: Bet | null = findBetObj({
