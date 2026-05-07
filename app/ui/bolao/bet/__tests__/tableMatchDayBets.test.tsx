@@ -1,7 +1,12 @@
 import { render, screen } from "@testing-library/react"
-import { describe, it, expect, vi } from "vitest"
+import { describe, it, expect, vi, beforeEach } from "vitest"
 import TableMatchDayBets from "../tableMatchDayBets"
 import type { FixtureData, Bet } from "@/app/lib/definitions"
+
+vi.mock("@clerk/nextjs/server", () => ({
+  currentUser: vi.fn(),
+  clerkClient: vi.fn(),
+}))
 
 // Mock child components
 vi.mock("../buttonsBet", () => ({
@@ -58,6 +63,12 @@ async function renderTableMatchDayBets(props: {
 }
 
 describe("TableMatchDayBets", () => {
+  beforeEach(async () => {
+    const { currentUser, clerkClient } = await import("@clerk/nextjs/server")
+    vi.mocked(currentUser).mockResolvedValue(null)
+    vi.mocked(clerkClient).mockReset()
+  })
+
   const mockFixture: FixtureData = {
     fixture: {
       id: 12345,
@@ -271,6 +282,43 @@ describe("TableMatchDayBets", () => {
 
       expect(homeButtons).toHaveAttribute("data-disabled", "false")
       expect(awayButtons).toHaveAttribute("data-disabled", "false")
+    })
+  })
+
+  describe("Admin role — ButtonsBet disabled override", () => {
+    beforeEach(async () => {
+      const { currentUser, clerkClient } = await import("@clerk/nextjs/server")
+
+      vi.mocked(currentUser).mockResolvedValue({ id: "admin-user-1" } as never)
+
+      vi.mocked(clerkClient).mockResolvedValue({
+        users: {
+          getUser: vi.fn().mockResolvedValue({
+            privateMetadata: { role: "admin" },
+          }),
+        },
+      } as never)
+    })
+
+    it("should keep buttons enabled for finished fixtures when user is admin", async () => {
+      const finishedFixture = {
+        ...mockFixture,
+        fixture: {
+          ...mockFixture.fixture,
+          status: { long: "Match Finished", short: "FT", elapsed: 90 },
+        },
+      }
+
+      await renderTableMatchDayBets({ ...defaultProps, fixtures: [finishedFixture] })
+
+      expect(screen.getByTestId("buttons-bet-home-12345")).toHaveAttribute(
+        "data-disabled",
+        "false"
+      )
+      expect(screen.getByTestId("buttons-bet-away-12345")).toHaveAttribute(
+        "data-disabled",
+        "false"
+      )
     })
   })
 
