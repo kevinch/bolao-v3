@@ -1,4 +1,16 @@
-import { test, expect } from "@playwright/test"
+import { test, expect, type Page } from "@playwright/test"
+
+/** Radix Toast: viewport wrapper is role=region with aria-label like "Notifications (F8)". */
+function notificationsRegion(page: Page) {
+  return page.getByRole("region", { name: /Notifications/i })
+}
+
+/** Targets the visible toast surface (open `li`), avoiding broad `div` matches during layout churn. */
+function openToastWithText(page: Page, text: string) {
+  return notificationsRegion(page)
+    .locator('li[data-state="open"]')
+    .filter({ hasText: text })
+}
 
 test("Full bolão flow: create, navigate, and delete a bolão", async ({
   page,
@@ -59,10 +71,10 @@ test("Full bolão flow: create, navigate, and delete a bolão", async ({
   // Submit the form to create the bolão
   await page.getByRole("button", { name: "Create" }).click()
 
-  // Verify the success toast appears (targeting the div element specifically)
+  // Toast: scope to Radix region + open item; longer timeout for enter animation / navigation.
   await expect(
-    page.locator("div").getByText("The bolão was successfully created.")
-  ).toBeVisible()
+    openToastWithText(page, "The bolão was successfully created.")
+  ).toBeVisible({ timeout: 15_000 })
 
   // Navigate back to home page using the logo link in the header
   await page.getByTestId("logo-link-header").click()
@@ -121,8 +133,7 @@ test("Full bolão flow: create, navigate, and delete a bolão", async ({
   // Confirm the deletion
   await page.getByRole("button", { name: "Confirm" }).click()
 
-  // Verify the deletion success message appears (targeting the div element specifically)
   await expect(
-    page.locator("div").getByText("The bolão was successfully deleted.")
-  ).toBeVisible()
+    openToastWithText(page, "The bolão was successfully deleted.")
+  ).toBeVisible({ timeout: 15_000 })
 })

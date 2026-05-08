@@ -80,13 +80,13 @@ async function BoloesList() {
         </Button>
       </div>
       <TabsContent value="account">
-        {activeGroup.map((el: Bolao, i: number) => (
-          <BolaoCard key={`active_${el.id}_${i}`} bolao={el} userId={userId} />
+        {activeGroup.map((el: Bolao) => (
+          <BolaoCard key={el.id} bolao={el} userId={userId} />
         ))}
       </TabsContent>
       <TabsContent value="password">
-        {pastGroup.map((el: Bolao, i: number) => (
-          <BolaoCard key={`past_${el.id}_${i}`} bolao={el} userId={userId} />
+        {pastGroup.map((el: Bolao) => (
+          <BolaoCard key={el.id} bolao={el} userId={userId} />
         ))}
       </TabsContent>
     </Tabs>
