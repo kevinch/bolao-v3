@@ -6,26 +6,23 @@ import TeamCodeLogo from "@/app/ui/bolao/teamCodeLogo"
 import TeamScore from "@/app/ui/bolao/teamScore"
 import FixtureDate from "@/app/ui/bolao/fixtureDate"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { clerkClient, currentUser } from "@clerk/nextjs/server"
 import clsx from "clsx"
 
 type TableProps = {
   fixtures: FixtureData[]
   userBolaoId: string
   bets: Bet[]
+  isAdmin: boolean
 }
 
-async function TableMatchDayBets({ fixtures, userBolaoId, bets }: TableProps) {
+async function TableMatchDayBets({
+  fixtures,
+  userBolaoId,
+  bets,
+  isAdmin,
+}: TableProps) {
   const t = await getTranslations("betPage")
   const locale = await getLocale()
-  let isAdmin = false
-  const user = await currentUser()
-  if (user) {
-    const client = await clerkClient()
-    const userData = await client.users.getUser(user.id)
-    const role = userData.privateMetadata?.role || "guest"
-    isAdmin = role === "admin"
-  }
 
   if (fixtures) {
     return (
@@ -68,6 +65,7 @@ async function TableMatchDayBets({ fixtures, userBolaoId, bets }: TableProps) {
               >
                 <div className="flex justify-center content-center">
                   <ButtonsBet
+                    key={`${userBolaoId}_${fixtureId}_home_${homeBet?.id || "new"}`}
                     fixtureId={fixtureId}
                     type="home"
                     userBolaoId={userBolaoId}
@@ -114,6 +112,7 @@ async function TableMatchDayBets({ fixtures, userBolaoId, bets }: TableProps) {
                   />
 
                   <ButtonsBet
+                    key={`${userBolaoId}_${fixtureId}_away_${awayBet?.id || "new"}`}
                     fixtureId={fixtureId}
                     type="away"
                     userBolaoId={userBolaoId}

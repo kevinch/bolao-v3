@@ -112,6 +112,9 @@
     "errorNoData": "Erro ao carregar a página de apostas. Sem dados.",
     "nextGames": "Próximos jogos",
     "previousGames": "Jogos anteriores",
+    "bettingAs": "Apostando como",
+    "selectPlayer": "Selecionar jogador",
+    "selectPlayerToBetAs": "Selecionar jogador para apostar como",
     "loading": "carregando..."
   },
   "resultsPage": {

@@ -1,21 +1,46 @@
 import {
   fetchBolao,
   fetchUserBolao,
+  fetchUsersBolao,
   fetchRounds,
   fetchFixtures,
   fetchUserBets,
 } from "@/app/lib/data"
 import { sortFixtures, cleanRounds } from "@/app/lib/utils"
-import { Bet } from "@/app/lib/definitions"
+import { Bet, PlayersData, UserBolao } from "@/app/lib/definitions"
+import { clerkClient } from "@clerk/nextjs/server"
+
+async function getPlayers(usersBolao: UserBolao[]) {
+  const userIds: string[] = usersBolao.map((el: UserBolao) => el.user_id)
+  const client = await clerkClient()
+  const users = await client.users.getUserList({ userId: userIds })
+
+  return users.data.map((el) => {
+    const userBolaoObj = usersBolao.find(
+      (ub: UserBolao) => ub.user_id === el.id
+    )
+
+    return {
+      id: el.id,
+      username: el.username,
+      email: el.emailAddresses[0]?.emailAddress || "",
+      userBolaoId: userBolaoObj?.id || "",
+    }
+  })
+}
 
 export async function getData({
   bolaoId,
   roundParam,
   userId,
+  isAdmin = false,
+  selectedUserBolaoId,
 }: {
   bolaoId: string
   roundParam?: string
   userId: string
+  isAdmin?: boolean
+  selectedUserBolaoId?: string
 }) {
   const [bolao, userBolao] = await Promise.all([
     fetchBolao(bolaoId),
@@ -24,9 +49,19 @@ export async function getData({
 
   const year: number = bolao.year
   const leagueId: string = bolao.competition_id
-  const userBolaoId: string = userBolao.id
 
-  const bets: Bet[] = await fetchUserBets(userBolaoId)
+  let selectedUserBolao: UserBolao = userBolao
+  let players: PlayersData[] = []
+
+  if (isAdmin) {
+    const usersBolao: UserBolao[] = await fetchUsersBolao(bolaoId)
+    players = await getPlayers(usersBolao)
+
+    selectedUserBolao =
+      usersBolao.find((el) => el.id === selectedUserBolaoId) || userBolao
+  }
+
+  const bets: Bet[] = await fetchUserBets(selectedUserBolao.id)
 
   const allRoundsUncleaned: string[] = await fetchRounds({ leagueId, year }) // HAS TO GO TO STORE
   const allRounds: string[] = cleanRounds(allRoundsUncleaned)
@@ -68,12 +103,14 @@ export async function getData({
 
   return {
     bolao,
-    userBolao,
+    userBolao: selectedUserBolao,
+    currentUserBolao: userBolao,
     currentRound: round,
     allRounds,
     fixtures,
     isLastRound,
     isFirstRound,
     bets,
+    players,
   }
 }

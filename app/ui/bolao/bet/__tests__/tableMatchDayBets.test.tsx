@@ -1,12 +1,7 @@
 import { render, screen } from "@testing-library/react"
-import { describe, it, expect, vi, beforeEach } from "vitest"
+import { describe, it, expect, vi } from "vitest"
 import TableMatchDayBets from "../tableMatchDayBets"
 import type { FixtureData, Bet } from "@/app/lib/definitions"
-
-vi.mock("@clerk/nextjs/server", () => ({
-  currentUser: vi.fn(),
-  clerkClient: vi.fn(),
-}))
 
 // Mock child components
 vi.mock("../buttonsBet", () => ({
@@ -57,18 +52,16 @@ async function renderTableMatchDayBets(props: {
   fixtures: FixtureData[]
   userBolaoId: string
   bets: Bet[]
+  isAdmin?: boolean
 }) {
-  const Component = await TableMatchDayBets(props)
+  const Component = await TableMatchDayBets({
+    ...props,
+    isAdmin: props.isAdmin ?? false,
+  })
   return render(Component)
 }
 
 describe("TableMatchDayBets", () => {
-  beforeEach(async () => {
-    const { currentUser, clerkClient } = await import("@clerk/nextjs/server")
-    vi.mocked(currentUser).mockResolvedValue(null)
-    vi.mocked(clerkClient).mockReset()
-  })
-
   const mockFixture: FixtureData = {
     fixture: {
       id: 12345,
@@ -286,20 +279,6 @@ describe("TableMatchDayBets", () => {
   })
 
   describe("Admin role — ButtonsBet disabled override", () => {
-    beforeEach(async () => {
-      const { currentUser, clerkClient } = await import("@clerk/nextjs/server")
-
-      vi.mocked(currentUser).mockResolvedValue({ id: "admin-user-1" } as never)
-
-      vi.mocked(clerkClient).mockResolvedValue({
-        users: {
-          getUser: vi.fn().mockResolvedValue({
-            privateMetadata: { role: "admin" },
-          }),
-        },
-      } as never)
-    })
-
     it("should keep buttons enabled for finished fixtures when user is admin", async () => {
       const finishedFixture = {
         ...mockFixture,
@@ -309,7 +288,11 @@ describe("TableMatchDayBets", () => {
         },
       }
 
-      await renderTableMatchDayBets({ ...defaultProps, fixtures: [finishedFixture] })
+      await renderTableMatchDayBets({
+        ...defaultProps,
+        fixtures: [finishedFixture],
+        isAdmin: true,
+      })
 
       expect(screen.getByTestId("buttons-bet-home-12345")).toHaveAttribute(
         "data-disabled",
