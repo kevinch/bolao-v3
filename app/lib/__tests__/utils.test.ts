@@ -215,6 +215,18 @@ describe("utils", () => {
       ])
     })
 
+    it("should remove relegation rounds", () => {
+      const rounds = [
+        "Group Stage",
+        "Relegation rounds",
+        "Relegation round - quarter-finals",
+        "Final",
+      ]
+      const result = cleanRounds(rounds)
+
+      expect(result).toEqual(["Group Stage", "Final"])
+    })
+
     it("should return empty array when all rounds are removed", () => {
       const rounds = [
         "Preliminary Round",
