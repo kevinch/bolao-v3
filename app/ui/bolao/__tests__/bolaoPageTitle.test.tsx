@@ -141,6 +141,49 @@ describe("BolaoPageTitle", () => {
       const logoContainer = container.querySelector(".flex.justify-center.mb-6")
       expect(logoContainer).toBeInTheDocument()
     })
+
+    it("should use football-logos.cc SVG for 2026 FIFA World Cup (league id 1)", () => {
+      const bolaoWc2026: Bolao = {
+        ...mockBolao,
+        year: 2026,
+        competition_id: "1",
+      }
+      render(
+        <BolaoPageTitle
+          bolao={bolaoWc2026}
+          leagueName="World Cup"
+          leagueLogo="https://media.api-sports.io/football/leagues/1.png"
+        />
+      )
+
+      const logo = screen.getByTestId("league-logo")
+      expect(logo).toHaveAttribute(
+        "src",
+        "/logos/tournaments_fifa-world-cup-2026.football-logos.cc.svg"
+      )
+      expect(logo.tagName).toBe("IMG")
+    })
+
+    it("should not override logo for World Cup in a non-2026 season", () => {
+      const bolaoWc2022: Bolao = {
+        ...mockBolao,
+        year: 2022,
+        competition_id: "1",
+      }
+      render(
+        <BolaoPageTitle
+          bolao={bolaoWc2022}
+          leagueName="World Cup"
+          leagueLogo="https://media.api-sports.io/football/leagues/1.png"
+        />
+      )
+
+      const logo = screen.getByTestId("league-logo")
+      expect(logo).toHaveAttribute(
+        "src",
+        "https://media.api-sports.io/football/leagues/1.png"
+      )
+    })
   })
 
   describe("Bolao Data Handling", () => {
