@@ -16,11 +16,15 @@ vi.mock("@clerk/nextjs/server", () => ({
   clerkClient: vi.fn(),
 }))
 
-// Mock utility functions
-vi.mock("@/app/lib/utils", () => ({
-  sortFixtures: vi.fn((fixtures) => fixtures),
-  cleanRounds: vi.fn((rounds) => rounds),
-}))
+// Mock utility functions — keep pickCurrentRoundFromApiCurrent real so it exercises the mock cleanRounds
+vi.mock("@/app/lib/utils", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/app/lib/utils")>()
+  return {
+    ...actual,
+    sortFixtures: vi.fn((fixtures) => fixtures),
+    cleanRounds: vi.fn((rounds) => rounds),
+  }
+})
 
 describe("controllerResults", () => {
   const mockBolao: Bolao = {
