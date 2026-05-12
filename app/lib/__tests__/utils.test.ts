@@ -295,6 +295,10 @@ describe("utils", () => {
         "Matchday 36"
       )
     })
+
+    it("returns empty string when there are no cleaned season rounds", () => {
+      expect(pickCurrentRoundFromApiCurrent([], [], "first")).toBe("")
+    })
   })
 
   describe("findBetObj", () => {
