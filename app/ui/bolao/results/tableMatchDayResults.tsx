@@ -84,17 +84,18 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
 
   if (fixtures) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            {STATUSES_OPEN_TO_PLAY.includes(
-              fixtures[fixtures.length - 1].fixture.status.short
-            )
-              ? t("nextGames")
-              : t("previousGames")}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+      <div className="max-md:mx-[calc((100dvw-100%)/-2)] md:mx-0">
+        <Card className="max-md:rounded-none max-md:border-x-0 max-md:shadow-none md:rounded-xl md:border-x md:shadow-sm">
+          <CardHeader className="p-4 md:p-6">
+            <CardTitle>
+              {STATUSES_OPEN_TO_PLAY.includes(
+                fixtures[fixtures.length - 1].fixture.status.short
+              )
+                ? t("nextGames")
+                : t("previousGames")}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
           <StickyTable borderWidth={0}>
             <Row>
               <Cell style={cellStyles}>&nbsp;</Cell>
@@ -253,7 +254,8 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
             </Row>
           </StickyTable>
         </CardContent>
-      </Card>
+        </Card>
+      </div>
     )
   }
 
