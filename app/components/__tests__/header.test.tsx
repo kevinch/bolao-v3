@@ -1,25 +1,34 @@
 import { screen } from "@testing-library/dom"
 import { render } from "@testing-library/react"
 import { vi } from "vitest"
+
 import Header from "../header"
 
-// Mock Clerk auth
-const mockAuth = vi.fn()
-vi.mock("@clerk/nextjs/server", () => ({
-  auth: () => mockAuth(),
-}))
-
-// Mock Clerk UserButton
+const mockUseAuth = vi.fn()
 vi.mock("@clerk/nextjs", () => ({
-  UserButton: () => <div data-testid="user-button">User Button</div>,
+  useAuth: () => mockUseAuth(),
 }))
 
-// Mock UserButtonWrapper component
+vi.mock("@/i18n/navigation", () => ({
+  Link: ({
+    children,
+    href,
+    ...props
+  }: {
+    children: React.ReactNode
+    href: string
+    [key: string]: unknown
+  }) => (
+    <a href={href} {...props}>
+      {children}
+    </a>
+  ),
+}))
+
 vi.mock("../userButtonWrapper", () => ({
   default: () => <div data-testid="user-button">User Button</div>,
 }))
 
-// Mock LogoSvg component
 vi.mock("../logoSvg", () => ({
   default: ({ size }: { size: number }) => (
     <div data-testid="logo-svg" data-size={size}>
@@ -28,12 +37,15 @@ vi.mock("../logoSvg", () => ({
   ),
 }))
 
-describe("Header", () => {
-  it("should render logo link", async () => {
-    mockAuth.mockResolvedValue({ userId: null })
+vi.mock("../backgroundStripes", () => ({
+  default: () => null,
+}))
 
-    const HeaderComponent = await Header()
-    render(HeaderComponent)
+describe("Header", () => {
+  it("should render logo link", () => {
+    mockUseAuth.mockReturnValue({ isLoaded: true, userId: null })
+
+    render(<Header />)
 
     const logoLink = screen.getByTestId("logo-link-header")
     expect(logoLink).toBeInTheDocument()
@@ -42,31 +54,36 @@ describe("Header", () => {
     expect(logoLink.className).toContain("transition-colors")
   })
 
-  it("should render LogoSvg with correct props", async () => {
-    mockAuth.mockResolvedValue({ userId: null })
+  it("should render LogoSvg with correct props", () => {
+    mockUseAuth.mockReturnValue({ isLoaded: true, userId: null })
 
-    const HeaderComponent = await Header()
-    render(HeaderComponent)
+    render(<Header />)
 
     const logoSvg = screen.getByTestId("logo-svg")
     expect(logoSvg).toBeInTheDocument()
     expect(logoSvg).toHaveAttribute("data-size", "80")
   })
 
-  it("should render UserButton when user is authenticated", async () => {
-    mockAuth.mockResolvedValue({ userId: "user123" })
+  it("should render UserButton when user is authenticated", () => {
+    mockUseAuth.mockReturnValue({ isLoaded: true, userId: "user123" })
 
-    const HeaderComponent = await Header()
-    render(HeaderComponent)
+    render(<Header />)
 
     expect(screen.getByTestId("user-button")).toBeInTheDocument()
   })
 
-  it("should not render UserButton when user is not authenticated", async () => {
-    mockAuth.mockResolvedValue({ userId: null })
+  it("should not render UserButton when user is not authenticated", () => {
+    mockUseAuth.mockReturnValue({ isLoaded: true, userId: null })
 
-    const HeaderComponent = await Header()
-    render(HeaderComponent)
+    render(<Header />)
+
+    expect(screen.queryByTestId("user-button")).not.toBeInTheDocument()
+  })
+
+  it("should not render UserButton before Clerk auth is loaded", () => {
+    mockUseAuth.mockReturnValue({ isLoaded: false, userId: "user123" })
+
+    render(<Header />)
 
     expect(screen.queryByTestId("user-button")).not.toBeInTheDocument()
   })

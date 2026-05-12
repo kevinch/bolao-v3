@@ -1,7 +1,6 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { useRouter } from "next/navigation"
 import { useTransition } from "react"
 import { GlobeIcon } from "@radix-ui/react-icons"
 import { Button } from "@/components/ui/button"
@@ -12,18 +11,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { locales, type Locale } from "@/i18n/config"
+import { usePathname, useRouter } from "@/i18n/navigation"
 
 export default function LanguageSwitcher() {
   const t = useTranslations("language")
   const router = useRouter()
+  const pathname = usePathname()
   const [isPending, startTransition] = useTransition()
 
   function setLocale(locale: Locale) {
-    // next-intl: persist locale on user action (not during render)
-    // eslint-disable-next-line react-hooks/immutability -- document.cookie is the intended API
-    document.cookie = `NEXT_LOCALE=${locale};path=/;max-age=31536000`
     startTransition(() => {
-      router.refresh()
+      router.replace(pathname, { locale })
     })
   }
 

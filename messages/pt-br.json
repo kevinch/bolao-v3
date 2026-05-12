@@ -102,10 +102,10 @@
     "confirm": "Confirmar"
   },
   "bolaoLinks": {
-    "bet": "APOSTAR",
-    "standings": "CLASSIFICAÇÃO",
-    "results": "RESULTADOS",
-    "lead": "LIDERANÇA"
+    "bet": "APOSTA",
+    "standings": "TABELA",
+    "results": "PLACAR",
+    "lead": "RANKING"
   },
   "betPage": {
     "errorMissingUser": "Erro ao carregar a página de apostas. Usuário não encontrado.",

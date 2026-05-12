@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect, vi, beforeEach } from "vitest"
-import Page from "@/app/sign-in/[[...sign-in]]/page"
+import Page from "@/app/[locale]/sign-in/[[...sign-in]]/page"
 import { useSearchParams } from "next/navigation"
 import { SESSION_STORAGE_INVITE_KEY } from "@/app/lib/utils"
 

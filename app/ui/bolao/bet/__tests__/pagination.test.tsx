@@ -7,19 +7,24 @@ const mockUsePathname = vi.fn()
 const mockUseSearchParams = vi.fn()
 
 vi.mock("next/navigation", () => ({
-  usePathname: () => mockUsePathname(),
   useSearchParams: () => mockUseSearchParams(),
 }))
 
-// Mock Next.js Link
-vi.mock("next/link", () => ({
-  default: ({
+vi.mock("@/i18n/navigation", () => ({
+  Link: ({
     children,
     href,
+    ...props
   }: {
     children: React.ReactNode
     href: string
-  }) => <a href={href}>{children}</a>,
+    [key: string]: unknown
+  }) => (
+    <a href={href} {...props}>
+      {children}
+    </a>
+  ),
+  usePathname: () => mockUsePathname(),
 }))
 
 describe("Pagination", () => {

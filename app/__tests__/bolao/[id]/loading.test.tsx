@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect, vi } from "vitest"
-import Loading from "@/app/bolao/[id]/loading"
+import Loading from "@/app/[locale]/bolao/[id]/loading"
 
 // Mock dependencies
 vi.mock("@/app/ui/skeletons", () => ({

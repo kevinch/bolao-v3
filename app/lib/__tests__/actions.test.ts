@@ -5,14 +5,19 @@ vi.mock("@vercel/postgres", () => ({
   sql: vi.fn(),
 }))
 
-// Mock next/navigation
-vi.mock("next/navigation", () => ({
+// Mock next-intl server (navigate)
+vi.mock("next-intl/server", () => ({
+  getLocale: vi.fn(),
+}))
+
+// Mock intl-aware redirect
+vi.mock("@/i18n/navigation", () => ({
   redirect: vi.fn(),
 }))
 
-// Mock next/cache
-vi.mock("next/cache", () => ({
-  revalidatePath: vi.fn(),
+// Mock home route revalidation
+vi.mock("../revalidate-home", () => ({
+  revalidateHomeRoutes: vi.fn(),
 }))
 
 // Mock @clerk/nextjs/server
@@ -43,8 +48,9 @@ import {
   deleteBet,
 } from "../actions"
 import { sql } from "@vercel/postgres"
-import { redirect } from "next/navigation"
-import { revalidatePath } from "next/cache"
+import { redirect as intlRedirect } from "@/i18n/navigation"
+import { getLocale } from "next-intl/server"
+import { revalidateHomeRoutes } from "../revalidate-home"
 import { auth } from "@clerk/nextjs/server"
 import { fetchLeague } from "../data"
 import { getCurrentSeasonObject } from "../utils"
@@ -93,21 +99,23 @@ describe("actions", () => {
   })
 
   describe("navigate", () => {
-    it("should call redirect with the provided path", async () => {
+    it("should call intl redirect with path and locale", async () => {
       const path = "/dashboard"
+      vi.mocked(getLocale).mockResolvedValue("en")
 
       await navigate(path)
 
-      expect(redirect).toHaveBeenCalledWith(path)
+      expect(intlRedirect).toHaveBeenCalledWith({ href: path, locale: "en" })
     })
 
     it("should handle different paths", async () => {
       const paths = ["/", "/admin", "/bolao/123", "/results"]
+      vi.mocked(getLocale).mockResolvedValue("en")
 
       for (const path of paths) {
-        vi.mocked(redirect).mockClear()
+        vi.mocked(intlRedirect).mockClear()
         await navigate(path)
-        expect(redirect).toHaveBeenCalledWith(path)
+        expect(intlRedirect).toHaveBeenCalledWith({ href: path, locale: "en" })
       }
     })
   })
@@ -259,7 +267,7 @@ describe("actions", () => {
       expect(name).toBe("Updated Name")
       expect(bolaoId).toBe("bolao-1")
       expect(result).toEqual({ success: true })
-      expect(revalidatePath).toHaveBeenCalledWith("/")
+      expect(revalidateHomeRoutes).toHaveBeenCalled()
     })
 
     it("should handle database errors", async () => {
@@ -274,7 +282,7 @@ describe("actions", () => {
         success: false,
         message: "Database Error: failed to update a bolao.",
       })
-      expect(revalidatePath).not.toHaveBeenCalled()
+      expect(revalidateHomeRoutes).not.toHaveBeenCalled()
     })
   })
 
@@ -455,7 +463,7 @@ describe("actions", () => {
         message: "bolao deleted",
         success: true,
       })
-      expect(revalidatePath).toHaveBeenCalledWith("/")
+      expect(revalidateHomeRoutes).toHaveBeenCalled()
     })
 
     it("should handle database errors", async () => {
@@ -467,7 +475,7 @@ describe("actions", () => {
         message: "Database Error: failed to delete a bolao.",
         success: false,
       })
-      expect(revalidatePath).not.toHaveBeenCalled()
+      expect(revalidateHomeRoutes).not.toHaveBeenCalled()
     })
 
     it("should return RETURNING data", async () => {
@@ -477,7 +485,7 @@ describe("actions", () => {
       const result = await deleteBolao("bolao-1")
 
       expect(result.data).toEqual(deletedData)
-      expect(revalidatePath).toHaveBeenCalledWith("/")
+      expect(revalidateHomeRoutes).toHaveBeenCalled()
     })
   })
 

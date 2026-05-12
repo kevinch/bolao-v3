@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 import { fetchBolao, fetchUserBolao } from "@/app/lib/data"
 import PageTitle from "@/app/components/pageTitle"
 import { auth } from "@clerk/nextjs/server"

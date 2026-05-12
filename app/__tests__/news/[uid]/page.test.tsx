@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect, vi, beforeEach } from "vitest"
-import NewsPost from "@/app/news/[uid]/page"
+import NewsPost from "@/app/[locale]/news/[uid]/page"
 import { createClient } from "@/prismicio"
 
 // Mock dependencies
