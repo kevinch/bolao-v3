@@ -112,6 +112,9 @@
     "errorNoData": "Error while loading the bet page. No data.",
     "nextGames": "Next games",
     "previousGames": "Previous games",
+    "bettingAs": "Betting as",
+    "selectPlayer": "Select player",
+    "selectPlayerToBetAs": "Select player to bet as",
     "loading": "loading..."
   },
   "resultsPage": {
