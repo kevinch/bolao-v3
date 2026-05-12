@@ -5,7 +5,11 @@ import {
   fetchFixtures,
   fetchUsersBets,
 } from "@/app/lib/data"
-import { sortFixtures, cleanRounds } from "@/app/lib/utils"
+import {
+  sortFixtures,
+  cleanRounds,
+  pickCurrentRoundFromApiCurrent,
+} from "@/app/lib/utils"
 import { Bet, UserBolao, PlayersData } from "@/app/lib/definitions"
 import { clerkClient } from "@clerk/nextjs/server"
 
@@ -60,7 +64,11 @@ export async function getData({
     current: true,
   })
 
-  const currentRound = currentRoundObj[0] || allRounds[allRounds.length - 1]
+  const currentRound = pickCurrentRoundFromApiCurrent(
+    currentRoundObj,
+    allRounds,
+    "first"
+  )
 
   let isFirstRound: boolean = false
   let isLastRound: boolean = false

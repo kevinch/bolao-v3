@@ -130,6 +130,25 @@ export const cleanRounds = (rounds: string[]): string[] => {
   )
 }
 
+/**
+ * `fixtures/rounds?current=true` can return labels we strip from the season list (e.g. relegation).
+ * Choose the first or last label still allowed after {@link cleanRounds}, else the last cleaned round.
+ */
+export function pickCurrentRoundFromApiCurrent(
+  apiCurrentLabels: string[],
+  cleanedSeasonRounds: string[],
+  strategy: "first" | "last"
+): string | undefined {
+  const allowed = cleanRounds(apiCurrentLabels)
+  const fromApi =
+    strategy === "first"
+      ? allowed[0]
+      : allowed.length > 0
+        ? allowed[allowed.length - 1]
+        : undefined
+  return fromApi ?? cleanedSeasonRounds[cleanedSeasonRounds.length - 1]
+}
+
 export const INITIAL_BET_VALUE = "."
 
 export const findBetObj = ({
