@@ -13,11 +13,12 @@ async function TableLead({ data }: TableProps) {
   const t = await getTranslations("leadPage")
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("title")}</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <div className="max-md:mx-[calc((100dvw-100%)/-2)] md:mx-0">
+      <Card className="max-md:rounded-none max-md:border-x-0 max-md:shadow-none md:rounded-xl md:border-x md:shadow-sm">
+        <CardHeader className="p-4 md:p-6">
+          <CardTitle>{t("title")}</CardTitle>
+        </CardHeader>
+        <CardContent>
         <table className="w-full text-xs">
           <thead className="uppercase">
             <tr>
@@ -73,8 +74,9 @@ async function TableLead({ data }: TableProps) {
             })}
           </tbody>
         </table>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   )
 }
 

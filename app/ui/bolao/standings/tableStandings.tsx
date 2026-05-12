@@ -92,25 +92,28 @@ async function TableStandings({ standingsLeague }: TableProps) {
 
   if (!standings || standings.length === 0) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("title")}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-center text-slate-500 py-8">
-            {t("noStandings")}
-          </div>
-        </CardContent>
-      </Card>
+      <div className="max-md:mx-[calc((100dvw-100%)/-2)] md:mx-0">
+        <Card className="max-md:rounded-none max-md:border-x-0 max-md:shadow-none md:rounded-xl md:border-x md:shadow-sm">
+          <CardHeader className="p-4 md:p-6">
+            <CardTitle>{t("title")}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-center text-slate-500 py-8">
+              {t("noStandings")}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     )
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{t("title")}</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <div className="max-md:mx-[calc((100dvw-100%)/-2)] md:mx-0">
+      <Card className="max-md:rounded-none max-md:border-x-0 max-md:shadow-none md:rounded-xl md:border-x md:shadow-sm">
+        <CardHeader className="p-4 md:p-6">
+          <CardTitle>{t("title")}</CardTitle>
+        </CardHeader>
+        <CardContent>
         {standingsLeague.standings.map(
           (standingGroup: StandingsGroup, i: number) => (
             <table
@@ -217,8 +220,9 @@ async function TableStandings({ standingsLeague }: TableProps) {
             )
           })}
         </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   )
 }
 
