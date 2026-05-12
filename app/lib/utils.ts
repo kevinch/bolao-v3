@@ -120,6 +120,8 @@ const ROUNDS_TO_REMOVE: RegExp[] = [
   /^Play-offs$/,
   /^\d+(?:st|nd|rd|th) Qualifying Round$/,
   /^Qualification Round \d+$/,
+  // API uses singular + suffixes, e.g. "Relegation round - quarter-finals"
+  /^Relegation round/i,
 ]
 
 export const cleanRounds = (rounds: string[]): string[] => {
