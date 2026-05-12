@@ -5,6 +5,7 @@ import {
   formatDateFixtures,
   formatDateNews,
   cleanRounds,
+  pickCurrentRoundFromApiCurrent,
   findBetObj,
   isNil,
   getEmailUsername,
@@ -253,6 +254,50 @@ describe("utils", () => {
       const result = cleanRounds([])
 
       expect(result).toEqual([])
+    })
+  })
+
+  describe("pickCurrentRoundFromApiCurrent", () => {
+    const season = ["Matchday 34", "Matchday 35", "Matchday 36"]
+
+    it("uses first allowed API current label (strategy first)", () => {
+      expect(
+        pickCurrentRoundFromApiCurrent(
+          ["Relegation round - quarter-finals", "Matchday 35"],
+          season,
+          "first"
+        )
+      ).toBe("Matchday 35")
+    })
+
+    it("uses last allowed API current label (strategy last)", () => {
+      expect(
+        pickCurrentRoundFromApiCurrent(
+          ["Matchday 34", "Relegation round - quarter-finals"],
+          season,
+          "last"
+        )
+      ).toBe("Matchday 34")
+    })
+
+    it("falls back to last cleaned season round when API current is only excluded labels", () => {
+      expect(
+        pickCurrentRoundFromApiCurrent(
+          ["Relegation round - semi-finals"],
+          season,
+          "first"
+        )
+      ).toBe("Matchday 36")
+    })
+
+    it("falls back when API returns no current labels", () => {
+      expect(pickCurrentRoundFromApiCurrent([], season, "first")).toBe(
+        "Matchday 36"
+      )
+    })
+
+    it("returns empty string when there are no cleaned season rounds", () => {
+      expect(pickCurrentRoundFromApiCurrent([], [], "first")).toBe("")
     })
   })
 
