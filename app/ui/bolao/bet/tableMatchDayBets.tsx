@@ -26,106 +26,113 @@ async function TableMatchDayBets({
 
   if (fixtures) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            {STATUSES_OPEN_TO_PLAY.includes(
-              fixtures[fixtures.length - 1].fixture.status.short
-            )
-              ? t("nextGames")
-              : t("previousGames")}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {fixtures.map((fixtureData: FixtureData, i: number) => {
-            const statusShort = fixtureData.fixture.status.short
+      <div className="max-md:mx-[calc((100dvw-100%)/-2)] md:mx-0">
+        <Card
+          className={clsx(
+            "max-md:rounded-none max-md:border-x-0 max-md:shadow-none",
+            "md:rounded-xl md:border-x md:shadow-sm"
+          )}
+        >
+          <CardHeader className="p-4 md:p-6">
+            <CardTitle>
+              {STATUSES_OPEN_TO_PLAY.includes(
+                fixtures[fixtures.length - 1].fixture.status.short
+              )
+                ? t("nextGames")
+                : t("previousGames")}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {fixtures.map((fixtureData: FixtureData, i: number) => {
+              const statusShort = fixtureData.fixture.status.short
 
-            const fixtureClosed = !STATUSES_OPEN_TO_PLAY.includes(statusShort)
-            const disabled = !isAdmin && fixtureClosed
+              const fixtureClosed = !STATUSES_OPEN_TO_PLAY.includes(statusShort)
+              const disabled = !isAdmin && fixtureClosed
 
-            const fixtureId = fixtureData.fixture.id.toString()
-            const homeBet: Bet | null = findBetObj({
-              bets,
-              fixtureId,
-              type: "home",
-            })
+              const fixtureId = fixtureData.fixture.id.toString()
+              const homeBet: Bet | null = findBetObj({
+                bets,
+                fixtureId,
+                type: "home",
+              })
 
-            const awayBet: Bet | null = findBetObj({
-              bets,
-              fixtureId,
-              type: "away",
-            })
+              const awayBet: Bet | null = findBetObj({
+                bets,
+                fixtureId,
+                type: "away",
+              })
 
-            return (
-              <div
-                key={fixtureId}
-                className={clsx("py-4", {
-                  "bg-slate-50": i % 2 !== 0,
-                })}
-              >
-                <div className="flex justify-center content-center">
-                  <ButtonsBet
-                    key={`${userBolaoId}_${fixtureId}_home_${homeBet?.id || "new"}`}
-                    fixtureId={fixtureId}
-                    type="home"
-                    userBolaoId={userBolaoId}
-                    betValue={homeBet?.value}
-                    betId={homeBet?.id}
-                    disabled={disabled}
-                  />
-
-                  <TeamCodeLogo
-                    logoSrc={fixtureData.teams.home.logo}
-                    name={fixtureData.teams.home.name}
-                  />
-
-                  <div className="flex flex-col items-center">
-                    <FixtureDate
-                      date={fixtureData.fixture.date.toString()}
-                      status={fixtureData.fixture.status}
-                      locale={locale}
+              return (
+                <div
+                  key={fixtureId}
+                  className={clsx("py-4", {
+                    "bg-slate-50": i % 2 !== 0,
+                  })}
+                >
+                  <div className="flex justify-center content-center">
+                    <ButtonsBet
+                      key={`${userBolaoId}_${fixtureId}_home_${homeBet?.id || "new"}`}
+                      fixtureId={fixtureId}
+                      type="home"
+                      userBolaoId={userBolaoId}
+                      betValue={homeBet?.value}
+                      betId={homeBet?.id}
+                      disabled={disabled}
                     />
-                    <div className="flex flex-row">
-                      <TeamScore
-                        score={fixtureData.score}
-                        goals={fixtureData.goals}
-                        type="home"
-                        status={statusShort}
-                      />
 
-                      <span className="mx-3 text-xs content-center">
-                        &times;
-                      </span>
+                    <TeamCodeLogo
+                      logoSrc={fixtureData.teams.home.logo}
+                      name={fixtureData.teams.home.name}
+                    />
 
-                      <TeamScore
-                        score={fixtureData.score}
-                        goals={fixtureData.goals}
-                        type="away"
-                        status={statusShort}
+                    <div className="flex flex-col items-center">
+                      <FixtureDate
+                        date={fixtureData.fixture.date.toString()}
+                        status={fixtureData.fixture.status}
+                        locale={locale}
                       />
+                      <div className="flex flex-row">
+                        <TeamScore
+                          score={fixtureData.score}
+                          goals={fixtureData.goals}
+                          type="home"
+                          status={statusShort}
+                        />
+
+                        <span className="mx-3 text-xs content-center">
+                          &times;
+                        </span>
+
+                        <TeamScore
+                          score={fixtureData.score}
+                          goals={fixtureData.goals}
+                          type="away"
+                          status={statusShort}
+                        />
+                      </div>
                     </div>
+
+                    <TeamCodeLogo
+                      logoSrc={fixtureData.teams.away.logo}
+                      name={fixtureData.teams.away.name}
+                    />
+
+                    <ButtonsBet
+                      key={`${userBolaoId}_${fixtureId}_away_${awayBet?.id || "new"}`}
+                      fixtureId={fixtureId}
+                      type="away"
+                      userBolaoId={userBolaoId}
+                      betValue={awayBet?.value}
+                      betId={awayBet?.id}
+                      disabled={disabled}
+                    />
                   </div>
-
-                  <TeamCodeLogo
-                    logoSrc={fixtureData.teams.away.logo}
-                    name={fixtureData.teams.away.name}
-                  />
-
-                  <ButtonsBet
-                    key={`${userBolaoId}_${fixtureId}_away_${awayBet?.id || "new"}`}
-                    fixtureId={fixtureId}
-                    type="away"
-                    userBolaoId={userBolaoId}
-                    betValue={awayBet?.value}
-                    betId={awayBet?.id}
-                    disabled={disabled}
-                  />
                 </div>
-              </div>
-            )
-          })}
-        </CardContent>
-      </Card>
+              )
+            })}
+          </CardContent>
+        </Card>
+      </div>
     )
   }
 
