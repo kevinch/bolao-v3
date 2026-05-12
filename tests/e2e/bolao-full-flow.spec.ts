@@ -28,6 +28,9 @@ test("Full bolão flow: create, navigate, and delete a bolão", async ({
   // Extract username from email for verification
   const expectedUsername = testEmail.split("@")[0]
 
+  // Unique name so this run does not collide with leftover bolões from earlier runs
+  const bolaoName = `my test e2e ${Date.now()}`
+
   // Navigate to home page
   await page.goto("http://localhost:3000/")
 
@@ -62,7 +65,7 @@ test("Full bolão flow: create, navigate, and delete a bolão", async ({
 
   // Fill in the bolão creation form
   await page.getByRole("textbox", { name: "Name:" }).click()
-  await page.getByRole("textbox", { name: "Name:" }).fill("my test e2e")
+  await page.getByRole("textbox", { name: "Name:" }).fill(bolaoName)
 
   // Select a competition (Serie A from Brazil)
   await page.getByRole("combobox").click()
@@ -80,13 +83,22 @@ test("Full bolão flow: create, navigate, and delete a bolão", async ({
   await page.getByTestId("logo-link-header").click()
 
   // Verify the newly created bolão appears on the home page
-  await expect(page.getByRole("heading", { name: "my test e2e" })).toBeVisible()
+  await expect(
+    page
+      .getByRole("tabpanel", { name: "Active bolões" })
+      .getByRole("heading", { name: bolaoName })
+  ).toBeVisible()
 
-  // Navigate to the Results page for the bolão
-  await page.getByRole("link", { name: "Results" }).click()
+  // Navigate to the Results page for this bolão (home can list multiple cards with "Results")
+  await page
+    .getByRole("tabpanel", { name: "Active bolões" })
+    .getByRole("heading", { name: bolaoName })
+    .locator("xpath=../..")
+    .getByRole("link", { name: "Results" })
+    .click()
 
   // Verify the Results page displays the bolão name and competition
-  await expect(page.getByText("my test e2eSerie A")).toBeVisible()
+  await expect(page.getByText(`${bolaoName}Serie A`)).toBeVisible()
 
   // Verify all navigation links are present on the Results page
   await expect(page.getByRole("link", { name: "BET" })).toBeVisible()
@@ -101,7 +113,7 @@ test("Full bolão flow: create, navigate, and delete a bolão", async ({
   await page.getByRole("link", { name: "BET" }).click()
 
   // Verify the BET page displays the bolão name and competition
-  await expect(page.getByText("my test e2eSerie A")).toBeVisible()
+  await expect(page.getByText(`${bolaoName}Serie A`)).toBeVisible()
 
   // Navigate to the STANDINGS page
   await page.getByRole("link", { name: "STANDINGS" }).click()
@@ -121,9 +133,11 @@ test("Full bolão flow: create, navigate, and delete a bolão", async ({
   await page.getByTestId("logo-link-header").click()
 
   // Clean up: Delete the test bolão
-  // Open the dropdown menu for the bolão card
+  // Open the dropdown menu for this bolão's card only
   await page
     .getByRole("tabpanel", { name: "Active bolões" })
+    .getByRole("heading", { name: bolaoName })
+    .locator("xpath=../..")
     .getByRole("button")
     .click()
 
