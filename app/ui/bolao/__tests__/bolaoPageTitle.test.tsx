@@ -142,7 +142,7 @@ describe("BolaoPageTitle", () => {
       expect(logoContainer).toBeInTheDocument()
     })
 
-    it("should use silhouette emblem for 2026 FIFA World Cup (league id 1)", () => {
+    it("should use football-logos.cc SVG for 2026 FIFA World Cup (league id 1)", () => {
       const bolaoWc2026: Bolao = {
         ...mockBolao,
         year: 2026,
@@ -157,7 +157,10 @@ describe("BolaoPageTitle", () => {
       )
 
       const logo = screen.getByTestId("league-logo")
-      expect(logo).toHaveAttribute("src", "/logos/fwc-2026-emblem-without-trophy.svg")
+      expect(logo).toHaveAttribute(
+        "src",
+        "/logos/tournaments_fifa-world-cup-2026.football-logos.cc.svg"
+      )
       expect(logo.tagName).toBe("IMG")
     })
 

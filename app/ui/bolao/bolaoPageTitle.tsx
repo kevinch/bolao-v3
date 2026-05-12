@@ -3,9 +3,9 @@ import Image from "next/image"
 import BolaoYearBadge from "@/app/components/bolaoYearBadge"
 import type { Bolao } from "@/app/lib/definitions"
 
-/** Temporary: silhouette emblem (transparent) instead of API-Sports thumbnail for the 2026 tournament. */
-const FIFA_WORLD_CUP_2026_SILHOUETTE_LOGO =
-  "/logos/fwc-2026-emblem-without-trophy.svg"
+/** Temporary: tournament SVG (football-logos.cc) instead of API-Sports thumbnail for the 2026 tournament. */
+const FIFA_WORLD_CUP_2026_LOGO =
+  "/logos/tournaments_fifa-world-cup-2026.football-logos.cc.svg"
 
 function is2026FifaWorldCup(bolao: Bolao, leagueName: string | undefined) {
   if (bolao.year !== 2026) return false
@@ -22,9 +22,7 @@ type Props = {
 
 function BolaoPageTitle({ leagueName, leagueLogo, bolao }: Props) {
   const useWc2026Silhouette = is2026FifaWorldCup(bolao, leagueName)
-  const logoSrc = useWc2026Silhouette
-    ? FIFA_WORLD_CUP_2026_SILHOUETTE_LOGO
-    : leagueLogo
+  const logoSrc = useWc2026Silhouette ? FIFA_WORLD_CUP_2026_LOGO : leagueLogo
 
   return (
     <PageTitle center={true}>
@@ -34,8 +32,8 @@ function BolaoPageTitle({ leagueName, leagueLogo, bolao }: Props) {
             <img
               src={logoSrc}
               alt={`${leagueName ?? "2026 FIFA World Cup"}'s logo`}
-              width={47}
-              height={72}
+              width={227}
+              height={351}
               className="h-[4.5rem] w-auto"
               data-testid="league-logo"
             />
