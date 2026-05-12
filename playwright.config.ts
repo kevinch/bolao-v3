@@ -29,6 +29,14 @@ export default defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: "http://localhost:3000",
+    /**
+     * next-intl picks `pt-br` when Accept-Language starts with `pt` (see i18n/request.ts).
+     * E2E assertions use English copy, so pin locale + header for deterministic runs on any host/CI.
+     */
+    locale: "en-US",
+    extraHTTPHeaders: {
+      "Accept-Language": "en-US,en;q=0.9",
+    },
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
   },
