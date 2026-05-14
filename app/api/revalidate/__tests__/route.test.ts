@@ -28,6 +28,9 @@ describe("api/revalidate route", () => {
     )
 
     expect(response.status).toBe(500)
+    expect(response.headers.get("cache-control")).toBe(
+      "private, no-store, max-age=0"
+    )
     await expect(response.json()).resolves.toEqual({
       error: "REVALIDATE_SECRET is not configured.",
     })
@@ -44,6 +47,9 @@ describe("api/revalidate route", () => {
     )
 
     expect(response.status).toBe(401)
+    expect(response.headers.get("cache-control")).toBe(
+      "private, no-store, max-age=0"
+    )
     await expect(response.json()).resolves.toEqual({
       error: "Unauthorized.",
     })
@@ -62,6 +68,9 @@ describe("api/revalidate route", () => {
     )
 
     expect(response.status).toBe(200)
+    expect(response.headers.get("cache-control")).toBe(
+      "private, no-store, max-age=0"
+    )
     expect(revalidateTag).toHaveBeenCalledWith("prismic", { expire: 0 })
     expect(revalidatePath).not.toHaveBeenCalled()
 
@@ -87,6 +96,9 @@ describe("api/revalidate route", () => {
     )
 
     expect(response.status).toBe(200)
+    expect(response.headers.get("cache-control")).toBe(
+      "private, no-store, max-age=0"
+    )
     expect(revalidateTag).toHaveBeenCalledTimes(2)
     expect(revalidateTag).toHaveBeenNthCalledWith(1, "bolao:123", {
       expire: 0,

@@ -1,6 +1,8 @@
 import { revalidatePath, revalidateTag } from "next/cache"
 import { NextResponse } from "next/server"
 
+import { applyNoStoreHeaders } from "../cacheHeaders"
+
 type RevalidateRequestBody = {
   secret?: string
   tags?: string[]
@@ -34,9 +36,11 @@ export async function POST(request: Request) {
   const expectedSecret = process.env.REVALIDATE_SECRET
 
   if (!expectedSecret) {
-    return NextResponse.json(
-      { error: "REVALIDATE_SECRET is not configured." },
-      { status: 500 }
+    return applyNoStoreHeaders(
+      NextResponse.json(
+        { error: "REVALIDATE_SECRET is not configured." },
+        { status: 500 }
+      )
     )
   }
 
@@ -44,7 +48,9 @@ export async function POST(request: Request) {
     request.headers.get("x-revalidate-secret") || body.secret || ""
 
   if (providedSecret !== expectedSecret) {
-    return NextResponse.json({ error: "Unauthorized." }, { status: 401 })
+    return applyNoStoreHeaders(
+      NextResponse.json({ error: "Unauthorized." }, { status: 401 })
+    )
   }
 
   const tags = normalizeStringArray(body.tags)
@@ -54,10 +60,12 @@ export async function POST(request: Request) {
   tagsToRevalidate.forEach(expireTag)
   paths.forEach((path) => revalidatePath(path))
 
-  return NextResponse.json({
-    revalidated: true,
-    now: Date.now(),
-    tags: tagsToRevalidate,
-    paths,
-  })
+  return applyNoStoreHeaders(
+    NextResponse.json({
+      revalidated: true,
+      now: Date.now(),
+      tags: tagsToRevalidate,
+      paths,
+    })
+  )
 }
