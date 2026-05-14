@@ -1,5 +1,6 @@
 "use client" // keep this to trigger the popovers on mobile
 
+import { useEffect, useMemo, useState } from "react"
 import Image from "next/image"
 import {
   Tooltip,
@@ -23,15 +24,29 @@ const formatTeamCode = (name: string) =>
   name.toUpperCase().replace(" ", "").slice(0, 3)
 
 function TeamCodeLogo({ name, logoSrc }: Props) {
-  const triggerElement = (
-    <Image
-      width={100} // Placeholder width
-      height={100} // Placeholder height
-      className="max-h-5 max-w-5 object-contain"
-      src={logoSrc}
-      alt={`${name}'s logo`}
-    />
-  )
+  const [imageError, setImageError] = useState(false)
+  const teamCode = useMemo(() => formatTeamCode(name), [name])
+  const fallbackLabel = teamCode.charAt(0) || "?"
+
+  useEffect(() => {
+    setImageError(false)
+  }, [logoSrc])
+
+  const triggerElement =
+    imageError || !logoSrc ? (
+      <span className="inline-flex h-5 w-5 items-center justify-center rounded-sm bg-slate-200 text-[10px] font-semibold text-slate-500">
+        {fallbackLabel}
+      </span>
+    ) : (
+      <Image
+        width={100} // Placeholder width
+        height={100} // Placeholder height
+        className="max-h-5 max-w-5 object-contain"
+        src={logoSrc}
+        alt={`${name}'s logo`}
+        onError={() => setImageError(true)}
+      />
+    )
 
   if (isBrowser) {
     return (
@@ -44,7 +59,7 @@ function TeamCodeLogo({ name, logoSrc }: Props) {
             </Tooltip>
           </TooltipProvider>
         </span>
-        <span className="text-sm text-center">{formatTeamCode(name)}</span>
+        <span className="text-sm text-center">{teamCode}</span>
       </span>
     )
   }
@@ -54,7 +69,7 @@ function TeamCodeLogo({ name, logoSrc }: Props) {
       <PopoverTrigger asChild>
         <button className="flex items-center justify-center flex-col mx-3">
           {triggerElement}
-          <span className="text-sm text-center">{formatTeamCode(name)}</span>
+          <span className="text-sm text-center">{teamCode}</span>
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-auto">

@@ -1,11 +1,17 @@
-import { render, screen } from "@testing-library/react"
+import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, it, expect, vi } from "vitest"
 import TeamCodeLogo from "../teamCodeLogo"
 
 // Mock Next.js Image
 vi.mock("next/image", () => ({
-  default: ({ src, alt, className }: any) => (
-    <img src={src} alt={alt} className={className} data-testid="team-logo" />
+  default: ({ src, alt, className, onError }: any) => (
+    <img
+      src={src}
+      alt={alt}
+      className={className}
+      onError={onError}
+      data-testid="team-logo"
+    />
   ),
 }))
 
@@ -135,6 +141,24 @@ describe("TeamCodeLogo", () => {
 
       const logo = screen.getByTestId("team-logo")
       expect(logo).toBeInTheDocument()
+    })
+
+    it("should show a fallback when the logo fails to load", () => {
+      render(<TeamCodeLogo name="Saint Etienne" logoSrc="/broken-logo.png" />)
+
+      fireEvent.error(screen.getByTestId("team-logo"))
+
+      expect(screen.queryByTestId("team-logo")).not.toBeInTheDocument()
+      expect(screen.getByText("S")).toBeInTheDocument()
+      expect(screen.getByText("SAI")).toBeInTheDocument()
+    })
+
+    it("should show a fallback when the logo source is empty", () => {
+      render(<TeamCodeLogo name="Saint Etienne" logoSrc="" />)
+
+      expect(screen.queryByTestId("team-logo")).not.toBeInTheDocument()
+      expect(screen.getByText("S")).toBeInTheDocument()
+      expect(screen.getByText("SAI")).toBeInTheDocument()
     })
   })
 
