@@ -3,19 +3,8 @@ import { render } from "@testing-library/react"
 import { vi } from "vitest"
 import Header from "../header"
 
-// Mock Clerk auth
-const mockAuth = vi.fn()
-vi.mock("@clerk/nextjs/server", () => ({
-  auth: () => mockAuth(),
-}))
-
-// Mock Clerk UserButton
-vi.mock("@clerk/nextjs", () => ({
-  UserButton: () => <div data-testid="user-button">User Button</div>,
-}))
-
-// Mock UserButtonWrapper component
-vi.mock("../userButtonWrapper", () => ({
+// Mock HeaderUserActions component
+vi.mock("../headerUserActions", () => ({
   default: () => <div data-testid="user-button">User Button</div>,
 }))
 
@@ -29,11 +18,8 @@ vi.mock("../logoSvg", () => ({
 }))
 
 describe("Header", () => {
-  it("should render logo link", async () => {
-    mockAuth.mockResolvedValue({ userId: null })
-
-    const HeaderComponent = await Header()
-    render(HeaderComponent)
+  it("should render logo link", () => {
+    render(<Header />)
 
     const logoLink = screen.getByTestId("logo-link-header")
     expect(logoLink).toBeInTheDocument()
@@ -42,32 +28,17 @@ describe("Header", () => {
     expect(logoLink.className).toContain("transition-colors")
   })
 
-  it("should render LogoSvg with correct props", async () => {
-    mockAuth.mockResolvedValue({ userId: null })
-
-    const HeaderComponent = await Header()
-    render(HeaderComponent)
+  it("should render LogoSvg with correct props", () => {
+    render(<Header />)
 
     const logoSvg = screen.getByTestId("logo-svg")
     expect(logoSvg).toBeInTheDocument()
     expect(logoSvg).toHaveAttribute("data-size", "80")
   })
 
-  it("should render UserButton when user is authenticated", async () => {
-    mockAuth.mockResolvedValue({ userId: "user123" })
-
-    const HeaderComponent = await Header()
-    render(HeaderComponent)
+  it("should render header user actions", () => {
+    render(<Header />)
 
     expect(screen.getByTestId("user-button")).toBeInTheDocument()
-  })
-
-  it("should not render UserButton when user is not authenticated", async () => {
-    mockAuth.mockResolvedValue({ userId: null })
-
-    const HeaderComponent = await Header()
-    render(HeaderComponent)
-
-    expect(screen.queryByTestId("user-button")).not.toBeInTheDocument()
   })
 })
