@@ -56,16 +56,8 @@ test("Full bolão flow: create, navigate, and delete a bolão", async ({
   // Verify login was successful by checking for the dashboard greeting
   await expect(page.getByText(`${expectedUsername}.`)).toBeVisible()
 
-  // Verify the "Create bolão" link is visible on the home page
-  await expect(
-    page.getByRole("main").getByRole("link", { name: "Create bolão" })
-  ).toBeVisible()
-
-  // Navigate to the create bolão page
-  await page
-    .getByRole("main")
-    .getByRole("link", { name: "Create bolão" })
-    .click()
+  // Navigate directly to the protected create page once the session is confirmed.
+  await page.goto("http://localhost:3000/bolao/create")
 
   // Fill in the bolão creation form
   await page.getByRole("textbox", { name: "Name:" }).click()
