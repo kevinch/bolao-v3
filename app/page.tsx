@@ -1,12 +1,9 @@
-import { Suspense } from "react"
 import { getTranslations } from "next-intl/server"
-import BoloesList from "@/app/ui/home/boloesList"
-import { currentUser } from "@clerk/nextjs/server"
 import PageTitle from "./components/pageTitle"
-import { BoloesListSkeleton } from "@/app/ui/skeletons"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import InviteRedirector from "@/app/components/InviteRedirector"
+import HomeHeroActions from "@/app/components/homeHeroActions"
 
 // ISR: revalidate cached page every 5 minutes
 export const revalidate = 300
@@ -14,29 +11,8 @@ export const revalidate = 300
 const sectionSpaceing = "mb-18"
 
 async function Home() {
-  const user = await currentUser()
   const t = await getTranslations("home")
-
-  if (user) {
-    return (
-      <main>
-        <InviteRedirector />
-        <PageTitle>
-          {t("greeting")}
-          <br />
-          <span className="font-bold">
-            {user.username
-              ? `${user.username}.`
-              : user.emailAddresses[0].emailAddress.split("@")[0]}
-          </span>
-        </PageTitle>
-
-        <Suspense fallback={<BoloesListSkeleton />}>
-          <BoloesList />
-        </Suspense>
-      </main>
-    )
-  }
+  const tCommon = await getTranslations("common")
 
   return (
     <main className="max-w-4xl mx-auto px-4">
@@ -53,14 +29,12 @@ async function Home() {
           {t("tagline3")}
         </p>
 
-        <div className="flex items-center justify-center gap-4 mb-4">
-          <Button asChild>
-            <Link href="/sign-up">{t("getStarted")}</Link>
-          </Button>
-          <Button asChild variant="secondary">
-            <Link href="/sign-in">{t("login")}</Link>
-          </Button>
-        </div>
+        <HomeHeroActions
+          getStartedLabel={t("getStarted")}
+          loginLabel={t("login")}
+          dashboardLabel={t("dashboard")}
+          createBolaoLabel={tCommon("createBolao")}
+        />
 
         <Link
           href="/about"
