@@ -1,11 +1,18 @@
-import { render, screen } from "@testing-library/react"
+import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, it, expect, vi } from "vitest"
 import TeamCodeLogo from "../teamCodeLogo"
 
 // Mock Next.js Image
 vi.mock("next/image", () => ({
-  default: ({ src, alt, className }: any) => (
-    <img src={src} alt={alt} className={className} data-testid="team-logo" />
+  default: ({ src, alt, className, onError, onLoad }: any) => (
+    <img
+      src={src}
+      alt={alt}
+      className={className}
+      onError={onError}
+      onLoad={onLoad}
+      data-testid="team-logo"
+    />
   ),
 }))
 
@@ -136,6 +143,32 @@ describe("TeamCodeLogo", () => {
       const logo = screen.getByTestId("team-logo")
       expect(logo).toBeInTheDocument()
     })
+
+    it("should show the fallback immediately while the logo is still loading", () => {
+      render(<TeamCodeLogo name="Saint Etienne" logoSrc="/slow-logo.png" />)
+
+      expect(screen.getByTestId("team-logo")).toBeInTheDocument()
+      expect(screen.getByText("S")).toBeInTheDocument()
+      expect(screen.getByText("SAI")).toBeInTheDocument()
+    })
+
+    it("should show a fallback when the logo fails to load", () => {
+      render(<TeamCodeLogo name="Saint Etienne" logoSrc="/broken-logo.png" />)
+
+      fireEvent.error(screen.getByTestId("team-logo"))
+
+      expect(screen.queryByTestId("team-logo")).not.toBeInTheDocument()
+      expect(screen.getByText("S")).toBeInTheDocument()
+      expect(screen.getByText("SAI")).toBeInTheDocument()
+    })
+
+    it("should show a fallback when the logo source is empty", () => {
+      render(<TeamCodeLogo name="Saint Etienne" logoSrc="" />)
+
+      expect(screen.queryByTestId("team-logo")).not.toBeInTheDocument()
+      expect(screen.getByText("S")).toBeInTheDocument()
+      expect(screen.getByText("SAI")).toBeInTheDocument()
+    })
   })
 
   describe("Different Team Names", () => {
@@ -215,9 +248,10 @@ describe("TeamCodeLogo", () => {
     })
 
     it("should handle single character team names", () => {
-      render(<TeamCodeLogo name="A" logoSrc="/logo.png" />)
+      const { container } = render(<TeamCodeLogo name="A" logoSrc="/logo.png" />)
 
-      expect(screen.getByText("A")).toBeInTheDocument()
+      const teamCode = container.querySelector(".text-sm.text-center")
+      expect(teamCode).toHaveTextContent("A")
     })
   })
 

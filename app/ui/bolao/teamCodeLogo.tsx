@@ -1,5 +1,6 @@
 "use client" // keep this to trigger the popovers on mobile
 
+import { useMemo, useState } from "react"
 import Image from "next/image"
 import {
   Tooltip,
@@ -23,14 +24,33 @@ const formatTeamCode = (name: string) =>
   name.toUpperCase().replace(" ", "").slice(0, 3)
 
 function TeamCodeLogo({ name, logoSrc }: Props) {
+  const [failedLogoSrc, setFailedLogoSrc] = useState<string | null>(null)
+  const [loadedLogoSrc, setLoadedLogoSrc] = useState<string | null>(null)
+  const teamCode = useMemo(() => formatTeamCode(name), [name])
+  const fallbackLabel = teamCode.charAt(0) || "?"
+  const shouldRenderImage = Boolean(logoSrc) && failedLogoSrc !== logoSrc
+  const isImageLoaded = loadedLogoSrc === logoSrc
+
   const triggerElement = (
-    <Image
-      width={100} // Placeholder width
-      height={100} // Placeholder height
-      className="max-h-5 max-w-5 object-contain"
-      src={logoSrc}
-      alt={`${name}'s logo`}
-    />
+    <span className="relative inline-flex h-5 w-5 items-center justify-center">
+      <span
+        aria-hidden="true"
+        className="inline-flex h-5 w-5 items-center justify-center rounded-sm bg-slate-200 text-[10px] font-semibold text-slate-500"
+      >
+        {fallbackLabel}
+      </span>
+      {shouldRenderImage && (
+        <Image
+          width={100} // Placeholder width
+          height={100} // Placeholder height
+          className={`absolute inset-0 max-h-5 max-w-5 object-contain ${isImageLoaded ? "opacity-100" : "opacity-0"}`}
+          src={logoSrc}
+          alt={`${name}'s logo`}
+          onLoad={() => setLoadedLogoSrc(logoSrc)}
+          onError={() => setFailedLogoSrc(logoSrc)}
+        />
+      )}
+    </span>
   )
 
   if (isBrowser) {
@@ -44,7 +64,7 @@ function TeamCodeLogo({ name, logoSrc }: Props) {
             </Tooltip>
           </TooltipProvider>
         </span>
-        <span className="text-sm text-center">{formatTeamCode(name)}</span>
+        <span className="text-sm text-center">{teamCode}</span>
       </span>
     )
   }
@@ -54,7 +74,7 @@ function TeamCodeLogo({ name, logoSrc }: Props) {
       <PopoverTrigger asChild>
         <button className="flex items-center justify-center flex-col mx-3">
           {triggerElement}
-          <span className="text-sm text-center">{formatTeamCode(name)}</span>
+          <span className="text-sm text-center">{teamCode}</span>
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-auto">

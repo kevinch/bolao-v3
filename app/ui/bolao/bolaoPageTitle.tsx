@@ -28,23 +28,14 @@ function BolaoPageTitle({ leagueName, leagueLogo, bolao }: Props) {
     <PageTitle center={true}>
       {logoSrc && (
         <div className="flex justify-center mb-6">
-          {useWc2026Silhouette ? (
-            <img
-              src={logoSrc}
-              alt={`${leagueName ?? "2026 FIFA World Cup"}'s logo`}
-              width={227}
-              height={351}
-              className="h-[4.5rem] w-auto"
-              data-testid="league-logo"
-            />
-          ) : (
-            <Image
-              alt={`${leagueName}'s logo`}
-              src={logoSrc}
-              width={60}
-              height={60}
-            />
-          )}
+          <Image
+            alt={`${leagueName ?? "2026 FIFA World Cup"}'s logo`}
+            src={logoSrc}
+            width={useWc2026Silhouette ? 227 : 60}
+            height={useWc2026Silhouette ? 351 : 60}
+            className={useWc2026Silhouette ? "h-[4.5rem] w-auto" : undefined}
+            data-testid="league-logo"
+          />
         </div>
       )}
 
