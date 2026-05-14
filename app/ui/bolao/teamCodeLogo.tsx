@@ -1,6 +1,6 @@
 "use client" // keep this to trigger the popovers on mobile
 
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import Image from "next/image"
 import {
   Tooltip,
@@ -24,29 +24,34 @@ const formatTeamCode = (name: string) =>
   name.toUpperCase().replace(" ", "").slice(0, 3)
 
 function TeamCodeLogo({ name, logoSrc }: Props) {
-  const [imageError, setImageError] = useState(false)
+  const [failedLogoSrc, setFailedLogoSrc] = useState<string | null>(null)
+  const [loadedLogoSrc, setLoadedLogoSrc] = useState<string | null>(null)
   const teamCode = useMemo(() => formatTeamCode(name), [name])
   const fallbackLabel = teamCode.charAt(0) || "?"
+  const shouldRenderImage = Boolean(logoSrc) && failedLogoSrc !== logoSrc
+  const isImageLoaded = loadedLogoSrc === logoSrc
 
-  useEffect(() => {
-    setImageError(false)
-  }, [logoSrc])
-
-  const triggerElement =
-    imageError || !logoSrc ? (
-      <span className="inline-flex h-5 w-5 items-center justify-center rounded-sm bg-slate-200 text-[10px] font-semibold text-slate-500">
+  const triggerElement = (
+    <span className="relative inline-flex h-5 w-5 items-center justify-center">
+      <span
+        aria-hidden="true"
+        className="inline-flex h-5 w-5 items-center justify-center rounded-sm bg-slate-200 text-[10px] font-semibold text-slate-500"
+      >
         {fallbackLabel}
       </span>
-    ) : (
-      <Image
-        width={100} // Placeholder width
-        height={100} // Placeholder height
-        className="max-h-5 max-w-5 object-contain"
-        src={logoSrc}
-        alt={`${name}'s logo`}
-        onError={() => setImageError(true)}
-      />
-    )
+      {shouldRenderImage && (
+        <Image
+          width={100} // Placeholder width
+          height={100} // Placeholder height
+          className={`absolute inset-0 max-h-5 max-w-5 object-contain ${isImageLoaded ? "opacity-100" : "opacity-0"}`}
+          src={logoSrc}
+          alt={`${name}'s logo`}
+          onLoad={() => setLoadedLogoSrc(logoSrc)}
+          onError={() => setFailedLogoSrc(logoSrc)}
+        />
+      )}
+    </span>
+  )
 
   if (isBrowser) {
     return (
