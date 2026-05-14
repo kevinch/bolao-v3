@@ -10,6 +10,14 @@ vi.mock("@/app/lib/data", () => ({
   fetchRounds: vi.fn(),
   fetchFixtures: vi.fn(),
   fetchUserBets: vi.fn(),
+  fetchPlayersForBolao: vi.fn(async ({ usersBolao }) =>
+    usersBolao.map((userBolao: { id: string; user_id: string }) => ({
+      id: userBolao.user_id,
+      username: null,
+      email: `${userBolao.user_id}@example.com`,
+      userBolaoId: userBolao.id,
+    }))
+  ),
 }))
 
 vi.mock("@clerk/nextjs/server", () => ({
@@ -171,8 +179,8 @@ describe("controllerBet", () => {
         fetchRounds,
         fetchFixtures,
         fetchUserBets,
+        fetchPlayersForBolao,
       } = await import("@/app/lib/data")
-      const { clerkClient } = await import("@clerk/nextjs/server")
 
       vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
       vi.mocked(fetchUserBolao).mockResolvedValue(mockUserBolao as any)
@@ -183,24 +191,20 @@ describe("controllerBet", () => {
       vi.mocked(fetchRounds).mockResolvedValue(mockRounds)
       vi.mocked(fetchFixtures).mockResolvedValue([])
       vi.mocked(fetchUserBets).mockResolvedValue(mockBets)
-      vi.mocked(clerkClient).mockResolvedValue({
-        users: {
-          getUserList: vi.fn().mockResolvedValue({
-            data: [
-              {
-                id: "user-1",
-                username: "kevin",
-                emailAddresses: [{ emailAddress: "kevin@example.com" }],
-              },
-              {
-                id: "user-2",
-                username: "other",
-                emailAddresses: [{ emailAddress: "other@example.com" }],
-              },
-            ],
-          }),
+      vi.mocked(fetchPlayersForBolao).mockResolvedValue([
+        {
+          id: "user-1",
+          username: "kevin",
+          email: "kevin@example.com",
+          userBolaoId: "ub-1",
         },
-      } as any)
+        {
+          id: "user-2",
+          username: "other",
+          email: "other@example.com",
+          userBolaoId: "ub-2",
+        },
+      ])
 
       const result = await getData({
         bolaoId: "bolao-1",
@@ -235,8 +239,8 @@ describe("controllerBet", () => {
         fetchRounds,
         fetchFixtures,
         fetchUserBets,
+        fetchPlayersForBolao,
       } = await import("@/app/lib/data")
-      const { clerkClient } = await import("@clerk/nextjs/server")
 
       vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
       vi.mocked(fetchUserBolao).mockResolvedValue(mockUserBolao as any)
@@ -247,11 +251,7 @@ describe("controllerBet", () => {
       vi.mocked(fetchRounds).mockResolvedValue(mockRounds)
       vi.mocked(fetchFixtures).mockResolvedValue([])
       vi.mocked(fetchUserBets).mockResolvedValue(mockBets)
-      vi.mocked(clerkClient).mockResolvedValue({
-        users: {
-          getUserList: vi.fn().mockResolvedValue({ data: [] }),
-        },
-      } as any)
+      vi.mocked(fetchPlayersForBolao).mockResolvedValue([])
 
       const result = await getData({
         bolaoId: "bolao-1",
@@ -272,8 +272,8 @@ describe("controllerBet", () => {
         fetchRounds,
         fetchFixtures,
         fetchUserBets,
+        fetchPlayersForBolao,
       } = await import("@/app/lib/data")
-      const { clerkClient } = await import("@clerk/nextjs/server")
 
       vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
       vi.mocked(fetchUserBolao).mockResolvedValue(mockUserBolao as any)
@@ -284,11 +284,7 @@ describe("controllerBet", () => {
       vi.mocked(fetchRounds).mockResolvedValue(mockRounds)
       vi.mocked(fetchFixtures).mockResolvedValue([])
       vi.mocked(fetchUserBets).mockResolvedValue(mockBets)
-      vi.mocked(clerkClient).mockResolvedValue({
-        users: {
-          getUserList: vi.fn().mockResolvedValue({ data: [] }),
-        },
-      } as any)
+      vi.mocked(fetchPlayersForBolao).mockResolvedValue([])
 
       const result = await getData({
         bolaoId: "bolao-1",

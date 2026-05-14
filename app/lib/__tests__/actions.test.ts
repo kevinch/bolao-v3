@@ -13,6 +13,7 @@ vi.mock("next/navigation", () => ({
 // Mock next/cache
 vi.mock("next/cache", () => ({
   revalidatePath: vi.fn(),
+  revalidateTag: vi.fn(),
 }))
 
 // Mock @clerk/nextjs/server
@@ -44,7 +45,7 @@ import {
 } from "../actions"
 import { sql } from "@vercel/postgres"
 import { redirect } from "next/navigation"
-import { revalidatePath } from "next/cache"
+import { revalidatePath, revalidateTag } from "next/cache"
 import { auth } from "@clerk/nextjs/server"
 import { fetchLeague } from "../data"
 import { getCurrentSeasonObject } from "../utils"

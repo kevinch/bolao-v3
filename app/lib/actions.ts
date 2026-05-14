@@ -1,11 +1,16 @@
 "use server"
 
 import { sql } from "@vercel/postgres"
-import { revalidatePath } from "next/cache"
+import { revalidatePath, revalidateTag } from "next/cache"
 import { redirect } from "next/navigation"
 import { auth } from "@clerk/nextjs/server"
 import { fetchLeague } from "./data"
 import { getCurrentSeasonObject } from "./utils"
+import { cacheTags } from "./cache"
+
+function expireTag(tag: string) {
+  revalidateTag(tag, { expire: 0 })
+}
 import {
   BetResult,
   UpdateBolaoResult,
@@ -74,6 +79,10 @@ export async function createBolao(
     const userBolaoResult = await createUserBolao(insertedData.id)
 
     if (userBolaoResult.success) {
+      expireTag(cacheTags.bolao(insertedData.id))
+      expireTag(cacheTags.players(insertedData.id))
+      revalidatePath("/")
+
       return {
         success: true,
       }
@@ -109,6 +118,7 @@ export async function updateBolao({
       success: true,
     }
 
+    expireTag(cacheTags.bolao(bolaoId))
     revalidatePath("/")
 
     return result
@@ -139,6 +149,10 @@ export async function createUserBolao(
       user_id: data.rows[0].user_id,
       success: true,
     }
+
+    expireTag(cacheTags.bolao(String(bolaoId)))
+    expireTag(cacheTags.players(String(bolaoId)))
+    revalidatePath("/")
 
     return result
   } catch (error) {
@@ -213,6 +227,8 @@ export async function deleteBolao(bolaoId: string) {
 
     const data = result.rows
 
+    expireTag(cacheTags.bolao(bolaoId))
+    expireTag(cacheTags.players(bolaoId))
     revalidatePath("/")
 
     return {
