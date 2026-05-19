@@ -2,6 +2,8 @@ import Link from "next/link"
 import { getTranslations } from "next-intl/server"
 import PageTitle from "@/app/components/pageTitle"
 
+export const revalidate = 3600
+
 const pClasses = "mb-10"
 const h2Classes = "text-2xl mb-6 text-center"
 const linkClasses = "underline hover:no-underline"

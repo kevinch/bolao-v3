@@ -4,6 +4,7 @@ import {
   fetchRounds,
   fetchFixtures,
   fetchUsersBets,
+  fetchPlayersForBolao,
 } from "@/app/lib/data"
 import {
   sortFixtures,
@@ -11,7 +12,6 @@ import {
   pickCurrentRoundFromApiCurrent,
 } from "@/app/lib/utils"
 import { Bet, UserBolao, PlayersData } from "@/app/lib/definitions"
-import { clerkClient } from "@clerk/nextjs/server"
 
 export async function getData({
   bolaoId,
@@ -28,41 +28,24 @@ export async function getData({
   const year: number = bolao.year
   const leagueId: string = bolao.competition_id
 
-  // Fetch players infos
-  const userIds: string[] = usersBolao.map((el: UserBolao) => el.user_id)
-  const client = await clerkClient()
-  const users = await client.users.getUserList({ userId: userIds })
-
-  const players: PlayersData[] = []
-  users.data.map((el) => {
-    // TODO: fix the "any" type
-    const userBolaoObj: any = usersBolao.find(
-      (ub: UserBolao) => ub.user_id === el.id
-    )
-
-    const obj = {
-      id: el.id,
-      username: el.username,
-      email: el.emailAddresses[0].emailAddress,
-      userBolaoId: userBolaoObj.id,
-    }
-
-    players.push(obj)
-  })
-
-  // Fetch bets
   const userBoloesIds: string[] = usersBolao.map((el: UserBolao) => el.id)
-  const bets: Bet[] = await fetchUsersBets(userBoloesIds)
+  const [players, bets, allRoundsUncleaned, currentRoundObj]: [
+    PlayersData[],
+    Bet[],
+    string[],
+    string[],
+  ] = await Promise.all([
+    fetchPlayersForBolao({ bolaoId, usersBolao }),
+    fetchUsersBets(userBoloesIds),
+    fetchRounds({ leagueId, year }),
+    fetchRounds({
+      leagueId,
+      year,
+      current: true,
+    }),
+  ])
 
-  // Fetch rounds infos
-  const allRoundsUncleaned: string[] = await fetchRounds({ leagueId, year })
   const allRounds: string[] = cleanRounds(allRoundsUncleaned)
-
-  const currentRoundObj: string[] = await fetchRounds({
-    leagueId,
-    year,
-    current: true,
-  })
 
   const currentRound = pickCurrentRoundFromApiCurrent(
     currentRoundObj,

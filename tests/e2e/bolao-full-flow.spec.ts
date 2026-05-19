@@ -49,19 +49,15 @@ test("Full bolão flow: create, navigate, and delete a bolão", async ({
   await page.getByRole("textbox", { name: "Password" }).fill(testPassword)
   await page.getByRole("button", { name: "Continue" }).click()
 
-  // Verify login was successful by checking for the welcome message
+  // Signed-in users now land on the public home page first, then move to the dashboard.
+  await expect(page.getByRole("link", { name: "MY BOLÕES" })).toBeVisible()
+  await page.getByRole("link", { name: "MY BOLÕES" }).click()
+
+  // Verify login was successful by checking for the dashboard greeting
   await expect(page.getByText(`${expectedUsername}.`)).toBeVisible()
 
-  // Verify the "Create bolão" link is visible on the home page
-  await expect(
-    page.getByRole("main").getByRole("link", { name: "Create bolão" })
-  ).toBeVisible()
-
-  // Navigate to the create bolão page
-  await page
-    .getByRole("main")
-    .getByRole("link", { name: "Create bolão" })
-    .click()
+  // Navigate directly to the protected create page once the session is confirmed.
+  await page.goto("http://localhost:3000/bolao/create")
 
   // Fill in the bolão creation form
   await page.getByRole("textbox", { name: "Name:" }).click()
@@ -79,8 +75,8 @@ test("Full bolão flow: create, navigate, and delete a bolão", async ({
     openToastWithText(page, "The bolão was successfully created.")
   ).toBeVisible({ timeout: 15_000 })
 
-  // Navigate back to home page using the logo link in the header
-  await page.getByTestId("logo-link-header").click()
+  // Navigate back to the dashboard page where the user's bolões are listed
+  await page.goto("http://localhost:3000/dashboard")
 
   // Verify the newly created bolão appears on the home page
   await expect(
@@ -129,8 +125,8 @@ test("Full bolão flow: create, navigate, and delete a bolão", async ({
     page.getByRole("heading", { name: "Players lead" })
   ).toBeVisible()
 
-  // Navigate back to home page using the logo link
-  await page.getByTestId("logo-link-header").click()
+  // Navigate back to the dashboard page for cleanup
+  await page.goto("http://localhost:3000/dashboard")
 
   // Clean up: Delete the test bolão
   // Open the dropdown menu for this bolão's card only

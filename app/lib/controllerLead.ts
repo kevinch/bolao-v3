@@ -3,9 +3,9 @@ import {
   fetchUsersBolao,
   fetchFixtures,
   fetchUsersBets,
+  fetchPlayersForBolao,
 } from "@/app/lib/data"
 import { FixtureData, UserBolao, PlayersData, Bet } from "./definitions"
-import { clerkClient } from "@clerk/nextjs/server"
 
 export async function getData({ bolaoId }: { bolaoId: string }) {
   const [bolao, usersBolao] = await Promise.all([
@@ -16,34 +16,14 @@ export async function getData({ bolaoId }: { bolaoId: string }) {
   const year: number = bolao.year
   const leagueId: string = bolao.competition_id
 
-  // Fetch players infos
-  const userIds: string[] = usersBolao.map((el: UserBolao) => el.user_id)
-  const client = await clerkClient()
-  const users = await client.users.getUserList({ userId: userIds })
-
-  const players: PlayersData[] = []
-  users.data.map((el) => {
-    // TODO: fix the "any" type
-    const userBolaoObj: any = usersBolao.find(
-      (ub: UserBolao) => ub.user_id === el.id
-    )
-
-    const obj = {
-      id: el.id,
-      username: el.username,
-      email: el.emailAddresses[0].emailAddress,
-      userBolaoId: userBolaoObj.id,
-    }
-
-    players.push(obj)
-  })
-
-  // Fetch all fixtures
-  const fixtures: FixtureData[] = await fetchFixtures({ leagueId, year })
-
-  // Fetch bets
   const userBoloesIds: string[] = usersBolao.map((el: UserBolao) => el.id)
-  const bets: Bet[] = await fetchUsersBets(userBoloesIds)
+
+  const [players, fixtures, bets]: [PlayersData[], FixtureData[], Bet[]] =
+    await Promise.all([
+      fetchPlayersForBolao({ bolaoId, usersBolao }),
+      fetchFixtures({ leagueId, year }),
+      fetchUsersBets(userBoloesIds),
+    ])
 
   return {
     bolao,

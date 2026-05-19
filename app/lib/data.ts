@@ -2,9 +2,54 @@
 
 import { QueryResultRow } from "pg"
 import { sql } from "@vercel/postgres"
+import { clerkClient } from "@clerk/nextjs/server"
+import { unstable_cache } from "next/cache"
 import { FOOTBALL_API_SPORTS } from "./utils"
-import { Bolao, Bet, User } from "./definitions"
+import { Bolao, Bet, User, UserBolao, PlayersData } from "./definitions"
 import { FOOTBALL_API_SPORTS_LEAGUES } from "./utils"
+import { CACHE_REVALIDATE, cacheTags } from "./cache"
+
+type CachedPlayer = {
+  id: string
+  username: string | null
+  email: string
+}
+
+function getFootballHeaders(token: string) {
+  return {
+    "x-rapidapi-key": token,
+    "x-rapidapi-host": "v3.football.api-sports.io",
+  }
+}
+
+function createBolaoCacheKey(prefix: string, bolaoId: string) {
+  return [prefix, bolaoId]
+}
+
+async function fetchCachedClerkUsers(
+  bolaoId: string,
+  userIds: string[]
+): Promise<CachedPlayer[]> {
+  const normalizedUserIds = [...userIds].sort()
+
+  return unstable_cache(
+    async () => {
+      const client = await clerkClient()
+      const users = await client.users.getUserList({ userId: normalizedUserIds })
+
+      return users.data.map((user) => ({
+        id: user.id,
+        username: user.username,
+        email: user.emailAddresses[0]?.emailAddress || "",
+      }))
+    },
+    ["players", bolaoId, normalizedUserIds.join(":")],
+    {
+      revalidate: CACHE_REVALIDATE.players,
+      tags: [cacheTags.players(bolaoId)],
+    }
+  )()
+}
 
 export async function fetchBoloes() {
   try {
@@ -43,27 +88,36 @@ export async function fetchBoloesByUserId(userId: string) {
 
 export async function fetchBolao(bolaoId: string) {
   try {
-    const data: { rows: QueryResultRow[] } = await sql`SELECT *
-      FROM boloes
-      WHERE CAST(id AS VARCHAR) = ${bolaoId}
-    `
+    return await unstable_cache(
+      async () => {
+        const data: { rows: QueryResultRow[] } = await sql`SELECT *
+          FROM boloes
+          WHERE CAST(id AS VARCHAR) = ${bolaoId}
+        `
 
-    const row = data.rows[0]
+        const row = data.rows[0]
 
-    if (!row) {
-      throw new Error("No bolao found for the given ID.")
-    }
+        if (!row) {
+          throw new Error("No bolao found for the given ID.")
+        }
 
-    return {
-      id: row.id as string,
-      name: row.name as string,
-      competition_id: row.competition_id as string,
-      year: row.year as number,
-      start: row.start,
-      end: row.end,
-      created_by: row.created_by,
-      created_at: row.created_at,
-    }
+        return {
+          id: row.id as string,
+          name: row.name as string,
+          competition_id: row.competition_id as string,
+          year: row.year as number,
+          start: row.start,
+          end: row.end,
+          created_by: row.created_by,
+          created_at: row.created_at,
+        }
+      },
+      createBolaoCacheKey("bolao", bolaoId),
+      {
+        revalidate: CACHE_REVALIDATE.bolao,
+        tags: [cacheTags.bolao(bolaoId)],
+      }
+    )()
   } catch (error) {
     console.error("Database Error:", error)
     throw new Error("Failed to fetch bolao.")
@@ -113,21 +167,63 @@ export async function fetchUserBolao({
 
 export async function fetchUsersBolao(bolaoId: string) {
   try {
-    const data: { rows: QueryResultRow[] } = await sql`SELECT *
-      FROM user_bolao
-      WHERE CAST(bolao_id AS VARCHAR) = ${bolaoId}
-    `
+    return await unstable_cache(
+      async () => {
+        const data: { rows: QueryResultRow[] } = await sql`SELECT *
+          FROM user_bolao
+          WHERE CAST(bolao_id AS VARCHAR) = ${bolaoId}
+        `
 
-    const rows = data.rows
+        const rows = data.rows
 
-    if (!rows) {
-      throw new Error("No user bolões found for the given ID.")
-    }
+        if (!rows) {
+          throw new Error("No user bolões found for the given ID.")
+        }
 
-    return rows as []
+        return rows as UserBolao[]
+      },
+      createBolaoCacheKey("bolao-users", bolaoId),
+      {
+        revalidate: CACHE_REVALIDATE.bolao,
+        tags: [cacheTags.bolao(bolaoId)],
+      }
+    )()
   } catch (error) {
     console.error("Database Error:", error)
     throw new Error("Failed to fetch user bolões.")
+  }
+}
+
+export async function fetchPlayersForBolao({
+  bolaoId,
+  usersBolao,
+}: {
+  bolaoId: string
+  usersBolao: UserBolao[]
+}) {
+  if (usersBolao.length === 0) {
+    return [] as PlayersData[]
+  }
+
+  try {
+    const users = await fetchCachedClerkUsers(
+      bolaoId,
+      usersBolao.map((userBolao) => userBolao.user_id)
+    )
+
+    return users.map((user) => {
+      const userBolao = usersBolao.find((entry) => entry.user_id === user.id)
+
+      return {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        userBolaoId: userBolao?.id || "",
+      }
+    })
+  } catch (error) {
+    console.error("Clerk Error:", error)
+    throw new Error("Failed to fetch players.")
   }
 }
 
@@ -146,18 +242,16 @@ export async function fetchLeague(leagueId: number) {
     throw new Error("RAPID_API_KEY environment variable is not set")
   }
 
-  const myHeaders = new Headers()
-  myHeaders.append("x-rapidapi-key", token)
-  myHeaders.append("x-rapidapi-host", "v3.football.api-sports.io")
-
-  const requestOptions = {
-    method: "GET",
-    headers: myHeaders,
-  }
-
   const url = `${FOOTBALL_API_SPORTS}/leagues?id=${leagueId}`
 
-  const res = await fetch(url, requestOptions)
+  const res = await fetch(url, {
+    method: "GET",
+    headers: getFootballHeaders(token),
+    next: {
+      revalidate: CACHE_REVALIDATE.league,
+      tags: [cacheTags.league(leagueId)],
+    },
+  })
 
   if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary
@@ -186,21 +280,19 @@ export async function fetchRounds({
     throw new Error("RAPID_API_KEY environment variable is not set")
   }
 
-  const myHeaders = new Headers()
-  myHeaders.append("x-rapidapi-key", token)
-  myHeaders.append("x-rapidapi-host", "v3.football.api-sports.io")
-
-  const requestOptions = {
-    method: "GET",
-    headers: myHeaders,
-  }
-
   let url = `${FOOTBALL_API_SPORTS}/fixtures/rounds?league=${leagueId}&season=${year}`
   if (current) {
     url += "&current=true"
   }
 
-  const res = await fetch(url, requestOptions)
+  const res = await fetch(url, {
+    method: "GET",
+    headers: getFootballHeaders(token),
+    next: {
+      revalidate: CACHE_REVALIDATE.rounds,
+      tags: [cacheTags.rounds({ leagueId, year, current })],
+    },
+  })
 
   if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary
@@ -229,15 +321,6 @@ export async function fetchFixtures({
     throw new Error("RAPID_API_KEY environment variable is not set")
   }
 
-  const myHeaders = new Headers()
-  myHeaders.append("x-rapidapi-key", token)
-  myHeaders.append("x-rapidapi-host", "v3.football.api-sports.io")
-
-  const requestOptions = {
-    method: "GET",
-    headers: myHeaders,
-  }
-
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
   let url = `${FOOTBALL_API_SPORTS}/fixtures?league=${leagueId}&season=${year}&timezone=${timezone}`
@@ -245,7 +328,16 @@ export async function fetchFixtures({
     url += `&round=${round}`
   }
 
-  const res = await fetch(url, requestOptions)
+  const res = await fetch(url, {
+    method: "GET",
+    headers: getFootballHeaders(token),
+    next: {
+      revalidate: round
+        ? CACHE_REVALIDATE.fixtures
+        : CACHE_REVALIDATE.fixturesAll,
+      tags: [cacheTags.fixtures({ leagueId, year, round })],
+    },
+  })
 
   if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary
@@ -320,18 +412,16 @@ export async function fetchStandings({
     throw new Error("RAPID_API_KEY environment variable is not set")
   }
 
-  const myHeaders = new Headers()
-  myHeaders.append("x-rapidapi-key", token)
-  myHeaders.append("x-rapidapi-host", "v3.football.api-sports.io")
-
-  const requestOptions = {
-    method: "GET",
-    headers: myHeaders,
-  }
-
   const url = `${FOOTBALL_API_SPORTS}/standings?league=${leagueId}&season=${year}`
 
-  const res = await fetch(url, requestOptions)
+  const res = await fetch(url, {
+    method: "GET",
+    headers: getFootballHeaders(token),
+    next: {
+      revalidate: CACHE_REVALIDATE.standings,
+      tags: [cacheTags.standings({ leagueId, year })],
+    },
+  })
 
   if (!res.ok) {
     throw new Error("Failed to fetch data")

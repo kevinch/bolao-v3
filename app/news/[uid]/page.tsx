@@ -1,5 +1,7 @@
 import { createClient } from "@/prismicio"
 
+export const revalidate = 3600
+
 async function NewsPost(props: any) {
   const params = await props.params;
   const client = createClient()

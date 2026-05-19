@@ -2,6 +2,8 @@ import { createClient } from "@/prismicio"
 import PageTitle from "../components/pageTitle"
 import NewsList from "../ui/news/newsList"
 
+export const revalidate = 3600
+
 async function News() {
   const client = createClient()
   const documents = await client.getAllByType("news", {

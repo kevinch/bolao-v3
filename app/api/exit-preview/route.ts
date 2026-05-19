@@ -1,5 +1,6 @@
 import { exitPreview } from "@prismicio/next"
+import { applyNoStoreHeaders } from "../cacheHeaders"
 
-export function GET() {
-  return exitPreview()
+export async function GET() {
+  return await applyNoStoreHeaders(exitPreview())
 }

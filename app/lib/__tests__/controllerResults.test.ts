@@ -9,6 +9,14 @@ vi.mock("@/app/lib/data", () => ({
   fetchRounds: vi.fn(),
   fetchFixtures: vi.fn(),
   fetchUsersBets: vi.fn(),
+  fetchPlayersForBolao: vi.fn(async ({ usersBolao }) =>
+    usersBolao.map((userBolao: { id: string; user_id: string }) => ({
+      id: userBolao.user_id,
+      username: null,
+      email: `${userBolao.user_id}@example.com`,
+      userBolaoId: userBolao.id,
+    }))
+  ),
 }))
 
 // Mock Clerk client
@@ -95,8 +103,18 @@ describe("controllerResults", () => {
 
   const mockRounds = ["Round 1", "Round 2", "Round 3", "Round 4"]
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks()
+
+    const { fetchPlayersForBolao } = await import("@/app/lib/data")
+    vi.mocked(fetchPlayersForBolao).mockImplementation(async ({ usersBolao }) =>
+      usersBolao.map((userBolao: { id: string; user_id: string }) => ({
+        id: userBolao.user_id,
+        username: null,
+        email: `${userBolao.user_id}@example.com`,
+        userBolaoId: userBolao.id,
+      }))
+    )
   })
 
   describe("getData", () => {
@@ -425,46 +443,27 @@ describe("controllerResults", () => {
       expect(result.currentRound).toBe("Round 4") // Last round
     })
 
-    it("should fetch players from Clerk with correct user IDs", async () => {
+    it("should fetch players with the bolao membership payload", async () => {
       const {
         fetchBolao,
         fetchUsersBolao,
         fetchRounds,
         fetchFixtures,
         fetchUsersBets,
+        fetchPlayersForBolao,
       } = await import("@/app/lib/data")
-      const { clerkClient } = await import("@clerk/nextjs/server")
-
-      const mockGetUserList = vi.fn().mockResolvedValue({
-        data: [
-          {
-            id: "user-1",
-            username: null,
-            emailAddresses: [{ emailAddress: "user1@example.com" }],
-          },
-          {
-            id: "user-2",
-            username: null,
-            emailAddresses: [{ emailAddress: "user2@example.com" }],
-          },
-        ],
-      })
-
-      const mockClient = {
-        users: { getUserList: mockGetUserList },
-      }
 
       vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
       vi.mocked(fetchUsersBolao).mockResolvedValue(mockUsersBolao as any)
       vi.mocked(fetchRounds).mockResolvedValue(mockRounds)
       vi.mocked(fetchFixtures).mockResolvedValue([])
       vi.mocked(fetchUsersBets).mockResolvedValue([])
-      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
 
       await getData({ bolaoId: "bolao-1" })
 
-      expect(mockGetUserList).toHaveBeenCalledWith({
-        userId: ["user-1", "user-2"],
+      expect(fetchPlayersForBolao).toHaveBeenCalledWith({
+        bolaoId: "bolao-1",
+        usersBolao: mockUsersBolao,
       })
     })
 
@@ -475,29 +474,22 @@ describe("controllerResults", () => {
         fetchRounds,
         fetchFixtures,
         fetchUsersBets,
+        fetchPlayersForBolao,
       } = await import("@/app/lib/data")
-      const { clerkClient } = await import("@clerk/nextjs/server")
-
-      const mockClient = {
-        users: {
-          getUserList: vi.fn().mockResolvedValue({
-            data: [
-              {
-                id: "user-1",
-                username: null,
-                emailAddresses: [{ emailAddress: "john@example.com" }],
-              },
-            ],
-          }),
-        },
-      }
 
       vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
       vi.mocked(fetchUsersBolao).mockResolvedValue([mockUsersBolao[0]] as any)
       vi.mocked(fetchRounds).mockResolvedValue(mockRounds)
       vi.mocked(fetchFixtures).mockResolvedValue([])
       vi.mocked(fetchUsersBets).mockResolvedValue([])
-      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
+      vi.mocked(fetchPlayersForBolao).mockResolvedValue([
+        {
+          id: "user-1",
+          username: null,
+          email: "john@example.com",
+          userBolaoId: "ub-1",
+        },
+      ])
 
       const result = await getData({ bolaoId: "bolao-1" })
 
@@ -610,19 +602,18 @@ describe("controllerResults", () => {
       )
     })
 
-    it("should propagate errors from Clerk client", async () => {
-      const { fetchBolao, fetchUsersBolao, fetchRounds } =
+    it("should propagate errors from player fetching", async () => {
+      const { fetchBolao, fetchUsersBolao, fetchRounds, fetchPlayersForBolao } =
         await import("@/app/lib/data")
-      const { clerkClient } = await import("@clerk/nextjs/server")
-      const error = new Error("Clerk API error")
+      const error = new Error("Player fetch error")
 
       vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
       vi.mocked(fetchUsersBolao).mockResolvedValue(mockUsersBolao as any)
       vi.mocked(fetchRounds).mockResolvedValue(mockRounds)
-      vi.mocked(clerkClient).mockRejectedValue(error)
+      vi.mocked(fetchPlayersForBolao).mockRejectedValue(error)
 
       await expect(getData({ bolaoId: "bolao-1" })).rejects.toThrow(
-        "Clerk API error"
+        "Player fetch error"
       )
     })
 

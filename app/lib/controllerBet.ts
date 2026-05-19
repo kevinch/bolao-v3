@@ -5,6 +5,7 @@ import {
   fetchRounds,
   fetchFixtures,
   fetchUserBets,
+  fetchPlayersForBolao,
 } from "@/app/lib/data"
 import {
   sortFixtures,
@@ -12,26 +13,6 @@ import {
   pickCurrentRoundFromApiCurrent,
 } from "@/app/lib/utils"
 import { Bet, PlayersData, UserBolao } from "@/app/lib/definitions"
-import { clerkClient } from "@clerk/nextjs/server"
-
-async function getPlayers(usersBolao: UserBolao[]) {
-  const userIds: string[] = usersBolao.map((el: UserBolao) => el.user_id)
-  const client = await clerkClient()
-  const users = await client.users.getUserList({ userId: userIds })
-
-  return users.data.map((el) => {
-    const userBolaoObj = usersBolao.find(
-      (ub: UserBolao) => ub.user_id === el.id
-    )
-
-    return {
-      id: el.id,
-      username: el.username,
-      email: el.emailAddresses[0]?.emailAddress || "",
-      userBolaoId: userBolaoObj?.id || "",
-    }
-  })
-}
 
 export async function getData({
   bolaoId,
@@ -59,7 +40,7 @@ export async function getData({
 
   if (isAdmin) {
     const usersBolao: UserBolao[] = await fetchUsersBolao(bolaoId)
-    players = await getPlayers(usersBolao)
+    players = await fetchPlayersForBolao({ bolaoId, usersBolao })
 
     selectedUserBolao =
       usersBolao.find((el) => el.id === selectedUserBolaoId) || userBolao
