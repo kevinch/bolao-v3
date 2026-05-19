@@ -37,7 +37,7 @@ function TeamCodeLogo({ name, logoSrc }: Props) {
       {showFallback && (
         <span
           aria-hidden="true"
-          className="inline-flex h-5 w-5 items-center justify-center text-[10px] font-semibold text-slate-500"
+          className="inline-flex h-5 w-5 items-center justify-center rounded-sm bg-slate-200 text-[10px] font-semibold text-slate-500"
         >
           {fallbackLabel}
         </span>
