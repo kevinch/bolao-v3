@@ -30,15 +30,18 @@ function TeamCodeLogo({ name, logoSrc }: Props) {
   const fallbackLabel = teamCode.charAt(0) || "?"
   const shouldRenderImage = Boolean(logoSrc) && failedLogoSrc !== logoSrc
   const isImageLoaded = loadedLogoSrc === logoSrc
+  const showFallback = !shouldRenderImage || !isImageLoaded
 
   const triggerElement = (
     <span className="relative inline-flex h-5 w-5 items-center justify-center">
-      <span
-        aria-hidden="true"
-        className="inline-flex h-5 w-5 items-center justify-center rounded-sm bg-slate-200 text-[10px] font-semibold text-slate-500"
-      >
-        {fallbackLabel}
-      </span>
+      {showFallback && (
+        <span
+          aria-hidden="true"
+          className="inline-flex h-5 w-5 items-center justify-center rounded-sm bg-slate-200 text-[10px] font-semibold text-slate-500"
+        >
+          {fallbackLabel}
+        </span>
+      )}
       {shouldRenderImage && (
         <Image
           width={100} // Placeholder width
