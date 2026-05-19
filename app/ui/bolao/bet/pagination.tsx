@@ -1,7 +1,7 @@
 "use client"
 
-import Link from "next/link"
-import { usePathname, useSearchParams } from "next/navigation"
+import { Link, usePathname } from "@/i18n/navigation"
+import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { ChevronRightIcon, ChevronLeftIcon } from "@radix-ui/react-icons"
 

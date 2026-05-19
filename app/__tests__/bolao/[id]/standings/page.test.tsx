@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect, vi, beforeEach } from "vitest"
-import StandingsPage from "@/app/bolao/[id]/standings/page"
+import StandingsPage from "@/app/[locale]/bolao/[id]/standings/page"
 import { getData } from "@/app/lib/controllerStandings"
 
 // Mock dependencies

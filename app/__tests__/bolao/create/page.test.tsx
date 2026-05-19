@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect, vi, beforeEach } from "vitest"
-import CreateBolao from "@/app/bolao/create/page"
+import CreateBolao from "@/app/[locale]/bolao/create/page"
 import { fetchLeagues } from "@/app/lib/data"
 
 // Mock dependencies

@@ -1,48 +1,29 @@
-import { Suspense } from "react"
-import { getTranslations } from "next-intl/server"
-import BoloesList from "@/app/ui/home/boloesList"
-import { currentUser } from "@clerk/nextjs/server"
-import PageTitle from "./components/pageTitle"
-import { BoloesListSkeleton } from "@/app/ui/skeletons"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
-import InviteRedirector from "@/app/components/InviteRedirector"
+import { getTranslations, setRequestLocale } from "next-intl/server"
 
-// ISR: revalidate cached page every 5 minutes
+import InviteRedirector from "@/app/components/InviteRedirector"
+import PageTitle from "@/app/components/pageTitle"
+import { Button } from "@/components/ui/button"
+import { Link } from "@/i18n/navigation"
+
+/** ISR: edge + CDN can cache this public marketing document (no per-user SSR). */
 export const revalidate = 300
 
 const sectionSpaceing = "mb-18"
 
-async function Home() {
-  const user = await currentUser()
+type Props = {
+  params: Promise<{ locale: string }>
+}
+
+export default async function Home({ params }: Props) {
+  const { locale } = await params
+  setRequestLocale(locale)
+
   const t = await getTranslations("home")
-
-  if (user) {
-    return (
-      <main>
-        <InviteRedirector />
-        <PageTitle>
-          {t("greeting")}
-          <br />
-          <span className="font-bold">
-            {user.username
-              ? `${user.username}.`
-              : user.emailAddresses[0].emailAddress.split("@")[0]}
-          </span>
-        </PageTitle>
-
-        <Suspense fallback={<BoloesListSkeleton />}>
-          <BoloesList />
-        </Suspense>
-      </main>
-    )
-  }
 
   return (
     <main className="max-w-4xl mx-auto px-4">
       <InviteRedirector />
 
-      {/* Hero Section */}
       <div className={`text-center ${sectionSpaceing}`}>
         <PageTitle>{t("hero")}</PageTitle>
         <p className="text-xl text-gray-600 dark:text-gray-300 mt-4 mb-8">
@@ -70,7 +51,6 @@ async function Home() {
         </Link>
       </div>
 
-      {/* What is a Bolão? */}
       <section className={`${sectionSpaceing} text-center`}>
         <h2 className="text-2xl font-bold mb-4">{t("whatIsBolao")}</h2>
         <p className="text-gray-700 dark:text-gray-300 max-w-2xl mx-auto">
@@ -78,7 +58,6 @@ async function Home() {
         </p>
       </section>
 
-      {/* How it Works */}
       <section className={`${sectionSpaceing}`}>
         <h2 className="text-2xl font-bold mb-6 text-center">
           {t("howItWorks")}
@@ -108,7 +87,6 @@ async function Home() {
         </div>
       </section>
 
-      {/* Features */}
       <section className={`${sectionSpaceing}`}>
         <h2 className="text-2xl font-bold mb-6 text-center">{t("whyBolao")}</h2>
         <div className="grid md:grid-cols-2 gap-8 max-w-2xl mx-auto">
@@ -147,7 +125,6 @@ async function Home() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="text-center">
         <h2 className="text-2xl font-bold mb-4">{t("readyToStart")}</h2>
         <p className="text-gray-600 dark:text-gray-400 mb-6">
@@ -160,5 +137,3 @@ async function Home() {
     </main>
   )
 }
-
-export default Home

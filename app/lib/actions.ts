@@ -1,9 +1,12 @@
 "use server"
 
 import { sql } from "@vercel/postgres"
-import { revalidatePath } from "next/cache"
-import { redirect } from "next/navigation"
 import { auth } from "@clerk/nextjs/server"
+import { getLocale } from "next-intl/server"
+
+import { redirect as intlRedirect } from "@/i18n/navigation"
+
+import { revalidateHomeRoutes } from "./revalidate-home"
 import { fetchLeague } from "./data"
 import { getCurrentSeasonObject } from "./utils"
 import {
@@ -29,7 +32,8 @@ export async function createUser({ id, role }: { id: string; role: string }) {
 }
 
 export async function navigate(path: string) {
-  redirect(path)
+  const locale = await getLocale()
+  intlRedirect({ href: path, locale })
 }
 
 export async function createBolao(
@@ -109,7 +113,7 @@ export async function updateBolao({
       success: true,
     }
 
-    revalidatePath("/")
+    revalidateHomeRoutes()
 
     return result
   } catch (error) {
@@ -213,7 +217,7 @@ export async function deleteBolao(bolaoId: string) {
 
     const data = result.rows
 
-    revalidatePath("/")
+    revalidateHomeRoutes()
 
     return {
       data,

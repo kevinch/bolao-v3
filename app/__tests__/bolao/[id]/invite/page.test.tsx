@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect, vi, beforeEach } from "vitest"
-import InvitePage from "@/app/bolao/[id]/invite/page"
+import InvitePage from "@/app/[locale]/bolao/[id]/invite/page"
 import { fetchBolao, fetchUserBolao } from "@/app/lib/data"
 import { createUserBolao } from "@/app/lib/actions"
 import { auth } from "@clerk/nextjs/server"

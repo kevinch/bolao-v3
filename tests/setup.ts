@@ -61,6 +61,7 @@ vi.mock('next-intl/server', () => {
     },
     getLocale: async () => 'en',
     getMessages: async () => en,
+    setRequestLocale: vi.fn(),
   }
 })
 
@@ -87,6 +88,30 @@ vi.mock('next/navigation', () => {
       get: vi.fn(),
     }),
     usePathname: () => '/',
+  }
+})
+
+vi.mock('@/i18n/navigation', () => {
+  const React = require('react')
+  return {
+    Link: ({
+      children,
+      href,
+      ...props
+    }: {
+      children: React.ReactNode
+      href: string
+      [key: string]: unknown
+    }) => React.createElement('a', { href, ...props }, children),
+    redirect: vi.fn(),
+    usePathname: () => '/',
+    useRouter: () => ({
+      push: vi.fn(),
+      replace: vi.fn(),
+      prefetch: vi.fn(),
+      back: vi.fn(),
+    }),
+    getPathname: vi.fn(),
   }
 })
 

@@ -1,6 +1,6 @@
 import { createClient } from "@/prismicio"
-import PageTitle from "../components/pageTitle"
-import NewsList from "../ui/news/newsList"
+import PageTitle from "@/app/components/pageTitle"
+import NewsList from "@/app/ui/news/newsList"
 
 async function News() {
   const client = createClient()

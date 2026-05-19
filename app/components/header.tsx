@@ -1,12 +1,15 @@
-import { auth } from "@clerk/nextjs/server"
-import Link from "next/link"
+"use client"
 
-import LogoSvg from "./logoSvg"
+import { useAuth } from "@clerk/nextjs"
+
+import { Link } from "@/i18n/navigation"
+
 import BackgroundStripes from "./backgroundStripes"
+import LogoSvg from "./logoSvg"
 import UserButtonWrapper from "./userButtonWrapper"
 
-async function Header() {
-  const { userId }: { userId: string | null } = await auth()
+export default function Header() {
+  const { isLoaded, userId } = useAuth()
 
   return (
     <header>
@@ -14,17 +17,17 @@ async function Header() {
       <div className="flex justify-between mt-6">
         <div className="content-center">
           <Link
-            href={"/"}
+            href="/"
             data-testid="logo-link-header"
             className="inline-block text-muted-foreground transition-colors duration-150 ease-out [@media(hover:hover)_and_(pointer:fine)]:hover:text-foreground"
           >
             <LogoSvg size={80} />
           </Link>
         </div>
-        <div className="content-center">{userId && <UserButtonWrapper />}</div>
+        <div className="content-center">
+          {isLoaded && userId ? <UserButtonWrapper /> : null}
+        </div>
       </div>
     </header>
   )
 }
-
-export default Header

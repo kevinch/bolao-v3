@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/warm",
+      "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/",
+      "schedule": "0 12 * * *"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect, vi, beforeEach } from "vitest"
-import ResultsPage from "@/app/bolao/[id]/results/page"
+import ResultsPage from "@/app/[locale]/bolao/[id]/results/page"
 import { getData } from "@/app/lib/controllerResults"
 import { auth } from "@clerk/nextjs/server"
 

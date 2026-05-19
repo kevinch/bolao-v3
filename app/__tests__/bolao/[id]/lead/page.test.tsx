@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect, vi, beforeEach } from "vitest"
-import LeadPage from "@/app/bolao/[id]/lead/page"
+import LeadPage from "@/app/[locale]/bolao/[id]/lead/page"
 import { getData } from "@/app/lib/controllerLead"
 import { calcLead } from "@/app/lib/calcLeadFactory"
 
