@@ -10,8 +10,8 @@ import {
   cleanRounds,
   pickCurrentRoundFromApiCurrent,
 } from "@/app/lib/utils"
-import { Bet, UserBolao, PlayersData } from "@/app/lib/definitions"
-import { clerkClient } from "@clerk/nextjs/server"
+import { Bet, UserBolao } from "@/app/lib/definitions"
+import { getPlayersFromUsersBolao } from "./players"
 
 export async function getData({
   bolaoId,
@@ -28,27 +28,7 @@ export async function getData({
   const year: number = bolao.year
   const leagueId: string = bolao.competition_id
 
-  // Fetch players infos
-  const userIds: string[] = usersBolao.map((el: UserBolao) => el.user_id)
-  const client = await clerkClient()
-  const users = await client.users.getUserList({ userId: userIds })
-
-  const players: PlayersData[] = []
-  users.data.map((el) => {
-    // TODO: fix the "any" type
-    const userBolaoObj: any = usersBolao.find(
-      (ub: UserBolao) => ub.user_id === el.id
-    )
-
-    const obj = {
-      id: el.id,
-      username: el.username,
-      email: el.emailAddresses[0].emailAddress,
-      userBolaoId: userBolaoObj.id,
-    }
-
-    players.push(obj)
-  })
+  const players = await getPlayersFromUsersBolao(usersBolao)
 
   // Fetch bets
   const userBoloesIds: string[] = usersBolao.map((el: UserBolao) => el.id)

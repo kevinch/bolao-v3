@@ -465,6 +465,7 @@ describe("controllerResults", () => {
 
       expect(mockGetUserList).toHaveBeenCalledWith({
         userId: ["user-1", "user-2"],
+        limit: 2,
       })
     })
 
