@@ -98,7 +98,9 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
           <CardContent>
           <StickyTable borderWidth={0}>
             <Row>
-              <Cell style={cellStyles}>&nbsp;</Cell>
+              <Cell style={{ ...cellStyles, backgroundColor: "white" }}>
+                &nbsp;
+              </Cell>
               {players.map((player: PlayersData) => {
                 return (
                   <Cell style={cellStyles} key={player.id}>
