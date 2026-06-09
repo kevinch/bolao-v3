@@ -1,6 +1,5 @@
 import {
-  fetchBolao,
-  fetchUserBolao,
+  fetchBetPageContext,
   fetchUsersBolao,
   fetchRounds,
   fetchFixtures,
@@ -10,28 +9,43 @@ import {
   sortFixtures,
   cleanRounds,
   pickCurrentRoundFromApiCurrent,
+  isChampionPickLocked,
+  getChampionPickLockDate,
+  getTeamsFromFixtures,
 } from "@/app/lib/utils"
-import { Bet, PlayersData, UserBolao } from "@/app/lib/definitions"
+import { Bet, FixtureData, PlayersData, UserBolao } from "@/app/lib/definitions"
+import { getUserRole } from "./authRole"
 import { getPlayersFromUsersBolao } from "./players"
+
+function filterFixturesByRound(
+  fixtures: FixtureData[],
+  round: string
+): FixtureData[] {
+  return fixtures.filter(
+    (fixture) => fixture.league.round.toLowerCase() === round.toLowerCase()
+  )
+}
 
 export async function getData({
   bolaoId,
   roundParam,
   userId,
-  isAdmin = false,
   selectedUserBolaoId,
 }: {
   bolaoId: string
   roundParam?: string
   userId: string
-  isAdmin?: boolean
   selectedUserBolaoId?: string
 }) {
-  const [bolao, userBolao] = await Promise.all([
-    fetchBolao(bolaoId),
-    fetchUserBolao({ bolaoId, userId }),
-  ])
+  const context = await fetchBetPageContext({ bolaoId, userId })
 
+  if (!context) {
+    throw new Error("User is not a member of this bolao.")
+  }
+
+  const { bolao, userBolao, championPick: userChampionPick } = context
+  const userRole = await getUserRole(userId)
+  const isAdmin = userRole === "admin"
   const year: number = bolao.year
   const leagueId: string = bolao.competition_id
 
@@ -46,16 +60,15 @@ export async function getData({
       usersBolao.find((el) => el.id === selectedUserBolaoId) || userBolao
   }
 
-  const bets: Bet[] = await fetchUserBets(selectedUserBolao.id)
+  const [bets, allSeasonFixtures, allRoundsUncleaned, currentRoundObj] =
+    await Promise.all([
+      fetchUserBets(selectedUserBolao.id),
+      fetchFixtures({ leagueId, year }),
+      fetchRounds({ leagueId, year }),
+      fetchRounds({ leagueId, year, current: true }),
+    ])
 
-  const allRoundsUncleaned: string[] = await fetchRounds({ leagueId, year }) // HAS TO GO TO STORE
   const allRounds: string[] = cleanRounds(allRoundsUncleaned)
-
-  const currentRoundObj: string[] = await fetchRounds({
-    leagueId,
-    year,
-    current: true,
-  }) // HAS TO GO TO STORE
   const currentRound = pickCurrentRoundFromApiCurrent(
     currentRoundObj,
     allRounds,
@@ -65,8 +78,6 @@ export async function getData({
   let isFirstRound: boolean = false
   let isLastRound: boolean = false
 
-  // PARAM HANDLING FOR PAGINATION
-  // We use round as an index because there are spaces in the round names
   let round = currentRound
 
   if (roundParam) {
@@ -79,19 +90,15 @@ export async function getData({
     isFirstRound = currentRound === allRounds[0]
     isLastRound = currentRound === allRounds[allRounds.length - 1]
   }
-  // END
 
-  const unSortedFixtures = await fetchFixtures({
-    leagueId,
-    year,
-    round,
-  })
-  const fixtures = sortFixtures(unSortedFixtures)
+  const fixtures = sortFixtures(filterFixturesByRound(allSeasonFixtures, round))
 
   return {
     bolao,
     userBolao: selectedUserBolao,
     currentUserBolao: userBolao,
+    userRole,
+    isAdmin,
     currentRound: round,
     allRounds,
     fixtures,
@@ -99,5 +106,9 @@ export async function getData({
     isFirstRound,
     bets,
     players,
+    championPickTeams: getTeamsFromFixtures(allSeasonFixtures),
+    isChampionPickLocked: isChampionPickLocked(allSeasonFixtures),
+    championPickLockDate: getChampionPickLockDate(allSeasonFixtures),
+    userChampionPick,
   }
 }

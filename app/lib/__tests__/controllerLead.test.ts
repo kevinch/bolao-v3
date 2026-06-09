@@ -14,6 +14,8 @@ vi.mock("@/app/lib/data", () => ({
   fetchUsersBolao: vi.fn(),
   fetchFixtures: vi.fn(),
   fetchUsersBets: vi.fn(),
+  fetchChampionPicks: vi.fn(),
+  fetchLeague: vi.fn(),
 }))
 
 // Mock Clerk client
@@ -88,8 +90,13 @@ describe("controllerLead", () => {
     },
   ]
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks()
+    const { fetchChampionPicks, fetchLeague } = await import("@/app/lib/data")
+    vi.mocked(fetchChampionPicks).mockResolvedValue([])
+    vi.mocked(fetchLeague).mockResolvedValue({
+      seasons: [{ year: 2024, current: true, winner: null }],
+    } as any)
   })
 
   describe("getData", () => {

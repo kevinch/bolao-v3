@@ -4,7 +4,10 @@ import TableLead from "../tableLead"
 import type { LeadData } from "@/app/lib/definitions"
 
 // Helper to render async server component
-async function renderTableLead(props: { data: LeadData[] }) {
+async function renderTableLead(props: {
+  data: LeadData[]
+  isChampionPickLocked?: boolean
+}) {
   const Component = await TableLead(props)
   return render(Component)
 }
@@ -218,16 +221,16 @@ describe("TableLead", () => {
       expect(tbody).toBeInTheDocument()
     })
 
-    it("should have correct number of columns", async () => {
+    it("should have five columns including winner pick", async () => {
       const mockData: LeadData[] = [{ name: "Player", total: 100 }]
 
       const { container } = await renderTableLead({ data: mockData })
 
       const headerCells = container.querySelectorAll("thead th")
-      expect(headerCells).toHaveLength(4) // rank, player, score, needs
+      expect(headerCells).toHaveLength(5)
 
       const bodyCells = container.querySelectorAll("tbody tr:first-child td")
-      expect(bodyCells).toHaveLength(4)
+      expect(bodyCells).toHaveLength(5)
     })
   })
 
@@ -353,6 +356,44 @@ describe("TableLead", () => {
 
       // Card components render proper semantic structure
       expect(screen.getByText("Players lead")).toBeInTheDocument()
+    })
+  })
+
+  describe("Champion pick column", () => {
+    it("shows pick names when locked", async () => {
+      const mockData: LeadData[] = [
+        {
+          name: "Alice",
+          total: 100,
+          championPick: { id: 10, name: "Brazil", logo: "b.png" },
+        },
+      ]
+
+      await renderTableLead({ data: mockData, isChampionPickLocked: true })
+
+      expect(screen.getByText("Winner pick")).toBeInTheDocument()
+      expect(screen.getByText("Brazil")).toBeInTheDocument()
+    })
+
+    it("shows a hyphen before lock even when picks exist", async () => {
+      const mockData: LeadData[] = [
+        {
+          name: "Alice",
+          total: 100,
+          championPick: { id: 10, name: "Brazil", logo: "b.png" },
+        },
+      ]
+
+      const { container } = await renderTableLead({
+        data: mockData,
+        isChampionPickLocked: false,
+      })
+
+      expect(screen.getByText("Winner pick")).toBeInTheDocument()
+      expect(screen.queryByText("Brazil")).not.toBeInTheDocument()
+
+      const winnerPickCell = container.querySelector("tbody tr:first-child td:nth-child(3)")
+      expect(winnerPickCell?.textContent).toBe("—")
     })
   })
 })

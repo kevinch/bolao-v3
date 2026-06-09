@@ -115,7 +115,8 @@
     "bettingAs": "Betting as",
     "selectPlayer": "Select player",
     "selectPlayerToBetAs": "Select player to bet as",
-    "loading": "loading..."
+    "loading": "loading...",
+    "errorLoadFailed": "Could not load the bet page. Check your connection and try again."
   },
   "resultsPage": {
     "nextGames": "Next games",
@@ -137,5 +138,21 @@
     "player": "player",
     "score": "score",
     "needs": "needs"
+  },
+  "championPick": {
+    "label": "Winner (+500 pts)",
+    "placeholder": "Select a team — optional",
+    "selectTeam": "Select championship winner",
+    "statusUnlockedNoPick": "Pick the team you think will win. +500 pts if correct. Others' picks hidden until the first game.",
+    "statusUnlockedHasPick": "You picked {team}. Change until {date}.",
+    "statusLocked": "Picks locked. See everyone's picks on the Lead page.",
+    "statusWon": "{team} won! +500 bonus points.",
+    "statusLost": "{team} won. Your pick didn't match.",
+    "leadColumnHeader": "Winner pick",
+    "noPick": "—",
+    "saveSuccessTitle": "Pick saved",
+    "saveSuccessDescription": "{team} is your championship winner pick.",
+    "saveErrorTitle": "Could not save pick",
+    "saveErrorDescription": "Something went wrong while saving your pick. Please try again."
   }
 }

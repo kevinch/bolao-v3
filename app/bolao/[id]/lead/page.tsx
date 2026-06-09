@@ -1,20 +1,26 @@
 import TableLead from "@/app/ui/bolao/lead/tableLead"
-import { calcLead } from "@/app/lib/calcLeadFactory"
+import { calcLead, prepareLeadForDisplay } from "@/app/lib/calcLeadFactory"
 import BolaoPageTitle from "@/app/ui/bolao/bolaoPageTitle"
 import BolaoLinks from "@/app/ui/bolao/bolaoLinks"
 import { getData } from "@/app/lib/controllerLead"
 import { LeadData } from "@/app/lib/definitions"
 
 async function LeadPage(props: { params: Promise<{ id: string }> }) {
-  const params = await props.params;
+  const params = await props.params
   const data = await getData({ bolaoId: params.id })
 
   const unsortedLead: LeadData[] = calcLead({
     players: data.players,
     fixtures: data.fixtures,
     bets: data.bets,
+    championPicks: data.championPicks,
+    leagueWinnerTeamId: data.leagueWinnerTeamId,
   })
   const sortedLead = [...unsortedLead].sort((a, b) => b.total - a.total)
+  const leadForDisplay = prepareLeadForDisplay(
+    sortedLead,
+    data.isChampionPickLocked
+  )
 
   return (
     <main>
@@ -26,7 +32,10 @@ async function LeadPage(props: { params: Promise<{ id: string }> }) {
 
       <BolaoLinks bolaoId={data.bolao.id} active={4} />
 
-      <TableLead data={sortedLead} />
+      <TableLead
+        data={leadForDisplay}
+        isChampionPickLocked={data.isChampionPickLocked}
+      />
     </main>
   )
 }

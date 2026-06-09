@@ -1048,4 +1048,77 @@ describe("calcLead", () => {
       },
     ])
   })
+
+  it("adds champion pick bonus when pick matches league winner", () => {
+    const players: PlayersData[] = [
+      {
+        id: "user-1",
+        username: "alice",
+        email: "a@x.com",
+        userBolaoId: "ub-1",
+      },
+      {
+        id: "user-2",
+        username: "bob",
+        email: "b@x.com",
+        userBolaoId: "ub-2",
+      },
+    ]
+
+    const result = calcLead({
+      players,
+      fixtures: [],
+      bets: [],
+      championPicks: [
+        {
+          id: "cp-1",
+          user_bolao_id: "ub-1",
+          team_id: 10,
+          team_name: "Brazil",
+          team_logo: "b.png",
+          created_at: "",
+          updated_at: "",
+        },
+      ],
+      leagueWinnerTeamId: 10,
+    })
+
+    expect(result.find((entry) => entry.name === "alice")?.total).toBe(500)
+    expect(result.find((entry) => entry.name === "bob")?.total).toBe(0)
+    expect(result.find((entry) => entry.name === "alice")?.championPick?.name).toBe(
+      "Brazil"
+    )
+  })
+})
+
+describe("prepareLeadForDisplay", () => {
+  it("strips champion picks before lock", async () => {
+    const { prepareLeadForDisplay } = await import("../calcLeadFactory")
+
+    const lead = [
+      {
+        name: "alice",
+        total: 100,
+        championPick: { id: 10, name: "Brazil", logo: "b.png" },
+      },
+    ]
+
+    expect(prepareLeadForDisplay(lead, false)).toEqual([
+      { name: "alice", total: 100, championPick: null },
+    ])
+  })
+
+  it("keeps champion picks after lock", async () => {
+    const { prepareLeadForDisplay } = await import("../calcLeadFactory")
+
+    const lead = [
+      {
+        name: "alice",
+        total: 100,
+        championPick: { id: 10, name: "Brazil", logo: "b.png" },
+      },
+    ]
+
+    expect(prepareLeadForDisplay(lead, true)).toEqual(lead)
+  })
 })
