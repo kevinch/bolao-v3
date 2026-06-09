@@ -75,7 +75,7 @@ describe("ChampionPickSelector", () => {
   it("renders label and team options", () => {
     render(<ChampionPickSelector {...baseProps} />)
 
-    expect(screen.getByText("Winner (+500 pts)")).toBeInTheDocument()
+    expect(screen.getByText("Winner (+500 pts) — beta")).toBeInTheDocument()
     expect(screen.getByRole("option", { name: "Brazil" })).toBeInTheDocument()
     expect(screen.getByRole("option", { name: "Mexico" })).toBeInTheDocument()
   })
