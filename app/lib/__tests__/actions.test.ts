@@ -23,12 +23,18 @@ vi.mock("@clerk/nextjs/server", () => ({
 // Mock data fetching
 vi.mock("../data", () => ({
   fetchLeague: vi.fn(),
+  fetchBolao: vi.fn(),
+  fetchFixtures: vi.fn(),
 }))
 
 // Mock utils
-vi.mock("../utils", () => ({
-  getCurrentSeasonObject: vi.fn(),
-}))
+vi.mock("../utils", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../utils")>()
+  return {
+    ...actual,
+    getCurrentSeasonObject: vi.fn(),
+  }
+})
 
 import {
   createUser,
@@ -41,12 +47,13 @@ import {
   deleteBolao,
   deleteUserBolao,
   deleteBet,
+  createOrUpdateChampionPick,
 } from "../actions"
 import { sql } from "@vercel/postgres"
 import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
 import { auth } from "@clerk/nextjs/server"
-import { fetchLeague } from "../data"
+import { fetchLeague, fetchBolao, fetchFixtures } from "../data"
 import { getCurrentSeasonObject } from "../utils"
 
 describe("actions", () => {
@@ -599,6 +606,93 @@ describe("actions", () => {
       const deleteResult = await deleteBet("bet-1")
 
       expect(deleteResult).toEqual([{ id: "bet-1" }])
+    })
+  })
+
+  describe("createOrUpdateChampionPick", () => {
+    const pickArgs = {
+      userBolaoId: "ub-1",
+      bolaoId: "bolao-1",
+      teamId: 10,
+      teamName: "Brazil",
+      teamLogo: "b.png",
+    }
+
+    beforeEach(() => {
+      vi.useRealTimers()
+      vi.mocked(auth).mockResolvedValue({ userId: "user-1" } as any)
+      vi.mocked(fetchBolao).mockResolvedValue({
+        id: "bolao-1",
+        competition_id: "1",
+        year: 2026,
+      } as any)
+    })
+
+    it("rejects when user is not authenticated", async () => {
+      vi.mocked(auth).mockResolvedValue({ userId: null } as any)
+
+      const result = await createOrUpdateChampionPick(pickArgs)
+
+      expect(result).toEqual({ success: false, message: "Unauthorized." })
+    })
+
+    it("rejects when champion pick is locked", async () => {
+      vi.useFakeTimers()
+      vi.setSystemTime(new Date("2026-06-12T12:00:00Z"))
+      vi.mocked(fetchFixtures).mockResolvedValue([
+        {
+          fixture: { date: new Date("2026-06-11T19:00:00Z") },
+        },
+      ] as any)
+
+      const result = await createOrUpdateChampionPick(pickArgs)
+
+      expect(result).toEqual({
+        success: false,
+        message: "Champion pick is locked.",
+      })
+      expect(sql).not.toHaveBeenCalled()
+    })
+
+    it("saves pick when unlocked", async () => {
+      vi.useFakeTimers()
+      vi.setSystemTime(new Date("2026-06-10T12:00:00Z"))
+      vi.mocked(fetchFixtures).mockResolvedValue([
+        {
+          fixture: { date: new Date("2026-06-11T19:00:00Z") },
+        },
+      ] as any)
+      vi.mocked(sql).mockResolvedValue({
+        rows: [
+          {
+            id: "cp-1",
+            user_bolao_id: "ub-1",
+            team_id: 10,
+            team_name: "Brazil",
+            team_logo: "b.png",
+          },
+        ],
+      } as any)
+
+      const result = await createOrUpdateChampionPick(pickArgs)
+
+      expect(result.success).toBe(true)
+      expect(sql).toHaveBeenCalled()
+    })
+
+    it("returns forbidden when user does not own user_bolao", async () => {
+      vi.useFakeTimers()
+      vi.setSystemTime(new Date("2026-06-10T12:00:00Z"))
+      vi.mocked(fetchFixtures).mockResolvedValue([
+        {
+          fixture: { date: new Date("2026-06-11T19:00:00Z") },
+        },
+      ] as any)
+      vi.mocked(sql).mockResolvedValue({ rows: [] } as any)
+
+      const result = await createOrUpdateChampionPick(pickArgs)
+
+      expect(result).toEqual({ success: false, message: "Forbidden." })
     })
   })
 })

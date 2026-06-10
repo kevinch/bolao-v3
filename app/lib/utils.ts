@@ -1,4 +1,4 @@
-import { Season, FixtureData, Bet } from "./definitions"
+import { Season, FixtureData, Bet, ChampionTeam } from "./definitions"
 import { format } from "date-fns"
 import { enUS, ptBR } from "date-fns/locale"
 
@@ -91,6 +91,30 @@ export const getCurrentSeasonObject = (
   return seasons.find((el: Season) => el.current)
 }
 
+export function getChampionPickLockDate(fixtures: FixtureData[]): Date | null {
+  if (fixtures.length === 0) return null
+  const sorted = sortFixtures([...fixtures])
+  return new Date(sorted[0].fixture.date)
+}
+
+export function isChampionPickLocked(fixtures: FixtureData[]): boolean {
+  const lockDate = getChampionPickLockDate(fixtures)
+  if (!lockDate) return false
+  return Date.now() >= lockDate.getTime()
+}
+
+export function getTeamsFromFixtures(fixtures: FixtureData[]): ChampionTeam[] {
+  const byId = new Map<number, ChampionTeam>()
+  for (const fixture of fixtures) {
+    for (const team of [fixture.teams.home, fixture.teams.away]) {
+      if (!byId.has(team.id)) {
+        byId.set(team.id, { id: team.id, name: team.name, logo: team.logo })
+      }
+    }
+  }
+  return [...byId.values()].sort((a, b) => a.name.localeCompare(b.name))
+}
+
 export const sortFixtures = (fixtures: FixtureData[]) => {
   return fixtures.sort((a, b) => {
     const dateA = new Date(a.fixture.date).getTime()
@@ -153,6 +177,8 @@ export function pickCurrentRoundFromApiCurrent(
     ""
   )
 }
+
+export const CHAMPION_PICK_BONUS_POINTS = 500
 
 export const INITIAL_BET_VALUE = "."
 

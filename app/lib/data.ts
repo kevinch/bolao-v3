@@ -3,7 +3,7 @@
 import { QueryResultRow } from "pg"
 import { sql } from "@vercel/postgres"
 import { FOOTBALL_API_SPORTS } from "./utils"
-import { Bolao, Bet, User } from "./definitions"
+import { Bolao, Bet, User, ChampionPick, BetPageContext } from "./definitions"
 import { FOOTBALL_API_SPORTS_LEAGUES } from "./utils"
 
 export async function fetchBoloes() {
@@ -343,5 +343,120 @@ export async function fetchStandings({
     return data.response[0].league
   } else {
     return []
+  }
+}
+
+export async function fetchBetPageContext({
+  bolaoId,
+  userId,
+}: {
+  bolaoId: string
+  userId: string
+}): Promise<BetPageContext | null> {
+  if (!userId || !bolaoId) {
+    throw new Error("Missing userid or bolaoId")
+  }
+
+  try {
+    const data = await sql`
+      SELECT
+        b.id,
+        b.name,
+        b.competition_id,
+        b.created_by,
+        b.created_at,
+        b.year,
+        b.start,
+        b.end,
+        ub.id AS user_bolao_id,
+        ub.bolao_id,
+        ub.user_id,
+        cp.id AS champion_pick_id,
+        cp.team_id,
+        cp.team_name,
+        cp.team_logo,
+        cp.created_at AS champion_pick_created_at,
+        cp.updated_at AS champion_pick_updated_at
+      FROM boloes b
+      INNER JOIN user_bolao ub
+        ON CAST(b.id AS VARCHAR) = CAST(ub.bolao_id AS VARCHAR)
+      LEFT JOIN champion_picks cp
+        ON CAST(cp.user_bolao_id AS VARCHAR) = CAST(ub.id AS VARCHAR)
+      WHERE CAST(b.id AS VARCHAR) = ${bolaoId}
+        AND CAST(ub.user_id AS VARCHAR) = ${userId}
+    `
+
+    const row = data.rows[0]
+    if (!row) return null
+
+    const championPick = row.champion_pick_id
+      ? ({
+          id: row.champion_pick_id as string,
+          user_bolao_id: row.user_bolao_id as string,
+          team_id: row.team_id as number,
+          team_name: row.team_name as string,
+          team_logo: row.team_logo as string,
+          created_at: row.champion_pick_created_at as string,
+          updated_at: row.champion_pick_updated_at as string,
+        } satisfies ChampionPick)
+      : null
+
+    return {
+      bolao: {
+        id: row.id as string,
+        name: row.name as string,
+        competition_id: row.competition_id as string,
+        created_by: row.created_by as string,
+        created_at: row.created_at as Date,
+        year: row.year as number,
+        start: row.start as string | undefined,
+        end: row.end as string | undefined,
+      },
+      userBolao: {
+        id: row.user_bolao_id as string,
+        bolao_id: row.bolao_id as string,
+        user_id: row.user_id as string,
+      },
+      championPick,
+    }
+  } catch (error) {
+    console.error("Database Error:", error)
+    throw new Error("Failed to fetch bet page context.")
+  }
+}
+
+export async function fetchChampionPick(
+  userBolaoId: string
+): Promise<ChampionPick | null> {
+  if (!userBolaoId) return null
+
+  try {
+    const data = await sql`
+      SELECT * FROM champion_picks
+      WHERE CAST(user_bolao_id AS VARCHAR) = ${userBolaoId}
+    `
+
+    return (data.rows[0] as ChampionPick) ?? null
+  } catch (error) {
+    console.error("Database Error:", error)
+    throw new Error("Failed to fetch champion pick.")
+  }
+}
+
+export async function fetchChampionPicks(
+  userBolaoIds: string[]
+): Promise<ChampionPick[]> {
+  if (!userBolaoIds.length) return []
+
+  try {
+    const data = await sql`
+      SELECT * FROM champion_picks
+      WHERE CAST(user_bolao_id AS VARCHAR) = ANY(${userBolaoIds as any})
+    `
+
+    return data.rows as ChampionPick[]
+  } catch (error) {
+    console.error("Database Error:", error)
+    throw new Error("Failed to fetch champion picks.")
   }
 }

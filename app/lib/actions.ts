@@ -4,13 +4,15 @@ import { sql } from "@vercel/postgres"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { auth } from "@clerk/nextjs/server"
-import { fetchLeague } from "./data"
-import { getCurrentSeasonObject } from "./utils"
+import { fetchLeague, fetchBolao, fetchFixtures } from "./data"
+import { getCurrentSeasonObject, isChampionPickLocked } from "./utils"
 import {
   BetResult,
   UpdateBolaoResult,
   CreateUserBolaoResult,
   CreateBolaoResult,
+  ChampionPickResult,
+  ChampionPick,
 } from "./definitions"
 
 export async function createUser({ id, role }: { id: string; role: string }) {
@@ -200,6 +202,65 @@ export async function updateBet({
     return {
       message: "Database Error: failed to set a bet.",
     } as BetResult
+  }
+}
+
+export async function createOrUpdateChampionPick({
+  userBolaoId,
+  bolaoId,
+  teamId,
+  teamName,
+  teamLogo,
+}: {
+  userBolaoId: string
+  bolaoId: string
+  teamId: number
+  teamName: string
+  teamLogo: string
+}): Promise<ChampionPickResult> {
+  const { userId } = await auth()
+
+  if (!userId) {
+    return { success: false, message: "Unauthorized." }
+  }
+
+  try {
+    const bolao = await fetchBolao(bolaoId)
+    const fixtures = await fetchFixtures({
+      leagueId: bolao.competition_id,
+      year: bolao.year,
+    })
+
+    if (isChampionPickLocked(fixtures)) {
+      return { success: false, message: "Champion pick is locked." }
+    }
+
+    const result = await sql`
+      INSERT INTO champion_picks (user_bolao_id, team_id, team_name, team_logo)
+      SELECT ub.id, ${teamId}, ${teamName}, ${teamLogo}
+      FROM user_bolao ub
+      WHERE CAST(ub.id AS VARCHAR) = ${userBolaoId}
+        AND CAST(ub.bolao_id AS VARCHAR) = ${bolaoId}
+        AND CAST(ub.user_id AS VARCHAR) = ${userId}
+      ON CONFLICT (user_bolao_id) DO UPDATE SET
+        team_id = EXCLUDED.team_id,
+        team_name = EXCLUDED.team_name,
+        team_logo = EXCLUDED.team_logo,
+        updated_at = NOW()
+      RETURNING *
+    `
+
+    if (!result.rows[0]) {
+      return { success: false, message: "Forbidden." }
+    }
+
+    return { ...(result.rows[0] as ChampionPick), success: true }
+  } catch (error) {
+    console.log(error)
+    return {
+      success: false,
+      message: "Database Error: failed to save champion pick.",
+    }
   }
 }
 

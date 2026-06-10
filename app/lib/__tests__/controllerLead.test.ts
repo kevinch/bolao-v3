@@ -14,6 +14,9 @@ vi.mock("@/app/lib/data", () => ({
   fetchUsersBolao: vi.fn(),
   fetchFixtures: vi.fn(),
   fetchUsersBets: vi.fn(),
+  fetchChampionPicks: vi.fn(),
+  fetchLeague: vi.fn(),
+  fetchStandings: vi.fn(),
 }))
 
 // Mock Clerk client
@@ -88,8 +91,17 @@ describe("controllerLead", () => {
     },
   ]
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks()
+    const { fetchChampionPicks, fetchLeague, fetchStandings } = await import(
+      "@/app/lib/data"
+    )
+    vi.mocked(fetchChampionPicks).mockResolvedValue([])
+    vi.mocked(fetchLeague).mockResolvedValue({
+      league: { id: 2, name: "Champions League", type: "Cup" },
+      seasons: [{ year: 2024, current: true }],
+    } as any)
+    vi.mocked(fetchStandings).mockResolvedValue([] as any)
   })
 
   describe("getData", () => {
@@ -298,6 +310,120 @@ describe("controllerLead", () => {
       const result = await getData({ bolaoId: "bolao-1" })
 
       expect(result.fixtures).toHaveLength(3)
+    })
+
+    it("should resolve a cup winner from the final fixture", async () => {
+      const { fetchBolao, fetchUsersBolao, fetchFixtures, fetchUsersBets } =
+        await import("@/app/lib/data")
+      const { clerkClient } = await import("@clerk/nextjs/server")
+
+      const mockClient = {
+        users: {
+          getUserList: vi.fn().mockResolvedValue({ data: [] }),
+        },
+      }
+
+      const finalFixture: FixtureData = {
+        ...mockFixture,
+        fixture: {
+          ...mockFixture.fixture,
+          id: 2,
+          date: new Date("2024-06-01"),
+          status: { long: "Match Finished", short: "PEN", elapsed: 120 },
+        },
+        teams: {
+          home: { id: 26, name: "Argentina", logo: "arg.png", winner: true },
+          away: { id: 2, name: "France", logo: "fra.png", winner: false },
+        },
+      }
+
+      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
+      vi.mocked(fetchUsersBolao).mockResolvedValue([] as any)
+      vi.mocked(fetchFixtures).mockResolvedValue([mockFixture, finalFixture])
+      vi.mocked(fetchUsersBets).mockResolvedValue([])
+      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
+
+      const result = await getData({ bolaoId: "bolao-1" })
+
+      expect(result.leagueWinnerTeamId).toBe(26)
+    })
+
+    it("should resolve a league winner from standings when the season is finished", async () => {
+      const {
+        fetchBolao,
+        fetchUsersBolao,
+        fetchFixtures,
+        fetchUsersBets,
+        fetchLeague,
+        fetchStandings,
+      } = await import("@/app/lib/data")
+      const { clerkClient } = await import("@clerk/nextjs/server")
+
+      const mockClient = {
+        users: {
+          getUserList: vi.fn().mockResolvedValue({ data: [] }),
+        },
+      }
+
+      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
+      vi.mocked(fetchUsersBolao).mockResolvedValue([] as any)
+      vi.mocked(fetchFixtures).mockResolvedValue([mockFixture])
+      vi.mocked(fetchUsersBets).mockResolvedValue([])
+      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
+      vi.mocked(fetchLeague).mockResolvedValue({
+        league: { id: 61, name: "Ligue 1", type: "League" },
+        seasons: [{ year: 2024, current: true }],
+      } as any)
+      vi.mocked(fetchStandings).mockResolvedValue({
+        standings: [
+          [
+            { rank: 1, team: { id: 85, name: "PSG", logo: "psg.png" } },
+            { rank: 2, team: { id: 80, name: "Lyon", logo: "lyon.png" } },
+          ],
+        ],
+      } as any)
+
+      const result = await getData({ bolaoId: "bolao-1" })
+
+      expect(result.leagueWinnerTeamId).toBe(85)
+      expect(fetchStandings).toHaveBeenCalledWith({ leagueId: "2", year: 2024 })
+    })
+
+    it("should return null winner while the season is in progress without fetching standings", async () => {
+      const {
+        fetchBolao,
+        fetchUsersBolao,
+        fetchFixtures,
+        fetchUsersBets,
+        fetchStandings,
+      } = await import("@/app/lib/data")
+      const { clerkClient } = await import("@clerk/nextjs/server")
+
+      const mockClient = {
+        users: {
+          getUserList: vi.fn().mockResolvedValue({ data: [] }),
+        },
+      }
+
+      const upcomingFixture: FixtureData = {
+        ...mockFixture,
+        fixture: {
+          ...mockFixture.fixture,
+          id: 3,
+          status: { long: "Not Started", short: "NS", elapsed: null as any },
+        },
+      }
+
+      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
+      vi.mocked(fetchUsersBolao).mockResolvedValue([] as any)
+      vi.mocked(fetchFixtures).mockResolvedValue([mockFixture, upcomingFixture])
+      vi.mocked(fetchUsersBets).mockResolvedValue([])
+      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
+
+      const result = await getData({ bolaoId: "bolao-1" })
+
+      expect(result.leagueWinnerTeamId).toBeNull()
+      expect(fetchStandings).not.toHaveBeenCalled()
     })
 
     it("should propagate errors from fetchBolao", async () => {

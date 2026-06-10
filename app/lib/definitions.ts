@@ -46,6 +46,12 @@ export type UserBolao = {
   user_id: string
 }
 
+export type BetPageContext = {
+  bolao: Bolao
+  userBolao: UserBolao
+  championPick: ChampionPick | null
+}
+
 type SuccessBolaoResult = {
   success: boolean
 }
@@ -78,7 +84,7 @@ type Team = {
   id: number
   name: string
   logo: string
-  winner: unknown
+  winner: boolean | null
 }
 
 export type ScoreGroup = {
@@ -158,6 +164,26 @@ export type Bet = {
   type: "away" | "home"
 }
 
+export type ChampionTeam = {
+  id: number
+  name: string
+  logo: string
+}
+
+export type ChampionPick = {
+  id: string
+  user_bolao_id: string
+  team_id: number
+  team_name: string
+  team_logo: string
+  created_at: string
+  updated_at: string
+}
+
+type SuccessChampionPickResult = ChampionPick & { success: true }
+
+export type ChampionPickResult = SuccessChampionPickResult | ErrorResult
+
 export type StandingsLeague = {
   id: number
   name: string
@@ -219,6 +245,7 @@ export type ScoreArgs = {
 export type LeadData = {
   name: string
   total: number
+  championPick?: ChampionTeam | null
 }
 
 export type League = {

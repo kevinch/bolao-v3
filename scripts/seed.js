@@ -97,6 +97,31 @@ async function seedBets(client) {
   }
 }
 
+async function seedChampionPicks(client) {
+  try {
+    const createTable = await client.sql`
+      CREATE TABLE IF NOT EXISTS champion_picks (
+        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        user_bolao_id VARCHAR(100) NOT NULL UNIQUE,
+        team_id INTEGER NOT NULL,
+        team_name VARCHAR(200) NOT NULL,
+        team_logo VARCHAR(500) NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW() NOT NULL,
+        updated_at TIMESTAMP DEFAULT NOW() NOT NULL
+      );
+    `
+
+    console.log(`Created "champion_picks" table`)
+
+    return {
+      createTable,
+    }
+  } catch (error) {
+    console.error("Error creating table champion_picks:", error)
+    throw error
+  }
+}
+
 async function main() {
   const client = await db.connect()
 
@@ -104,6 +129,7 @@ async function main() {
   await seedBoloes(client)
   await seedUserBolao(client)
   await seedBets(client)
+  await seedChampionPicks(client)
 
   await client.end()
 }

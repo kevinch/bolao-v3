@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest"
-import { render, screen } from "@testing-library/react"
+import { renderToString } from "react-dom/server"
 import RootLayout, { metadata } from "../layout"
 
 // Mock ClerkProvider
@@ -25,6 +25,10 @@ vi.mock("@/components/ui/toaster", () => ({
 // Mock Analytics component
 vi.mock("@vercel/analytics/react", () => ({
   Analytics: () => <div data-testid="analytics">Analytics</div>,
+}))
+
+vi.mock("@vercel/speed-insights/next", () => ({
+  SpeedInsights: () => null,
 }))
 
 // Mock Next.js Script component
@@ -180,11 +184,12 @@ describe("RootLayout", () => {
       const Layout = await RootLayout({
         children: <div data-testid="child-content">Child Content</div>,
       })
-      const { container } = render(Layout)
-      // Verify structure
-      const mainContainer = container.querySelector(".container")
-      expect(mainContainer).toBeDefined()
-      expect(mainContainer?.className).toContain("mx-auto px-4")
+      const html = renderToString(Layout)
+
+      expect(html).toContain("Child Content")
+      expect(html).toContain("mx-auto px-4")
+      expect(html).toContain('data-testid="header"')
+      expect(html).toContain('data-testid="footer"')
     })
   })
 })

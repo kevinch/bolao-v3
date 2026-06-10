@@ -6,7 +6,14 @@ import { calcLead } from "@/app/lib/calcLeadFactory"
 
 // Mock dependencies
 vi.mock("@/app/lib/controllerLead")
-vi.mock("@/app/lib/calcLeadFactory")
+vi.mock("@/app/lib/calcLeadFactory", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("@/app/lib/calcLeadFactory")>()
+  return {
+    ...actual,
+    calcLead: vi.fn(),
+  }
+})
 vi.mock("@/app/ui/bolao/bolaoPageTitle", () => ({
     default: (props: any) => <div data-testid="bolao-page-title" data-props={JSON.stringify(props)} />
 }))
@@ -23,7 +30,10 @@ describe("LeadPage", () => {
         bolao: { id: "bolao-123", name: "Test Bolao" },
         players: [],
         fixtures: [{ league: { logo: "logo.png", name: "League Name" } }],
-        bets: []
+        bets: [],
+        championPicks: [],
+        isChampionPickLocked: false,
+        leagueWinnerTeamId: null,
     }
     const mockLeadData = [
         { id: "p1", name: "Player 1", total: 10 },
@@ -50,7 +60,9 @@ describe("LeadPage", () => {
         expect(calcLead).toHaveBeenCalledWith({
             players: mockData.players,
             fixtures: mockData.fixtures,
-            bets: mockData.bets
+            bets: mockData.bets,
+            championPicks: mockData.championPicks,
+            leagueWinnerTeamId: mockData.leagueWinnerTeamId,
         })
 
         // Verify sorting
@@ -59,5 +71,28 @@ describe("LeadPage", () => {
         expect(tableProps.data).toHaveLength(2)
         expect(tableProps.data[0].total).toBe(20) // Player 2 (20) should be first
         expect(tableProps.data[1].total).toBe(10) // Player 1 (10) should be second
+    })
+
+    it("strips champion picks from lead data before lock", async () => {
+        (getData as any).mockResolvedValue({
+            ...mockData,
+            isChampionPickLocked: false,
+        });
+        (calcLead as any).mockReturnValue([
+            {
+                name: "Player 1",
+                total: 10,
+                championPick: { id: 10, name: "Brazil", logo: "b.png" },
+            },
+        ])
+
+        const result = await LeadPage({ params: mockParams })
+        render(result)
+
+        const tableProps = JSON.parse(
+            screen.getByTestId("table-lead").getAttribute("data-props") || "{}"
+        )
+
+        expect(tableProps.data[0].championPick).toBeNull()
     })
 })

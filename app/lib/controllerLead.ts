@@ -3,9 +3,13 @@ import {
   fetchUsersBolao,
   fetchFixtures,
   fetchUsersBets,
+  fetchChampionPicks,
+  fetchLeague,
 } from "@/app/lib/data"
 import { FixtureData, UserBolao, Bet } from "./definitions"
 import { getPlayersFromUsersBolao } from "./players"
+import { resolveChampionTeamId } from "./championPick"
+import { isChampionPickLocked } from "./utils"
 
 export async function getData({ bolaoId }: { bolaoId: string }) {
   const [bolao, usersBolao] = await Promise.all([
@@ -18,17 +22,29 @@ export async function getData({ bolaoId }: { bolaoId: string }) {
 
   const players = await getPlayersFromUsersBolao(usersBolao)
 
-  // Fetch all fixtures
-  const fixtures: FixtureData[] = await fetchFixtures({ leagueId, year })
-
-  // Fetch bets
   const userBoloesIds: string[] = usersBolao.map((el: UserBolao) => el.id)
-  const bets: Bet[] = await fetchUsersBets(userBoloesIds)
+
+  const [fixtures, bets, championPicks, league] = await Promise.all([
+    fetchFixtures({ leagueId, year }),
+    fetchUsersBets(userBoloesIds),
+    fetchChampionPicks(userBoloesIds),
+    fetchLeague(Number(leagueId)),
+  ])
+
+  const leagueWinnerTeamId = await resolveChampionTeamId({
+    leagueType: league?.league?.type,
+    leagueId,
+    year,
+    fixtures,
+  })
 
   return {
     bolao,
-    fixtures,
+    fixtures: fixtures as FixtureData[],
     players,
     bets,
+    championPicks,
+    isChampionPickLocked: isChampionPickLocked(fixtures),
+    leagueWinnerTeamId,
   }
 }

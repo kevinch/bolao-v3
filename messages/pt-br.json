@@ -115,7 +115,8 @@
     "bettingAs": "Apostando como",
     "selectPlayer": "Selecionar jogador",
     "selectPlayerToBetAs": "Selecionar jogador para apostar como",
-    "loading": "carregando..."
+    "loading": "carregando...",
+    "errorLoadFailed": "Não foi possível carregar a página de apostas. Verifique sua conexão e tente novamente."
   },
   "resultsPage": {
     "nextGames": "Próximos jogos",
@@ -137,5 +138,21 @@
     "player": "jogador",
     "score": "pontos",
     "needs": "faltam"
+  },
+  "championPick": {
+    "label": "Campeão (+500 pts) — beta",
+    "placeholder": "Selecione um time — opcional",
+    "selectTeam": "Selecionar campeão do torneio",
+    "statusUnlockedNoPick": "Escolha o time campeão. +500 pts se acertar. Palpites dos outros ficam ocultos até o primeiro jogo.",
+    "statusUnlockedHasPick": "Você escolheu {team}. Pode alterar até {date}.",
+    "statusLocked": "Palpites bloqueados. Veja todos no Ranking.",
+    "statusWon": "{team} venceu! +500 pontos bônus.",
+    "statusLost": "{team} venceu. Seu palpite não bateu.",
+    "leadColumnHeader": "Campeão",
+    "noPick": "—",
+    "saveSuccessTitle": "Palpite salvo",
+    "saveSuccessDescription": "{team} é seu palpite de campeão.",
+    "saveErrorTitle": "Não foi possível salvar",
+    "saveErrorDescription": "Algo deu errado ao salvar seu palpite. Tente novamente."
   }
 }

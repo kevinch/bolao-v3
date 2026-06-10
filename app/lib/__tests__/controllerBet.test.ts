@@ -2,10 +2,8 @@ import { describe, it, expect, vi, beforeEach } from "vitest"
 import { getData } from "../controllerBet"
 import type { Bolao, UserBolao, Bet, FixtureData } from "@/app/lib/definitions"
 
-// Mock data fetching functions
 vi.mock("@/app/lib/data", () => ({
-  fetchBolao: vi.fn(),
-  fetchUserBolao: vi.fn(),
+  fetchBetPageContext: vi.fn(),
   fetchUsersBolao: vi.fn(),
   fetchRounds: vi.fn(),
   fetchFixtures: vi.fn(),
@@ -16,7 +14,10 @@ vi.mock("@clerk/nextjs/server", () => ({
   clerkClient: vi.fn(),
 }))
 
-// Mock utility functions — keep pickCurrentRoundFromApiCurrent real so it exercises the mock cleanRounds
+vi.mock("@/app/lib/authRole", () => ({
+  getUserRole: vi.fn(),
+}))
+
 vi.mock("@/app/lib/utils", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/app/lib/utils")>()
   return {
@@ -68,7 +69,7 @@ describe("controllerBet", () => {
       logo: "logo.png",
       flag: "flag.png",
       season: 2024,
-      round: "Group A - 1",
+      round: "Round 2",
     },
     teams: {
       home: { id: 1, name: "Team A", logo: "teamA.png", winner: null },
@@ -91,98 +92,83 @@ describe("controllerBet", () => {
       value: 2,
       type: "home",
     },
-    {
-      id: "bet-2",
-      user_bolao_id: "ub-1",
-      fixture_id: "2",
-      value: 1,
-      type: "away",
-    },
   ]
 
   const mockRounds = ["Round 1", "Round 2", "Round 3", "Round 4"]
 
-  beforeEach(() => {
+  const fixtureForRound = (round: string, id = 1): FixtureData => ({
+    ...mockFixture,
+    fixture: { ...mockFixture.fixture, id },
+    league: { ...mockFixture.league, round },
+  })
+
+  async function setupDefaultMocks(options?: {
+    userRole?: string
+    bolao?: Bolao
+    fixtures?: FixtureData[]
+    currentRound?: string[]
+  }) {
+    const {
+      fetchBetPageContext,
+      fetchRounds,
+      fetchFixtures,
+      fetchUserBets,
+    } = await import("@/app/lib/data")
+    const { getUserRole } = await import("@/app/lib/authRole")
+
+    vi.mocked(getUserRole).mockResolvedValue(options?.userRole ?? "user")
+    vi.mocked(fetchBetPageContext).mockResolvedValue({
+      bolao: options?.bolao ?? mockBolao,
+      userBolao: mockUserBolao,
+      championPick: null,
+    })
+    vi.mocked(fetchRounds)
+      .mockResolvedValueOnce(mockRounds)
+      .mockResolvedValueOnce(options?.currentRound ?? ["Round 2"])
+    vi.mocked(fetchFixtures).mockResolvedValue(
+      options?.fixtures ?? mockRounds.map((round, index) => fixtureForRound(round, index + 1))
+    )
+    vi.mocked(fetchUserBets).mockResolvedValue(mockBets)
+  }
+
+  beforeEach(async () => {
     vi.clearAllMocks()
+    await setupDefaultMocks()
   })
 
   describe("getData", () => {
-    it("should fetch and return all required data without roundParam", async () => {
-      const { fetchBolao, fetchUserBolao, fetchRounds, fetchFixtures, fetchUserBets } =
-        await import("@/app/lib/data")
-
-      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
-      vi.mocked(fetchUserBolao).mockResolvedValue(mockUserBolao as any)
-      vi.mocked(fetchRounds)
-        .mockResolvedValueOnce(mockRounds)
-        .mockResolvedValueOnce(["Round 2"])
-      vi.mocked(fetchFixtures).mockResolvedValue([mockFixture])
-      vi.mocked(fetchUserBets).mockResolvedValue(mockBets)
-
+    it("returns bet page data without roundParam", async () => {
       const result = await getData({ bolaoId: "bolao-1", userId: "user-1" })
 
       expect(result.bolao).toEqual(mockBolao)
       expect(result.userBolao).toEqual(mockUserBolao)
-      expect(result.allRounds).toEqual(mockRounds)
       expect(result.currentRound).toBe("Round 2")
-      expect(result.fixtures).toEqual([mockFixture])
+      expect(result.fixtures).toEqual([fixtureForRound("Round 2", 2)])
       expect(result.bets).toEqual(mockBets)
+      expect(result.isAdmin).toBe(false)
     })
 
-    it("should fetch bolao and userBolao in parallel", async () => {
-      const { fetchBolao, fetchUserBolao, fetchRounds, fetchFixtures, fetchUserBets } =
-        await import("@/app/lib/data")
-
-      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
-      vi.mocked(fetchUserBolao).mockResolvedValue(mockUserBolao as any)
-      vi.mocked(fetchRounds).mockResolvedValue(mockRounds)
-      vi.mocked(fetchFixtures).mockResolvedValue([])
-      vi.mocked(fetchUserBets).mockResolvedValue([])
+    it("loads bet page context in one query", async () => {
+      const { fetchBetPageContext } = await import("@/app/lib/data")
 
       await getData({ bolaoId: "bolao-1", userId: "user-1" })
 
-      expect(fetchBolao).toHaveBeenCalledWith("bolao-1")
-      expect(fetchUserBolao).toHaveBeenCalledWith({
+      expect(fetchBetPageContext).toHaveBeenCalledWith({
         bolaoId: "bolao-1",
         userId: "user-1",
       })
     })
 
-    it("should fetch user bets with userBolaoId", async () => {
-      const { fetchBolao, fetchUserBolao, fetchRounds, fetchFixtures, fetchUserBets } =
-        await import("@/app/lib/data")
-
-      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
-      vi.mocked(fetchUserBolao).mockResolvedValue(mockUserBolao as any)
-      vi.mocked(fetchRounds).mockResolvedValue(mockRounds)
-      vi.mocked(fetchFixtures).mockResolvedValue([])
-      vi.mocked(fetchUserBets).mockResolvedValue(mockBets)
-
-      await getData({ bolaoId: "bolao-1", userId: "user-1" })
-
-      expect(fetchUserBets).toHaveBeenCalledWith("ub-1")
-    })
-
-    it("should default admin bet data to the current user's userBolao", async () => {
-      const {
-        fetchBolao,
-        fetchUserBolao,
-        fetchUsersBolao,
-        fetchRounds,
-        fetchFixtures,
-        fetchUserBets,
-      } = await import("@/app/lib/data")
+    it("loads admin player data when user role is admin in Clerk", async () => {
+      const { fetchUsersBolao } = await import("@/app/lib/data")
+      const { getUserRole } = await import("@/app/lib/authRole")
       const { clerkClient } = await import("@clerk/nextjs/server")
 
-      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
-      vi.mocked(fetchUserBolao).mockResolvedValue(mockUserBolao as any)
+      await setupDefaultMocks({ userRole: "admin" })
       vi.mocked(fetchUsersBolao).mockResolvedValue([
         mockUserBolao,
         mockOtherUserBolao,
       ] as any)
-      vi.mocked(fetchRounds).mockResolvedValue(mockRounds)
-      vi.mocked(fetchFixtures).mockResolvedValue([])
-      vi.mocked(fetchUserBets).mockResolvedValue(mockBets)
       vi.mocked(clerkClient).mockResolvedValue({
         users: {
           getUserList: vi.fn().mockResolvedValue({
@@ -192,11 +178,6 @@ describe("controllerBet", () => {
                 username: "kevin",
                 emailAddresses: [{ emailAddress: "kevin@example.com" }],
               },
-              {
-                id: "user-2",
-                username: "other",
-                emailAddresses: [{ emailAddress: "other@example.com" }],
-              },
             ],
           }),
         },
@@ -205,434 +186,83 @@ describe("controllerBet", () => {
       const result = await getData({
         bolaoId: "bolao-1",
         userId: "user-1",
-        isAdmin: true,
-      })
-
-      expect(fetchUsersBolao).toHaveBeenCalledWith("bolao-1")
-      expect(fetchUserBets).toHaveBeenCalledWith("ub-1")
-      expect(result.userBolao).toEqual(mockUserBolao)
-      expect(result.players).toEqual([
-        {
-          id: "user-1",
-          username: "kevin",
-          email: "kevin@example.com",
-          userBolaoId: "ub-1",
-        },
-        {
-          id: "user-2",
-          username: "other",
-          email: "other@example.com",
-          userBolaoId: "ub-2",
-        },
-      ])
-    })
-
-    it("should load selected player bets for admins when the player belongs to the bolao", async () => {
-      const {
-        fetchBolao,
-        fetchUserBolao,
-        fetchUsersBolao,
-        fetchRounds,
-        fetchFixtures,
-        fetchUserBets,
-      } = await import("@/app/lib/data")
-      const { clerkClient } = await import("@clerk/nextjs/server")
-
-      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
-      vi.mocked(fetchUserBolao).mockResolvedValue(mockUserBolao as any)
-      vi.mocked(fetchUsersBolao).mockResolvedValue([
-        mockUserBolao,
-        mockOtherUserBolao,
-      ] as any)
-      vi.mocked(fetchRounds).mockResolvedValue(mockRounds)
-      vi.mocked(fetchFixtures).mockResolvedValue([])
-      vi.mocked(fetchUserBets).mockResolvedValue(mockBets)
-      vi.mocked(clerkClient).mockResolvedValue({
-        users: {
-          getUserList: vi.fn().mockResolvedValue({ data: [] }),
-        },
-      } as any)
-
-      const result = await getData({
-        bolaoId: "bolao-1",
-        userId: "user-1",
-        isAdmin: true,
         selectedUserBolaoId: "ub-2",
       })
 
-      expect(fetchUserBets).toHaveBeenCalledWith("ub-2")
+      expect(result.isAdmin).toBe(true)
+      expect(getUserRole).toHaveBeenCalledWith("user-1")
+      expect(fetchUsersBolao).toHaveBeenCalledWith("bolao-1")
       expect(result.userBolao).toEqual(mockOtherUserBolao)
     })
 
-    it("should ignore selected player ids that do not belong to the bolao", async () => {
-      const {
-        fetchBolao,
-        fetchUserBolao,
-        fetchUsersBolao,
-        fetchRounds,
-        fetchFixtures,
-        fetchUserBets,
-      } = await import("@/app/lib/data")
-      const { clerkClient } = await import("@clerk/nextjs/server")
-
-      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
-      vi.mocked(fetchUserBolao).mockResolvedValue(mockUserBolao as any)
-      vi.mocked(fetchUsersBolao).mockResolvedValue([
-        mockUserBolao,
-        mockOtherUserBolao,
-      ] as any)
-      vi.mocked(fetchRounds).mockResolvedValue(mockRounds)
-      vi.mocked(fetchFixtures).mockResolvedValue([])
-      vi.mocked(fetchUserBets).mockResolvedValue(mockBets)
-      vi.mocked(clerkClient).mockResolvedValue({
-        users: {
-          getUserList: vi.fn().mockResolvedValue({ data: [] }),
-        },
-      } as any)
-
-      const result = await getData({
-        bolaoId: "bolao-1",
-        userId: "user-1",
-        isAdmin: true,
-        selectedUserBolaoId: "other-bolao-user",
-      })
-
-      expect(fetchUserBets).toHaveBeenCalledWith("ub-1")
-      expect(result.userBolao).toEqual(mockUserBolao)
-    })
-
-    it("should fetch rounds with correct parameters", async () => {
-      const { fetchBolao, fetchUserBolao, fetchRounds, fetchFixtures, fetchUserBets } =
-        await import("@/app/lib/data")
-
-      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
-      vi.mocked(fetchUserBolao).mockResolvedValue(mockUserBolao as any)
-      vi.mocked(fetchRounds).mockResolvedValue(mockRounds)
-      vi.mocked(fetchFixtures).mockResolvedValue([])
-      vi.mocked(fetchUserBets).mockResolvedValue([])
-
-      await getData({ bolaoId: "bolao-1", userId: "user-1" })
-
-      expect(fetchRounds).toHaveBeenCalledWith({
-        leagueId: "2",
-        year: 2024,
-      })
-      expect(fetchRounds).toHaveBeenCalledWith({
-        leagueId: "2",
-        year: 2024,
-        current: true,
-      })
-    })
-
-    it("should use cleanRounds utility on fetched rounds", async () => {
-      const { fetchBolao, fetchUserBolao, fetchRounds, fetchFixtures, fetchUserBets } =
-        await import("@/app/lib/data")
-      const { cleanRounds } = await import("@/app/lib/utils")
-
-      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
-      vi.mocked(fetchUserBolao).mockResolvedValue(mockUserBolao as any)
-      vi.mocked(fetchRounds).mockResolvedValue(mockRounds)
-      vi.mocked(fetchFixtures).mockResolvedValue([])
-      vi.mocked(fetchUserBets).mockResolvedValue([])
-
-      await getData({ bolaoId: "bolao-1", userId: "user-1" })
-
-      expect(cleanRounds).toHaveBeenCalledWith(mockRounds)
-    })
-
-    it("should use sortFixtures utility on fetched fixtures", async () => {
-      const { fetchBolao, fetchUserBolao, fetchRounds, fetchFixtures, fetchUserBets } =
-        await import("@/app/lib/data")
-      const { sortFixtures } = await import("@/app/lib/utils")
-
-      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
-      vi.mocked(fetchUserBolao).mockResolvedValue(mockUserBolao as any)
-      vi.mocked(fetchRounds).mockResolvedValue(mockRounds)
-      vi.mocked(fetchFixtures).mockResolvedValue([mockFixture])
-      vi.mocked(fetchUserBets).mockResolvedValue([])
-
-      await getData({ bolaoId: "bolao-1", userId: "user-1" })
-
-      expect(sortFixtures).toHaveBeenCalledWith([mockFixture])
-    })
-
-    it("should use last element of currentRoundObj for current round", async () => {
-      const { fetchBolao, fetchUserBolao, fetchRounds, fetchFixtures, fetchUserBets } =
-        await import("@/app/lib/data")
-
-      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
-      vi.mocked(fetchUserBolao).mockResolvedValue(mockUserBolao as any)
-      vi.mocked(fetchRounds)
-        .mockResolvedValueOnce(mockRounds)
-        .mockResolvedValueOnce(["Round 2", "Round 3"]) // Multiple current rounds
-      vi.mocked(fetchFixtures).mockResolvedValue([])
-      vi.mocked(fetchUserBets).mockResolvedValue([])
-
-      const result = await getData({ bolaoId: "bolao-1", userId: "user-1" })
-
-      expect(result.currentRound).toBe("Round 3") // Last element
-    })
-
-    it("should fallback to last round when currentRoundObj is empty", async () => {
-      const { fetchBolao, fetchUserBolao, fetchRounds, fetchFixtures, fetchUserBets } =
-        await import("@/app/lib/data")
-
-      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
-      vi.mocked(fetchUserBolao).mockResolvedValue(mockUserBolao as any)
-      vi.mocked(fetchRounds)
-        .mockResolvedValueOnce(mockRounds)
-        .mockResolvedValueOnce([]) // Empty current round
-      vi.mocked(fetchFixtures).mockResolvedValue([])
-      vi.mocked(fetchUserBets).mockResolvedValue([])
-
-      const result = await getData({ bolaoId: "bolao-1", userId: "user-1" })
-
-      expect(result.currentRound).toBe("Round 4") // Last round
-    })
-
-    it("should handle roundParam and use it for pagination", async () => {
-      const { fetchBolao, fetchUserBolao, fetchRounds, fetchFixtures, fetchUserBets } =
-        await import("@/app/lib/data")
-
-      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
-      vi.mocked(fetchUserBolao).mockResolvedValue(mockUserBolao as any)
-      vi.mocked(fetchRounds).mockResolvedValue(mockRounds)
-      vi.mocked(fetchFixtures).mockResolvedValue([])
-      vi.mocked(fetchUserBets).mockResolvedValue([])
-
-      const result = await getData({
-        bolaoId: "bolao-1",
-        userId: "user-1",
-        roundParam: "2",
-      })
-
-      expect(result.currentRound).toBe("Round 2")
-      expect(fetchFixtures).toHaveBeenCalledWith({
-        leagueId: "2",
-        year: 2024,
-        round: "Round 2",
-      })
-    })
-
-    it("should set isFirstRound correctly when roundParam is 1", async () => {
-      const { fetchBolao, fetchUserBolao, fetchRounds, fetchFixtures, fetchUserBets } =
-        await import("@/app/lib/data")
-
-      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
-      vi.mocked(fetchUserBolao).mockResolvedValue(mockUserBolao as any)
-      vi.mocked(fetchRounds).mockResolvedValue(mockRounds)
-      vi.mocked(fetchFixtures).mockResolvedValue([])
-      vi.mocked(fetchUserBets).mockResolvedValue([])
-
-      const result = await getData({
-        bolaoId: "bolao-1",
-        userId: "user-1",
-        roundParam: "1",
-      })
-
-      expect(result.isFirstRound).toBe(true)
-      expect(result.isLastRound).toBe(false)
-      expect(result.currentRound).toBe("Round 1")
-    })
-
-    it("should set isLastRound correctly when roundParam is last round", async () => {
-      const { fetchBolao, fetchUserBolao, fetchRounds, fetchFixtures, fetchUserBets } =
-        await import("@/app/lib/data")
-
-      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
-      vi.mocked(fetchUserBolao).mockResolvedValue(mockUserBolao as any)
-      vi.mocked(fetchRounds).mockResolvedValue(mockRounds)
-      vi.mocked(fetchFixtures).mockResolvedValue([])
-      vi.mocked(fetchUserBets).mockResolvedValue([])
-
-      const result = await getData({
-        bolaoId: "bolao-1",
-        userId: "user-1",
-        roundParam: "4",
-      })
-
-      expect(result.isFirstRound).toBe(false)
-      expect(result.isLastRound).toBe(true)
-      expect(result.currentRound).toBe("Round 4")
-    })
-
-    it("should handle middle round correctly", async () => {
-      const { fetchBolao, fetchUserBolao, fetchRounds, fetchFixtures, fetchUserBets } =
-        await import("@/app/lib/data")
-
-      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
-      vi.mocked(fetchUserBolao).mockResolvedValue(mockUserBolao as any)
-      vi.mocked(fetchRounds).mockResolvedValue(mockRounds)
-      vi.mocked(fetchFixtures).mockResolvedValue([])
-      vi.mocked(fetchUserBets).mockResolvedValue([])
-
+    it("handles roundParam pagination", async () => {
       const result = await getData({
         bolaoId: "bolao-1",
         userId: "user-1",
         roundParam: "3",
       })
 
-      expect(result.isFirstRound).toBe(false)
-      expect(result.isLastRound).toBe(false)
       expect(result.currentRound).toBe("Round 3")
-    })
-
-    it("should set isFirstRound and isLastRound when no roundParam and currentRound is first", async () => {
-      const { fetchBolao, fetchUserBolao, fetchRounds, fetchFixtures, fetchUserBets } =
-        await import("@/app/lib/data")
-
-      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
-      vi.mocked(fetchUserBolao).mockResolvedValue(mockUserBolao as any)
-      vi.mocked(fetchRounds)
-        .mockResolvedValueOnce(mockRounds)
-        .mockResolvedValueOnce(["Round 1"]) // Current round is first
-      vi.mocked(fetchFixtures).mockResolvedValue([])
-      vi.mocked(fetchUserBets).mockResolvedValue([])
-
-      const result = await getData({ bolaoId: "bolao-1", userId: "user-1" })
-
-      expect(result.isFirstRound).toBe(true)
+      expect(result.fixtures).toEqual([fixtureForRound("Round 3", 3)])
+      expect(result.isFirstRound).toBe(false)
       expect(result.isLastRound).toBe(false)
     })
 
-    it("should set isFirstRound and isLastRound when no roundParam and currentRound is last", async () => {
-      const { fetchBolao, fetchUserBolao, fetchRounds, fetchFixtures, fetchUserBets } =
-        await import("@/app/lib/data")
-
-      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
-      vi.mocked(fetchUserBolao).mockResolvedValue(mockUserBolao as any)
-      vi.mocked(fetchRounds)
-        .mockResolvedValueOnce(mockRounds)
-        .mockResolvedValueOnce(["Round 4"]) // Current round is last
-      vi.mocked(fetchFixtures).mockResolvedValue([])
-      vi.mocked(fetchUserBets).mockResolvedValue([])
-
-      const result = await getData({ bolaoId: "bolao-1", userId: "user-1" })
-
-      expect(result.isFirstRound).toBe(false)
-      expect(result.isLastRound).toBe(true)
-    })
-
-    it("should fetch fixtures with correct round parameter", async () => {
-      const { fetchBolao, fetchUserBolao, fetchRounds, fetchFixtures, fetchUserBets } =
-        await import("@/app/lib/data")
-
-      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
-      vi.mocked(fetchUserBolao).mockResolvedValue(mockUserBolao as any)
-      vi.mocked(fetchRounds)
-        .mockResolvedValueOnce(mockRounds)
-        .mockResolvedValueOnce(["Round 3"])
-      vi.mocked(fetchFixtures).mockResolvedValue([])
-      vi.mocked(fetchUserBets).mockResolvedValue([])
+    it("fetches season fixtures once", async () => {
+      const { fetchFixtures } = await import("@/app/lib/data")
 
       await getData({ bolaoId: "bolao-1", userId: "user-1" })
 
+      expect(fetchFixtures).toHaveBeenCalledTimes(1)
       expect(fetchFixtures).toHaveBeenCalledWith({
         leagueId: "2",
         year: 2024,
-        round: "Round 3",
       })
     })
 
-    it("should propagate errors from fetchBolao", async () => {
-      const { fetchBolao } = await import("@/app/lib/data")
-      const error = new Error("Failed to fetch bolao")
+    it("includes champion pick metadata", async () => {
+      const { fetchBetPageContext } = await import("@/app/lib/data")
 
-      vi.mocked(fetchBolao).mockRejectedValue(error)
-
-      await expect(
-        getData({ bolaoId: "bolao-1", userId: "user-1" })
-      ).rejects.toThrow("Failed to fetch bolao")
-    })
-
-    it("should propagate errors from fetchUserBolao", async () => {
-      const { fetchBolao, fetchUserBolao } = await import("@/app/lib/data")
-      const error = new Error("Failed to fetch user bolao")
-
-      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
-      vi.mocked(fetchUserBolao).mockRejectedValue(error)
-
-      await expect(
-        getData({ bolaoId: "bolao-1", userId: "user-1" })
-      ).rejects.toThrow("Failed to fetch user bolao")
-    })
-
-    it("should propagate errors from fetchUserBets", async () => {
-      const { fetchBolao, fetchUserBolao, fetchUserBets } = await import(
-        "@/app/lib/data"
-      )
-      const error = new Error("Failed to fetch bets")
-
-      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
-      vi.mocked(fetchUserBolao).mockResolvedValue(mockUserBolao as any)
-      vi.mocked(fetchUserBets).mockRejectedValue(error)
-
-      await expect(
-        getData({ bolaoId: "bolao-1", userId: "user-1" })
-      ).rejects.toThrow("Failed to fetch bets")
-    })
-
-    it("should handle multiple fixtures", async () => {
-      const { fetchBolao, fetchUserBolao, fetchRounds, fetchFixtures, fetchUserBets } =
-        await import("@/app/lib/data")
-
-      const multipleFixtures = [
-        mockFixture,
-        { ...mockFixture, fixture: { ...mockFixture.fixture, id: 2 } },
-        { ...mockFixture, fixture: { ...mockFixture.fixture, id: 3 } },
-      ]
-
-      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
-      vi.mocked(fetchUserBolao).mockResolvedValue(mockUserBolao as any)
-      vi.mocked(fetchRounds).mockResolvedValue(mockRounds)
-      vi.mocked(fetchFixtures).mockResolvedValue(multipleFixtures)
-      vi.mocked(fetchUserBets).mockResolvedValue([])
-
-      const result = await getData({ bolaoId: "bolao-1", userId: "user-1" })
-
-      expect(result.fixtures).toHaveLength(3)
-    })
-
-    it("should handle empty bets array", async () => {
-      const { fetchBolao, fetchUserBolao, fetchRounds, fetchFixtures, fetchUserBets } =
-        await import("@/app/lib/data")
-
-      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
-      vi.mocked(fetchUserBolao).mockResolvedValue(mockUserBolao as any)
-      vi.mocked(fetchRounds).mockResolvedValue(mockRounds)
-      vi.mocked(fetchFixtures).mockResolvedValue([])
-      vi.mocked(fetchUserBets).mockResolvedValue([])
-
-      const result = await getData({ bolaoId: "bolao-1", userId: "user-1" })
-
-      expect(result.bets).toHaveLength(0)
-    })
-
-    it("should extract year and leagueId from bolao", async () => {
-      const { fetchBolao, fetchUserBolao, fetchRounds, fetchFixtures, fetchUserBets } =
-        await import("@/app/lib/data")
-
-      const customBolao = { ...mockBolao, year: 2023, competition_id: "39" }
-
-      vi.mocked(fetchBolao).mockResolvedValue(customBolao as any)
-      vi.mocked(fetchUserBolao).mockResolvedValue(mockUserBolao as any)
-      vi.mocked(fetchRounds).mockResolvedValue(mockRounds)
-      vi.mocked(fetchFixtures).mockResolvedValue([])
-      vi.mocked(fetchUserBets).mockResolvedValue([])
-
-      await getData({ bolaoId: "bolao-1", userId: "user-1" })
-
-      expect(fetchRounds).toHaveBeenCalledWith({
-        leagueId: "39",
-        year: 2023,
+      vi.mocked(fetchBetPageContext).mockResolvedValue({
+        bolao: mockBolao,
+        userBolao: mockUserBolao,
+        championPick: {
+          id: "cp-1",
+          user_bolao_id: "ub-1",
+          team_id: 10,
+          team_name: "Brazil",
+          team_logo: "b.png",
+          created_at: "",
+          updated_at: "",
+        },
       })
-      expect(fetchFixtures).toHaveBeenCalledWith(
-        expect.objectContaining({
-          leagueId: "39",
-          year: 2023,
-        })
+
+      const result = await getData({ bolaoId: "bolao-1", userId: "user-1" })
+
+      expect(result.userChampionPick?.team_name).toBe("Brazil")
+      expect(result.championPickTeams.length).toBeGreaterThan(0)
+    })
+
+    it("propagates bet page context errors", async () => {
+      const { fetchBetPageContext } = await import("@/app/lib/data")
+
+      vi.mocked(fetchBetPageContext).mockRejectedValue(
+        new Error("Failed to fetch bet page context.")
       )
+
+      await expect(
+        getData({ bolaoId: "bolao-1", userId: "user-1" })
+      ).rejects.toThrow("Failed to fetch bet page context.")
+    })
+
+    it("throws when user is not a member", async () => {
+      const { fetchBetPageContext } = await import("@/app/lib/data")
+
+      vi.mocked(fetchBetPageContext).mockResolvedValue(null)
+
+      await expect(
+        getData({ bolaoId: "bolao-1", userId: "user-1" })
+      ).rejects.toThrow("User is not a member of this bolao.")
     })
   })
 })
-
