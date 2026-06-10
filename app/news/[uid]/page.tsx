@@ -85,7 +85,9 @@ async function NewsPost(props: Props) {
         {formatDateNews(document.first_publication_date)}
       </div>
 
-      <PrismicRichText field={document.data.content} />
+      <div className="news-container">
+        <PrismicRichText field={document.data.content} />
+      </div>
     </article>
   )
 }
