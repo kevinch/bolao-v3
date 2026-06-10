@@ -8,7 +8,7 @@ import {
 } from "@/app/lib/data"
 import { FixtureData, UserBolao, Bet } from "./definitions"
 import { getPlayersFromUsersBolao } from "./players"
-import { getLeagueWinnerTeamId } from "./championPick"
+import { resolveChampionTeamId } from "./championPick"
 import { isChampionPickLocked } from "./utils"
 
 export async function getData({ bolaoId }: { bolaoId: string }) {
@@ -31,6 +31,13 @@ export async function getData({ bolaoId }: { bolaoId: string }) {
     fetchLeague(Number(leagueId)),
   ])
 
+  const leagueWinnerTeamId = await resolveChampionTeamId({
+    leagueType: league?.league?.type,
+    leagueId,
+    year,
+    fixtures,
+  })
+
   return {
     bolao,
     fixtures: fixtures as FixtureData[],
@@ -38,6 +45,6 @@ export async function getData({ bolaoId }: { bolaoId: string }) {
     bets,
     championPicks,
     isChampionPickLocked: isChampionPickLocked(fixtures),
-    leagueWinnerTeamId: getLeagueWinnerTeamId(league),
+    leagueWinnerTeamId,
   }
 }

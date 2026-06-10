@@ -1,25 +1,56 @@
-import { describe, it, expect, vi, afterEach } from "vitest"
+import { describe, it, expect, vi, afterEach, beforeEach } from "vitest"
 import {
   isChampionPickLocked,
   getChampionPickLockDate,
   getTeamsFromFixtures,
 } from "../utils"
-import { getLeagueWinnerTeamId } from "../championPick"
-import type { FixtureData } from "../definitions"
+import {
+  isSeasonFinished,
+  getCupWinnerTeamId,
+  getLeagueWinnerFromStandings,
+  resolveChampionTeamId,
+} from "../championPick"
+import type { FixtureData, Standing } from "../definitions"
+
+vi.mock("../data", () => ({
+  fetchStandings: vi.fn(),
+}))
 
 function makeFixture(
   id: number,
   date: string,
-  home: { id: number; name: string },
-  away: { id: number; name: string }
+  home: { id: number; name: string; winner?: boolean | null },
+  away: { id: number; name: string; winner?: boolean | null },
+  statusShort: string = "NS"
 ): FixtureData {
   return {
-    fixture: { id, date: new Date(date) } as FixtureData["fixture"],
+    fixture: {
+      id,
+      date: new Date(date),
+      status: { long: "", short: statusShort, elapsed: null },
+    } as unknown as FixtureData["fixture"],
     teams: {
-      home: { ...home, logo: `${home.name}.png`, winner: null },
-      away: { ...away, logo: `${away.name}.png`, winner: null },
+      home: {
+        id: home.id,
+        name: home.name,
+        logo: `${home.name}.png`,
+        winner: home.winner ?? null,
+      },
+      away: {
+        id: away.id,
+        name: away.name,
+        logo: `${away.name}.png`,
+        winner: away.winner ?? null,
+      },
     },
   } as FixtureData
+}
+
+function makeStanding(rank: number, teamId: number, teamName: string): Standing {
+  return {
+    rank,
+    team: { id: teamId, name: teamName, logo: `${teamName}.png` },
+  } as Standing
 }
 
 describe("champion pick utils", () => {
@@ -106,22 +137,225 @@ describe("champion pick utils", () => {
       ])
     })
   })
+})
 
-  describe("getLeagueWinnerTeamId", () => {
-    it("returns winner id from current season", () => {
-      const league = {
-        seasons: [
-          { year: 2026, current: true, winner: { id: 10, name: "Brazil" } },
-        ],
-      }
-      expect(getLeagueWinnerTeamId(league)).toBe(10)
+describe("winner resolution", () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  describe("isSeasonFinished", () => {
+    it("returns false for empty fixtures", () => {
+      expect(isSeasonFinished([])).toBe(false)
     })
 
-    it("returns null when no winner yet", () => {
-      const league = {
-        seasons: [{ year: 2026, current: true, winner: null }],
-      }
-      expect(getLeagueWinnerTeamId(league)).toBeNull()
+    it("returns false when a fixture is still open to play", () => {
+      const fixtures = [
+        makeFixture(1, "2026-06-11T19:00:00Z", { id: 1, name: "A" }, { id: 2, name: "B" }, "FT"),
+        makeFixture(2, "2026-06-15T19:00:00Z", { id: 3, name: "C" }, { id: 4, name: "D" }, "NS"),
+      ]
+      expect(isSeasonFinished(fixtures)).toBe(false)
+    })
+
+    it("returns false when a fixture is in play", () => {
+      const fixtures = [
+        makeFixture(1, "2026-06-11T19:00:00Z", { id: 1, name: "A" }, { id: 2, name: "B" }, "2H"),
+      ]
+      expect(isSeasonFinished(fixtures)).toBe(false)
+    })
+
+    it("returns true when all fixtures are finished", () => {
+      const fixtures = [
+        makeFixture(1, "2026-06-11T19:00:00Z", { id: 1, name: "A" }, { id: 2, name: "B" }, "FT"),
+        makeFixture(2, "2026-06-15T19:00:00Z", { id: 3, name: "C" }, { id: 4, name: "D" }, "PEN"),
+      ]
+      expect(isSeasonFinished(fixtures)).toBe(true)
+    })
+  })
+
+  describe("getCupWinnerTeamId", () => {
+    it("returns the winning team of the chronologically last fixture", () => {
+      const fixtures = [
+        makeFixture(
+          2,
+          "2022-12-18T15:00:00Z",
+          { id: 26, name: "Argentina", winner: true },
+          { id: 2, name: "France", winner: false },
+          "PEN"
+        ),
+        makeFixture(
+          1,
+          "2022-12-17T15:00:00Z",
+          { id: 7, name: "Croatia", winner: true },
+          { id: 31, name: "Morocco", winner: false },
+          "FT"
+        ),
+      ]
+      expect(getCupWinnerTeamId(fixtures)).toBe(26)
+    })
+
+    it("returns the away team when it won the final", () => {
+      const fixtures = [
+        makeFixture(
+          1,
+          "2022-12-18T15:00:00Z",
+          { id: 26, name: "Argentina", winner: false },
+          { id: 2, name: "France", winner: true },
+          "FT"
+        ),
+      ]
+      expect(getCupWinnerTeamId(fixtures)).toBe(2)
+    })
+
+    it("returns null when the last fixture has no winner flag", () => {
+      const fixtures = [
+        makeFixture(
+          1,
+          "2022-12-18T15:00:00Z",
+          { id: 26, name: "Argentina" },
+          { id: 2, name: "France" },
+          "NS"
+        ),
+      ]
+      expect(getCupWinnerTeamId(fixtures)).toBeNull()
+    })
+
+    it("returns null for empty fixtures", () => {
+      expect(getCupWinnerTeamId([])).toBeNull()
+    })
+
+    it("does not mutate the input fixtures order", () => {
+      const fixtures = [
+        makeFixture(
+          2,
+          "2022-12-18T15:00:00Z",
+          { id: 26, name: "Argentina", winner: true },
+          { id: 2, name: "France", winner: false },
+          "PEN"
+        ),
+        makeFixture(
+          1,
+          "2022-12-17T15:00:00Z",
+          { id: 7, name: "Croatia", winner: true },
+          { id: 31, name: "Morocco", winner: false },
+          "FT"
+        ),
+      ]
+      getCupWinnerTeamId(fixtures)
+      expect(fixtures[0].fixture.id).toBe(2)
+    })
+  })
+
+  describe("getLeagueWinnerFromStandings", () => {
+    it("returns the rank 1 team of the first group", () => {
+      const standings: Standing[][] = [
+        [
+          makeStanding(2, 40, "Marseille"),
+          makeStanding(1, 85, "PSG"),
+          makeStanding(3, 80, "Lyon"),
+        ],
+      ]
+      expect(getLeagueWinnerFromStandings(standings)).toBe(85)
+    })
+
+    it("returns null for empty standings", () => {
+      expect(getLeagueWinnerFromStandings([])).toBeNull()
+    })
+
+    it("returns null when no rank 1 entry exists", () => {
+      const standings: Standing[][] = [[makeStanding(2, 40, "Marseille")]]
+      expect(getLeagueWinnerFromStandings(standings)).toBeNull()
+    })
+  })
+
+  describe("resolveChampionTeamId", () => {
+    it("returns null while the season is in progress and does not fetch standings", async () => {
+      const { fetchStandings } = await import("../data")
+      const fixtures = [
+        makeFixture(1, "2026-06-11T19:00:00Z", { id: 1, name: "A" }, { id: 2, name: "B" }, "NS"),
+      ]
+
+      const result = await resolveChampionTeamId({
+        leagueType: "League",
+        leagueId: "61",
+        year: 2026,
+        fixtures,
+      })
+
+      expect(result).toBeNull()
+      expect(fetchStandings).not.toHaveBeenCalled()
+    })
+
+    it("resolves a cup winner from the final fixture without fetching standings", async () => {
+      const { fetchStandings } = await import("../data")
+      const fixtures = [
+        makeFixture(
+          1,
+          "2022-12-18T15:00:00Z",
+          { id: 26, name: "Argentina", winner: true },
+          { id: 2, name: "France", winner: false },
+          "PEN"
+        ),
+      ]
+
+      const result = await resolveChampionTeamId({
+        leagueType: "Cup",
+        leagueId: "1",
+        year: 2022,
+        fixtures,
+      })
+
+      expect(result).toBe(26)
+      expect(fetchStandings).not.toHaveBeenCalled()
+    })
+
+    it("resolves a league winner from standings when the season is finished", async () => {
+      const { fetchStandings } = await import("../data")
+      vi.mocked(fetchStandings).mockResolvedValue({
+        standings: [[makeStanding(1, 85, "PSG"), makeStanding(2, 40, "Marseille")]],
+      } as any)
+
+      const fixtures = [
+        makeFixture(1, "2026-05-20T19:00:00Z", { id: 85, name: "PSG" }, { id: 40, name: "Marseille" }, "FT"),
+      ]
+
+      const result = await resolveChampionTeamId({
+        leagueType: "League",
+        leagueId: "61",
+        year: 2025,
+        fixtures,
+      })
+
+      expect(result).toBe(85)
+      expect(fetchStandings).toHaveBeenCalledWith({ leagueId: "61", year: 2025 })
+    })
+
+    it("returns null when standings are unavailable", async () => {
+      const { fetchStandings } = await import("../data")
+      vi.mocked(fetchStandings).mockResolvedValue([] as any)
+
+      const fixtures = [
+        makeFixture(1, "2026-05-20T19:00:00Z", { id: 85, name: "PSG" }, { id: 40, name: "Marseille" }, "FT"),
+      ]
+
+      const result = await resolveChampionTeamId({
+        leagueType: "League",
+        leagueId: "61",
+        year: 2025,
+        fixtures,
+      })
+
+      expect(result).toBeNull()
+    })
+
+    it("returns null for empty fixtures", async () => {
+      const result = await resolveChampionTeamId({
+        leagueType: "Cup",
+        leagueId: "1",
+        year: 2022,
+        fixtures: [],
+      })
+      expect(result).toBeNull()
     })
   })
 })

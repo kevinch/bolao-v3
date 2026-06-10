@@ -140,7 +140,7 @@
     "needs": "faltam"
   },
   "championPick": {
-    "label": "Campeão (+500 pts)",
+    "label": "Campeão (+500 pts) — beta",
     "placeholder": "Selecione um time — opcional",
     "selectTeam": "Selecionar campeão do torneio",
     "statusUnlockedNoPick": "Escolha o time campeão. +500 pts se acertar. Palpites dos outros ficam ocultos até o primeiro jogo.",

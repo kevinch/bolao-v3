@@ -140,7 +140,7 @@
     "needs": "needs"
   },
   "championPick": {
-    "label": "Winner (+500 pts)",
+    "label": "Winner (+500 pts) — beta",
     "placeholder": "Select a team — optional",
     "selectTeam": "Select championship winner",
     "statusUnlockedNoPick": "Pick the team you think will win. +500 pts if correct. Others' picks hidden until the first game.",

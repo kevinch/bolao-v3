@@ -84,7 +84,7 @@ type Team = {
   id: number
   name: string
   logo: string
-  winner: unknown
+  winner: boolean | null
 }
 
 export type ScoreGroup = {
