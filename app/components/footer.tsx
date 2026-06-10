@@ -24,6 +24,9 @@ function Footer() {
         <Button asChild variant="ghost">
           <Link href="/news">{t("news")}</Link>
         </Button>
+        <Button asChild variant="ghost">
+          <Link href="/faq">{t("faq")}</Link>
+        </Button>
         <LanguageSwitcher />
       </div>
       <BackgroundStripes />

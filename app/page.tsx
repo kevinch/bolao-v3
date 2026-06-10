@@ -7,11 +7,30 @@ import { BoloesListSkeleton } from "@/app/ui/skeletons"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import InviteRedirector from "@/app/components/InviteRedirector"
+import JsonLd from "@/app/components/jsonLd"
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/app/lib/siteConfig"
 
 // ISR: revalidate cached page every 5 minutes
 export const revalidate = 300
 
 const sectionSpaceing = "mb-18"
+
+const webApplicationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: SITE_NAME,
+  url: SITE_URL,
+  description: SITE_DESCRIPTION,
+  applicationCategory: "SportsApplication",
+  operatingSystem: "Any (web browser)",
+  isAccessibleForFree: true,
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+  inLanguage: ["en", "pt-BR"],
+}
 
 async function Home() {
   const user = await currentUser()
@@ -40,6 +59,7 @@ async function Home() {
 
   return (
     <main className="max-w-4xl mx-auto px-4">
+      <JsonLd data={webApplicationJsonLd} />
       <InviteRedirector />
 
       {/* Hero Section */}
@@ -62,12 +82,20 @@ async function Home() {
           </Button>
         </div>
 
-        <Link
-          href="/about"
-          className="text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 underline"
-        >
-          {t("learnMore")}
-        </Link>
+        <div className="flex items-center justify-center gap-6">
+          <Link
+            href="/about"
+            className="text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 underline"
+          >
+            {t("learnMore")}
+          </Link>
+          <Link
+            href="/faq"
+            className="text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 underline"
+          >
+            {t("faqLink")}
+          </Link>
+        </div>
       </div>
 
       {/* What is a Bolão? */}

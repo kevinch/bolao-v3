@@ -48,14 +48,16 @@ vi.mock("../globals.css", () => ({}))
 
 describe("RootLayout", () => {
   describe("Metadata", () => {
-    it("should export metadata with correct title", () => {
-      expect(metadata).toBeDefined()
-      expect(metadata.title).toBe("Bolão.io v3")
-    })
+    const defaultTitle =
+      typeof metadata.title === "object" && metadata.title !== null
+        ? ((metadata.title as { default?: string }).default ?? "")
+        : String(metadata.title)
 
-    it("should export metadata with correct description", () => {
-      expect(metadata).toBeDefined()
-      expect(metadata.description).toBe("Free soccer bets with friends.")
+    it("should export a title with default and template", () => {
+      expect(metadata.title).toBeDefined()
+      expect(metadata.title).toHaveProperty("default")
+      expect(metadata.title).toHaveProperty("template")
+      expect(defaultTitle).toContain("Bolão.io")
     })
 
     it("should have both title and description defined", () => {
@@ -63,30 +65,20 @@ describe("RootLayout", () => {
       expect(metadata).toHaveProperty("description")
     })
 
-    it("should have non-empty title", () => {
-      // Safely check that metadata.title is a non-empty string, accounting for possible types and null/undefined
-      expect(metadata.title).toBeTruthy()
-      expect(typeof metadata.title).toBe("string")
-      expect(
-        typeof metadata.title === "string"
-          ? metadata.title.length
-          : metadata.title?.toString().length
-      ).toBeGreaterThan(0)
+    it("should set metadataBase to the production domain", () => {
+      expect(metadata.metadataBase?.href).toBe("https://bolao.io/")
     })
 
-    it("should have non-empty description", () => {
-      // Safely check that metadata.description is a non-empty string, accounting for possible types and null/undefined
-      expect(metadata.description).toBeTruthy()
-      expect(typeof metadata.description).toBe("string")
-      expect(
-        typeof metadata.description === "string"
-          ? metadata.description.length
-          : 0
-      ).toBeGreaterThan(0)
+    it("should define Open Graph and Twitter cards", () => {
+      expect(metadata.openGraph).toBeDefined()
+      expect(metadata.openGraph?.siteName).toBe("Bolão.io")
+      expect(metadata.twitter).toBeDefined()
+    })
+
+    it("should have SEO-friendly title length", () => {
       // Title should ideally be between 10 and 60 characters for SEO
-      const titleLength = metadata.title?.toString().length || 0
-      expect(titleLength).toBeGreaterThan(5)
-      expect(titleLength).toBeLessThan(70)
+      expect(defaultTitle.length).toBeGreaterThan(5)
+      expect(defaultTitle.length).toBeLessThan(70)
     })
 
     it("should have SEO-friendly description length", () => {

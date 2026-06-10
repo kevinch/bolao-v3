@@ -4,20 +4,21 @@ import { render } from "@testing-library/react"
 import Footer from "../footer"
 
 describe("Footer", () => {
-  it("should render 4 links", () => {
+  it("should render 5 links", () => {
     render(<Footer />)
 
-    // Check for all 4 links by their text content
+    // Check for all 5 links by their text content
     expect(screen.getByRole("link", { name: "Home" })).toBeInTheDocument()
     expect(
       screen.getByRole("link", { name: "Create bolão" })
     ).toBeInTheDocument()
     expect(screen.getByRole("link", { name: "About" })).toBeInTheDocument()
     expect(screen.getByRole("link", { name: "News" })).toBeInTheDocument()
+    expect(screen.getByRole("link", { name: "FAQ" })).toBeInTheDocument()
 
-    // Verify there are exactly 4 links
+    // Verify there are exactly 5 links
     const links = screen.getAllByRole("link")
-    expect(links).toHaveLength(4)
+    expect(links).toHaveLength(5)
   })
 
   it("should have correct href attributes for all links", () => {
@@ -38,6 +39,10 @@ describe("Footer", () => {
     expect(screen.getByRole("link", { name: "News" })).toHaveAttribute(
       "href",
       "/news"
+    )
+    expect(screen.getByRole("link", { name: "FAQ" })).toHaveAttribute(
+      "href",
+      "/faq"
     )
   })
 })

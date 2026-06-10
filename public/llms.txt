@@ -1,0 +1,25 @@
+# Bolão.io
+
+> Bolão.io (https://bolao.io) is a free web app to create and manage a bolão — a Brazilian-style soccer prediction pool played between friends. Users predict match scores for real soccer competitions (World Cup, Brasileirão, Premier League and more), invite friends with a link, and compete on a live leaderboard. It is completely free: no subscriptions, no hidden costs, and no real money betting involved.
+
+## What you can do on Bolão.io
+
+- Create a free bolão for a supported soccer competition in minutes
+- Invite friends to join with a shareable link
+- Predict match results before kickoff and update picks any time before games start
+- Follow automatic live scoring, results and a player leaderboard as matches finish
+- Play in English or Brazilian Portuguese, on any device with a browser (no app download)
+
+## Key facts
+
+- Free to use; the app never handles money or gambling
+- Account sign-up is required to create or join a bolão
+- Match fixtures and results update automatically from official data
+- Made in Brazil, where "bolão" pools are a popular tradition during the World Cup and major tournaments
+
+## Pages
+
+- [Home](https://bolao.io/): what Bolão.io is and how it works
+- [About](https://bolao.io/about): the story behind the project and soccer coverage
+- [FAQ](https://bolao.io/faq): common questions about creating and playing a free bolão
+- [News](https://bolao.io/news): product updates and announcements
