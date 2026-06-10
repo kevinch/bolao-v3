@@ -8,12 +8,6 @@ vi.mock("@/app/lib/utils", () => ({
   formatDateNews: vi.fn((_dateString: string) => "January 15, 2024"),
 }))
 
-// Mock PrismicRichText
-vi.mock("@prismicio/react", () => ({
-  PrismicRichText: ({ field }: { field: any }) => (
-    <div data-testid="prismic-rich-text">{JSON.stringify(field)}</div>
-  ),
-}))
 
 describe("NewsList", () => {
   const mockNewsDocument: NewsDocument = {
@@ -78,10 +72,24 @@ describe("NewsList", () => {
       expect(formatDateNews).toHaveBeenCalledWith("2024-01-15T10:00:00+0000")
     })
 
-    it("should render PrismicRichText component", () => {
+    it("should render content excerpt with a link to the article", () => {
       render(<NewsList documents={[mockNewsDocument]} />)
 
-      expect(screen.getByTestId("prismic-rich-text")).toBeInTheDocument()
+      expect(
+        screen.getByText("This is the content of the news article.")
+      ).toBeInTheDocument()
+      expect(screen.getByRole("link", { name: "Read more" })).toHaveAttribute(
+        "href",
+        "/news/test-news-article"
+      )
+    })
+
+    it("should link the title to the article page", () => {
+      render(<NewsList documents={[mockNewsDocument]} />)
+
+      expect(
+        screen.getByRole("link", { name: "Test News Article" })
+      ).toHaveAttribute("href", "/news/test-news-article")
     })
   })
 
@@ -108,7 +116,7 @@ describe("NewsList", () => {
       const { container } = render(<NewsList documents={[mockNewsDocument]} />)
 
       const dateElement = container.querySelector(
-        ".text-sm.mb-12.text-slate-500"
+        ".text-sm.mb-6.text-slate-500"
       )
       expect(dateElement).toBeInTheDocument()
       expect(dateElement?.textContent).toBe("January 15, 2024")
@@ -125,7 +133,7 @@ describe("NewsList", () => {
       const { container } = render(<NewsList documents={[mockNewsDocument]} />)
 
       const dateElement = screen.getByText("January 15, 2024")
-      expect(dateElement.className).toContain("mb-12")
+      expect(dateElement.className).toContain("mb-6")
     })
 
     it("should apply slate-500 text color", () => {
@@ -150,9 +158,7 @@ describe("NewsList", () => {
       const wrapper = container.querySelector(".mb-20")
       expect(wrapper?.querySelector("h2")).toBeInTheDocument()
       expect(wrapper?.querySelector(".text-sm")).toBeInTheDocument()
-      expect(
-        wrapper?.querySelector('[data-testid="prismic-rich-text"]')
-      ).toBeInTheDocument()
+      expect(wrapper?.querySelector("p")).toBeInTheDocument()
     })
   })
 
@@ -226,7 +232,7 @@ describe("NewsList", () => {
       expect(formatDateNews).toHaveBeenCalledTimes(2)
     })
 
-    it("should render multiple PrismicRichText components", () => {
+    it("should render an excerpt and read more link per document", () => {
       const documents: NewsDocument[] = [
         { ...mockNewsDocument, id: "news-1" },
         { ...mockNewsDocument, id: "news-2" },
@@ -235,8 +241,11 @@ describe("NewsList", () => {
 
       render(<NewsList documents={documents} />)
 
-      const richTextComponents = screen.getAllByTestId("prismic-rich-text")
-      expect(richTextComponents).toHaveLength(3)
+      const excerpts = screen.getAllByText(
+        "This is the content of the news article."
+      )
+      expect(excerpts).toHaveLength(3)
+      expect(screen.getAllByRole("link", { name: "Read more" })).toHaveLength(3)
     })
   })
 
@@ -274,8 +283,8 @@ describe("NewsList", () => {
 
       render(<NewsList documents={[document]} />)
 
-      // Should only display first element
-      expect(screen.getByText("First Part")).toBeInTheDocument()
+      // All title parts are joined into a single text
+      expect(screen.getByText("First Part Second Part")).toBeInTheDocument()
     })
 
     it("should handle empty title array", () => {
@@ -413,7 +422,7 @@ describe("NewsList", () => {
   })
 
   describe("Content Integration", () => {
-    it("should pass content field to PrismicRichText", () => {
+    it("should render content as an excerpt", () => {
       const content = [
         {
           type: "paragraph" as const,
@@ -433,8 +442,7 @@ describe("NewsList", () => {
 
       render(<NewsList documents={[document]} />)
 
-      const richText = screen.getByTestId("prismic-rich-text")
-      expect(richText.textContent).toContain(JSON.stringify(content))
+      expect(screen.getByText("Test content paragraph")).toBeInTheDocument()
     })
 
     it("should handle empty content", () => {
@@ -447,10 +455,29 @@ describe("NewsList", () => {
         },
       }
 
-      render(<NewsList documents={[document]} />)
+      const { container } = render(<NewsList documents={[document]} />)
 
-      const richText = screen.getByTestId("prismic-rich-text")
-      expect(richText).toBeInTheDocument()
+      const excerpt = container.querySelector("p")
+      expect(excerpt).toBeInTheDocument()
+      expect(excerpt?.textContent).toBe("")
+    })
+
+    it("should truncate long content in the excerpt", () => {
+      const longText = "A".repeat(500)
+      const document: any = {
+        ...mockNewsDocument,
+        data: {
+          ...mockNewsDocument.data,
+          title: [{ type: "heading1" as const, text: "Test", spans: [] }],
+          content: [{ type: "paragraph" as const, text: longText, spans: [] }],
+        },
+      }
+
+      const { container } = render(<NewsList documents={[document]} />)
+
+      const excerpt = container.querySelector("p")
+      expect(excerpt?.textContent?.length).toBeLessThan(longText.length)
+      expect(excerpt?.textContent?.endsWith("…")).toBe(true)
     })
 
     it("should handle complex content structures", () => {
@@ -481,10 +508,11 @@ describe("NewsList", () => {
         },
       }
 
-      render(<NewsList documents={[document]} />)
+      const { container } = render(<NewsList documents={[document]} />)
 
-      const richText = screen.getByTestId("prismic-rich-text")
-      expect(richText.textContent).toContain(JSON.stringify(complexContent))
+      const excerpt = container.querySelector("p")
+      expect(excerpt?.textContent).toContain("First paragraph")
+      expect(excerpt?.textContent).toContain("Second paragraph")
     })
   })
 

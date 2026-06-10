@@ -3,6 +3,8 @@
     "home": "Início",
     "about": "Sobre",
     "news": "Notícias",
+    "faq": "FAQ",
+    "readMore": "Leia mais",
     "createBolao": "Criar bolão"
   },
   "home": {
@@ -14,6 +16,7 @@
     "getStarted": "COMEÇAR",
     "login": "ENTRAR",
     "learnMore": "Saiba mais sobre o Bolão.io",
+    "faqLink": "Perguntas frequentes",
     "whatIsBolao": "O que é um bolão?",
     "whatIsBolaoDesc": "No Brasil, um bolão é uma aposta entre amigos sobre campeonatos de futebol. É muito popular durante a Copa do Mundo e grandes torneios. Este app facilita criar e gerenciar o seu próprio - sem dinheiro envolvido, apenas competição amigável!",
     "howItWorks": "Como funciona",
@@ -41,8 +44,30 @@
     "en": "English",
     "pt-br": "Português (BR)"
   },
+  "news": {
+    "title": "Notícias",
+    "metaDescription": "Novidades e anúncios do Bolão.io, o app grátis para bolões de futebol com os amigos."
+  },
+  "faq": {
+    "title": "Perguntas Frequentes",
+    "metaTitle": "FAQ — Como criar um bolão grátis",
+    "metaDescription": "Respostas às perguntas mais comuns sobre o Bolão.io: o que é um bolão, como criar um bolão de futebol grátis com os amigos, como funciona a pontuação e quais campeonatos estão disponíveis.",
+    "q1": "O que é um bolão?",
+    "a1": "Um bolão é uma aposta entre amigos sobre os resultados de jogos de futebol — sem casas de aposta e sem dinheiro envolvido. É muito popular no Brasil durante a Copa do Mundo e os grandes campeonatos. No Bolão.io, você dá palpites no placar de cada partida e ganha pontos conforme a precisão.",
+    "q2": "Como criar um bolão grátis online?",
+    "a2": "Crie uma conta gratuita em bolao.io, clique em \"Criar bolão\", escolha um nome e um campeonato. Você recebe um link de convite para compartilhar com os amigos, e o processo todo leva menos de um minuto.",
+    "q3": "O Bolão.io é realmente grátis?",
+    "a3": "Sim, 100% grátis. Não há assinaturas, custos ocultos nem apostas com dinheiro real. O app nunca lida com dinheiro — ele apenas registra palpites e pontos. Muitos grupos combinam um prêmio entre si, mas isso acontece fora do app.",
+    "q4": "Como os amigos entram no meu bolão?",
+    "a4": "Compartilhe o link de convite do seu bolão. Os amigos abrem o link, criam uma conta gratuita (ou fazem login) e são adicionados automaticamente ao seu bolão, prontos para dar seus palpites.",
+    "q5": "Como funciona a pontuação?",
+    "a5": "Você ganha pontos por cada palpite: 200 pontos pelo placar exato, até 80 pontos por acertar apenas o vencedor, com valores intermediários para palpites parcialmente corretos, como vencedor e saldo de gols. Também dá para escolher o campeão do torneio e ganhar um bônus de 500 pontos. O ranking atualiza automaticamente conforme os resultados saem.",
+    "q6": "Quais campeonatos estão disponíveis?",
+    "a6": "O Bolão.io cobre grandes competições como Copa do Mundo, Brasileirão Série A e B, Copa do Brasil, Copa América, Libertadores, UEFA Champions League, Premier League, La Liga e Ligue 1, com jogos e resultados atualizados automaticamente."
+  },
   "about": {
     "title": "Sobre",
+    "metaDescription": "A história por trás do Bolão.io: um web app grátis para criar bolões de futebol com os amigos, feito no Brasil, cobrindo Copa do Mundo, Brasileirão e muito mais.",
     "bolaoTitle": "Bolão?",
     "bolaoDesc1": "No Brasil, um bolão é uma aposta entre amigos geralmente sobre campeonatos de futebol. É muito popular durante a Copa do Mundo e outros grandes torneios. Para a pronúncia, confira esta",
     "wikiPage": "página wiki",

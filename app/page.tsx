@@ -7,11 +7,30 @@ import { BoloesListSkeleton } from "@/app/ui/skeletons"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import InviteRedirector from "@/app/components/InviteRedirector"
+import JsonLd from "@/app/components/jsonLd"
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/app/lib/siteConfig"
 
 // ISR: revalidate cached page every 5 minutes
 export const revalidate = 300
 
 const sectionSpaceing = "mb-18"
+
+const webApplicationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: SITE_NAME,
+  url: SITE_URL,
+  description: SITE_DESCRIPTION,
+  applicationCategory: "SportsApplication",
+  operatingSystem: "Any (web browser)",
+  isAccessibleForFree: true,
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+  inLanguage: ["en", "pt-BR"],
+}
 
 async function Home() {
   const user = await currentUser()
@@ -40,6 +59,7 @@ async function Home() {
 
   return (
     <main className="max-w-4xl mx-auto px-4">
+      <JsonLd data={webApplicationJsonLd} />
       <InviteRedirector />
 
       {/* Hero Section */}
@@ -53,21 +73,31 @@ async function Home() {
           {t("tagline3")}
         </p>
 
-        <div className="flex items-center justify-center gap-4 mb-4">
-          <Button asChild>
-            <Link href="/sign-up">{t("getStarted")}</Link>
-          </Button>
-          <Button asChild variant="secondary">
-            <Link href="/sign-in">{t("login")}</Link>
-          </Button>
-        </div>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:max-w-lg sm:mx-auto">
+          <div className="flex flex-col items-center sm:items-end sm:flex-1 gap-3">
+            <Button asChild>
+              <Link href="/sign-up">{t("getStarted")}</Link>
+            </Button>
+            <Link
+              href="/about"
+              className="text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 underline"
+            >
+              {t("learnMore")}
+            </Link>
+          </div>
 
-        <Link
-          href="/about"
-          className="text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 underline"
-        >
-          {t("learnMore")}
-        </Link>
+          <div className="flex flex-col items-center sm:items-start sm:flex-1 gap-3">
+            <Button asChild variant="secondary">
+              <Link href="/sign-in">{t("login")}</Link>
+            </Button>
+            <Link
+              href="/faq"
+              className="text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 underline"
+            >
+              {t("faqLink")}
+            </Link>
+          </div>
+        </div>
       </div>
 
       {/* What is a Bolão? */}
@@ -83,27 +113,21 @@ async function Home() {
         <h2 className="text-2xl font-bold mb-6 text-center">
           {t("howItWorks")}
         </h2>
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-4">
           <div className="text-center">
             <div className="text-4xl font-bold text-primary mb-2">1</div>
             <h3 className="font-semibold mb-2">{t("step1Title")}</h3>
-            <p className="text-gray-600 dark:text-gray-400">
-              {t("step1Desc")}
-            </p>
+            <p className="text-gray-600 dark:text-gray-400">{t("step1Desc")}</p>
           </div>
           <div className="text-center">
             <div className="text-4xl font-bold text-primary mb-2">2</div>
             <h3 className="font-semibold mb-2">{t("step2Title")}</h3>
-            <p className="text-gray-600 dark:text-gray-400">
-              {t("step2Desc")}
-            </p>
+            <p className="text-gray-600 dark:text-gray-400">{t("step2Desc")}</p>
           </div>
           <div className="text-center">
             <div className="text-4xl font-bold text-primary mb-2">3</div>
             <h3 className="font-semibold mb-2">{t("step3Title")}</h3>
-            <p className="text-gray-600 dark:text-gray-400">
-              {t("step3Desc")}
-            </p>
+            <p className="text-gray-600 dark:text-gray-400">{t("step3Desc")}</p>
           </div>
         </div>
       </section>

@@ -1,6 +1,19 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 import { getTranslations } from "next-intl/server"
 import PageTitle from "@/app/components/pageTitle"
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("about")
+
+  return {
+    title: t("title"),
+    description: t("metaDescription"),
+    alternates: {
+      canonical: "/about",
+    },
+  }
+}
 
 const pClasses = "mb-10"
 const h2Classes = "text-2xl mb-6 text-center"
