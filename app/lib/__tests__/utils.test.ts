@@ -89,7 +89,11 @@ describe("utils", () => {
     it("should sort fixtures by date in ascending order", () => {
       const fixtures: Partial<FixtureData>[] = [
         {
-          fixture: { id: 1, date: "2024-03-15T20:00:00Z" } as any,
+          fixture: {
+            id: 1,
+            date: "2024-03-15T20:00:00Z",
+            timestamp: 1710532800,
+          } as any,
           league: { id: 1, name: "Test League", country: "Test" } as any,
           teams: {
             home: { id: 1, name: "Home Team", logo: "" } as any,
@@ -97,7 +101,11 @@ describe("utils", () => {
           },
         },
         {
-          fixture: { id: 2, date: "2024-03-10T18:00:00Z" } as any,
+          fixture: {
+            id: 2,
+            date: "2024-03-10T18:00:00Z",
+            timestamp: 1710093600,
+          } as any,
           league: { id: 1, name: "Test League", country: "Test" } as any,
           teams: {
             home: { id: 3, name: "Home Team 2", logo: "" } as any,
@@ -105,7 +113,11 @@ describe("utils", () => {
           },
         },
         {
-          fixture: { id: 3, date: "2024-03-20T21:00:00Z" } as any,
+          fixture: {
+            id: 3,
+            date: "2024-03-20T21:00:00Z",
+            timestamp: 1710968400,
+          } as any,
           league: { id: 1, name: "Test League", country: "Test" } as any,
           teams: {
             home: { id: 5, name: "Home Team 3", logo: "" } as any,
@@ -124,7 +136,11 @@ describe("utils", () => {
     it("should handle fixtures with the same date", () => {
       const fixtures: Partial<FixtureData>[] = [
         {
-          fixture: { id: 1, date: "2024-03-15T20:00:00Z" } as any,
+          fixture: {
+            id: 1,
+            date: "2024-03-15T20:00:00Z",
+            timestamp: 1710532800,
+          } as any,
           league: { id: 1, name: "Test League", country: "Test" } as any,
           teams: {
             home: { id: 1, name: "Home Team", logo: "" } as any,
@@ -132,7 +148,11 @@ describe("utils", () => {
           },
         },
         {
-          fixture: { id: 2, date: "2024-03-15T20:00:00Z" } as any,
+          fixture: {
+            id: 2,
+            date: "2024-03-15T20:00:00Z",
+            timestamp: 1710532800,
+          } as any,
           league: { id: 1, name: "Test League", country: "Test" } as any,
           teams: {
             home: { id: 3, name: "Home Team 2", logo: "" } as any,
@@ -157,19 +177,53 @@ describe("utils", () => {
   })
 
   describe("formatDateFixtures", () => {
-    it("should format date correctly", () => {
-      const dateString = "2024-03-15T20:30:00Z"
-      const result = formatDateFixtures(dateString)
+    it("should format timestamp in the local timezone", () => {
+      const timestamp = Math.floor(
+        new Date("2024-03-15T20:30:00Z").getTime() / 1000
+      )
+      const result = formatDateFixtures(timestamp)
 
       // The format is "LLL do H:mm" (e.g., "Mar 15th 20:30")
       expect(result).toMatch(/Mar 15th \d{1,2}:\d{2}/)
     })
 
     it("should handle different months", () => {
-      const dateString = "2024-12-25T15:45:00Z"
-      const result = formatDateFixtures(dateString)
+      const timestamp = Math.floor(
+        new Date("2024-12-25T15:45:00Z").getTime() / 1000
+      )
+      const result = formatDateFixtures(timestamp)
 
       expect(result).toMatch(/Dec 25th \d{1,2}:\d{2}/)
+    })
+
+    it("should convert UTC kickoff to Rio local time", () => {
+      const originalTz = process.env.TZ
+      process.env.TZ = "America/Sao_Paulo"
+
+      // 19:00 UTC = 16:00 BRT
+      const timestamp = Math.floor(
+        new Date("2024-06-11T19:00:00Z").getTime() / 1000
+      )
+      const result = formatDateFixtures(timestamp, "en")
+
+      expect(result).toMatch(/Jun 11th 16:00/)
+
+      process.env.TZ = originalTz
+    })
+
+    it("should convert UTC kickoff to Paris local time", () => {
+      const originalTz = process.env.TZ
+      process.env.TZ = "Europe/Paris"
+
+      // 19:00 UTC = 21:00 CEST
+      const timestamp = Math.floor(
+        new Date("2024-06-11T19:00:00Z").getTime() / 1000
+      )
+      const result = formatDateFixtures(timestamp, "en")
+
+      expect(result).toMatch(/Jun 11th 21:00/)
+
+      process.env.TZ = originalTz
     })
   })
 

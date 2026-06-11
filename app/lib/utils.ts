@@ -91,10 +91,15 @@ export const getCurrentSeasonObject = (
   return seasons.find((el: Season) => el.current)
 }
 
+function getFixtureTimestamp(fixture: FixtureData["fixture"]): number {
+  if (fixture.timestamp) return fixture.timestamp
+  return Math.floor(new Date(fixture.date).getTime() / 1000)
+}
+
 export function getChampionPickLockDate(fixtures: FixtureData[]): Date | null {
   if (fixtures.length === 0) return null
   const sorted = sortFixtures([...fixtures])
-  return new Date(sorted[0].fixture.date)
+  return new Date(getFixtureTimestamp(sorted[0].fixture) * 1000)
 }
 
 export function isChampionPickLocked(fixtures: FixtureData[]): boolean {
@@ -117,8 +122,8 @@ export function getTeamsFromFixtures(fixtures: FixtureData[]): ChampionTeam[] {
 
 export const sortFixtures = (fixtures: FixtureData[]) => {
   return fixtures.sort((a, b) => {
-    const dateA = new Date(a.fixture.date).getTime()
-    const dateB = new Date(b.fixture.date).getTime()
+    const dateA = getFixtureTimestamp(a.fixture)
+    const dateB = getFixtureTimestamp(b.fixture)
     if (dateA < dateB) return -1
     if (dateA > dateB) return 1
     return 0
@@ -126,10 +131,10 @@ export const sortFixtures = (fixtures: FixtureData[]) => {
 }
 
 export const formatDateFixtures = (
-  dateString: string,
+  timestamp: number,
   locale: string = "en"
 ): string => {
-  const date = new Date(dateString)
+  const date = new Date(timestamp * 1000)
   const dateFnsLocale = dateFnsLocales[locale] || enUS
   return format(date, "LLL do H:mm", { locale: dateFnsLocale })
 }

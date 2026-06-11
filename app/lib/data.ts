@@ -238,9 +238,7 @@ export async function fetchFixtures({
     headers: myHeaders,
   }
 
-  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-
-  let url = `${FOOTBALL_API_SPORTS}/fixtures?league=${leagueId}&season=${year}&timezone=${timezone}`
+  let url = `${FOOTBALL_API_SPORTS}/fixtures?league=${leagueId}&season=${year}&timezone=UTC`
   if (round) {
     url += `&round=${round}`
   }
