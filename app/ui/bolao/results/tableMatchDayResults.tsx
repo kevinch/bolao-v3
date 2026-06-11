@@ -155,7 +155,7 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
                       />
                       <div>
                         <FixtureDate
-                          date={fixtureData.fixture.date.toString()}
+                          timestamp={fixtureData.fixture.timestamp}
                           status={fixtureData.fixture.status}
                           locale={locale}
                         />

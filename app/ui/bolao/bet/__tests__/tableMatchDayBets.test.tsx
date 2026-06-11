@@ -40,9 +40,9 @@ vi.mock("@/app/ui/bolao/teamScore", () => ({
 }))
 
 vi.mock("@/app/ui/bolao/fixtureDate", () => ({
-  default: ({ date, status }: { date: string; status: any }) => (
-    <div data-testid="fixture-date" data-date={date}>
-      {date}
+  default: ({ timestamp, status }: { timestamp: number; status: any }) => (
+    <div data-testid="fixture-date" data-timestamp={timestamp}>
+      {timestamp}
     </div>
   ),
 }))
@@ -378,11 +378,11 @@ describe("TableMatchDayBets", () => {
       expect(screen.getByTestId("fixture-date")).toBeInTheDocument()
     })
 
-    it("should pass correct date to FixtureDate component", async () => {
+    it("should pass correct timestamp to FixtureDate component", async () => {
       await renderTableMatchDayBets(defaultProps)
 
       const fixtureDate = screen.getByTestId("fixture-date")
-      expect(fixtureDate).toHaveAttribute("data-date")
+      expect(fixtureDate).toHaveAttribute("data-timestamp", "1705348800")
     })
   })
 

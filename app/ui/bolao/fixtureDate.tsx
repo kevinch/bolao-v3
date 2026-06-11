@@ -1,3 +1,6 @@
+"use client"
+
+import { useEffect, useState } from "react"
 import {
   STATUSES_IN_PLAY,
   STATUSES_ERROR,
@@ -7,16 +10,19 @@ import { FixtureStatus } from "@/app/lib/definitions"
 import clsx from "clsx"
 
 type Props = {
-  date: string
+  timestamp: number
   status: FixtureStatus
   locale?: string
 }
 
-function FixtureDate({ date, status, locale = "en" }: Props) {
+function FixtureDate({ timestamp, status, locale = "en" }: Props) {
   const inPlay = STATUSES_IN_PLAY.includes(status.short)
   const hasError = STATUSES_ERROR.includes(status.short)
+  const [formattedDate, setFormattedDate] = useState("")
 
-  const formatedDate = formatDateFixtures(date.toString(), locale)
+  useEffect(() => {
+    setFormattedDate(formatDateFixtures(timestamp, locale))
+  }, [timestamp, locale])
 
   return (
     <div className="text-xs text-center">
@@ -33,7 +39,7 @@ function FixtureDate({ date, status, locale = "en" }: Props) {
       ) : inPlay ? (
         <span className="text-cyan-600">{status.long}</span>
       ) : (
-        formatedDate
+        <span suppressHydrationWarning>{formattedDate || "\u00a0"}</span>
       )}
     </div>
   )

@@ -87,7 +87,7 @@ async function TableMatchDayBets({
 
                     <div className="flex flex-col items-center">
                       <FixtureDate
-                        date={fixtureData.fixture.date.toString()}
+                        timestamp={fixtureData.fixture.timestamp}
                         status={fixtureData.fixture.status}
                         locale={locale}
                       />
