@@ -32,11 +32,17 @@ const cellStyles = {
   backgroundColor: "transparent",
 }
 
+const headerCellStyles = {
+  ...cellStyles,
+  backgroundColor: "white",
+}
+
 const totalsCellStyles = {
   ...cellStyles,
   borderTop: "1px solid rgb(226 232 240)", // border-slate-200
   padding: "12px 0",
   fontWeight: 600,
+  backgroundColor: "white",
 }
 
 function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
@@ -96,14 +102,13 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <StickyTable borderWidth={0}>
+            <div className="h-[min(70vh,800px)] w-full max-md:h-[55vh]">
+              <StickyTable borderWidth={0} stickyFooterCount={1}>
               <Row>
-                <Cell style={{ ...cellStyles, backgroundColor: "white" }}>
-                  &nbsp;
-                </Cell>
+                <Cell style={headerCellStyles}>&nbsp;</Cell>
                 {players.map((player: PlayersData) => {
                   return (
-                    <Cell style={cellStyles} key={player.id}>
+                    <Cell style={headerCellStyles} key={player.id}>
                       <span className="font-semibold text-sm px-2">
                         {player.username || getEmailUsername(player.email)}
                       </span>
@@ -238,7 +243,7 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
               })}
 
               <Row>
-                <Cell style={{ ...totalsCellStyles, backgroundColor: "white" }}>
+                <Cell style={totalsCellStyles}>
                   <div className="text-left pl-6">{t("total")}</div>
                 </Cell>
                 {players.map((player) => {
@@ -255,6 +260,7 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
                 })}
               </Row>
             </StickyTable>
+            </div>
           </CardContent>
         </Card>
       </div>
