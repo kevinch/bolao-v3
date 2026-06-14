@@ -61,7 +61,17 @@
     "q4": "How do friends join my bolão?",
     "a4": "Share your bolão's invite link. Friends open it, create a free account (or sign in) and are automatically added to your bolão, ready to make their predictions.",
     "q5": "How does the scoring work?",
-    "a5": "You earn points for each match prediction: 200 points for the exact score, down to 80 points for picking just the right winner, with intermediate values for partially correct predictions like the correct winner and goal difference. You can also pick a championship winner for a 500-point bonus. The leaderboard updates automatically as results come in.",
+    "scoring": {
+      "intro": "You earn points for each match prediction. The highest matching rule applies:",
+      "tierExact": "200 pts — Exact score (e.g. result 3-0, your bet 3-0)",
+      "tierWinnerScore": "150 pts — Winner's goals correct (e.g. result 3-0, your bet 3-1)",
+      "tierDraw": "150 pts — Draw predicted, not exact (e.g. result 1-1, your bet 0-0)",
+      "tierWinnerLoser": "120 pts — Winner and loser's goals (e.g. result 3-1, your bet 2-1)",
+      "tierGoalDiff": "100 pts — Winner and goal difference (e.g. result 2-1, your bet 1-0)",
+      "tierWinnerOnly": "80 pts — Winner only (e.g. result 1-0, your bet 3-2)",
+      "championBonus": "Pick the championship winner for a one-time +500 pt bonus added to your leaderboard total.",
+      "outro": "The leaderboard updates automatically as results come in."
+    },
     "q6": "Which competitions are supported?",
     "a6": "Bolão.io covers major competitions such as the World Cup, Brasileirão Série A and B, Copa do Brasil, Copa America, Libertadores, UEFA Champions League, Premier League, La Liga and Ligue 1, with fixtures and results updated automatically."
   },
