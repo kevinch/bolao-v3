@@ -61,7 +61,17 @@
     "q4": "Como os amigos entram no meu bolão?",
     "a4": "Compartilhe o link de convite do seu bolão. Os amigos abrem o link, criam uma conta gratuita (ou fazem login) e são adicionados automaticamente ao seu bolão, prontos para dar seus palpites.",
     "q5": "Como funciona a pontuação?",
-    "a5": "Você ganha pontos por cada palpite: 200 pontos pelo placar exato, até 80 pontos por acertar apenas o vencedor, com valores intermediários para palpites parcialmente corretos, como vencedor e saldo de gols. Também dá para escolher o campeão do torneio e ganhar um bônus de 500 pontos. O ranking atualiza automaticamente conforme os resultados saem.",
+    "scoring": {
+      "intro": "Você ganha pontos por cada palpite. Vale a regra de maior pontuação que se aplicar:",
+      "tierExact": "200 pts — Placar exato (ex.: resultado 3-0, seu palpite 3-0)",
+      "tierWinnerScore": "150 pts — Gols do vencedor corretos (ex.: resultado 3-0, seu palpite 3-1)",
+      "tierDraw": "150 pts — Empate previsto, mas não exato (ex.: resultado 1-1, seu palpite 0-0)",
+      "tierWinnerLoser": "120 pts — Vencedor e gols do perdedor (ex.: resultado 3-1, seu palpite 2-1)",
+      "tierGoalDiff": "100 pts — Vencedor e saldo de gols (ex.: resultado 2-1, seu palpite 1-0)",
+      "tierWinnerOnly": "80 pts — Apenas o vencedor (ex.: resultado 1-0, seu palpite 3-2)",
+      "championBonus": "Escolha o campeão do torneio para um bônus único de +500 pts somado ao seu total no ranking.",
+      "outro": "O ranking atualiza automaticamente conforme os resultados saem."
+    },
     "q6": "Quais campeonatos estão disponíveis?",
     "a6": "O Bolão.io cobre grandes competições como Copa do Mundo, Brasileirão Série A e B, Copa do Brasil, Copa América, Libertadores, UEFA Champions League, Premier League, La Liga e Ligue 1, com jogos e resultados atualizados automaticamente."
   },
