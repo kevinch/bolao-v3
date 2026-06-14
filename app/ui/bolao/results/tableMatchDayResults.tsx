@@ -9,6 +9,7 @@ import {
   STATUSES_IN_PLAY,
   STATUSES_OPEN_TO_PLAY,
   getEmailUsername,
+  getFixtureResultScores,
 } from "@/app/lib/utils"
 import { calcScore } from "@/app/lib/scoresCalcFactory"
 import { StickyTable, Row, Cell } from "react-sticky-table"
@@ -49,39 +50,49 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
   const t = useTranslations("resultsPage")
   const locale = useLocale()
 
-  // Calculate totals per player for finished fixtures only
+  // Totals include finished fixtures and live in-play scores
   const calculatePlayerTotal = (userBolaoId: string): number => {
     let total = 0
 
     fixtures.forEach((fixtureData) => {
-      if (STATUSES_FINISHED.includes(fixtureData.fixture.status.short)) {
-        const homeBetObj = findBetObj({
-          bets,
-          fixtureId: fixtureData.fixture.id.toString(),
-          type: "home",
-          userBolaoId,
+      const statusShort = fixtureData.fixture.status.short
+      const scoresVisible =
+        STATUSES_IN_PLAY.includes(statusShort) ||
+        STATUSES_FINISHED.includes(statusShort)
+
+      if (!scoresVisible) return
+
+      const homeBetObj = findBetObj({
+        bets,
+        fixtureId: fixtureData.fixture.id.toString(),
+        type: "home",
+        userBolaoId,
+      })
+
+      const awayBetObj = findBetObj({
+        bets,
+        fixtureId: fixtureData.fixture.id.toString(),
+        type: "away",
+        userBolaoId,
+      })
+
+      if (
+        homeBetObj?.value !== undefined &&
+        awayBetObj?.value !== undefined
+      ) {
+        const { resultHome, resultAway } = getFixtureResultScores(
+          fixtureData,
+          statusShort
+        )
+
+        const fixtureScore = calcScore({
+          resultHome,
+          resultAway,
+          betHome: homeBetObj.value,
+          betAway: awayBetObj.value,
         })
 
-        const awayBetObj = findBetObj({
-          bets,
-          fixtureId: fixtureData.fixture.id.toString(),
-          type: "away",
-          userBolaoId,
-        })
-
-        if (
-          homeBetObj?.value !== undefined &&
-          awayBetObj?.value !== undefined
-        ) {
-          const fixtureScore = calcScore({
-            resultHome: fixtureData.score.fulltime.home || 0,
-            resultAway: fixtureData.score.fulltime.away || 0,
-            betHome: homeBetObj.value,
-            betAway: awayBetObj.value,
-          })
-
-          total = total + fixtureScore
-        }
+        total = total + fixtureScore
       }
     })
 
@@ -205,12 +216,12 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
 
                       let score = 0
                       if (canShowScores) {
-                        const fulltime = fixtureData.score.fulltime
-                        const halftime = fixtureData.score.halftime
+                        const { resultHome, resultAway } =
+                          getFixtureResultScores(fixtureData, statusShort)
 
                         score = calcScore({
-                          resultHome: fulltime.home || halftime.home || 0,
-                          resultAway: fulltime.away || halftime.away || 0,
+                          resultHome,
+                          resultAway,
                           betHome: Number(betHome),
                           betAway: Number(betAway),
                         })
