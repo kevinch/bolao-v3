@@ -226,6 +226,36 @@ export const STATUSES_IN_PLAY = ["1H", "HT", "2H", "ET", "BT", "LIVE"]
 export const STATUSES_FINISHED = ["FT", "AET", "PEN", "CANC", ""]
 export const STATUSES_ERROR = ["CANC", "PST", "ABD", "AWD"]
 
+/** Scores used for bolão point calculation (live goals when in play, fulltime when finished). */
+export function getFixtureResultScores(
+  fixtureData: Pick<FixtureData, "goals" | "score">,
+  statusShort: string
+): { resultHome: number; resultAway: number } {
+  if (STATUSES_FINISHED.includes(statusShort)) {
+    return {
+      resultHome: fixtureData.score.fulltime.home ?? 0,
+      resultAway: fixtureData.score.fulltime.away ?? 0,
+    }
+  }
+
+  if (STATUSES_IN_PLAY.includes(statusShort)) {
+    return {
+      resultHome:
+        fixtureData.goals.home ??
+        fixtureData.score.halftime.home ??
+        fixtureData.score.fulltime.home ??
+        0,
+      resultAway:
+        fixtureData.goals.away ??
+        fixtureData.score.halftime.away ??
+        fixtureData.score.fulltime.away ??
+        0,
+    }
+  }
+
+  return { resultHome: 0, resultAway: 0 }
+}
+
 export const STYLES_TABLE_SHADOW = "shadow-md bg-white p-0 mb-6"
 
 // Session Storage key for the invite bug/fix

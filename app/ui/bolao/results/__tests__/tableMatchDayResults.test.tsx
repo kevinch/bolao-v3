@@ -745,6 +745,7 @@ describe("TableMatchDayResults", () => {
 
       const fixtures = [
         createMockFixture({
+          goals: { home: null, away: null },
           score: {
             halftime: { home: 1, away: 0 },
             fulltime: { home: null, away: null },
@@ -780,6 +781,7 @@ describe("TableMatchDayResults", () => {
 
       const fixtures = [
         createMockFixture({
+          goals: { home: null, away: null },
           score: {
             halftime: { home: null, away: null },
             fulltime: { home: null, away: null },
@@ -808,6 +810,48 @@ describe("TableMatchDayResults", () => {
           resultAway: 0,
         })
       )
+    })
+
+    it("should use live goals when game is in play", () => {
+      vi.mocked(utils.findBetObj).mockImplementation(
+        ({ type }: { type: "home" | "away" }) => {
+          if (type === "home") return { value: 3 } as Bet
+          if (type === "away") return { value: 2 } as Bet
+          return null
+        }
+      )
+
+      const fixtures = [
+        createMockFixture({
+          goals: { home: 3, away: 2 },
+          score: {
+            halftime: { home: null, away: null },
+            fulltime: { home: null, away: null },
+            extratime: { home: null, away: null },
+            penalty: { home: null, away: null },
+          },
+          fixture: {
+            ...createMockFixture().fixture,
+            status: { long: "First Half", short: "1H", elapsed: 25 },
+          },
+        }),
+      ]
+
+      render(
+        <TableMatchDayResults
+          fixtures={fixtures}
+          bets={[createMockBet()]}
+          players={mockPlayers}
+          userId="player1"
+        />
+      )
+
+      expect(scoresCalcFactory.calcScore).toHaveBeenCalledWith({
+        resultHome: 3,
+        resultAway: 2,
+        betHome: 3,
+        betAway: 2,
+      })
     })
   })
 
@@ -1126,7 +1170,7 @@ describe("TableMatchDayResults", () => {
       expect(totalsRow.textContent).toContain("150 pts")
     })
 
-    it("should only count STATUSES_FINISHED, not STATUSES_IN_PLAY", () => {
+    it("should include live scores in totals for in-play fixtures", () => {
       vi.mocked(utils.findBetObj).mockReturnValue({ value: 2 } as Bet)
       vi.mocked(scoresCalcFactory.calcScore).mockReturnValue(100)
 
@@ -1160,9 +1204,8 @@ describe("TableMatchDayResults", () => {
       const rows = container.querySelectorAll('[data-testid="sticky-row"]')
       const totalsRow = rows[rows.length - 1]
 
-      // Should show 100 pts in totals (only 1 finished fixture), not 200 pts
-      expect(totalsRow.textContent).toContain("100 pts")
-      expect(totalsRow.textContent).not.toContain("200 pts")
+      // Live in-play fixture + finished fixture (100 pts each)
+      expect(totalsRow.textContent).toContain("200 pts")
     })
 
     it("should calculate totals with multiple finished fixtures", () => {

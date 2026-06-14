@@ -14,6 +14,7 @@ import {
   STATUSES_IN_PLAY,
   STATUSES_FINISHED,
   STATUSES_ERROR,
+  getFixtureResultScores,
 } from "../utils"
 import type { Season, FixtureData, Bet } from "../definitions"
 
@@ -512,6 +513,64 @@ describe("utils", () => {
 
     it("should have correct STATUSES_ERROR", () => {
       expect(STATUSES_ERROR).toEqual(["CANC", "PST", "ABD", "AWD"])
+    })
+  })
+
+  describe("getFixtureResultScores", () => {
+    const baseScore = {
+      halftime: { home: 1, away: 0 },
+      fulltime: { home: 2, away: 1 },
+      extratime: { home: null, away: null },
+      penalty: { home: null, away: null },
+    }
+
+    it("should use fulltime score when match is finished", () => {
+      expect(
+        getFixtureResultScores(
+          { goals: { home: 3, away: 2 }, score: baseScore },
+          "FT"
+        )
+      ).toEqual({ resultHome: 2, resultAway: 1 })
+    })
+
+    it("should prefer live goals when match is in play", () => {
+      expect(
+        getFixtureResultScores(
+          {
+            goals: { home: 3, away: 2 },
+            score: {
+              ...baseScore,
+              halftime: { home: 1, away: 0 },
+              fulltime: { home: null, away: null },
+            },
+          },
+          "2H"
+        )
+      ).toEqual({ resultHome: 3, resultAway: 2 })
+    })
+
+    it("should fall back to halftime when live goals are unavailable", () => {
+      expect(
+        getFixtureResultScores(
+          {
+            goals: { home: null, away: null },
+            score: {
+              ...baseScore,
+              fulltime: { home: null, away: null },
+            },
+          },
+          "HT"
+        )
+      ).toEqual({ resultHome: 1, resultAway: 0 })
+    })
+
+    it("should return zero when match has not started", () => {
+      expect(
+        getFixtureResultScores(
+          { goals: { home: null, away: null }, score: baseScore },
+          "NS"
+        )
+      ).toEqual({ resultHome: 0, resultAway: 0 })
     })
   })
 })
