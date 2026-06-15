@@ -1,0 +1,66 @@
+name: Security Audit
+
+on:
+  pull_request:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run yarn audit
+        id: audit
+        continue-on-error: true
+        run: yarn audit 2>&1 | tee audit-output.txt
+
+      - name: Prepare PR comment
+        run: |
+          if [ "${{ steps.audit.outcome }}" = "success" ]; then
+            status="✅ No vulnerabilities found"
+          else
+            status="❌ Vulnerabilities found — merge blocked until resolved"
+          fi
+
+          {
+            echo "## Yarn security audit"
+            echo ""
+            echo "**Status:** ${status}"
+            echo ""
+            echo "<details>"
+            echo "<summary>Audit output</summary>"
+            echo ""
+            echo '```'
+            tail -c 12000 audit-output.txt
+            echo '```'
+            echo ""
+            echo "</details>"
+          } > audit-comment.md
+
+      - name: Comment PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: yarn-audit
+          path: audit-comment.md
+
+      - name: Enforce clean audit
+        if: steps.audit.outcome != 'success'
+        run: |
+          echo "yarn audit reported vulnerabilities"
+          exit 1
