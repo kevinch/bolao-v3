@@ -223,6 +223,16 @@ export const getEmailUsername = (email: string): string => {
 // api-football.com/documentation-v3#tag/Fixtures/operation/get-fixtures-rounds
 export const STATUSES_OPEN_TO_PLAY = ["TBD", "NS", "PST", "AWD"]
 export const STATUSES_IN_PLAY = ["1H", "HT", "2H", "ET", "BT", "LIVE"]
+
+/** Whether non-admin players may create or change bets for this fixture. */
+export function isFixtureOpenToBet(fixture: FixtureData): boolean {
+  if (!STATUSES_OPEN_TO_PLAY.includes(fixture.fixture.status.short)) {
+    return false
+  }
+
+  const kickoffMs = getFixtureTimestamp(fixture.fixture) * 1000
+  return Date.now() < kickoffMs
+}
 export const STATUSES_FINISHED = ["FT", "AET", "PEN", "CANC", ""]
 export const STATUSES_ERROR = ["CANC", "PST", "ABD", "AWD"]
 

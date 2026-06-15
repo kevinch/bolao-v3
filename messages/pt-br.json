@@ -151,7 +151,10 @@
     "selectPlayer": "Selecionar jogador",
     "selectPlayerToBetAs": "Selecionar jogador para apostar como",
     "loading": "carregando...",
-    "errorLoadFailed": "Não foi possível carregar a página de apostas. Verifique sua conexão e tente novamente."
+    "errorLoadFailed": "Não foi possível carregar a página de apostas. Verifique sua conexão e tente novamente.",
+    "saveErrorTitle": "Não foi possível salvar o palpite",
+    "saveErrorDescription": "Algo deu errado ao salvar seu palpite. Tente novamente.",
+    "saveLockedDescription": "Apostas encerradas para este jogo. Sua alteração não foi salva."
   },
   "resultsPage": {
     "nextGames": "Próximos jogos",

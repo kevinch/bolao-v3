@@ -1,9 +1,11 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
+import { useTranslations } from "next-intl"
 import { createBet, updateBet } from "@/app/lib/actions"
 import { INITIAL_BET_VALUE } from "@/app/lib/utils"
 import { BetResult } from "@/app/lib/definitions"
+import { useToast } from "@/hooks/use-toast"
 import { Button } from "@/components/ui/button"
 import { PlusIcon, MinusIcon } from "@radix-ui/react-icons"
 
@@ -16,6 +18,21 @@ type Props = {
   disabled: boolean
 }
 
+function displayToSavedValue(display: string): number | null {
+  if (display === INITIAL_BET_VALUE) return null
+  return Number(display)
+}
+
+function savedValueToDisplay(saved: number | null): string {
+  return saved === null ? INITIAL_BET_VALUE : String(saved)
+}
+
+function isBetSaveSuccess(
+  result: BetResult
+): result is Extract<BetResult, { id: string }> {
+  return "id" in result && typeof result.id === "string"
+}
+
 function ButtonsBet({
   userBolaoId,
   type,
@@ -24,40 +41,127 @@ function ButtonsBet({
   betId,
   disabled,
 }: Props) {
-  const [value, setValue] = useState(
-    betValue !== undefined ? betValue : INITIAL_BET_VALUE
-  )
-  const [betIdValue, setBetId] = useState(betId || null)
+  const t = useTranslations("betPage")
+  const { toast } = useToast()
+  const initialSaved = betValue !== undefined ? betValue : null
+  const [value, setValue] = useState(savedValueToDisplay(initialSaved))
+  const [betIdValue, setBetIdValue] = useState(betId || null)
 
-  const setData = useCallback(async () => {
+  const valueRef = useRef(value)
+  const betIdRef = useRef(betId || null)
+  const savedValueRef = useRef<number | null>(initialSaved)
+  const isSavingRef = useRef(false)
+  const pendingSaveRef = useRef(false)
+
+  valueRef.current = value
+  betIdRef.current = betIdValue
+
+  useEffect(() => {
+    const saved = betValue !== undefined ? betValue : null
+    savedValueRef.current = saved
+    betIdRef.current = betId || null
+    setValue(savedValueToDisplay(saved))
+    setBetIdValue(betId || null)
+  }, [betValue, betId])
+
+  const showSaveError = useCallback(
+    (message?: string) => {
+      const isLocked = message === "Betting is locked for this fixture."
+      toast({
+        variant: "destructive",
+        title: t("saveErrorTitle"),
+        description: isLocked
+          ? t("saveLockedDescription")
+          : message || t("saveErrorDescription"),
+      })
+    },
+    [t, toast]
+  )
+
+  const persistBetRef = useRef<() => Promise<boolean>>(async () => true)
+
+  persistBetRef.current = async () => {
+    const numValue = displayToSavedValue(valueRef.current)
+    if (numValue === null) return true
+    if (numValue === savedValueRef.current) return true
+
+    if (isSavingRef.current) {
+      pendingSaveRef.current = true
+      return false
+    }
+
+    isSavingRef.current = true
+    pendingSaveRef.current = false
+    let savedSuccessfully = false
+
     try {
       let result: BetResult
 
-      if (betIdValue) {
-        const data = { betId: betIdValue, value: Number(value) }
-        result = await updateBet(data)
+      if (betIdRef.current) {
+        result = await updateBet({ betId: betIdRef.current, value: numValue })
       } else {
-        const data = { userBolaoId, value: Number(value), type, fixtureId }
-        result = await createBet(data)
+        result = await createBet({
+          userBolaoId,
+          value: numValue,
+          type,
+          fixtureId,
+        })
       }
 
-      if ("id" in result && !betIdValue) {
-        setBetId(result.id)
+      if (isBetSaveSuccess(result)) {
+        savedValueRef.current = numValue
+        betIdRef.current = result.id
+        setBetIdValue(result.id)
+        savedSuccessfully = true
+        return true
       }
+
+      showSaveError("message" in result ? result.message : undefined)
+      setValue(savedValueToDisplay(savedValueRef.current))
+      return false
     } catch (error) {
       console.error("Error creating/updating bet:", error)
+      showSaveError()
+      setValue(savedValueToDisplay(savedValueRef.current))
+      return false
+    } finally {
+      isSavingRef.current = false
+
+      if (!savedSuccessfully) {
+        pendingSaveRef.current = false
+      } else {
+        const currentValue = displayToSavedValue(valueRef.current)
+        const needsFollowUpSave =
+          pendingSaveRef.current ||
+          (currentValue !== null && currentValue !== savedValueRef.current)
+
+        pendingSaveRef.current = false
+
+        if (needsFollowUpSave) {
+          void persistBetRef.current()
+        }
+      }
     }
-  }, [betIdValue, value, userBolaoId, type, fixtureId])
+  }
 
   useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      if (value !== INITIAL_BET_VALUE) {
-        setData()
-      }
+    if (value === INITIAL_BET_VALUE) return
+
+    const timer = setTimeout(() => {
+      void persistBetRef.current()
     }, 300)
 
-    return () => clearTimeout(delayDebounceFn)
-  }, [value, setData])
+    return () => clearTimeout(timer)
+  }, [value])
+
+  useEffect(() => {
+    return () => {
+      const pendingValue = displayToSavedValue(valueRef.current)
+      if (pendingValue !== null && pendingValue !== savedValueRef.current) {
+        void persistBetRef.current()
+      }
+    }
+  }, [])
 
   const incrementCount = () => {
     if (value === INITIAL_BET_VALUE) {

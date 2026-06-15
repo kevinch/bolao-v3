@@ -10,6 +10,16 @@ vi.mock("@/app/lib/actions", () => ({
   updateBet: vi.fn(),
 }))
 
+const mockToast = vi.fn()
+
+vi.mock("@/hooks/use-toast", () => ({
+  useToast: () => ({ toast: mockToast }),
+}))
+
+vi.mock("next-intl", () => ({
+  useTranslations: () => (key: string) => key,
+}))
+
 describe("ButtonsBet", () => {
   const defaultProps = {
     userBolaoId: "user-bolao-123",
@@ -20,6 +30,7 @@ describe("ButtonsBet", () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    mockToast.mockClear()
   })
 
   afterEach(() => {
@@ -421,16 +432,20 @@ describe("ButtonsBet", () => {
 
       await user.click(incrementButton)
 
-      // Wait for debounce
       await waitFor(() => {
         expect(consoleErrorSpy).toHaveBeenCalledWith(
           "Error creating/updating bet:",
           expect.any(Error)
         )
+        expect(mockToast).toHaveBeenCalledWith(
+          expect.objectContaining({
+            variant: "destructive",
+            title: "saveErrorTitle",
+          })
+        )
       })
 
-      // Component should still be functional
-      expect(screen.getByText("0")).toBeInTheDocument()
+      expect(screen.getByText(".")).toBeInTheDocument()
 
       consoleErrorSpy.mockRestore()
     })
@@ -451,12 +466,45 @@ describe("ButtonsBet", () => {
 
       await user.click(incrementButton)
 
-      // Wait for debounce
       await waitFor(() => {
         expect(consoleErrorSpy).toHaveBeenCalled()
+        expect(mockToast).toHaveBeenCalledWith(
+          expect.objectContaining({
+            variant: "destructive",
+            title: "saveErrorTitle",
+          })
+        )
       })
 
+      expect(screen.getByText("3")).toBeInTheDocument()
+
       consoleErrorSpy.mockRestore()
+    })
+
+    it("reverts and shows toast when server rejects the save", async () => {
+      const user = userEvent.setup()
+      const mockCreateBet = vi.mocked(actions.createBet)
+      mockCreateBet.mockResolvedValue({
+        success: false,
+        message: "Betting is locked for this fixture.",
+      })
+
+      render(<ButtonsBet {...defaultProps} />)
+
+      const buttons = screen.getAllByRole("button")
+      await user.click(buttons[1])
+
+      await waitFor(() => {
+        expect(mockToast).toHaveBeenCalledWith(
+          expect.objectContaining({
+            variant: "destructive",
+            title: "saveErrorTitle",
+            description: "saveLockedDescription",
+          })
+        )
+      })
+
+      expect(screen.getByText(".")).toBeInTheDocument()
     })
   })
 
@@ -546,22 +594,12 @@ describe("ButtonsBet", () => {
       const mockCreateBet = vi.mocked(actions.createBet)
       const mockUpdateBet = vi.mocked(actions.updateBet)
 
-      // Simulate slow createBet response
+      let resolveCreate: (value: unknown) => void = () => {}
       mockCreateBet.mockImplementation(
         () =>
-          new Promise((resolve) =>
-            setTimeout(
-              () =>
-                resolve({
-                  id: "new-bet-456",
-                  user_bolao_id: "user-bolao-123",
-                  fixture_id: "fixture-456",
-                  value: 1,
-                  type: "home",
-                }),
-              100
-            )
-          )
+          new Promise((resolve) => {
+            resolveCreate = resolve
+          })
       )
 
       mockUpdateBet.mockResolvedValue({
@@ -577,31 +615,68 @@ describe("ButtonsBet", () => {
       const buttons = screen.getAllByRole("button")
       const incrementButton = buttons[1]
 
-      // Click to 1, then quickly to 2 before debounce completes
       await user.click(incrementButton)
       await user.click(incrementButton)
 
-      // Wait for createBet (first value)
-      await waitFor(
-        () => {
-          expect(mockCreateBet).toHaveBeenCalledTimes(1)
-        },
-        { timeout: 2000 }
-      )
+      await waitFor(() => {
+        expect(mockCreateBet).toHaveBeenCalledWith({
+          userBolaoId: "user-bolao-123",
+          value: 1,
+          type: "home",
+          fixtureId: "fixture-456",
+        })
+      })
 
-      // Wait for updateBet with the correct betId (regression test for stale closure)
+      await user.click(incrementButton)
+
+      resolveCreate({
+        id: "new-bet-456",
+        user_bolao_id: "user-bolao-123",
+        fixture_id: "fixture-456",
+        value: 1,
+        type: "home",
+      })
+
       await waitFor(
         () => {
           expect(mockUpdateBet).toHaveBeenCalledWith({
             betId: "new-bet-456",
-            value: 1,
+            value: 2,
           })
         },
         { timeout: 2000 }
       )
 
-      // Should NOT have called createBet a second time
       expect(mockCreateBet).toHaveBeenCalledTimes(1)
+    })
+
+    it("flushes a pending save when the component unmounts", async () => {
+      const user = userEvent.setup()
+      const mockCreateBet = vi.mocked(actions.createBet)
+      mockCreateBet.mockResolvedValue({
+        id: "new-bet-123",
+        user_bolao_id: "user-bolao-123",
+        fixture_id: "fixture-456",
+        value: 1,
+        type: "home",
+      })
+
+      const { unmount } = render(<ButtonsBet {...defaultProps} />)
+
+      const buttons = screen.getAllByRole("button")
+      await user.click(buttons[1])
+      await user.click(buttons[1])
+
+      unmount()
+
+      await waitFor(() => {
+        expect(mockCreateBet).toHaveBeenCalledWith({
+          userBolaoId: "user-bolao-123",
+          value: 1,
+          type: "home",
+          fixtureId: "fixture-456",
+        })
+      })
     })
   })
 })
