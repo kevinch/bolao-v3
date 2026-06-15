@@ -1,4 +1,5 @@
 import { getData } from "@/app/lib/controllerResults"
+import { buildResultsTableView } from "@/app/lib/resultsTableData"
 import { auth } from "@clerk/nextjs/server"
 import BolaoPageTitle from "@/app/ui/bolao/bolaoPageTitle"
 import BolaoLinks from "@/app/ui/bolao/bolaoLinks"
@@ -34,6 +35,13 @@ async function ResultsPage(props: {
       (el: string) => el.toLowerCase() === data.currentRound.toLowerCase()
     ) + 1
 
+  const tableView = buildResultsTableView({
+    fixtures: data.fixtures,
+    bets: data.bets,
+    players: data.players,
+    currentUserId: userId,
+  })
+
   return (
     <main>
       <BolaoPageTitle
@@ -51,12 +59,7 @@ async function ResultsPage(props: {
         currentRoundName={data.currentRound}
       />
 
-      <TableMatchDayResults
-        bets={data.bets}
-        fixtures={data.fixtures}
-        players={data.players}
-        userId={userId}
-      />
+      <TableMatchDayResults tableView={tableView} />
     </main>
   )
 }

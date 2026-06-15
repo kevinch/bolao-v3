@@ -1,17 +1,8 @@
 "use client"
 
 import { useTranslations, useLocale } from "next-intl"
-import { FixtureData, Bet, PlayersData } from "@/app/lib/definitions"
-import {
-  findBetObj,
-  INITIAL_BET_VALUE,
-  STATUSES_FINISHED,
-  STATUSES_IN_PLAY,
-  STATUSES_OPEN_TO_PLAY,
-  getEmailUsername,
-  getFixtureResultScores,
-} from "@/app/lib/utils"
-import { calcScore } from "@/app/lib/scoresCalcFactory"
+import { STATUSES_OPEN_TO_PLAY } from "@/app/lib/utils"
+import { ResultsTableView } from "@/app/lib/resultsTableData"
 import { StickyTable, Row, Cell } from "react-sticky-table"
 import TeamCodeLogo from "@/app/ui/bolao/teamCodeLogo"
 import TeamScore from "@/app/ui/bolao/teamScore"
@@ -19,10 +10,7 @@ import FixtureDate from "@/app/ui/bolao/fixtureDate"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 type TableProps = {
-  fixtures: FixtureData[]
-  bets: Bet[]
-  players: PlayersData[]
-  userId: string //Could be in context
+  tableView: ResultsTableView | null
 }
 
 const cellStyles = {
@@ -40,119 +28,51 @@ const headerCellStyles = {
 
 const totalsCellStyles = {
   ...cellStyles,
-  borderTop: "1px solid rgb(226 232 240)", // border-slate-200
+  borderTop: "1px solid rgb(226 232 240)",
   padding: "12px 0",
   fontWeight: 600,
   backgroundColor: "white",
 }
 
-function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
+function TableMatchDayResults({ tableView }: TableProps) {
   const t = useTranslations("resultsPage")
   const locale = useLocale()
 
-  // Totals include finished fixtures and live in-play scores
-  const calculatePlayerTotal = (userBolaoId: string): number => {
-    let total = 0
-
-    fixtures.forEach((fixtureData) => {
-      const statusShort = fixtureData.fixture.status.short
-      const scoresVisible =
-        STATUSES_IN_PLAY.includes(statusShort) ||
-        STATUSES_FINISHED.includes(statusShort)
-
-      if (!scoresVisible) return
-
-      const homeBetObj = findBetObj({
-        bets,
-        fixtureId: fixtureData.fixture.id.toString(),
-        type: "home",
-        userBolaoId,
-      })
-
-      const awayBetObj = findBetObj({
-        bets,
-        fixtureId: fixtureData.fixture.id.toString(),
-        type: "away",
-        userBolaoId,
-      })
-
-      if (
-        homeBetObj?.value !== undefined &&
-        awayBetObj?.value !== undefined
-      ) {
-        const { resultHome, resultAway } = getFixtureResultScores(
-          fixtureData,
-          statusShort
-        )
-
-        const fixtureScore = calcScore({
-          resultHome,
-          resultAway,
-          betHome: homeBetObj.value,
-          betAway: awayBetObj.value,
-        })
-
-        total = total + fixtureScore
-      }
-    })
-
-    return total
+  if (!tableView) {
+    return <p>{t("loading")}</p>
   }
 
-  if (fixtures) {
-    return (
-      <div className="max-md:mx-[calc((100dvw-100%)/-2)] md:mx-0">
-        <Card className="max-md:rounded-none max-md:border-x-0 max-md:shadow-none md:rounded-xl md:border-x md:shadow-sm">
-          <CardHeader className="p-4 md:p-6">
-            <CardTitle>
-              {STATUSES_OPEN_TO_PLAY.includes(
-                fixtures[fixtures.length - 1].fixture.status.short
-              )
-                ? t("nextGames")
-                : t("previousGames")}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[min(70vh,800px)] w-full max-md:h-[55vh]">
-              <StickyTable borderWidth={0} stickyFooterCount={1}>
+  const { players, rows, totals } = tableView
+  const lastFixtureStatus =
+    rows[rows.length - 1]?.fixture.fixture.status.short ?? "NS"
+
+  return (
+    <div className="max-md:mx-[calc((100dvw-100%)/-2)] md:mx-0">
+      <Card className="max-md:rounded-none max-md:border-x-0 max-md:shadow-none md:rounded-xl md:border-x md:shadow-sm">
+        <CardHeader className="p-4 md:p-6">
+          <CardTitle>
+            {STATUSES_OPEN_TO_PLAY.includes(lastFixtureStatus)
+              ? t("nextGames")
+              : t("previousGames")}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[min(70vh,800px)] w-full max-md:h-[55vh]">
+            <StickyTable borderWidth={0} stickyFooterCount={1}>
               <Row>
                 <Cell style={headerCellStyles}>&nbsp;</Cell>
-                {players.map((player: PlayersData) => {
-                  return (
-                    <Cell style={headerCellStyles} key={player.id}>
-                      <span className="font-semibold text-sm px-2">
-                        {player.username || getEmailUsername(player.email)}
-                      </span>
-                    </Cell>
-                  )
-                })}
+                {players.map((player, index) => (
+                  <Cell style={headerCellStyles} key={`player_${index}`}>
+                    <span className="font-semibold text-sm px-2">
+                      {player.displayName}
+                    </span>
+                  </Cell>
+                ))}
               </Row>
 
-              {fixtures.map((fixtureData: FixtureData, i: number) => {
+              {rows.map((row, rowIndex) => {
+                const fixtureData = row.fixture
                 const statusShort = fixtureData.fixture.status.short
-                const canShowScores =
-                  STATUSES_IN_PLAY.includes(statusShort) ||
-                  STATUSES_FINISHED.includes(statusShort)
-
-                const getBet = ({
-                  type,
-                  userBolaoId,
-                }: {
-                  type: "home" | "away"
-                  userBolaoId: string
-                }) => {
-                  const obj = findBetObj({
-                    bets,
-                    fixtureId: fixtureData.fixture.id.toString(),
-                    type,
-                    userBolaoId,
-                  })
-
-                  if (obj) {
-                    return obj.value.toString()
-                  }
-                  return INITIAL_BET_VALUE
-                }
 
                 return (
                   <Row key={fixtureData.fixture.id}>
@@ -161,7 +81,8 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
                         padding: "8px 0",
                         margin: 0,
                         border: 0,
-                        backgroundColor: i % 2 !== 0 ? "rgb(248 250 252)" : "", //bg-slate-50
+                        backgroundColor:
+                          rowIndex % 2 !== 0 ? "rgb(248 250 252)" : "",
                       }}
                     >
                       <div className="flex justify-center content-center">
@@ -202,53 +123,26 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
                       </div>
                     </Cell>
 
-                    {players.map((player) => {
-                      const showScores = player.id === userId || canShowScores
-
-                      const betHome = getBet({
-                        type: "home",
-                        userBolaoId: player.userBolaoId,
-                      })
-                      const betAway = getBet({
-                        type: "away",
-                        userBolaoId: player.userBolaoId,
-                      })
-
-                      let score = 0
-                      if (canShowScores) {
-                        const { resultHome, resultAway } =
-                          getFixtureResultScores(fixtureData, statusShort)
-
-                        score = calcScore({
-                          resultHome,
-                          resultAway,
-                          betHome: Number(betHome),
-                          betAway: Number(betAway),
-                        })
-                      }
-
-                      return (
-                        <Cell
-                          style={{
-                            padding: 0,
-                            margin: 0,
-                            border: 0,
-                            backgroundColor:
-                              i % 2 !== 0 ? "rgb(248 250 252)" : "",
-                          }}
-                          key={`${fixtureData.fixture.id}_${player.id}`}
-                          className="text-center"
-                        >
-                          <div>
-                            {showScores ? betHome : INITIAL_BET_VALUE}-
-                            {showScores ? betAway : INITIAL_BET_VALUE}
-                          </div>
-                          {canShowScores && (
-                            <div className="text-sm px-2">{`${score} pts`}</div>
-                          )}
-                        </Cell>
-                      )
-                    })}
+                    {row.cells.map((cell, cellIndex) => (
+                      <Cell
+                        style={{
+                          padding: 0,
+                          margin: 0,
+                          border: 0,
+                          backgroundColor:
+                            rowIndex % 2 !== 0 ? "rgb(248 250 252)" : "",
+                        }}
+                        key={`${fixtureData.fixture.id}_${cellIndex}`}
+                        className="text-center"
+                      >
+                        <div>
+                          {cell.home}-{cell.away}
+                        </div>
+                        {cell.points !== null && (
+                          <div className="text-sm px-2">{`${cell.points} pts`}</div>
+                        )}
+                      </Cell>
+                    ))}
                   </Row>
                 )
               })}
@@ -257,28 +151,22 @@ function TableMatchDayResults({ fixtures, bets, players, userId }: TableProps) {
                 <Cell style={totalsCellStyles}>
                   <div className="text-left pl-6">{t("total")}</div>
                 </Cell>
-                {players.map((player) => {
-                  const total = calculatePlayerTotal(player.userBolaoId)
-                  return (
-                    <Cell
-                      style={totalsCellStyles}
-                      key={`total_${player.id}`}
-                      className="text-center"
-                    >
-                      <div className="text-sm">{`${total} pts`}</div>
-                    </Cell>
-                  )
-                })}
+                {totals.map((total, index) => (
+                  <Cell
+                    style={totalsCellStyles}
+                    key={`total_${index}`}
+                    className="text-center"
+                  >
+                    <div className="text-sm">{`${total} pts`}</div>
+                  </Cell>
+                ))}
               </Row>
             </StickyTable>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
-
-  return <p>{t("loading")}</p>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  )
 }
 
 export default TableMatchDayResults

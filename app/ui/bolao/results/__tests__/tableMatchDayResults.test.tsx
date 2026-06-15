@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react"
 import { vi } from "vitest"
 import TableMatchDayResults from "../tableMatchDayResults"
+import { buildResultsTableView } from "@/app/lib/resultsTableData"
 import type { FixtureData, Bet, PlayersData } from "@/app/lib/definitions"
 import * as scoresCalcFactory from "@/app/lib/scoresCalcFactory"
 import * as utils from "@/app/lib/utils"
@@ -93,6 +94,29 @@ vi.mock("next/image", () => ({
 }))
 
 describe("TableMatchDayResults", () => {
+function renderTable(
+  fixtures: FixtureData[] | null | undefined,
+  bets: Bet[] = [],
+  players: PlayersData[] = mockPlayers,
+  currentUserId = "player1"
+) {
+  if (!fixtures) {
+    return render(<TableMatchDayResults tableView={null} />)
+  }
+
+  return render(
+    <TableMatchDayResults
+      tableView={buildResultsTableView({
+        fixtures,
+        bets,
+        players,
+        currentUserId,
+      })}
+    />
+  )
+}
+
+
   const mockPlayers: PlayersData[] = [
     {
       id: "player1",
@@ -202,27 +226,13 @@ describe("TableMatchDayResults", () => {
 
   describe("Loading State", () => {
     it("should show loading message when fixtures is falsy", () => {
-      render(
-        <TableMatchDayResults
-          fixtures={null as any}
-          bets={[]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      renderTable(null as any)
 
       expect(screen.getByText("loading...")).toBeInTheDocument()
     })
 
     it("should show loading message when fixtures is undefined", () => {
-      render(
-        <TableMatchDayResults
-          fixtures={undefined as any}
-          bets={[]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      renderTable(undefined as any)
 
       expect(screen.getByText("loading...")).toBeInTheDocument()
     })
@@ -239,14 +249,7 @@ describe("TableMatchDayResults", () => {
         }),
       ]
 
-      render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      renderTable(fixtures)
 
       expect(screen.getByText("Next games")).toBeInTheDocument()
     })
@@ -261,14 +264,7 @@ describe("TableMatchDayResults", () => {
         }),
       ]
 
-      render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      renderTable(fixtures)
 
       expect(screen.getByText("Next games")).toBeInTheDocument()
     })
@@ -283,14 +279,7 @@ describe("TableMatchDayResults", () => {
         }),
       ]
 
-      render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      renderTable(fixtures)
 
       expect(screen.getByText("Previous games")).toBeInTheDocument()
     })
@@ -305,14 +294,7 @@ describe("TableMatchDayResults", () => {
         }),
       ]
 
-      render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      renderTable(fixtures)
 
       expect(screen.getByText("Previous games")).toBeInTheDocument()
     })
@@ -322,14 +304,7 @@ describe("TableMatchDayResults", () => {
     it("should display player email usernames", () => {
       const fixtures = [createMockFixture()]
 
-      render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      renderTable(fixtures)
 
       expect(screen.getByText("john")).toBeInTheDocument()
       expect(screen.getByText("mike")).toBeInTheDocument()
@@ -338,14 +313,7 @@ describe("TableMatchDayResults", () => {
     it("should display email username for all players", () => {
       const fixtures = [createMockFixture()]
 
-      render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      renderTable(fixtures)
 
       // All players show email part before @
       expect(screen.getByText("jane")).toBeInTheDocument()
@@ -353,14 +321,7 @@ describe("TableMatchDayResults", () => {
 
     it("should display all players in order", () => {
       const fixtures = [createMockFixture()]
-      const { container } = render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      const { container } = renderTable(fixtures)
 
       // Check that all player names are rendered
       expect(screen.getByText("john")).toBeInTheDocument()
@@ -386,14 +347,7 @@ describe("TableMatchDayResults", () => {
 
       const fixtures = [createMockFixture()]
 
-      render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[]}
-          players={playersWithUsername}
-          userId="player1"
-        />
-      )
+      renderTable(fixtures, [], playersWithUsername)
 
       // Player1 has username, should display "johndoe"
       expect(screen.getByText("johndoe")).toBeInTheDocument()
@@ -406,14 +360,7 @@ describe("TableMatchDayResults", () => {
     it("should render fixture with team logos and names", () => {
       const fixtures = [createMockFixture()]
 
-      render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      renderTable(fixtures)
 
       // TeamCodeLogo components should be rendered
       const teamLogos = screen.getAllByTestId("team-code-logo")
@@ -426,14 +373,7 @@ describe("TableMatchDayResults", () => {
     it("should render fixture date component", () => {
       const fixtures = [createMockFixture()]
 
-      render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      renderTable(fixtures)
 
       expect(screen.getByTestId("fixture-date")).toBeInTheDocument()
     })
@@ -441,14 +381,7 @@ describe("TableMatchDayResults", () => {
     it("should render team score components", () => {
       const fixtures = [createMockFixture()]
 
-      render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      renderTable(fixtures)
 
       const teamScores = screen.getAllByTestId("team-score")
       expect(teamScores).toHaveLength(2) // home and away
@@ -467,14 +400,7 @@ describe("TableMatchDayResults", () => {
         }),
       ]
 
-      const { container } = render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      const { container } = renderTable(fixtures)
 
       const rows = container.querySelectorAll('[data-testid="sticky-row"]')
       // 1 header row + 3 fixture rows
@@ -488,14 +414,7 @@ describe("TableMatchDayResults", () => {
 
       const fixtures = [createMockFixture()]
 
-      const { container } = render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      const { container } = renderTable(fixtures)
 
       // Should show ".-." (INITIAL_BET_VALUE-INITIAL_BET_VALUE)
       const betCells = container.querySelectorAll('[data-testid="sticky-cell"]')
@@ -521,14 +440,7 @@ describe("TableMatchDayResults", () => {
         createMockBet({ type: "away", value: 1 }),
       ]
 
-      const { container } = render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={bets}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      const { container } = renderTable(fixtures, bets)
 
       // Should show "2-1" for at least one player
       const betCells = container.querySelectorAll('[data-testid="sticky-cell"]')
@@ -562,14 +474,7 @@ describe("TableMatchDayResults", () => {
         }),
       ]
 
-      const { container } = render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[createMockBet()]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      const { container } = renderTable(fixtures, [createMockBet()])
 
       // Current user (player1) should see their bets
       // Other players should see ".-."
@@ -592,14 +497,7 @@ describe("TableMatchDayResults", () => {
         }),
       ]
 
-      render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[createMockBet()]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      renderTable(fixtures, [createMockBet()])
 
       // All players should see bets since game is finished
       expect(utils.findBetObj).toHaveBeenCalled()
@@ -617,14 +515,7 @@ describe("TableMatchDayResults", () => {
         }),
       ]
 
-      render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[createMockBet()]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      renderTable(fixtures, [createMockBet()])
 
       // All players should see bets since game is in play
       expect(utils.findBetObj).toHaveBeenCalled()
@@ -645,14 +536,7 @@ describe("TableMatchDayResults", () => {
         }),
       ]
 
-      const { container } = render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[createMockBet()]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      const { container } = renderTable(fixtures, [createMockBet()])
 
       // Should display "5 pts" for calculated score
       const scoreCells = container.querySelectorAll(
@@ -688,14 +572,7 @@ describe("TableMatchDayResults", () => {
         }),
       ]
 
-      render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[createMockBet()]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      renderTable(fixtures, [createMockBet()])
 
       expect(scoresCalcFactory.calcScore).toHaveBeenCalledWith({
         resultHome: 2,
@@ -717,14 +594,7 @@ describe("TableMatchDayResults", () => {
         }),
       ]
 
-      const { container } = render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[createMockBet()]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      const { container } = renderTable(fixtures, [createMockBet()])
 
       // Should NOT display pts for individual fixtures not started (totals row will show 0 pts)
       const rows = container.querySelectorAll('[data-testid="sticky-row"]')
@@ -759,14 +629,7 @@ describe("TableMatchDayResults", () => {
         }),
       ]
 
-      render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[createMockBet()]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      renderTable(fixtures, [createMockBet()])
 
       expect(scoresCalcFactory.calcScore).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -795,14 +658,7 @@ describe("TableMatchDayResults", () => {
         }),
       ]
 
-      render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[createMockBet()]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      renderTable(fixtures, [createMockBet()])
 
       expect(scoresCalcFactory.calcScore).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -837,14 +693,7 @@ describe("TableMatchDayResults", () => {
         }),
       ]
 
-      render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[createMockBet()]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      renderTable(fixtures, [createMockBet()])
 
       expect(scoresCalcFactory.calcScore).toHaveBeenCalledWith({
         resultHome: 3,
@@ -871,14 +720,7 @@ describe("TableMatchDayResults", () => {
         }),
       ]
 
-      const { container } = render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      const { container } = renderTable(fixtures)
 
       const cells = container.querySelectorAll('[data-testid="sticky-cell"]')
       const cellsWithBg = Array.from(cells).filter((cell) => {
@@ -901,14 +743,7 @@ describe("TableMatchDayResults", () => {
         }),
       ]
 
-      const { container } = render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      const { container } = renderTable(fixtures)
 
       const cells = container.querySelectorAll('[data-testid="sticky-cell"]')
       const cellsWithoutBg = Array.from(cells).filter((cell) => {
@@ -927,14 +762,7 @@ describe("TableMatchDayResults", () => {
     it("should handle empty players array", () => {
       const fixtures = [createMockFixture()]
 
-      const { container } = render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[]}
-          players={[]}
-          userId="player1"
-        />
-      )
+      const { container } = renderTable(fixtures, [], [])
 
       // Should still render but with no player columns
       expect(
@@ -947,14 +775,7 @@ describe("TableMatchDayResults", () => {
 
       const fixtures = [createMockFixture()]
 
-      render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      renderTable(fixtures)
 
       // Should render with INITIAL_BET_VALUE
       expect(screen.getByTestId("sticky-table")).toBeInTheDocument()
@@ -973,14 +794,7 @@ describe("TableMatchDayResults", () => {
         }),
       ]
 
-      render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[createMockBet()]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      renderTable(fixtures, [createMockBet()])
 
       // Should not crash
       expect(screen.getByTestId("sticky-table")).toBeInTheDocument()
@@ -999,14 +813,7 @@ describe("TableMatchDayResults", () => {
 
       const fixtures = [createMockFixture()]
 
-      render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[]}
-          players={playersWithLongEmail}
-          userId="player1"
-        />
-      )
+      renderTable(fixtures, [], playersWithLongEmail)
 
       // Should display the part before @
       expect(
@@ -1026,14 +833,7 @@ describe("TableMatchDayResults", () => {
         }),
       ]
 
-      render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      renderTable(fixtures)
 
       expect(screen.getByText("Previous games")).toBeInTheDocument()
     })
@@ -1050,14 +850,7 @@ describe("TableMatchDayResults", () => {
         }),
       ]
 
-      render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[createMockBet()]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      renderTable(fixtures, [createMockBet()])
 
       // All players showing same bets should work fine
       expect(screen.getByTestId("sticky-table")).toBeInTheDocument()
@@ -1070,14 +863,7 @@ describe("TableMatchDayResults", () => {
 
       const fixtures = [createMockFixture()]
 
-      const { container } = render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      const { container } = renderTable(fixtures)
 
       const rows = container.querySelectorAll('[data-testid="sticky-row"]')
       // 1 header row + 1 fixture row + 1 totals row
@@ -1099,14 +885,7 @@ describe("TableMatchDayResults", () => {
         }),
       ]
 
-      render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      renderTable(fixtures)
 
       const totalsText = screen.getAllByText("0 pts")
       // Should have 3 players with 0 pts in totals row
@@ -1153,14 +932,7 @@ describe("TableMatchDayResults", () => {
         }),
       ]
 
-      const { container } = render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[createMockBet()]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      const { container } = renderTable(fixtures, [createMockBet()])
 
       // Check totals row (last row)
       const rows = container.querySelectorAll('[data-testid="sticky-row"]')
@@ -1191,14 +963,7 @@ describe("TableMatchDayResults", () => {
         }),
       ]
 
-      const { container } = render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[createMockBet()]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      const { container } = renderTable(fixtures, [createMockBet()])
 
       // Check totals row specifically (last row)
       const rows = container.querySelectorAll('[data-testid="sticky-row"]')
@@ -1236,14 +1001,7 @@ describe("TableMatchDayResults", () => {
         }),
       ]
 
-      const { container } = render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[createMockBet()]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      const { container } = renderTable(fixtures, [createMockBet()])
 
       // Check totals row specifically (last row)
       const rows = container.querySelectorAll('[data-testid="sticky-row"]')
@@ -1276,14 +1034,7 @@ describe("TableMatchDayResults", () => {
         }),
       ]
 
-      render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      renderTable(fixtures)
 
       // Should show 0 pts when bets are incomplete
       expect(screen.getAllByText("0 pts").length).toBeGreaterThan(0)
@@ -1294,14 +1045,7 @@ describe("TableMatchDayResults", () => {
 
       const fixtures = [createMockFixture()]
 
-      const { container } = render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      const { container } = renderTable(fixtures)
 
       const rows = container.querySelectorAll('[data-testid="sticky-row"]')
       const lastRow = rows[rows.length - 1]
@@ -1327,14 +1071,7 @@ describe("TableMatchDayResults", () => {
         }),
       ]
 
-      const { container } = render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[createMockBet()]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      const { container } = renderTable(fixtures, [createMockBet()])
 
       const rows = container.querySelectorAll('[data-testid="sticky-row"]')
       const totalsRow = rows[rows.length - 1]
@@ -1377,14 +1114,7 @@ describe("TableMatchDayResults", () => {
         }),
       ]
 
-      const { container } = render(
-        <TableMatchDayResults
-          fixtures={fixtures}
-          bets={[createMockBet()]}
-          players={mockPlayers}
-          userId="player1"
-        />
-      )
+      const { container } = renderTable(fixtures, [createMockBet()])
 
       // Check totals row specifically (last row)
       const rows = container.querySelectorAll('[data-testid="sticky-row"]')

@@ -54,7 +54,13 @@ describe("ResultsPage", () => {
             bolao: { id: "bolao-123", year: 2023, competition_id: "comp-1" },
             currentRound: "Round 1",
             allRounds: ["Round 1", "Round 2"],
-            fixtures: [{ league: { logo: "logo.png", name: "League Name" } }],
+            fixtures: [{
+                fixture: { id: 1, status: { short: "NS" }, timestamp: 1, date: new Date() },
+                league: { logo: "logo.png", name: "League Name", round: "Round 1" },
+                teams: { home: { logo: "", name: "A" }, away: { logo: "", name: "B" } },
+                goals: { home: null, away: null },
+                score: { halftime: { home: null, away: null }, fulltime: { home: null, away: null }, extratime: { home: null, away: null }, penalty: { home: null, away: null } },
+            }],
             isLastRound: false,
             isFirstRound: true,
             bets: [],
@@ -79,6 +85,8 @@ describe("ResultsPage", () => {
 
         const table = screen.getByTestId("table-match-day-results")
         const tableProps = JSON.parse(table.getAttribute("data-props") || "{}")
-        expect(tableProps.userId).toBe("user-123")
+        expect(tableProps.tableView).toBeDefined()
+        expect(tableProps.tableView.players).toEqual([])
+        expect(tableProps.userId).toBeUndefined()
     })
 })
