@@ -18,6 +18,7 @@ import {
   CreateBolaoResult,
   ChampionPickResult,
   ChampionPick,
+  FixtureData,
 } from "./definitions"
 
 export async function createUser({ id, role }: { id: string; role: string }) {
@@ -209,7 +210,7 @@ async function assertCanMutateBet({
     year: bolao.year,
   })
   const fixture = fixtures.find(
-    (entry) => entry.fixture.id.toString() === fixtureId
+    (entry: FixtureData) => entry.fixture.id.toString() === fixtureId
   )
 
   if (!fixture) {

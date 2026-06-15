@@ -129,18 +129,17 @@ function ButtonsBet({
 
       if (!savedSuccessfully) {
         pendingSaveRef.current = false
-        return
-      }
+      } else {
+        const currentValue = displayToSavedValue(valueRef.current)
+        const needsFollowUpSave =
+          pendingSaveRef.current ||
+          (currentValue !== null && currentValue !== savedValueRef.current)
 
-      const currentValue = displayToSavedValue(valueRef.current)
-      const needsFollowUpSave =
-        pendingSaveRef.current ||
-        (currentValue !== null && currentValue !== savedValueRef.current)
+        pendingSaveRef.current = false
 
-      pendingSaveRef.current = false
-
-      if (needsFollowUpSave) {
-        void persistBetRef.current()
+        if (needsFollowUpSave) {
+          void persistBetRef.current()
+        }
       }
     }
   }
