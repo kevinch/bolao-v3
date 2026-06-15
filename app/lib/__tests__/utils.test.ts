@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest"
+import { describe, it, expect, vi } from "vitest"
 import {
   getCurrentSeasonObject,
   sortFixtures,
@@ -15,6 +15,7 @@ import {
   STATUSES_FINISHED,
   STATUSES_ERROR,
   getFixtureResultScores,
+  isFixtureOpenToBet,
 } from "../utils"
 import type { Season, FixtureData, Bet } from "../definitions"
 
@@ -491,6 +492,47 @@ describe("utils", () => {
 
     it("should handle email with underscores", () => {
       expect(getEmailUsername("user_name@example.com")).toBe("user_name")
+    })
+  })
+
+  describe("isFixtureOpenToBet", () => {
+    const baseFixture = {
+      fixture: {
+        id: 1,
+        status: { short: "NS", long: "Not Started", elapsed: 0 },
+        timestamp: Math.floor(new Date("2026-06-15T19:00:00Z").getTime() / 1000),
+        date: new Date("2026-06-15T19:00:00Z"),
+      },
+    } as any
+
+    it("returns true before kickoff for open statuses", () => {
+      vi.useFakeTimers()
+      vi.setSystemTime(new Date("2026-06-15T18:00:00Z"))
+
+      expect(isFixtureOpenToBet(baseFixture)).toBe(true)
+
+      vi.useRealTimers()
+    })
+
+    it("returns false after kickoff even if status is still NS", () => {
+      vi.useFakeTimers()
+      vi.setSystemTime(new Date("2026-06-15T20:00:00Z"))
+
+      expect(isFixtureOpenToBet(baseFixture)).toBe(false)
+
+      vi.useRealTimers()
+    })
+
+    it("returns false when fixture is in play", () => {
+      expect(
+        isFixtureOpenToBet({
+          ...baseFixture,
+          fixture: {
+            ...baseFixture.fixture,
+            status: { short: "1H", long: "First Half", elapsed: 10 },
+          },
+        })
+      ).toBe(false)
     })
   })
 

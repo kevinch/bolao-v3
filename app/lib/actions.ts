@@ -5,7 +5,12 @@ import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { auth } from "@clerk/nextjs/server"
 import { fetchLeague, fetchBolao, fetchFixtures } from "./data"
-import { getCurrentSeasonObject, isChampionPickLocked } from "./utils"
+import { getUserRole } from "./authRole"
+import {
+  getCurrentSeasonObject,
+  isChampionPickLocked,
+  isFixtureOpenToBet,
+} from "./utils"
 import {
   BetResult,
   UpdateBolaoResult,
@@ -152,6 +157,110 @@ export async function createUserBolao(
   }
 }
 
+type BetMutationError = { success: false; message: string }
+
+type BetMutationContext =
+  | BetMutationError
+  | {
+      userId: string
+      userBolaoId: string
+      fixtureId: string
+    }
+
+function isBetMutationError(
+  context: BetMutationContext
+): context is BetMutationError {
+  return "success" in context && context.success === false
+}
+
+async function assertCanMutateBet({
+  userId,
+  userBolaoId,
+  fixtureId,
+}: {
+  userId: string
+  userBolaoId: string
+  fixtureId: string
+}): Promise<BetMutationError | null> {
+  const isAdmin = (await getUserRole(userId)) === "admin"
+
+  const ownership = await sql`
+    SELECT ub.bolao_id, ub.user_id
+    FROM user_bolao ub
+    WHERE CAST(ub.id AS VARCHAR) = ${userBolaoId}
+  `
+  const row = ownership.rows[0]
+
+  if (!row) {
+    return { success: false, message: "Forbidden." }
+  }
+
+  if (String(row.user_id) !== userId && !isAdmin) {
+    return { success: false, message: "Forbidden." }
+  }
+
+  if (isAdmin) {
+    return null
+  }
+
+  const bolao = await fetchBolao(String(row.bolao_id))
+  const fixtures = await fetchFixtures({
+    leagueId: bolao.competition_id,
+    year: bolao.year,
+  })
+  const fixture = fixtures.find(
+    (entry) => entry.fixture.id.toString() === fixtureId
+  )
+
+  if (!fixture) {
+    return { success: false, message: "Fixture not found." }
+  }
+
+  if (!isFixtureOpenToBet(fixture)) {
+    return { success: false, message: "Betting is locked for this fixture." }
+  }
+
+  return null
+}
+
+async function getBetMutationContext(
+  betId: string
+): Promise<BetMutationContext> {
+  const { userId } = await auth()
+
+  if (!userId) {
+    return { success: false, message: "Unauthorized." }
+  }
+
+  const betLookup = await sql`
+    SELECT b.fixture_id, b.user_bolao_id, ub.user_id
+    FROM bets b
+    INNER JOIN user_bolao ub ON CAST(b.user_bolao_id AS VARCHAR) = CAST(ub.id AS VARCHAR)
+    WHERE CAST(b.id AS VARCHAR) = ${betId}
+  `
+  const row = betLookup.rows[0]
+
+  if (!row) {
+    return { success: false, message: "Bet not found." }
+  }
+
+  const validation = await assertCanMutateBet({
+    userId,
+    userBolaoId: String(row.user_bolao_id),
+    fixtureId: String(row.fixture_id),
+  })
+
+  if (validation) {
+    return validation
+  }
+
+  return {
+    userId,
+    userBolaoId: String(row.user_bolao_id),
+    fixtureId: String(row.fixture_id),
+  }
+}
+
 export async function createBet({
   userBolaoId,
   fixtureId,
@@ -163,7 +272,23 @@ export async function createBet({
   value: number
   type: "away" | "home"
 }) {
+  const { userId } = await auth()
+
+  if (!userId) {
+    return { success: false, message: "Unauthorized." } as BetResult
+  }
+
   try {
+    const validation = await assertCanMutateBet({
+      userId,
+      userBolaoId,
+      fixtureId,
+    })
+
+    if (validation) {
+      return validation as BetResult
+    }
+
     const result = await sql`
         INSERT INTO bets (user_bolao_id, fixture_id, value, type)
         VALUES (${userBolaoId}, ${fixtureId}, ${value}, ${type})
@@ -188,6 +313,12 @@ export async function updateBet({
   betId: string
 }) {
   try {
+    const context = await getBetMutationContext(betId)
+
+    if (isBetMutationError(context)) {
+      return context as BetResult
+    }
+
     const result = await sql`
         UPDATE bets
         SET value = ${value}
@@ -310,6 +441,12 @@ export async function deleteUserBolao(userBolaoId: string) {
 
 export async function deleteBet(betId: string) {
   try {
+    const context = await getBetMutationContext(betId)
+
+    if (isBetMutationError(context)) {
+      return context
+    }
+
     const result = await sql`
       DELETE FROM bets
       WHERE CAST(id AS VARCHAR) = ${betId}

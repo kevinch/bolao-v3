@@ -151,7 +151,10 @@
     "selectPlayer": "Select player",
     "selectPlayerToBetAs": "Select player to bet as",
     "loading": "loading...",
-    "errorLoadFailed": "Could not load the bet page. Check your connection and try again."
+    "errorLoadFailed": "Could not load the bet page. Check your connection and try again.",
+    "saveErrorTitle": "Could not save bet",
+    "saveErrorDescription": "Something went wrong while saving your bet. Please try again.",
+    "saveLockedDescription": "Betting is closed for this match. Your change was not saved."
   },
   "resultsPage": {
     "nextGames": "Next games",

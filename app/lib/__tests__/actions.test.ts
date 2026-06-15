@@ -27,6 +27,11 @@ vi.mock("../data", () => ({
   fetchFixtures: vi.fn(),
 }))
 
+// Mock auth role
+vi.mock("../authRole", () => ({
+  getUserRole: vi.fn(),
+}))
+
 // Mock utils
 vi.mock("../utils", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../utils")>()
@@ -55,6 +60,37 @@ import { revalidatePath } from "next/cache"
 import { auth } from "@clerk/nextjs/server"
 import { fetchLeague, fetchBolao, fetchFixtures } from "../data"
 import { getCurrentSeasonObject } from "../utils"
+import { getUserRole } from "../authRole"
+
+const FIXTURE_ID = "12345"
+
+function mockOpenFixture() {
+  return {
+    fixture: {
+      id: Number(FIXTURE_ID),
+      status: { short: "NS" },
+      timestamp: Math.floor(Date.now() / 1000) + 3600,
+      date: new Date(Date.now() + 3_600_000),
+    },
+  }
+}
+
+function mockBetAccessChecks(userId = "user-1") {
+  vi.mocked(auth).mockResolvedValue({ userId } as any)
+  vi.mocked(getUserRole).mockResolvedValue("user")
+  vi.mocked(fetchBolao).mockResolvedValue({
+    id: "bolao-1",
+    competition_id: "1",
+    year: 2026,
+  } as any)
+  vi.mocked(fetchFixtures).mockResolvedValue([mockOpenFixture()] as any)
+}
+
+function mockUserBolaoOwnership(userId = "user-1") {
+  return {
+    rows: [{ bolao_id: "bolao-1", user_id: userId }],
+  }
+}
 
 describe("actions", () => {
   beforeEach(() => {
@@ -345,29 +381,36 @@ describe("actions", () => {
   })
 
   describe("createBet", () => {
+    beforeEach(() => {
+      mockBetAccessChecks()
+    })
+
     it("should create a bet successfully", async () => {
       const mockBet = {
         id: "bet-1",
         user_bolao_id: "ub-1",
-        fixture_id: "fixture-1",
+        fixture_id: FIXTURE_ID,
         value: 2,
         type: "home",
       }
 
-      vi.mocked(sql).mockResolvedValue({ rows: [mockBet] } as any)
+      vi.mocked(sql)
+        .mockResolvedValueOnce(mockUserBolaoOwnership() as any)
+        .mockResolvedValueOnce({ rows: [mockBet] } as any)
 
       const result = await createBet({
         userBolaoId: "ub-1",
-        fixtureId: "fixture-1",
+        fixtureId: FIXTURE_ID,
         value: 2,
         type: "home",
       })
 
-      expect(sql).toHaveBeenCalled()
-      const [strings, userBolaoId, fixtureId, value, type] = vi.mocked(sql).mock.calls[0]
-      expect(strings.join("")).toContain("INSERT INTO bets")
+      expect(sql).toHaveBeenCalledTimes(2)
+      const [insertStrings, userBolaoId, fixtureId, value, type] =
+        vi.mocked(sql).mock.calls[1]
+      expect(insertStrings.join("")).toContain("INSERT INTO bets")
       expect(userBolaoId).toBe("ub-1")
-      expect(fixtureId).toBe("fixture-1")
+      expect(fixtureId).toBe(FIXTURE_ID)
       expect(value).toBe(2)
       expect(type).toBe("home")
       expect(result).toEqual(mockBet)
@@ -377,16 +420,18 @@ describe("actions", () => {
       const mockBet = {
         id: "bet-1",
         user_bolao_id: "ub-1",
-        fixture_id: "fixture-1",
+        fixture_id: FIXTURE_ID,
         value: 1,
         type: "away",
       }
 
-      vi.mocked(sql).mockResolvedValue({ rows: [mockBet] } as any)
+      vi.mocked(sql)
+        .mockResolvedValueOnce(mockUserBolaoOwnership() as any)
+        .mockResolvedValueOnce({ rows: [mockBet] } as any)
 
       const result = await createBet({
         userBolaoId: "ub-1",
-        fixtureId: "fixture-1",
+        fixtureId: FIXTURE_ID,
         value: 1,
         type: "away",
       })
@@ -394,12 +439,74 @@ describe("actions", () => {
       expect(result).toEqual(mockBet)
     })
 
-    it("should handle database errors", async () => {
-      vi.mocked(sql).mockRejectedValue(new Error("Database error"))
+    it("rejects unauthenticated requests", async () => {
+      vi.mocked(auth).mockResolvedValue({ userId: null } as any)
 
       const result = await createBet({
         userBolaoId: "ub-1",
-        fixtureId: "fixture-1",
+        fixtureId: FIXTURE_ID,
+        value: 2,
+        type: "home",
+      })
+
+      expect(result).toEqual({ success: false, message: "Unauthorized." })
+      expect(sql).not.toHaveBeenCalled()
+    })
+
+    it("rejects bets for another user's bolao", async () => {
+      vi.mocked(sql).mockResolvedValueOnce(
+        mockUserBolaoOwnership("other-user") as any
+      )
+
+      const result = await createBet({
+        userBolaoId: "ub-1",
+        fixtureId: FIXTURE_ID,
+        value: 2,
+        type: "home",
+      })
+
+      expect(result).toEqual({ success: false, message: "Forbidden." })
+      expect(sql).toHaveBeenCalledTimes(1)
+    })
+
+    it("rejects bets after kickoff", async () => {
+      vi.useFakeTimers()
+      vi.setSystemTime(new Date("2026-06-15T20:00:00Z"))
+      vi.mocked(fetchFixtures).mockResolvedValue([
+        {
+          fixture: {
+            id: Number(FIXTURE_ID),
+            status: { short: "NS" },
+            timestamp: Math.floor(new Date("2026-06-15T19:00:00Z").getTime() / 1000),
+            date: new Date("2026-06-15T19:00:00Z"),
+          },
+        },
+      ] as any)
+      vi.mocked(sql).mockResolvedValueOnce(mockUserBolaoOwnership() as any)
+
+      const result = await createBet({
+        userBolaoId: "ub-1",
+        fixtureId: FIXTURE_ID,
+        value: 2,
+        type: "home",
+      })
+
+      expect(result).toEqual({
+        success: false,
+        message: "Betting is locked for this fixture.",
+      })
+      expect(sql).toHaveBeenCalledTimes(1)
+      vi.useRealTimers()
+    })
+
+    it("should handle database errors", async () => {
+      vi.mocked(sql)
+        .mockResolvedValueOnce(mockUserBolaoOwnership() as any)
+        .mockRejectedValueOnce(new Error("Database error"))
+
+      const result = await createBet({
+        userBolaoId: "ub-1",
+        fixtureId: FIXTURE_ID,
         value: 2,
         type: "home",
       })
@@ -411,29 +518,93 @@ describe("actions", () => {
   })
 
   describe("updateBet", () => {
+    beforeEach(() => {
+      mockBetAccessChecks()
+    })
+
     it("should update a bet successfully", async () => {
       const mockBet = {
         id: "bet-1",
         value: 3,
       }
 
-      vi.mocked(sql).mockResolvedValue({ rows: [mockBet] } as any)
+      vi.mocked(sql)
+        .mockResolvedValueOnce({
+          rows: [
+            {
+              fixture_id: FIXTURE_ID,
+              user_bolao_id: "ub-1",
+              user_id: "user-1",
+            },
+          ],
+        } as any)
+        .mockResolvedValueOnce(mockUserBolaoOwnership() as any)
+        .mockResolvedValueOnce({ rows: [mockBet] } as any)
 
       const result = await updateBet({
         betId: "bet-1",
         value: 3,
       })
 
-      expect(sql).toHaveBeenCalled()
-      const [strings, value, betId] = vi.mocked(sql).mock.calls[0]
+      expect(sql).toHaveBeenCalledTimes(3)
+      const [strings, value, betId] = vi.mocked(sql).mock.calls[2]
       expect(strings.join("")).toContain("UPDATE bets")
       expect(value).toBe(3)
       expect(betId).toBe("bet-1")
       expect(result).toEqual(mockBet)
     })
 
+    it("rejects updates after the fixture has started", async () => {
+      vi.useFakeTimers()
+      vi.setSystemTime(new Date("2026-06-15T20:00:00Z"))
+      vi.mocked(fetchFixtures).mockResolvedValue([
+        {
+          fixture: {
+            id: Number(FIXTURE_ID),
+            status: { short: "1H" },
+            timestamp: Math.floor(new Date("2026-06-15T19:00:00Z").getTime() / 1000),
+            date: new Date("2026-06-15T19:00:00Z"),
+          },
+        },
+      ] as any)
+      vi.mocked(sql)
+        .mockResolvedValueOnce({
+          rows: [
+            {
+              fixture_id: FIXTURE_ID,
+              user_bolao_id: "ub-1",
+              user_id: "user-1",
+            },
+          ],
+        } as any)
+        .mockResolvedValueOnce(mockUserBolaoOwnership() as any)
+
+      const result = await updateBet({
+        betId: "bet-1",
+        value: 3,
+      })
+
+      expect(result).toEqual({
+        success: false,
+        message: "Betting is locked for this fixture.",
+      })
+      expect(sql).toHaveBeenCalledTimes(2)
+      vi.useRealTimers()
+    })
+
     it("should handle database errors", async () => {
-      vi.mocked(sql).mockRejectedValue(new Error("Database error"))
+      vi.mocked(sql)
+        .mockResolvedValueOnce({
+          rows: [
+            {
+              fixture_id: FIXTURE_ID,
+              user_bolao_id: "ub-1",
+              user_id: "user-1",
+            },
+          ],
+        } as any)
+        .mockResolvedValueOnce(mockUserBolaoOwnership() as any)
+        .mockRejectedValueOnce(new Error("Database error"))
 
       const result = await updateBet({
         betId: "bet-1",
@@ -514,21 +685,47 @@ describe("actions", () => {
   })
 
   describe("deleteBet", () => {
+    beforeEach(() => {
+      mockBetAccessChecks()
+    })
+
     it("should delete a bet successfully", async () => {
       const mockData = [{ id: "bet-1" }]
-      vi.mocked(sql).mockResolvedValue({ rows: mockData } as any)
+      vi.mocked(sql)
+        .mockResolvedValueOnce({
+          rows: [
+            {
+              fixture_id: FIXTURE_ID,
+              user_bolao_id: "ub-1",
+              user_id: "user-1",
+            },
+          ],
+        } as any)
+        .mockResolvedValueOnce(mockUserBolaoOwnership() as any)
+        .mockResolvedValueOnce({ rows: mockData } as any)
 
       const result = await deleteBet("bet-1")
 
-      expect(sql).toHaveBeenCalled()
-      const [strings, betId] = vi.mocked(sql).mock.calls[0]
+      expect(sql).toHaveBeenCalledTimes(3)
+      const [strings, betId] = vi.mocked(sql).mock.calls[2]
       expect(strings.join("")).toContain("DELETE FROM bets")
       expect(betId).toBe("bet-1")
       expect(result).toEqual(mockData)
     })
 
     it("should handle database errors", async () => {
-      vi.mocked(sql).mockRejectedValue(new Error("Database error"))
+      vi.mocked(sql)
+        .mockResolvedValueOnce({
+          rows: [
+            {
+              fixture_id: FIXTURE_ID,
+              user_bolao_id: "ub-1",
+              user_id: "user-1",
+            },
+          ],
+        } as any)
+        .mockResolvedValueOnce(mockUserBolaoOwnership() as any)
+        .mockRejectedValueOnce(new Error("Database error"))
 
       const result = await deleteBet("bet-1")
 
@@ -572,14 +769,18 @@ describe("actions", () => {
     })
 
     it("should handle multiple bet operations", async () => {
+      mockBetAccessChecks()
+
       // Create bet
-      vi.mocked(sql).mockResolvedValueOnce({
-        rows: [{ id: "bet-1", value: 2 }],
-      } as any)
+      vi.mocked(sql)
+        .mockResolvedValueOnce(mockUserBolaoOwnership() as any)
+        .mockResolvedValueOnce({
+          rows: [{ id: "bet-1", value: 2 }],
+        } as any)
 
       const createResult = await createBet({
         userBolaoId: "ub-1",
-        fixtureId: "fixture-1",
+        fixtureId: FIXTURE_ID,
         value: 2,
         type: "home",
       })
@@ -587,9 +788,20 @@ describe("actions", () => {
       expect(createResult).toHaveProperty("id", "bet-1")
 
       // Update bet
-      vi.mocked(sql).mockResolvedValueOnce({
-        rows: [{ id: "bet-1", value: 3 }],
-      } as any)
+      vi.mocked(sql)
+        .mockResolvedValueOnce({
+          rows: [
+            {
+              fixture_id: FIXTURE_ID,
+              user_bolao_id: "ub-1",
+              user_id: "user-1",
+            },
+          ],
+        } as any)
+        .mockResolvedValueOnce(mockUserBolaoOwnership() as any)
+        .mockResolvedValueOnce({
+          rows: [{ id: "bet-1", value: 3 }],
+        } as any)
 
       const updateResult = await updateBet({
         betId: "bet-1",
@@ -599,9 +811,20 @@ describe("actions", () => {
       expect(updateResult).toHaveProperty("value", 3)
 
       // Delete bet
-      vi.mocked(sql).mockResolvedValueOnce({
-        rows: [{ id: "bet-1" }],
-      } as any)
+      vi.mocked(sql)
+        .mockResolvedValueOnce({
+          rows: [
+            {
+              fixture_id: FIXTURE_ID,
+              user_bolao_id: "ub-1",
+              user_id: "user-1",
+            },
+          ],
+        } as any)
+        .mockResolvedValueOnce(mockUserBolaoOwnership() as any)
+        .mockResolvedValueOnce({
+          rows: [{ id: "bet-1" }],
+        } as any)
 
       const deleteResult = await deleteBet("bet-1")
 
