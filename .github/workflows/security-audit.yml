@@ -54,7 +54,7 @@ jobs:
           } > audit-comment.md
 
       - name: Comment PR
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@v3
         with:
           header: yarn-audit
           path: audit-comment.md
