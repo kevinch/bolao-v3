@@ -129,22 +129,25 @@ export function buildResultsTableView({
         : INITIAL_BET_VALUE
 
       let points: number | null = null
-      if (
-        canShowScores &&
-        homeBetObj?.value !== undefined &&
-        awayBetObj?.value !== undefined
-      ) {
-        const { resultHome, resultAway } = getFixtureResultScores(
-          fixtureData,
-          statusShort
-        )
+      if (canShowScores) {
+        if (
+          homeBetObj?.value !== undefined &&
+          awayBetObj?.value !== undefined
+        ) {
+          const { resultHome, resultAway } = getFixtureResultScores(
+            fixtureData,
+            statusShort
+          )
 
-        points = calcScore({
-          resultHome,
-          resultAway,
-          betHome: homeBetObj.value,
-          betAway: awayBetObj.value,
-        })
+          points = calcScore({
+            resultHome,
+            resultAway,
+            betHome: homeBetObj.value,
+            betAway: awayBetObj.value,
+          })
+        } else {
+          points = 0
+        }
       }
 
       return {
