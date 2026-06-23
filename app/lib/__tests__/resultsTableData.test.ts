@@ -149,4 +149,29 @@ describe("buildResultsTableView", () => {
     expect(view.rows[0].cells[1].away).toBe("0")
     expect(view.rows[0].cells[1].points).not.toBeNull()
   })
+
+  it("shows 0 points when a player has an incomplete bet on a finished fixture", () => {
+    const bets: Bet[] = [
+      {
+        id: "bet-1",
+        user_bolao_id: "ub-2",
+        fixture_id: "12345",
+        value: 2,
+        type: "home",
+      },
+    ]
+
+    const view = buildResultsTableView({
+      fixtures: [createFixture("FT")],
+      bets,
+      players: mockPlayers,
+      currentUserId: "player1",
+    })
+
+    expect(view.rows[0].cells[1]).toEqual({
+      home: "2",
+      away: ".",
+      points: 0,
+    })
+  })
 })

@@ -29,8 +29,8 @@ const headerCellStyles = {
 const totalsCellStyles = {
   ...cellStyles,
   borderTop: "1px solid rgb(226 232 240)",
-  padding: "12px 0",
-  fontWeight: 600,
+  padding: "12px 10px",
+  fontWeight: 400,
   backgroundColor: "white",
 }
 
