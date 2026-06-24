@@ -47,7 +47,7 @@ export async function getData({
   const currentRound = pickCurrentRoundFromApiCurrent(
     currentRoundObj,
     allRounds,
-    "first"
+    "last"
   )
 
   let isFirstRound: boolean = false

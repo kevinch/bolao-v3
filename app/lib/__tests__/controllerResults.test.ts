@@ -395,6 +395,44 @@ describe("controllerResults", () => {
       expect(result.currentRound).toBe("Round 3")
     })
 
+    it("should pick the last API current label when multiple rounds are current", async () => {
+      const {
+        fetchBolao,
+        fetchUsersBolao,
+        fetchRounds,
+        fetchFixtures,
+        fetchUsersBets,
+      } = await import("@/app/lib/data")
+      const { clerkClient } = await import("@clerk/nextjs/server")
+
+      const worldCupRounds = [
+        "Group Stage - 1",
+        "Group Stage - 2",
+        "Group Stage - 3",
+        "Round of 16",
+        "Quarter-finals",
+      ]
+
+      const mockClient = {
+        users: {
+          getUserList: vi.fn().mockResolvedValue({ data: [] }),
+        },
+      }
+
+      vi.mocked(fetchBolao).mockResolvedValue(mockBolao as any)
+      vi.mocked(fetchUsersBolao).mockResolvedValue([] as any)
+      vi.mocked(fetchRounds)
+        .mockResolvedValueOnce(worldCupRounds)
+        .mockResolvedValueOnce(["Group Stage - 3", "Round of 16"])
+      vi.mocked(fetchFixtures).mockResolvedValue([])
+      vi.mocked(fetchUsersBets).mockResolvedValue([])
+      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
+
+      const result = await getData({ bolaoId: "bolao-1" })
+
+      expect(result.currentRound).toBe("Round of 16")
+    })
+
     it("should fallback to last round when currentRound is empty", async () => {
       const {
         fetchBolao,
