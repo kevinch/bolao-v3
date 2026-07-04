@@ -20,3 +20,6 @@ jobs:
         with:
           fail-on-severity: moderate
           comment-summary-in-pr: always
+          # Recharts pulls stable d3 modules with low OpenSSF scores (no recent
+          # commits) but no known CVEs. Rely on fail-on-severity for vulns.
+          warn-on-openssf-scorecard-level: 0
