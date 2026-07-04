@@ -140,7 +140,8 @@
     "bet": "BET",
     "standings": "STANDINGS",
     "results": "RESULTS",
-    "lead": "LEAD"
+    "lead": "LEAD",
+    "stats": "STATS"
   },
   "betPage": {
     "errorMissingUser": "Error while loading the bet page. Missing userid.",
@@ -176,6 +177,39 @@
     "player": "player",
     "score": "score",
     "needs": "needs"
+  },
+  "statsPage": {
+    "title": "Stats",
+    "beta": "Beta",
+    "emptyState": "Stats will appear once the first round finishes.",
+    "positionSubtitle": "Leaderboard rank after each finished round.",
+    "tierTitle": "Your points breakdown",
+    "tierSubtitle": "Your match points by scoring tier.",
+    "tierBreakdownPoints": "{points} pts",
+    "tierBreakdownPercentage": "{percentage}%",
+    "tierBreakdownMissPercentage": "{percentage}% of bets",
+    "tierComparisonTitle": "You vs group average",
+    "tierComparisonSubtitle": "Your tier mix compared with the average across all members.",
+    "comparisonYou": "You",
+    "comparisonGroupAverage": "Group average",
+    "comparisonTooltipYou": "You: {percentage}% ({points} pts)",
+    "comparisonTooltipGroup": "Group average: {percentage}%",
+    "seasonEnd": "Season end",
+    "rankAxis": "Rank",
+    "rankValue": "#{rank}",
+    "snapshotLabel": "{label}",
+    "errorMissingUser": "Error while loading the stats page. Missing userid.",
+    "errorNoData": "Error while loading the stats page. No data.",
+    "errorLoadFailed": "Could not load the stats page. Check your connection and try again.",
+    "tiers": {
+      "exact": "Exact score (200)",
+      "winnerScore": "Winner's goals (150)",
+      "draw": "Draw (150)",
+      "winnerLoser": "Winner + loser goals (120)",
+      "goalDiff": "Goal difference (100)",
+      "winnerOnly": "Winner only (80)",
+      "zeroPoints": "No points (0)"
+    }
   },
   "championPick": {
     "label": "Winner (+500 pts) — beta",

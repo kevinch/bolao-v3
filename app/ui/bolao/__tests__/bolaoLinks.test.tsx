@@ -32,13 +32,14 @@ describe("BolaoLinks", () => {
       expect(screen.getByText("STANDINGS")).toBeInTheDocument()
       expect(screen.getByText("RESULTS")).toBeInTheDocument()
       expect(screen.getByText("LEAD")).toBeInTheDocument()
+      expect(screen.getByText("STATS")).toBeInTheDocument()
     })
 
     it("should render links as buttons", async () => {
       await renderBolaoLinks(defaultProps)
 
       const links = screen.getAllByRole("link")
-      expect(links).toHaveLength(4)
+      expect(links).toHaveLength(5)
     })
   })
 
@@ -72,6 +73,13 @@ describe("BolaoLinks", () => {
 
       const leadLink = screen.getByText("LEAD").closest("a")
       expect(leadLink).toHaveAttribute("href", "/bolao/bolao-123/lead")
+    })
+
+    it("should have correct href for STATS link", async () => {
+      await renderBolaoLinks(defaultProps)
+
+      const statsLink = screen.getByText("STATS").closest("a")
+      expect(statsLink).toHaveAttribute("href", "/bolao/bolao-123/stats")
     })
   })
 
@@ -116,7 +124,7 @@ describe("BolaoLinks", () => {
       const { container } = await renderBolaoLinks(defaultProps)
 
       const flexContainer = container.querySelector(".flex")
-      expect(flexContainer).toHaveClass("flex", "justify-center", "space-x-4")
+      expect(flexContainer).toHaveClass("flex", "justify-center", "gap-4", "w-full")
     })
 
     it("should render buttons in correct order", async () => {
@@ -152,7 +160,7 @@ describe("BolaoLinks", () => {
       await renderBolaoLinks(defaultProps)
 
       const links = screen.getAllByRole("link")
-      expect(links).toHaveLength(4)
+      expect(links).toHaveLength(5)
 
       links.forEach((link) => {
         expect(link).toHaveAttribute("href")
@@ -179,7 +187,7 @@ describe("BolaoLinks", () => {
       await renderBolaoLinks(defaultProps)
 
       const links = screen.getAllByRole("link")
-      const urlPattern = /^\/bolao\/bolao-123\/(bet|standings|results|lead)$/
+      const urlPattern = /^\/bolao\/bolao-123\/(bet|standings|results|lead|stats)$/
 
       links.forEach((link) => {
         const href = link.getAttribute("href")
@@ -195,7 +203,7 @@ describe("BolaoLinks", () => {
 
       // Check that all hrefs are unique
       const uniqueHrefs = new Set(hrefs)
-      expect(uniqueHrefs.size).toBe(4)
+      expect(uniqueHrefs.size).toBe(5)
     })
   })
 

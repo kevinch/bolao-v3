@@ -140,7 +140,8 @@
     "bet": "APOSTA",
     "standings": "TABELA",
     "results": "RESULTADOS",
-    "lead": "RANKING"
+    "lead": "RANKING",
+    "stats": "STATS"
   },
   "betPage": {
     "errorMissingUser": "Erro ao carregar a página de apostas. Usuário não encontrado.",
@@ -176,6 +177,39 @@
     "player": "jogador",
     "score": "pontos",
     "needs": "faltam"
+  },
+  "statsPage": {
+    "title": "Estatísticas",
+    "beta": "Beta",
+    "emptyState": "As estatísticas aparecerão quando a primeira rodada terminar.",
+    "positionSubtitle": "Posição no ranking após cada rodada finalizada.",
+    "tierTitle": "Seus pontos por tipo",
+    "tierSubtitle": "Seus pontos de jogos por tipo de placar.",
+    "tierBreakdownPoints": "{points} pts",
+    "tierBreakdownPercentage": "{percentage}%",
+    "tierBreakdownMissPercentage": "{percentage}% das apostas",
+    "tierComparisonTitle": "Você vs média do grupo",
+    "tierComparisonSubtitle": "Seu perfil de pontos comparado com a média de todos os membros.",
+    "comparisonYou": "Você",
+    "comparisonGroupAverage": "Média do grupo",
+    "comparisonTooltipYou": "Você: {percentage}% ({points} pts)",
+    "comparisonTooltipGroup": "Média do grupo: {percentage}%",
+    "seasonEnd": "Fim da temporada",
+    "rankAxis": "Posição",
+    "rankValue": "#{rank}",
+    "snapshotLabel": "{label}",
+    "errorMissingUser": "Erro ao carregar estatísticas. Usuário não encontrado.",
+    "errorNoData": "Erro ao carregar estatísticas. Sem dados.",
+    "errorLoadFailed": "Não foi possível carregar as estatísticas. Verifique sua conexão e tente novamente.",
+    "tiers": {
+      "exact": "Placar exato (200)",
+      "winnerScore": "Gols do vencedor (150)",
+      "draw": "Empate (150)",
+      "winnerLoser": "Vencedor + perdedor (120)",
+      "goalDiff": "Saldo de gols (100)",
+      "winnerOnly": "Só vencedor (80)",
+      "zeroPoints": "Sem pontos (0)"
+    }
   },
   "championPick": {
     "label": "Campeão (+500 pts) — beta",

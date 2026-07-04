@@ -28,9 +28,14 @@ function savedValueToDisplay(saved: number | null): string {
 }
 
 function isBetSaveSuccess(
-  result: BetResult
+  result: BetResult | null | undefined
 ): result is Extract<BetResult, { id: string }> {
-  return "id" in result && typeof result.id === "string"
+  return (
+    result != null &&
+    typeof result === "object" &&
+    "id" in result &&
+    typeof result.id === "string"
+  )
 }
 
 function ButtonsBet({
@@ -116,7 +121,9 @@ function ButtonsBet({
         return true
       }
 
-      showSaveError("message" in result ? result.message : undefined)
+      showSaveError(
+        result != null && "message" in result ? result.message : undefined
+      )
       setValue(savedValueToDisplay(savedValueRef.current))
       return false
     } catch (error) {
