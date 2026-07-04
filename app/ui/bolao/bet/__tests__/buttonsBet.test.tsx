@@ -31,6 +31,20 @@ describe("ButtonsBet", () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockToast.mockClear()
+    vi.mocked(actions.createBet).mockResolvedValue({
+      id: "mock-bet-id",
+      user_bolao_id: "user-bolao-123",
+      fixture_id: "fixture-456",
+      value: 0,
+      type: "home",
+    })
+    vi.mocked(actions.updateBet).mockResolvedValue({
+      id: "mock-bet-id",
+      user_bolao_id: "user-bolao-123",
+      fixture_id: "fixture-456",
+      value: 0,
+      type: "home",
+    })
   })
 
   afterEach(() => {
@@ -505,6 +519,28 @@ describe("ButtonsBet", () => {
       })
 
       expect(screen.getByText(".")).toBeInTheDocument()
+    })
+
+    it("reverts when the action returns undefined", async () => {
+      const user = userEvent.setup()
+      const mockUpdateBet = vi.mocked(actions.updateBet)
+      mockUpdateBet.mockResolvedValue(undefined as never)
+
+      render(<ButtonsBet {...defaultProps} betValue={3} betId="bet-123" />)
+
+      const buttons = screen.getAllByRole("button")
+      await user.click(buttons[1])
+
+      await waitFor(() => {
+        expect(mockToast).toHaveBeenCalledWith(
+          expect.objectContaining({
+            variant: "destructive",
+            title: "saveErrorTitle",
+          })
+        )
+      })
+
+      expect(screen.getByText("3")).toBeInTheDocument()
     })
   })
 

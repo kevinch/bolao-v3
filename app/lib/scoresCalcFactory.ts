@@ -1,4 +1,4 @@
-import { ScoreArgs } from "./definitions"
+import { ScoreArgs, ScoringTierId } from "./definitions"
 import { isNil } from "./utils"
 
 // #1: Perfect score, ex: result: 3-0, your bet: 3-0
@@ -231,4 +231,37 @@ export const calcScore = (data: ScoreArgs): number => {
   }
 
   return value // * multiplierValue
+}
+
+export const SCORING_TIER_IDS: ScoringTierId[] = [
+  "exact",
+  "winnerScore",
+  "draw",
+  "winnerLoser",
+  "goalDiff",
+  "winnerOnly",
+]
+
+export function classifyScoringTier(data: ScoreArgs): ScoringTierId | null {
+  const { resultHome, resultAway, betHome, betAway } = data
+
+  if (
+    isNil(betHome) ||
+    isNil(betAway) ||
+    isNil(resultHome) ||
+    isNil(resultAway)
+  ) {
+    return null
+  }
+
+  const scoreCalcData = { resultHome, betHome, resultAway, betAway }
+
+  if (isScore1(scoreCalcData)) return "exact"
+  if (isScore2(scoreCalcData)) return "winnerScore"
+  if (isScore3(data)) return "goalDiff"
+  if (isScore4(data)) return "draw"
+  if (isScore5(data)) return "winnerLoser"
+  if (isScore6(data)) return "winnerOnly"
+
+  return null
 }

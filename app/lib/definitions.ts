@@ -164,6 +164,14 @@ export type Bet = {
   type: "away" | "home"
 }
 
+export type ScoringTierId =
+  | "exact"
+  | "winnerScore"
+  | "draw"
+  | "winnerLoser"
+  | "goalDiff"
+  | "winnerOnly"
+
 export type ChampionTeam = {
   id: number
   name: string
