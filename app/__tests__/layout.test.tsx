@@ -66,7 +66,10 @@ describe("RootLayout", () => {
     })
 
     it("should set metadataBase to the production domain", () => {
-      expect(metadata.metadataBase?.href).toBe("https://bolao.io/")
+      const metadataBase = metadata.metadataBase
+      const href =
+        metadataBase instanceof URL ? metadataBase.href : metadataBase
+      expect(href).toBe("https://bolao.io/")
     })
 
     it("should define Open Graph and Twitter cards", () => {

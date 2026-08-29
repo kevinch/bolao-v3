@@ -2,6 +2,11 @@ import { describe, it, expect, vi, beforeEach } from "vitest"
 import { ImageResponse } from "next/og"
 import Image, { alt, contentType, size } from "../opengraph-image"
 
+type MockImageResponse = {
+  element: unknown
+  options: unknown
+}
+
 vi.mock("next/og", () => ({
   ImageResponse: class MockImageResponse {
     element: unknown
@@ -26,7 +31,7 @@ describe("opengraph-image", () => {
   })
 
   it("generates an ImageResponse with branding", async () => {
-    const result = await Image()
+    const result = (await Image()) as unknown as MockImageResponse
 
     expect(result).toBeInstanceOf(ImageResponse)
     expect(result.options).toEqual({ width: 1200, height: 630 })

@@ -29,6 +29,8 @@ describe("controllerStats", () => {
     created_by: "user-1",
     created_at: new Date("2024-01-01"),
     year: 2024,
+    start: "2024-01-01",
+    end: "2024-12-31",
   }
 
   const mockUsersBolao: UserBolao[] = [
@@ -122,7 +124,11 @@ describe("controllerStats", () => {
     const { getPlayersFromUsersBolao } = await import("../players")
     const { resolveChampionTeamId } = await import("../championPick")
 
-    vi.mocked(data.fetchBolao).mockResolvedValue(mockBolao)
+    vi.mocked(data.fetchBolao).mockResolvedValue({
+      ...mockBolao,
+      start: "2024-01-01",
+      end: "2024-12-31",
+    })
     vi.mocked(data.fetchUsersBolao).mockResolvedValue(mockUsersBolao as never)
     vi.mocked(data.fetchFixtures).mockResolvedValue([mockFixture])
     vi.mocked(data.fetchUsersBets).mockResolvedValue(mockBets)
