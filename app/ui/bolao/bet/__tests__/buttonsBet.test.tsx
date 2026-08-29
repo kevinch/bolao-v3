@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event"
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import ButtonsBet from "../buttonsBet"
 import * as actions from "@/app/lib/actions"
+import type { BetResult } from "@/app/lib/definitions"
 
 // Mock the actions
 vi.mock("@/app/lib/actions", () => ({
@@ -630,10 +631,10 @@ describe("ButtonsBet", () => {
       const mockCreateBet = vi.mocked(actions.createBet)
       const mockUpdateBet = vi.mocked(actions.updateBet)
 
-      let resolveCreate: (value: unknown) => void = () => {}
+      let resolveCreate: (value: BetResult) => void = () => {}
       mockCreateBet.mockImplementation(
         () =>
-          new Promise((resolve) => {
+          new Promise<BetResult>((resolve) => {
             resolveCreate = resolve
           })
       )

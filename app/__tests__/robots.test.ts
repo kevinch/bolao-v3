@@ -8,7 +8,8 @@ describe("robots", () => {
 
     expect(result.sitemap).toBe(`${SITE_URL}/sitemap.xml`)
 
-    const defaultRule = result.rules.find((rule) => rule.userAgent === "*")
+    const rules = Array.isArray(result.rules) ? result.rules : [result.rules]
+    const defaultRule = rules.find((rule) => rule.userAgent === "*")
     expect(defaultRule).toEqual({
       userAgent: "*",
       allow: "/",
@@ -18,6 +19,7 @@ describe("robots", () => {
 
   it("includes explicit rules for AI crawlers", () => {
     const result = robots()
+    const rules = Array.isArray(result.rules) ? result.rules : [result.rules]
 
     const aiAgents = [
       "GPTBot",
@@ -31,7 +33,7 @@ describe("robots", () => {
     ]
 
     for (const userAgent of aiAgents) {
-      expect(result.rules).toContainEqual({
+      expect(rules).toContainEqual({
         userAgent,
         allow: "/",
         disallow: ["/admin", "/bolao", "/api", "/sign-up/db"],
