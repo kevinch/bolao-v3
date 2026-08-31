@@ -23,7 +23,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@clerk/nextjs": "6.39.3",
+    "@clerk/nextjs": "7.8.2",
     "@prismicio/client": "7.22.0",
     "@prismicio/next": "2.3.0",
     "@prismicio/react": "3.4.1",
