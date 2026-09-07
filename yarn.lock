@@ -325,54 +325,43 @@
   dependencies:
     css-tree "^3.0.0"
 
-"@clerk/backend@^2.33.3":
-  version "2.33.3"
-  resolved "https://registry.yarnpkg.com/@clerk/backend/-/backend-2.33.3.tgz#017ebf0880be20c5125d8979adc005d96b31dc99"
-  integrity sha512-cgkFVEYFG2nZn4QDuYBhiAwPtMdo8Yj7DAtq/SBQ5C/ainh3uxNRDgUj4bFn52qJkWLiCkraYJIw1b8dEUbUBg==
+"@clerk/backend@^3.17.1":
+  version "3.17.1"
+  resolved "https://registry.yarnpkg.com/@clerk/backend/-/backend-3.17.1.tgz#0416e82e06569f1edd89e840d93847d6a311534a"
+  integrity sha512-HDBknkYVTMknYsRNHeI0lUE+e4QfOty/LDzWKpbnaaKJUMzHZDUcVo9RQnLdg18XvhaBN7z1OoRiphJ82nimRA==
   dependencies:
-    "@clerk/shared" "^3.47.5"
-    "@clerk/types" "^4.101.23"
+    "@clerk/shared" "^4.31.0"
     standardwebhooks "^1.0.0"
     tslib "2.8.1"
 
-"@clerk/clerk-react@^5.61.6":
-  version "5.61.6"
-  resolved "https://registry.yarnpkg.com/@clerk/clerk-react/-/clerk-react-5.61.6.tgz#434358890796785211676490a6f052e192c25d0b"
-  integrity sha512-OiyBlrnkRr9IhZtPd7EwlzhYScBpvNKJ8lgg7Uw6JElzJYz854IeQaez5mAfpiib3LcW/Dn53E2PQhagcuLJ3Q==
+"@clerk/nextjs@7.9.1":
+  version "7.9.1"
+  resolved "https://registry.yarnpkg.com/@clerk/nextjs/-/nextjs-7.9.1.tgz#72ea2e316bb53b8a4acf6fbf671a998578d0ea00"
+  integrity sha512-ka7F3AwoQO03Z73LMowiESKV4uAousrsb/eOlkPf5oU46XzsCKleGMvCGNhPUg+0r9mA+QVLNHGm2XpLsuZeIw==
   dependencies:
-    "@clerk/shared" "^3.47.5"
-    tslib "2.8.1"
-
-"@clerk/nextjs@6.39.3":
-  version "6.39.3"
-  resolved "https://registry.yarnpkg.com/@clerk/nextjs/-/nextjs-6.39.3.tgz#2b403fd6973b1ecaf321e60a5b97233887304465"
-  integrity sha512-a64lJ1IlV1uA7eEe8DOx+v2bkNOhnTsNlB5THP/xkHvynHqZhc74Yt05sm1vTniWwhJpJspAZ95pCWUX/RVZ2Q==
-  dependencies:
-    "@clerk/backend" "^2.33.3"
-    "@clerk/clerk-react" "^5.61.6"
-    "@clerk/shared" "^3.47.5"
-    "@clerk/types" "^4.101.23"
+    "@clerk/backend" "^3.17.1"
+    "@clerk/react" "^6.15.1"
+    "@clerk/shared" "^4.31.0"
     server-only "0.0.1"
     tslib "2.8.1"
 
-"@clerk/shared@^3.47.5":
-  version "3.47.5"
-  resolved "https://registry.yarnpkg.com/@clerk/shared/-/shared-3.47.5.tgz#77b8d4d3ad6ef308ac84d407dfb45567f29b3f09"
-  integrity sha512-rDVe73/VN2NZXhtrLRHshkUpQDrevAqDRxeXUl2M0IBEBkcl+VMHlV7fep53cVWo0b3gIqLk82pmmi+WoyF/xg==
+"@clerk/react@^6.15.1":
+  version "6.15.1"
+  resolved "https://registry.yarnpkg.com/@clerk/react/-/react-6.15.1.tgz#e6a38ab6f33faa7a590865426baba2f49993e8b3"
+  integrity sha512-zzlLSjsSls+hH4qU6OX+vPeQizroSGo5xzWe5Ez2O6phwjgN+3a2x8ifevjwbbLRKVU86q+LoLMoctZT3eH5zQ==
   dependencies:
-    csstype "3.1.3"
+    "@clerk/shared" "^4.31.0"
+    tslib "2.8.1"
+
+"@clerk/shared@^4.31.0":
+  version "4.31.0"
+  resolved "https://registry.yarnpkg.com/@clerk/shared/-/shared-4.31.0.tgz#f5dde8ece3bb682f81c537c88bd941773c20c733"
+  integrity sha512-jw7J8dmdcXzeGHFAaMA92r04Ej1eVhAeHlcF2XuCKU+teGt3SV4yc2I0eWSqoLmsYpzgBgA66SJ6lLk22R2+fQ==
+  dependencies:
+    "@tanstack/query-core" "^5.100.6"
     dequal "2.0.3"
     glob-to-regexp "0.4.1"
-    js-cookie "3.0.5"
-    std-env "^3.9.0"
-    swr "2.3.4"
-
-"@clerk/types@^4.101.23":
-  version "4.101.23"
-  resolved "https://registry.yarnpkg.com/@clerk/types/-/types-4.101.23.tgz#334ad69712065fa66c0b7bbc52d8cdf94fbaaaef"
-  integrity sha512-t5ypYYDkT5TPaNIDjLnYk9GpkJgwNTBiS7h6FuUTjoySQtf7amNDS1A1eOu7NOcVpqiSeKg+0wzGxxcre00kMA==
-  dependencies:
-    "@clerk/shared" "^3.47.5"
+    js-cookie "3.0.7"
 
 "@csstools/color-helpers@^6.1.1":
   version "6.1.1"
@@ -2096,6 +2085,11 @@
     postcss "^8.5.16"
     tailwindcss "4.3.3"
 
+"@tanstack/query-core@^5.100.6":
+  version "5.102.8"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.102.8.tgz#c55c31b4f99124054805ce8ec8137c84108f3252"
+  integrity sha512-ZNjkJ33CqvPNec/6lZBnHqLc3EVGPZ9ySLhYahU9TcuRFdmwXewuj0c4hwSWcGHqEUwcSrKeZ+oGcvPBqXcQcg==
+
 "@testing-library/dom@^10.4.1":
   version "10.4.1"
   resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-10.4.1.tgz#d444f8a889e9a46e9a3b4f3b88e0fcb3efb6cf95"
@@ -3147,11 +3141,6 @@ css.escape@^1.5.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/css.escape/-/css.escape-1.5.1.tgz#42e27d4fa04ae32f931a4b4d4191fa9cddee97cb"
   integrity sha512-YUifsXXuknHlUsmlgyY0PKzgPOr7/FjCePfHNt0jxm83wHZi44VDMQ7/fGNkjY3/jV1MC+1CmZbaHzugyeRtpg==
-
-csstype@3.1.3:
-  version "3.1.3"
-  resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.1.3.tgz#d80ff294d114fb0e6ac500fbf85b60137d7eff81"
-  integrity sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==
 
 csstype@^3.2.2:
   version "3.2.3"
@@ -4846,7 +4835,7 @@ jose@^5.1.0:
   resolved "https://registry.yarnpkg.com/jose/-/jose-5.10.0.tgz#c37346a099d6467c401351a9a0c2161e0f52c4be"
   integrity sha512-s+3Al/p9g32Iq+oqXxkW//7jk2Vig6FF1CFqzVXoTUXt2qz89YWbL+OwS17NFYEvxC35n0FKeGO2LGYSxeM2Gg==
 
-js-cookie@3.0.5, js-cookie@3.0.8:
+js-cookie@3.0.7, js-cookie@3.0.8:
   version "3.0.8"
   resolved "https://registry.yarnpkg.com/js-cookie/-/js-cookie-3.0.8.tgz#444e6f4b27a5d844594fef61c9d6bca5f0787688"
   integrity sha512-yeJd4aNAdYZQjaon2bpD/Gb0B/omw7HQOsynXXcOiWVCacbBcPlgn8S/d1X6blFSaHao7ozqtW7NZW19xpCtIw==
@@ -6680,11 +6669,6 @@ statuses@^2.0.1, statuses@~2.0.1, statuses@~2.0.2:
   resolved "https://registry.yarnpkg.com/statuses/-/statuses-2.0.2.tgz#8f75eecef765b5e1cfcdc080da59409ed424e382"
   integrity sha512-DvEy55V3DB7uknRo+4iOGT5fP1slR8wQohVdknigZPMpMstaKJQWhwiYBACJE3Ul2pTnATihhBYnRhZQHGBiRw==
 
-std-env@^3.9.0:
-  version "3.10.0"
-  resolved "https://registry.yarnpkg.com/std-env/-/std-env-3.10.0.tgz#d810b27e3a073047b2b5e40034881f5ea6f9c83b"
-  integrity sha512-5GS12FdOZNliM5mAOxFRg7Ir0pWz8MdpYm6AY6VPkGpbA7ZzmbzNcBJQ0GPvvyWgcY7QAhCgf9Uy89I03faLkg==
-
 std-env@^4.0.0-rc.1:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/std-env/-/std-env-4.0.0.tgz#ba3dc31c3a46bc5ba21138aa20a6a4ceb5bb9b7e"
@@ -6848,14 +6832,6 @@ supports-preserve-symlinks-flag@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz#6eda4bd344a3c94aea376d4cc31bc77311039e09"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
-
-swr@2.3.4:
-  version "2.3.4"
-  resolved "https://registry.yarnpkg.com/swr/-/swr-2.3.4.tgz#60bcb5b97cae157a6ef69eff0ed2beb9010eba69"
-  integrity sha512-bYd2lrhc+VarcpkgWclcUi92wYCpOgMws9Sd1hG1ntAu0NEy+14CbotuFjshBU2kt9rYj9TSmDcybpxpeTU1fg==
-  dependencies:
-    dequal "^2.0.3"
-    use-sync-external-store "^1.4.0"
 
 symbol-tree@^3.2.4:
   version "3.2.4"
