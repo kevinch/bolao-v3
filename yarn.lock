@@ -1220,10 +1220,10 @@
     newtype-ts "^0.3.5"
     tslib "^2.8.1"
 
-"@prismicio/next@2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@prismicio/next/-/next-2.3.0.tgz#ca47bbc2979c6deddaabcde6f34c3c71f0fcb10f"
-  integrity sha512-Zo6KfE0NitFHagtL1vgvzI/UB1YLlBSFfwH5wqXz49hZgCHbjnKGTsU0uPp62wep05nfzzGH6k7EQCCYAi75lg==
+"@prismicio/next@2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@prismicio/next/-/next-2.3.1.tgz#5994d655336653c86244955af5019286acd5af3f"
+  integrity sha512-Kof3UfvMYC7qdGAjmtNnC6Kq9F3TwrO55bBrTeXtPec5Obsh1LC6Hur5UtDOQJ/qlCLZnVFk0E6RmkHZ7b4sEA==
   dependencies:
     "@prismicio/simulator" "^0.2.2"
     imgix-url-builder "^0.0.6"
