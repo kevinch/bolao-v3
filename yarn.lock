@@ -1229,10 +1229,10 @@
     imgix-url-builder "^0.0.6"
     lz-string "^1.5.0"
 
-"@prismicio/react@3.4.1":
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/@prismicio/react/-/react-3.4.1.tgz#5bd50b0bf6b4fcf223c92312b10e784ed974e724"
-  integrity sha512-OR/F1+B6tlPMGm5YCE7Ir0FXXfobyQDQvNGl22TUYVbyCMc7qyY4VtPIxyEbKJBQNRRM22UYc8a4THS49Fwetg==
+"@prismicio/react@3.4.2":
+  version "3.4.2"
+  resolved "https://registry.yarnpkg.com/@prismicio/react/-/react-3.4.2.tgz#90ada1decfbde702e9899e9e09297a260f07de80"
+  integrity sha512-SidnulhV59glv4phajLviuJV8ppmSPKUWa+OD5tsm7S96Xjp1DNZ0KaORWBCWr603ixhRsLZqegDKTz2Ttw07g==
   dependencies:
     esm-env "^1.2.2"
 
