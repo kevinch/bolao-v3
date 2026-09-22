@@ -1181,17 +1181,10 @@
   dependencies:
     imgix-url-builder "^0.0.5"
 
-"@prismicio/client@7.22.0":
-  version "7.22.0"
-  resolved "https://registry.yarnpkg.com/@prismicio/client/-/client-7.22.0.tgz#85cc0ebc2f289e19a875e14aef0e9b7a2a8acf82"
-  integrity sha512-mWzNx6kLn8cOO9j4Tt92RnVYNHl7xBDAZBUkIwvpUYSW7fzMKCJSYpuYpKpfwt9OCkr/CTRvhlqTzx3f7vU8oA==
-  dependencies:
-    imgix-url-builder "^0.0.6"
-
-"@prismicio/client@^7.1.0":
-  version "7.21.1"
-  resolved "https://registry.yarnpkg.com/@prismicio/client/-/client-7.21.1.tgz#7e33f0020cc144fcab4f9c356ab37cd5c2cd15e9"
-  integrity sha512-2VnOsz0DTUuZ6zNEPa42t3D/ykxtq5eORjpXF5+okkH/atfMU4tzuZnI55p8CWB/5mLXz5ajNFkZqlMlciJATA==
+"@prismicio/client@7.22.1", "@prismicio/client@^7.1.0":
+  version "7.22.1"
+  resolved "https://registry.yarnpkg.com/@prismicio/client/-/client-7.22.1.tgz#b1a1fb3d4aad7ad1515739114e134d93bfd6042c"
+  integrity sha512-7W86TSmGMtE/LVFduePP2Lznk0qC6sennOyw7kRfVbVtyfFD7BMs8H9vyOp8LvtSrzNoJh3/p9gj46v8Oc8h1Q==
   dependencies:
     imgix-url-builder "^0.0.6"
 
