@@ -50,7 +50,7 @@
     "react": "19.2.8",
     "react-device-detect": "^2.2.3",
     "react-dom": "19.2.8",
-    "react-is": "19.2.8",
+    "react-is": "19.3.0",
     "react-sticky-table": "^5.1.11",
     "recharts": "^3.10.1",
     "tailwind-merge": "3.7.0",
