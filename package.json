@@ -25,7 +25,7 @@
   "dependencies": {
     "@clerk/nextjs": "6.39.3",
     "@prismicio/client": "7.22.1",
-    "@prismicio/next": "2.3.0",
+    "@prismicio/next": "2.3.3",
     "@prismicio/react": "3.4.2",
     "@radix-ui/react-dialog": "1.1.23",
     "@radix-ui/react-dropdown-menu": "2.1.24",
