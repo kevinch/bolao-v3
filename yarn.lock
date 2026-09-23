@@ -6850,10 +6850,10 @@ symbol-tree@^3.2.4:
   resolved "https://registry.yarnpkg.com/symbol-tree/-/symbol-tree-3.2.4.tgz#430637d248ba77e078883951fb9aa0eed7c63fa2"
   integrity sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==
 
-tailwind-merge@3.6.0:
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/tailwind-merge/-/tailwind-merge-3.6.0.tgz#88d83242d1dd7bc847223f73dcf210dd1f2ee11c"
-  integrity sha512-uxL7qAVQriqRQPAyK3pj66VqskWqoZ37PW94jwOTwNfq/z9oyu1V+eqrZqtR2+fCiXdYOZe/Modt8GtvqNzu+w==
+tailwind-merge@3.7.0:
+  version "3.7.0"
+  resolved "https://registry.yarnpkg.com/tailwind-merge/-/tailwind-merge-3.7.0.tgz#61e9a67ab11b64138dea7d4fa5b74a33e17f2c87"
+  integrity sha512-XPPUyAc+cvspz3lHTcR/QgPfW2A0lv/xQNIjX3HGhLR+Nq2lHaLq5MtTesHn8GUr3W3DguT2KT5x3NVgRtYwmA==
 
 tailwindcss-animate@^1.0.7:
   version "1.0.7"
