@@ -83,7 +83,7 @@ function TableMatchDayResults({ tableView }: TableProps) {
                         border: 0,
                         backgroundColor:
                           rowIndex % 2 !== 0
-                            ? "hsl(var(--muted) / 0.5)"
+                            ? "hsl(var(--muted))"
                             : "hsl(var(--card))",
                       }}
                     >
@@ -132,7 +132,7 @@ function TableMatchDayResults({ tableView }: TableProps) {
                           margin: 0,
                           border: 0,
                           backgroundColor:
-                            rowIndex % 2 !== 0 ? "hsl(var(--muted) / 0.5)" : "hsl(var(--card))",
+                            rowIndex % 2 !== 0 ? "hsl(var(--muted))" : "hsl(var(--card))",
                         }}
                         key={`${fixtureData.fixture.id}_${cellIndex}`}
                         className="text-center"
