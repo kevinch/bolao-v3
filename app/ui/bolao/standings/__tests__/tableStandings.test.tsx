@@ -224,9 +224,9 @@ describe("TableStandings", () => {
       const { container } = await renderTableStandings({ standingsLeague: mockStandingsLeague })
 
       const rows = container.querySelectorAll("tbody tr")
-      expect(rows[0]).toHaveClass("bg-slate-50") // rank 1 (odd)
-      expect(rows[1]).not.toHaveClass("bg-slate-50") // rank 2 (even)
-      expect(rows[2]).toHaveClass("bg-slate-50") // rank 3 (odd)
+      expect(rows[0]).toHaveClass("bg-muted/50") // rank 1 (odd)
+      expect(rows[1]).not.toHaveClass("bg-muted/50") // rank 2 (even)
+      expect(rows[2]).toHaveClass("bg-muted/50") // rank 3 (odd)
     })
   })
 
