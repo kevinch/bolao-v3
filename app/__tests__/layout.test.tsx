@@ -2,9 +2,14 @@ import { describe, it, expect, vi } from "vitest"
 import { renderToString } from "react-dom/server"
 import RootLayout, { metadata } from "../layout"
 
-// Mock ClerkProvider
+// Mock Clerk
 vi.mock("@clerk/nextjs", () => ({
   ClerkProvider: ({ children }: { children: React.ReactNode }) => children,
+}))
+
+// Mock ClerkThemeProvider
+vi.mock("@/components/clerk-theme-provider", () => ({
+  ClerkThemeProvider: ({ children }: { children: React.ReactNode }) => children,
 }))
 
 // Mock Header component
@@ -34,6 +39,11 @@ vi.mock("@vercel/speed-insights/next", () => ({
 // Mock Next.js Script component
 vi.mock("next/script", () => ({
   default: ({ src, ...props }: { src?: string; [key: string]: any }) => null,
+}))
+
+// Mock ThemeProvider
+vi.mock("@/components/theme-provider", () => ({
+  ThemeProvider: ({ children }: { children: React.ReactNode }) => children,
 }))
 
 // Mock Google Fonts

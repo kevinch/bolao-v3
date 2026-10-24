@@ -1,6 +1,5 @@
 import type { Metadata } from "next"
 import { IBM_Plex_Sans } from "next/font/google"
-import { ClerkProvider } from "@clerk/nextjs"
 import { NextIntlClientProvider } from "next-intl"
 import { getLocale, getMessages } from "next-intl/server"
 import Header from "@/app/components/header"
@@ -12,6 +11,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 import JsonLd from "@/app/components/jsonLd"
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/app/lib/siteConfig"
 import { ThemeProvider } from "@/components/theme-provider"
+import { ClerkThemeProvider } from "@/components/clerk-theme-provider"
 import "./globals.css"
 
 const Plex = IBM_Plex_Sans({
@@ -97,29 +97,29 @@ export default async function RootLayout({
   const messages = await getMessages()
 
   return (
-    <ClerkProvider
-      appearance={{
-        elements: {
-          footerAction: "hidden",
-        },
-        layout: {
-          shimmer: false,
-        },
-      }}
-    >
-      <html lang={locale} suppressHydrationWarning>
-        <head>
-          <link rel="preconnect" href="https://clerk.bolao.io" />
-          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-          <link rel="dns-prefetch" href="https://media.api-sports.io" />
-          <JsonLd data={websiteJsonLd} />
-        </head>
-        <body className={Plex.className}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
+    <html lang={locale} suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://clerk.bolao.io" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://media.api-sports.io" />
+        <JsonLd data={websiteJsonLd} />
+      </head>
+      <body className={Plex.className}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ClerkThemeProvider
+            appearance={{
+              elements: {
+                footerAction: "hidden",
+              },
+              layout: {
+                shimmer: false,
+              },
+            }}
           >
             <NextIntlClientProvider locale={locale} messages={messages}>
               <div className="container mx-auto px-4">
@@ -131,15 +131,14 @@ export default async function RootLayout({
                 <SpeedInsights />
               </div>
             </NextIntlClientProvider>
-          </ThemeProvider>
-        </body>
-
+          </ClerkThemeProvider>
+        </ThemeProvider>
         <Script
           src="https://cloud.umami.is/script.js"
           data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
           strategy="lazyOnload"
         />
-      </html>
-    </ClerkProvider>
+      </body>
+    </html>
   )
 }
