@@ -66,7 +66,7 @@ async function TableMatchDayBets({
                 <div
                   key={fixtureId}
                   className={clsx("py-4", {
-                    "bg-slate-50": i % 2 !== 0,
+                    "bg-muted/50": i % 2 !== 0,
                   })}
                 >
                   <div className="flex justify-center content-center">

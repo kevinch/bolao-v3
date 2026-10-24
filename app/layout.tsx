@@ -11,6 +11,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import JsonLd from "@/app/components/jsonLd"
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/app/lib/siteConfig"
+import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css"
 
 const Plex = IBM_Plex_Sans({
@@ -106,7 +107,7 @@ export default async function RootLayout({
         },
       }}
     >
-      <html lang={locale}>
+      <html lang={locale} suppressHydrationWarning>
         <head>
           <link rel="preconnect" href="https://clerk.bolao.io" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -114,16 +115,23 @@ export default async function RootLayout({
           <JsonLd data={websiteJsonLd} />
         </head>
         <body className={Plex.className}>
-          <NextIntlClientProvider locale={locale} messages={messages}>
-            <div className="container mx-auto px-4">
-              <Header />
-              {children}
-              <Footer />
-              <Toaster />
-              <Analytics />
-              <SpeedInsights />
-            </div>
-          </NextIntlClientProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <NextIntlClientProvider locale={locale} messages={messages}>
+              <div className="container mx-auto px-4">
+                <Header />
+                {children}
+                <Footer />
+                <Toaster />
+                <Analytics />
+                <SpeedInsights />
+              </div>
+            </NextIntlClientProvider>
+          </ThemeProvider>
         </body>
 
         <Script
