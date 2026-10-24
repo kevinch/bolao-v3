@@ -97,6 +97,12 @@ export default async function RootLayout({
   const messages = await getMessages()
 
   return (
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+    >
       <html lang={locale} suppressHydrationWarning>
         <head>
           <link rel="preconnect" href="https://clerk.bolao.io" />
@@ -105,34 +111,27 @@ export default async function RootLayout({
           <JsonLd data={websiteJsonLd} />
         </head>
         <body className={Plex.className}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
+          <ClerkThemeProvider
+            appearance={{
+              elements: {
+                footerAction: "hidden",
+              },
+              layout: {
+                shimmer: false,
+              },
+            }}
           >
-            <ClerkThemeProvider
-              appearance={{
-                elements: {
-                  footerAction: "hidden",
-                },
-                layout: {
-                  shimmer: false,
-                },
-              }}
-            >
-              <NextIntlClientProvider locale={locale} messages={messages}>
-                <div className="container mx-auto px-4">
-                  <Header />
-                  {children}
-                  <Footer />
-                  <Toaster />
-                  <Analytics />
-                  <SpeedInsights />
-                </div>
-              </NextIntlClientProvider>
-            </ClerkThemeProvider>
-          </ThemeProvider>
+            <NextIntlClientProvider locale={locale} messages={messages}>
+              <div className="container mx-auto px-4">
+                <Header />
+                {children}
+                <Footer />
+                <Toaster />
+                <Analytics />
+                <SpeedInsights />
+              </div>
+            </NextIntlClientProvider>
+          </ClerkThemeProvider>
         </body>
 
         <Script
