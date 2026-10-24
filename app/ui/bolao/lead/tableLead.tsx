@@ -47,7 +47,7 @@ async function TableLead({ data, isChampionPickLocked = false }: TableProps) {
                   <tr
                     key={playerIndex}
                     className={clsx("py-5", {
-                      "bg-slate-50": playerIndex % 2 !== 0,
+                      "bg-muted/50": playerIndex % 2 !== 0,
                     })}
                   >
                     <td className={`${paddingVertical} text-right`}>

@@ -98,7 +98,7 @@ async function TableStandings({ standingsLeague }: TableProps) {
             <CardTitle>{t("title")}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-center text-slate-500 py-8">
+            <div className="text-center text-muted-foreground py-8">
               {t("noStandings")}
             </div>
           </CardContent>
@@ -138,7 +138,7 @@ async function TableStandings({ standingsLeague }: TableProps) {
                     <tr
                       key={`tr_${i}_group_${j}`}
                       className={clsx("text-center", {
-                        "bg-slate-50": el.rank % 2 !== 0,
+                        "bg-muted/50": el.rank % 2 !== 0,
                       })}
                     >
                       <td className={`py-4 px-2 ${rankinColor}`}>{el.rank}</td>
@@ -204,11 +204,11 @@ async function TableStandings({ standingsLeague }: TableProps) {
                 ? "bg-red-500"
                 : rankinkDescriptionIndex !== -1
                   ? bgColors[rankinkDescriptionIndex]
-                  : "bg-slate-500"
+                  : "bg-muted-foreground"
 
             return (
               <span
-                className="text-xs text-slate-400 mr-4 whitespace-nowrap"
+                className="text-xs text-muted-foreground mr-4 whitespace-nowrap"
                 key={`legend_${index}`}
               >
                 <span

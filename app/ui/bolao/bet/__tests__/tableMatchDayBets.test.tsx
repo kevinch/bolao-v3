@@ -211,8 +211,8 @@ describe("TableMatchDayBets", () => {
       // First fixture (index 0) should not have bg-slate-50
       expect(fixtureContainers[0]).not.toHaveClass("bg-slate-50")
 
-      // Second fixture (index 1) should have bg-slate-50
-      expect(fixtureContainers[1]).toHaveClass("bg-slate-50")
+      // Second fixture (index 1) should have bg-muted/50
+      expect(fixtureContainers[1]).toHaveClass("bg-muted/50")
 
       // Third fixture (index 2) should not have bg-slate-50
       expect(fixtureContainers[2]).not.toHaveClass("bg-slate-50")

@@ -1,9 +1,9 @@
 import type { ScoringTierId } from "@/app/lib/definitions"
 
-export const CHART_GRID_STROKE = "hsl(240 5.9% 85%)"
-export const CHART_AXIS_STROKE = "hsl(240 3.8% 46.1%)"
-export const CHART_TOOLTIP_BG = "hsl(0 0% 100%)"
-export const CHART_TOOLTIP_BORDER = "hsl(240 5.9% 82%)"
+export const CHART_GRID_STROKE = "hsl(var(--border))"
+export const CHART_AXIS_STROKE = "hsl(var(--muted-foreground))"
+export const CHART_TOOLTIP_BG = "hsl(var(--popover))"
+export const CHART_TOOLTIP_BORDER = "hsl(var(--border))"
 
 /** Semantic tier colors — ordered best → worst, all WCAG-friendly on white. */
 export const TIER_BAR_COLORS: Record<ScoringTierId, string> = {

@@ -23,15 +23,15 @@ const cellStyles = {
 
 const headerCellStyles = {
   ...cellStyles,
-  backgroundColor: "white",
+  backgroundColor: "hsl(var(--card))",
 }
 
 const totalsCellStyles = {
   ...cellStyles,
-  borderTop: "1px solid rgb(226 232 240)",
+  borderTop: "1px solid hsl(var(--border))",
   padding: "12px 10px",
   fontWeight: 400,
-  backgroundColor: "white",
+  backgroundColor: "hsl(var(--card))",
 }
 
 function TableMatchDayResults({ tableView }: TableProps) {
@@ -82,7 +82,9 @@ function TableMatchDayResults({ tableView }: TableProps) {
                         margin: 0,
                         border: 0,
                         backgroundColor:
-                          rowIndex % 2 !== 0 ? "rgb(248 250 252)" : "",
+                          rowIndex % 2 !== 0
+                            ? "hsl(var(--muted) / 0.5)"
+                            : "hsl(var(--card))",
                       }}
                     >
                       <div className="flex justify-center content-center">
@@ -130,7 +132,7 @@ function TableMatchDayResults({ tableView }: TableProps) {
                           margin: 0,
                           border: 0,
                           backgroundColor:
-                            rowIndex % 2 !== 0 ? "rgb(248 250 252)" : "",
+                            rowIndex % 2 !== 0 ? "hsl(var(--muted) / 0.5)" : "hsl(var(--card))",
                         }}
                         key={`${fixtureData.fixture.id}_${cellIndex}`}
                         className="text-center"

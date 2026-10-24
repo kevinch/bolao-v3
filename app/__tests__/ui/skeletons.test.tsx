@@ -22,7 +22,7 @@ describe("Skeletons", () => {
             expect(animatedContainer).toBeDefined()
 
             // Should have 7 skeleton lines
-            const skeletonLines = container.querySelectorAll(".h-6.rounded-md.bg-gray-200.mb-4")
+            const skeletonLines = container.querySelectorAll(".h-6.rounded-md.mb-4")
             expect(skeletonLines.length).toBe(7)
         })
     })

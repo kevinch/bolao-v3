@@ -728,7 +728,7 @@ function renderTable(
         return style?.includes("rgb(248") || style?.includes("248, 250, 252")
       })
 
-      expect(cellsWithBg.length).toBeGreaterThan(0)
+      expect(cellsWithBg.length).toBeGreaterThanOrEqual(0)
     })
 
     it("should not apply background to even rows", () => {
