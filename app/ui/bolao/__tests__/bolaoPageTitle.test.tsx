@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react"
+import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, it, expect, vi } from "vitest"
 import BolaoPageTitle from "../bolaoPageTitle"
 import type { Bolao } from "@/app/lib/definitions"
@@ -27,13 +27,23 @@ vi.mock("@/app/components/bolaoYearBadge", () => ({
 
 // Mock Next.js Image
 vi.mock("next/image", () => ({
-  default: ({ src, alt, width, height }: any) => (
+  default: ({
+    src,
+    alt,
+    width,
+    height,
+    className,
+    onError,
+    "data-testid": testId,
+  }: any) => (
     <img
       src={src}
       alt={alt}
       width={width}
       height={height}
-      data-testid="league-logo"
+      className={className}
+      data-testid={testId}
+      onError={onError}
     />
   ),
 }))
@@ -129,6 +139,18 @@ describe("BolaoPageTitle", () => {
       expect(logo).toHaveAttribute("height", "60")
     })
 
+    it("should render regular league logos at 60px high with automatic width", () => {
+      render(
+        <BolaoPageTitle
+          bolao={mockBolao}
+          leagueName="Serie A"
+          leagueLogo="/logos/serie-a.png"
+        />
+      )
+
+      expect(screen.getByTestId("league-logo")).toHaveClass("h-[60px]", "w-auto")
+    })
+
     it("should center logo when displayed", () => {
       const { container } = render(
         <BolaoPageTitle
@@ -159,9 +181,169 @@ describe("BolaoPageTitle", () => {
       const logo = screen.getByTestId("league-logo")
       expect(logo).toHaveAttribute(
         "src",
-        "/logos/tournaments_fifa-world-cup-2026.football-logos.cc.svg"
+        "/logos/leagues/1-light.svg"
       )
       expect(logo.tagName).toBe("IMG")
+      expect(screen.getByTestId("league-logo-dark")).toHaveAttribute(
+        "src",
+        "/logos/leagues/1-dark.svg"
+      )
+      expect(screen.getByTestId("league-logo")).toHaveClass("dark:hidden")
+      expect(screen.getByTestId("league-logo-dark")).toHaveClass(
+        "hidden",
+        "dark:block"
+      )
+      expect(screen.getByTestId("league-logo-dark")).not.toHaveClass(
+        "dark:invert"
+      )
+    })
+
+    it("should select local logo variants using the competition ID", () => {
+      const bolaoUcl = { ...mockBolao, competition_id: "2" }
+      render(
+        <BolaoPageTitle
+          bolao={bolaoUcl}
+          leagueName="UEFA Champions League"
+          leagueLogo="https://media.api-sports.io/football/leagues/2.png"
+        />
+      )
+
+      expect(screen.getByTestId("league-logo")).toHaveAttribute(
+        "src",
+        "/logos/leagues/2-light.svg"
+      )
+      expect(screen.getByTestId("league-logo-dark")).toHaveAttribute(
+        "src",
+        "/logos/leagues/2-dark.svg"
+      )
+    })
+
+    it("should white-filter a single local light logo when its dark variant is missing", () => {
+      const bolaoLibertadores = { ...mockBolao, competition_id: "13" }
+      render(
+        <BolaoPageTitle
+          bolao={bolaoLibertadores}
+          leagueName="CONMEBOL Libertadores"
+          leagueLogo="https://media.api-sports.io/football/leagues/13.png"
+        />
+      )
+
+      fireEvent.error(screen.getByTestId("league-logo-dark"))
+
+      const logo = screen.getByTestId("league-logo")
+      expect(logo).toHaveAttribute("src", "/logos/leagues/13-light.svg")
+      expect(logo).toHaveClass("dark:brightness-0", "dark:invert")
+      expect(screen.queryByTestId("league-logo-dark")).not.toBeInTheDocument()
+    })
+
+    it("should keep a valid dark variant when the local light variant is missing", () => {
+      const bolao = { ...mockBolao, competition_id: "39" }
+      const apiLogo = "https://media.api-sports.io/football/leagues/39.png"
+      render(
+        <BolaoPageTitle
+          bolao={bolao}
+          leagueName="Premier League"
+          leagueLogo={apiLogo}
+        />
+      )
+
+      fireEvent.error(screen.getByTestId("league-logo"))
+
+      expect(screen.getByTestId("league-logo")).toHaveAttribute("src", apiLogo)
+      expect(screen.getByTestId("league-logo-dark")).toHaveAttribute(
+        "src",
+        "/logos/leagues/39-dark.svg"
+      )
+    })
+
+    it("should fall back to the API logo when both local variants are missing", () => {
+      const bolaoEuropaLeague = { ...mockBolao, competition_id: "3" }
+      const apiLogo = "https://media.api-sports.io/football/leagues/3.png"
+      render(
+        <BolaoPageTitle
+          bolao={bolaoEuropaLeague}
+          leagueName="UEFA Europa League"
+          leagueLogo={apiLogo}
+        />
+      )
+
+      fireEvent.error(screen.getByTestId("league-logo"))
+      fireEvent.error(screen.getByTestId("league-logo-dark"))
+
+      const logo = screen.getByTestId("league-logo")
+      expect(logo).toHaveAttribute("src", apiLogo)
+      expect(logo).toHaveClass("dark:brightness-0", "dark:invert")
+      expect(screen.queryByTestId("league-logo-dark")).not.toBeInTheDocument()
+    })
+
+    it("should fall back to the 2026 World Cup logo if its local pair fails", () => {
+      const bolaoWc2026: Bolao = {
+        ...mockBolao,
+        year: 2026,
+        competition_id: "1",
+      }
+      render(
+        <BolaoPageTitle
+          bolao={bolaoWc2026}
+          leagueName="World Cup"
+          leagueLogo="https://media.api-sports.io/football/leagues/1.png"
+        />
+      )
+
+      fireEvent.error(screen.getByTestId("league-logo-dark"))
+
+      expect(screen.getByTestId("league-logo")).toHaveAttribute(
+        "src",
+        "/logos/tournaments_fifa-world-cup-2026.football-logos.cc.svg"
+      )
+      expect(screen.queryByTestId("league-logo-dark")).not.toBeInTheDocument()
+    })
+
+    it("should use the World Cup logo override by name for other competition IDs in 2026", () => {
+      const bolaoWc2026 = { ...mockBolao, year: 2026, competition_id: "999" }
+      render(
+        <BolaoPageTitle
+          bolao={bolaoWc2026}
+          leagueName="FIFA World Cup"
+          leagueLogo="https://media.api-sports.io/football/leagues/999.png"
+        />
+      )
+
+      expect(screen.getByTestId("league-logo")).toHaveAttribute(
+        "src",
+        "/logos/tournaments_fifa-world-cup-2026.football-logos.cc.svg"
+      )
+    })
+
+    it("should not treat the Club World Cup as the FIFA World Cup", () => {
+      const bolaoClubWc = { ...mockBolao, year: 2026, competition_id: "15" }
+      render(
+        <BolaoPageTitle
+          bolao={bolaoClubWc}
+          leagueName="FIFA Club World Cup"
+          leagueLogo="https://media.api-sports.io/football/leagues/15.png"
+        />
+      )
+
+      expect(screen.getByTestId("league-logo")).toHaveAttribute(
+        "src",
+        "/logos/leagues/15-light.svg"
+      )
+      expect(screen.getByTestId("league-logo")).not.toHaveAttribute(
+        "src",
+        "/logos/tournaments_fifa-world-cup-2026.football-logos.cc.svg"
+      )
+    })
+
+    it("should hide a local logo after it fails when there is no API fallback", () => {
+      const bolao = { ...mockBolao, competition_id: "13" }
+      render(<BolaoPageTitle bolao={bolao} leagueName="Libertadores" />)
+
+      fireEvent.error(screen.getByTestId("league-logo"))
+      fireEvent.error(screen.getByTestId("league-logo-dark"))
+
+      expect(screen.queryByTestId("league-logo")).not.toBeInTheDocument()
+      expect(screen.queryByTestId("league-logo-dark")).not.toBeInTheDocument()
     })
 
     it("should not override logo for World Cup in a non-2026 season", () => {

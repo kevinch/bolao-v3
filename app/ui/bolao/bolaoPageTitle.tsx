@@ -1,6 +1,9 @@
+"use client"
+
 import PageTitle from "@/app/components/pageTitle"
 import Image from "next/image"
 import BolaoYearBadge from "@/app/components/bolaoYearBadge"
+import { useState } from "react"
 import type { Bolao } from "@/app/lib/definitions"
 
 /** Temporary: tournament SVG (football-logos.cc) instead of API-Sports thumbnail for the 2026 tournament. */
@@ -21,21 +24,106 @@ type Props = {
 }
 
 function BolaoPageTitle({ leagueName, leagueLogo, bolao }: Props) {
-  const useWc2026Silhouette = is2026FifaWorldCup(bolao, leagueName)
-  const logoSrc = useWc2026Silhouette ? FIFA_WORLD_CUP_2026_LOGO : leagueLogo
+  const [failedLocalLogos, setFailedLocalLogos] = useState<Set<string>>(
+    () => new Set()
+  )
+  const competitionId = bolao.competition_id
+  const hasNumericCompetitionId = /^\d+$/.test(competitionId)
+  const is2026WorldCup = is2026FifaWorldCup(bolao, leagueName)
+  const canUseCompetitionLogo =
+    hasNumericCompetitionId && (competitionId !== "1" || is2026WorldCup)
+  const lightLocalLogo = canUseCompetitionLogo
+    ? `/logos/leagues/${competitionId}-light.svg`
+    : undefined
+  const darkLocalLogo = canUseCompetitionLogo
+    ? `/logos/leagues/${competitionId}-dark.svg`
+    : undefined
+  const hasLocalWorldCupPair =
+    is2026WorldCup &&
+    competitionId === "1" &&
+    !failedLocalLogos.has("/logos/leagues/1-light.svg") &&
+    !failedLocalLogos.has("/logos/leagues/1-dark.svg")
+  const useWc2026Silhouette =
+    is2026WorldCup && !hasLocalWorldCupPair
+  const lightLogoSrc = useWc2026Silhouette
+    ? FIFA_WORLD_CUP_2026_LOGO
+    : lightLocalLogo && !failedLocalLogos.has(lightLocalLogo)
+      ? lightLocalLogo
+      : leagueLogo
+  const darkLogoSrc = useWc2026Silhouette
+    ? lightLogoSrc
+    : darkLocalLogo && !failedLocalLogos.has(darkLocalLogo)
+      ? darkLocalLogo
+      : lightLocalLogo && !failedLocalLogos.has(lightLocalLogo)
+        ? lightLocalLogo
+        : leagueLogo
+  const logoWidth = useWc2026Silhouette ? 227 : 60
+  const logoHeight = useWc2026Silhouette ? 351 : 60
+  const logoClassName = useWc2026Silhouette
+    ? "h-[4.5rem] w-auto"
+    : "h-[60px] w-auto"
+  const logoSrc = lightLogoSrc ?? darkLogoSrc
+  const shouldTintLogoForDarkMode = darkLogoSrc === lightLogoSrc
+  const handleLocalLogoError = (src: string | undefined) => {
+    if (!src || failedLocalLogos.has(src)) return
+    setFailedLocalLogos((current) => new Set(current).add(src))
+  }
+  const alt = `${leagueName ?? "2026 FIFA World Cup"}'s logo`
 
   return (
     <PageTitle center={true}>
       {logoSrc && (
         <div className="flex justify-center mb-6">
-          <Image
-            alt={`${leagueName ?? "2026 FIFA World Cup"}'s logo`}
-            src={logoSrc}
-            width={useWc2026Silhouette ? 227 : 60}
-            height={useWc2026Silhouette ? 351 : 60}
-            className={useWc2026Silhouette ? "h-[4.5rem] w-auto" : undefined}
-            data-testid="league-logo"
-          />
+          {darkLogoSrc && darkLogoSrc !== lightLogoSrc ? (
+            <>
+              {lightLogoSrc && (
+                <Image
+                  alt={alt}
+                  src={lightLogoSrc}
+                  width={logoWidth}
+                  height={logoHeight}
+                  className={`${logoClassName ?? ""} dark:hidden`}
+                  data-testid="league-logo"
+                  onError={() =>
+                    handleLocalLogoError(
+                      lightLogoSrc === lightLocalLogo
+                        ? lightLocalLogo
+                        : undefined
+                    )
+                  }
+                />
+              )}
+              <Image
+                alt={alt}
+                src={darkLogoSrc}
+                width={logoWidth}
+                height={logoHeight}
+                className={`${logoClassName ?? ""} hidden dark:block`}
+                data-testid="league-logo-dark"
+                onError={() =>
+                  handleLocalLogoError(
+                    darkLogoSrc === darkLocalLogo ? darkLocalLogo : undefined
+                  )
+                }
+              />
+            </>
+          ) : (
+            <Image
+              alt={alt}
+              src={logoSrc}
+              width={logoWidth}
+              height={logoHeight}
+              className={`${logoClassName ?? ""} ${
+                shouldTintLogoForDarkMode ? "dark:brightness-0 dark:invert" : ""
+              }`}
+              data-testid="league-logo"
+              onError={() =>
+                handleLocalLogoError(
+                  lightLogoSrc === lightLocalLogo ? lightLocalLogo : undefined
+                )
+              }
+            />
+          )}
         </div>
       )}
 
