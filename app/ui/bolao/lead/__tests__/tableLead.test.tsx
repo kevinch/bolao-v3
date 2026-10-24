@@ -191,17 +191,17 @@ describe("TableLead", () => {
 
       const rows = container.querySelectorAll("tbody tr")
 
-      // First row (index 0) should not have bg-slate-50
-      expect(rows[0]).not.toHaveClass("bg-slate-50")
+      // First row (index 0) should not have bg-muted/50
+      expect(rows[0]).not.toHaveClass("bg-muted/50")
 
       // Second row (index 1) should have bg-muted/50
       expect(rows[1]).toHaveClass("bg-muted/50")
 
-      // Third row (index 2) should not have bg-slate-50
-      expect(rows[2]).not.toHaveClass("bg-slate-50")
+      // Third row (index 2) should not have bg-muted/50
+      expect(rows[2]).not.toHaveClass("bg-muted/50")
 
-      // Fourth row (index 3) should have bg-slate-50
-      expect(rows[3]).toHaveClass("bg-slate-50")
+      // Fourth row (index 3) should have bg-muted/50
+      expect(rows[3]).toHaveClass("bg-muted/50")
     })
 
     it("should render table with correct structure", async () => {
