@@ -141,22 +141,22 @@
   }
 
   .dark {
-    --background: 240 6% 10%;
+    --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
 
-    --muted: 240 4% 18%;
+    --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
 
-    --accent: 240 4% 18%;
+    --accent: 240 3.7% 15.9%;
     --accent-foreground: 0 0% 98%;
 
-    --popover: 240 6% 10%;
+    --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
 
-    --border: 240 4% 18%;
-    --input: 240 4% 18%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
 
-    --card: 240 6% 10%;
+    --card: 240 10% 3.9%;
     --card-foreground: 0 0% 98%;
 
     --primary: 0 0% 98%;
