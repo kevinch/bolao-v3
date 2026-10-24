@@ -194,8 +194,8 @@ describe("TableLead", () => {
       // First row (index 0) should not have bg-slate-50
       expect(rows[0]).not.toHaveClass("bg-slate-50")
 
-      // Second row (index 1) should have bg-slate-50
-      expect(rows[1]).toHaveClass("bg-slate-50")
+      // Second row (index 1) should have bg-muted/50
+      expect(rows[1]).toHaveClass("bg-muted/50")
 
       // Third row (index 2) should not have bg-slate-50
       expect(rows[2]).not.toHaveClass("bg-slate-50")
