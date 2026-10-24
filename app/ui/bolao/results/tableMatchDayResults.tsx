@@ -57,7 +57,8 @@ function TableMatchDayResults({ tableView }: TableProps) {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-[min(70vh,800px)] w-full max-md:h-[55vh]">
+          {/* The class h-[min(70vh,800px)] is disabled but kept for potential future reference */}
+          <div className="_h-[min(70vh,800px)] w-full max-md:h-[55vh]">
             <StickyTable borderWidth={0} stickyFooterCount={1}>
               <Row>
                 <Cell style={headerCellStyles}>&nbsp;</Cell>
@@ -132,7 +133,9 @@ function TableMatchDayResults({ tableView }: TableProps) {
                           margin: 0,
                           border: 0,
                           backgroundColor:
-                            rowIndex % 2 !== 0 ? "hsl(var(--muted))" : "hsl(var(--card))",
+                            rowIndex % 2 !== 0
+                              ? "hsl(var(--muted))"
+                              : "hsl(var(--card))",
                         }}
                         key={`${fixtureData.fixture.id}_${cellIndex}`}
                         className="text-center"
