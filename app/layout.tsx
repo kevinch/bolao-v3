@@ -97,20 +97,20 @@ export default async function RootLayout({
   const messages = await getMessages()
 
   return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-    >
-      <html lang={locale} suppressHydrationWarning>
-        <head>
-          <link rel="preconnect" href="https://clerk.bolao.io" />
-          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-          <link rel="dns-prefetch" href="https://media.api-sports.io" />
-          <JsonLd data={websiteJsonLd} />
-        </head>
-        <body className={Plex.className}>
+    <html lang={locale} suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://clerk.bolao.io" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://media.api-sports.io" />
+        <JsonLd data={websiteJsonLd} />
+      </head>
+      <body className={Plex.className}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
           <ClerkThemeProvider
             appearance={{
               elements: {
@@ -132,13 +132,13 @@ export default async function RootLayout({
               </div>
             </NextIntlClientProvider>
           </ClerkThemeProvider>
-          <Script
-            src="https://cloud.umami.is/script.js"
-            data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
-            strategy="lazyOnload"
-          />
-        </body>
-      </html>
-    </ThemeProvider>
+        </ThemeProvider>
+        <Script
+          src="https://cloud.umami.is/script.js"
+          data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
+          strategy="lazyOnload"
+        />
+      </body>
+    </html>
   )
 }
