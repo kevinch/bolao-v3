@@ -71,23 +71,27 @@ function BolaoPageTitle({ leagueName, leagueLogo, bolao }: Props) {
 
   return (
     <PageTitle center={true}>
-      {lightLogoSrc && (
+      {(lightLogoSrc || darkLogoSrc) && (
         <div className="flex justify-center mb-6">
           {darkLogoSrc && darkLogoSrc !== lightLogoSrc ? (
             <>
-              <Image
-                alt={alt}
-                src={lightLogoSrc}
-                width={logoWidth}
-                height={logoHeight}
-                className={`${logoClassName ?? ""} dark:hidden`}
-                data-testid="league-logo"
-                onError={() =>
-                  handleLocalLogoError(
-                    lightLogoSrc === lightLocalLogo ? lightLocalLogo : undefined
-                  )
-                }
-              />
+              {lightLogoSrc && (
+                <Image
+                  alt={alt}
+                  src={lightLogoSrc}
+                  width={logoWidth}
+                  height={logoHeight}
+                  className={`${logoClassName ?? ""} dark:hidden`}
+                  data-testid="league-logo"
+                  onError={() =>
+                    handleLocalLogoError(
+                      lightLogoSrc === lightLocalLogo
+                        ? lightLocalLogo
+                        : undefined
+                    )
+                  }
+                />
+              )}
               <Image
                 alt={alt}
                 src={darkLogoSrc}
