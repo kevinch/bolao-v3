@@ -132,13 +132,12 @@ export default async function RootLayout({
               </div>
             </NextIntlClientProvider>
           </ClerkThemeProvider>
+          <Script
+            src="https://cloud.umami.is/script.js"
+            data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
+            strategy="lazyOnload"
+          />
         </body>
-
-        <Script
-          src="https://cloud.umami.is/script.js"
-          data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
-          strategy="lazyOnload"
-        />
       </html>
     </ThemeProvider>
   )
