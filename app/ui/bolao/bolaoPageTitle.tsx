@@ -29,18 +29,22 @@ function BolaoPageTitle({ leagueName, leagueLogo, bolao }: Props) {
   )
   const competitionId = bolao.competition_id
   const hasNumericCompetitionId = /^\d+$/.test(competitionId)
-  const lightLocalLogo = hasNumericCompetitionId
+  const is2026WorldCup = is2026FifaWorldCup(bolao, leagueName)
+  const canUseCompetitionLogo =
+    hasNumericCompetitionId && (competitionId !== "1" || is2026WorldCup)
+  const lightLocalLogo = canUseCompetitionLogo
     ? `/logos/leagues/${competitionId}-light.svg`
     : undefined
-  const darkLocalLogo = hasNumericCompetitionId
+  const darkLocalLogo = canUseCompetitionLogo
     ? `/logos/leagues/${competitionId}-dark.svg`
     : undefined
   const hasLocalWorldCupPair =
+    is2026WorldCup &&
     competitionId === "1" &&
     !failedLocalLogos.has("/logos/leagues/1-light.svg") &&
     !failedLocalLogos.has("/logos/leagues/1-dark.svg")
   const useWc2026Silhouette =
-    is2026FifaWorldCup(bolao, leagueName) && !hasLocalWorldCupPair
+    is2026WorldCup && !hasLocalWorldCupPair
   const lightLogoSrc = useWc2026Silhouette
     ? FIFA_WORLD_CUP_2026_LOGO
     : lightLocalLogo && !failedLocalLogos.has(lightLocalLogo)

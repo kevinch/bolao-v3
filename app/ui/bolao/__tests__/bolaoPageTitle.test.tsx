@@ -27,13 +27,14 @@ vi.mock("@/app/components/bolaoYearBadge", () => ({
 
 // Mock Next.js Image
 vi.mock("next/image", () => ({
-  default: ({ src, alt, width, height }: any) => (
+  default: ({ src, alt, width, height, className, "data-testid": testId }: any) => (
     <img
       src={src}
       alt={alt}
       width={width}
       height={height}
-      data-testid="league-logo"
+      className={className}
+      data-testid={testId}
     />
   ),
 }))
@@ -159,9 +160,13 @@ describe("BolaoPageTitle", () => {
       const logo = screen.getByTestId("league-logo")
       expect(logo).toHaveAttribute(
         "src",
-        "/logos/tournaments_fifa-world-cup-2026.football-logos.cc.svg"
+        "/logos/leagues/1-light.svg"
       )
       expect(logo.tagName).toBe("IMG")
+      expect(screen.getByTestId("league-logo-dark")).toHaveAttribute(
+        "src",
+        "/logos/leagues/1-dark.svg"
+      )
     })
 
     it("should not override logo for World Cup in a non-2026 season", () => {
