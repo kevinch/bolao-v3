@@ -97,16 +97,6 @@ export default async function RootLayout({
   const messages = await getMessages()
 
   return (
-    <ClerkThemeProvider
-      appearance={{
-        elements: {
-          footerAction: "hidden",
-        },
-        layout: {
-          shimmer: false,
-        },
-      }}
-    >
       <html lang={locale} suppressHydrationWarning>
         <head>
           <link rel="preconnect" href="https://clerk.bolao.io" />
@@ -121,16 +111,27 @@ export default async function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <NextIntlClientProvider locale={locale} messages={messages}>
-              <div className="container mx-auto px-4">
-                <Header />
-                {children}
-                <Footer />
-                <Toaster />
-                <Analytics />
-                <SpeedInsights />
-              </div>
-            </NextIntlClientProvider>
+            <ClerkThemeProvider
+              appearance={{
+                elements: {
+                  footerAction: "hidden",
+                },
+                layout: {
+                  shimmer: false,
+                },
+              }}
+            >
+              <NextIntlClientProvider locale={locale} messages={messages}>
+                <div className="container mx-auto px-4">
+                  <Header />
+                  {children}
+                  <Footer />
+                  <Toaster />
+                  <Analytics />
+                  <SpeedInsights />
+                </div>
+              </NextIntlClientProvider>
+            </ClerkThemeProvider>
           </ThemeProvider>
         </body>
 
