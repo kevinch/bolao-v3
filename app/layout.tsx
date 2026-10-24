@@ -141,6 +141,6 @@ export default async function RootLayout({
           strategy="lazyOnload"
         />
       </html>
-    </ClerkThemeProvider>
+    </ThemeProvider>
   )
 }
