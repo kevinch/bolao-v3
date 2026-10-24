@@ -62,6 +62,7 @@ function BolaoPageTitle({ leagueName, leagueLogo, bolao }: Props) {
   const logoClassName = useWc2026Silhouette
     ? "h-[4.5rem] w-auto"
     : "h-[60px] w-auto"
+  const logoSrc = lightLogoSrc ?? darkLogoSrc
   const shouldTintLogoForDarkMode = darkLogoSrc === lightLogoSrc
   const handleLocalLogoError = (src: string | undefined) => {
     if (!src || failedLocalLogos.has(src)) return
@@ -71,7 +72,7 @@ function BolaoPageTitle({ leagueName, leagueLogo, bolao }: Props) {
 
   return (
     <PageTitle center={true}>
-      {(lightLogoSrc || darkLogoSrc) && (
+      {logoSrc && (
         <div className="flex justify-center mb-6">
           {darkLogoSrc && darkLogoSrc !== lightLogoSrc ? (
             <>
@@ -109,7 +110,7 @@ function BolaoPageTitle({ leagueName, leagueLogo, bolao }: Props) {
           ) : (
             <Image
               alt={alt}
-              src={lightLogoSrc}
+              src={logoSrc}
               width={logoWidth}
               height={logoHeight}
               className={`${logoClassName ?? ""} ${
