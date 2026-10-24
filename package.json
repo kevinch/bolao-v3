@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "6.39.3",
+    "@clerk/themes": "^2.4.57",
     "@prismicio/client": "7.22.1",
     "@prismicio/next": "2.3.3",
     "@prismicio/react": "3.5.1",

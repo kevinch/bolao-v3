@@ -1,6 +1,5 @@
 import type { Metadata } from "next"
 import { IBM_Plex_Sans } from "next/font/google"
-import { ClerkProvider } from "@clerk/nextjs"
 import { NextIntlClientProvider } from "next-intl"
 import { getLocale, getMessages } from "next-intl/server"
 import Header from "@/app/components/header"
@@ -12,6 +11,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 import JsonLd from "@/app/components/jsonLd"
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/app/lib/siteConfig"
 import { ThemeProvider } from "@/components/theme-provider"
+import { ClerkThemeProvider } from "@/components/clerk-theme-provider"
 import "./globals.css"
 
 const Plex = IBM_Plex_Sans({
@@ -97,7 +97,7 @@ export default async function RootLayout({
   const messages = await getMessages()
 
   return (
-    <ClerkProvider
+    <ClerkThemeProvider
       appearance={{
         elements: {
           footerAction: "hidden",
@@ -140,6 +140,6 @@ export default async function RootLayout({
           strategy="lazyOnload"
         />
       </html>
-    </ClerkProvider>
+    </ClerkThemeProvider>
   )
 }
