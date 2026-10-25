@@ -71,8 +71,12 @@ async function BoloesList() {
     <Tabs defaultValue="account" className="">
       <div className="flex justify-between mb-4">
         <TabsList>
-          <TabsTrigger value="account">{t("activeBoloes")}</TabsTrigger>
-          <TabsTrigger value="password">{t("pastBoloes")}</TabsTrigger>
+          <TabsTrigger value="account">
+            {t("activeBoloes", { count: activeGroup.length })}
+          </TabsTrigger>
+          <TabsTrigger value="password">
+            {t("pastBoloes", { count: pastGroup.length })}
+          </TabsTrigger>
         </TabsList>
 
         <Button asChild size="sm">
