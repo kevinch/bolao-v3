@@ -91,7 +91,7 @@ test("Full bolão flow: create, navigate, and delete a bolão", async ({
 
   // Navigate to the Results page for this bolão (home can list multiple cards with "Results")
   await page
-    .getByRole("tabpanel", { name: "Active bolões" })
+    .getByRole("tabpanel", { name: /Active/ })
     .getByRole("heading", { name: bolaoName })
     .locator("xpath=../..")
     .getByRole("link", { name: "Results" })
@@ -135,7 +135,7 @@ test("Full bolão flow: create, navigate, and delete a bolão", async ({
   // Clean up: Delete the test bolão
   // Open the dropdown menu for this bolão's card only
   await page
-    .getByRole("tabpanel", { name: "Active bolões" })
+    .getByRole("tabpanel", { name: /Active/ })
     .getByRole("heading", { name: bolaoName })
     .locator("xpath=../..")
     .getByRole("button")
