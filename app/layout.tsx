@@ -5,6 +5,7 @@ import { getLocale, getMessages } from "next-intl/server"
 import { auth } from "@clerk/nextjs/server"
 import Header from "@/app/components/header"
 import Footer from "@/app/components/footer"
+import ServiceWorkerRegistration from "@/app/components/serviceWorkerRegistration"
 import Script from "next/script"
 import { Analytics } from "@vercel/analytics/react"
 import { Toaster } from "@/components/ui/toaster"
@@ -142,10 +143,13 @@ export default async function RootLayout({
           strategy="lazyOnload"
         />
         {userId === pushAlertTestUserId && pushAlertTestUserId ? (
-          <Script
-            src="https://cdn.pushalert.co/integrate_b0aea8d8062166fd960b713c02407dfc.js"
-            strategy="afterInteractive"
-          />
+          <>
+            <ServiceWorkerRegistration />
+            <Script
+              src="https://cdn.pushalert.co/integrate_b0aea8d8062166fd960b713c02407dfc.js"
+              strategy="afterInteractive"
+            />
+          </>
         ) : null}
       </body>
     </html>
