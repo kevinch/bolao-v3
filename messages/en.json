@@ -4,8 +4,9 @@
     "about": "About",
     "news": "News",
     "faq": "FAQ",
+    "contact": "Contact",
     "readMore": "Read more",
-    "createBolao": "Create bolão"
+    "createBolao": "Create"
   },
   "home": {
     "greeting": "Hey",
@@ -65,6 +66,23 @@
     "mostUsedChampionships": "Most used championships",
     "championshipsCreatedRange": "Bolões created {range}",
     "noBoloesInPeriod": "No bolões were created in this period."
+  },
+  "contact": {
+    "title": "Contact",
+    "metaDescription": "Send feedback or a comment to the Bolão.io team.",
+    "intro": "Have a comment, idea, or issue to report? Send a short message and we’ll get back to you.",
+    "emailLabel": "Your email",
+    "emailPlaceholder": "you@example.com",
+    "messageLabel": "Message",
+    "messagePlaceholder": "What would you like us to know?",
+    "honeypotLabel": "Website",
+    "submit": "Send message",
+    "sending": "Sending…",
+    "success": "Thanks for your message. It has been sent.",
+    "error": "We couldn’t send your message. Please try again later.",
+    "invalidEmail": "Enter a valid email address.",
+    "invalidMessage": "Your message must be between 5 and 3,000 characters.",
+    "required": "Required"
   },
   "news": {
     "title": "News",

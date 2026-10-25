@@ -31,6 +31,9 @@ function Footer() {
           <Button asChild variant="ghost" className={footerLinkClassName}>
             <Link href="/faq">{t("faq")}</Link>
           </Button>
+          <Button asChild variant="ghost" className={footerLinkClassName}>
+            <Link href="/contact">{t("contact")}</Link>
+          </Button>
         </div>
         <div className="flex items-center gap-1">
           <LanguageSwitcher />

@@ -4,21 +4,22 @@ import { render } from "@testing-library/react"
 import Footer from "../footer"
 
 describe("Footer", () => {
-  it("should render 5 links", () => {
+  it("should render 6 links", () => {
     render(<Footer />)
 
     // Check for all 5 links by their text content
     expect(screen.getByRole("link", { name: "Home" })).toBeInTheDocument()
     expect(
-      screen.getByRole("link", { name: "Create bolão" })
+      screen.getByRole("link", { name: "Create" })
     ).toBeInTheDocument()
     expect(screen.getByRole("link", { name: "About" })).toBeInTheDocument()
     expect(screen.getByRole("link", { name: "News" })).toBeInTheDocument()
     expect(screen.getByRole("link", { name: "FAQ" })).toBeInTheDocument()
+    expect(screen.getByRole("link", { name: "Contact" })).toBeInTheDocument()
 
-    // Verify there are exactly 5 links
+    // Verify there are exactly 6 links
     const links = screen.getAllByRole("link")
-    expect(links).toHaveLength(5)
+    expect(links).toHaveLength(6)
   })
 
   it("should have correct href attributes for all links", () => {
@@ -28,7 +29,7 @@ describe("Footer", () => {
       "href",
       "/"
     )
-    expect(screen.getByRole("link", { name: "Create bolão" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Create" })).toHaveAttribute(
       "href",
       "/bolao/create"
     )
@@ -43,6 +44,10 @@ describe("Footer", () => {
     expect(screen.getByRole("link", { name: "FAQ" })).toHaveAttribute(
       "href",
       "/faq"
+    )
+    expect(screen.getByRole("link", { name: "Contact" })).toHaveAttribute(
+      "href",
+      "/contact"
     )
   })
 })
