@@ -52,15 +52,15 @@ test("Full bolão flow: create, navigate, and delete a bolão", async ({
   // Verify login was successful by checking for the welcome message
   await expect(page.getByText(`${expectedUsername}.`)).toBeVisible()
 
-  // Verify the "Create bolão" link is visible on the home page
+  // Verify the short "Create" link is visible on the home page
   await expect(
-    page.getByRole("main").getByRole("link", { name: "Create bolão" })
+    page.getByRole("main").getByRole("link", { name: "Create" })
   ).toBeVisible()
 
   // Navigate to the create bolão page
   await page
     .getByRole("main")
-    .getByRole("link", { name: "Create bolão" })
+    .getByRole("link", { name: "Create" })
     .click()
 
   // Fill in the bolão creation form
