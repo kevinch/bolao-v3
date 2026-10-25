@@ -22,6 +22,10 @@ vi.mock("@/app/components/footer", () => ({
   default: () => <div data-testid="footer">Footer</div>,
 }))
 
+vi.mock("@/app/components/pushAlertScript", () => ({
+  default: () => null,
+}))
+
 // Mock Toaster component
 vi.mock("@/components/ui/toaster", () => ({
   Toaster: () => <div data-testid="toaster">Toaster</div>,
