@@ -52,15 +52,15 @@ test("Full bolão flow: create, navigate, and delete a bolão", async ({
   // Verify login was successful by checking for the welcome message
   await expect(page.getByText(`${expectedUsername}.`)).toBeVisible()
 
-  // Verify the "Create bolão" link is visible on the home page
+  // Verify the short "Create" link is visible on the home page
   await expect(
-    page.getByRole("main").getByRole("link", { name: "Create bolão" })
+    page.getByRole("main").getByRole("link", { name: "Create" })
   ).toBeVisible()
 
   // Navigate to the create bolão page
   await page
     .getByRole("main")
-    .getByRole("link", { name: "Create bolão" })
+    .getByRole("link", { name: "Create" })
     .click()
 
   // Fill in the bolão creation form
@@ -85,13 +85,13 @@ test("Full bolão flow: create, navigate, and delete a bolão", async ({
   // Verify the newly created bolão appears on the home page
   await expect(
     page
-      .getByRole("tabpanel", { name: "Active bolões" })
+      .getByRole("tabpanel", { name: /Active/ })
       .getByRole("heading", { name: bolaoName })
   ).toBeVisible()
 
   // Navigate to the Results page for this bolão (home can list multiple cards with "Results")
   await page
-    .getByRole("tabpanel", { name: "Active bolões" })
+    .getByRole("tabpanel", { name: /Active/ })
     .getByRole("heading", { name: bolaoName })
     .locator("xpath=../..")
     .getByRole("link", { name: "Results" })
@@ -135,7 +135,7 @@ test("Full bolão flow: create, navigate, and delete a bolão", async ({
   // Clean up: Delete the test bolão
   // Open the dropdown menu for this bolão's card only
   await page
-    .getByRole("tabpanel", { name: "Active bolões" })
+    .getByRole("tabpanel", { name: /Active/ })
     .getByRole("heading", { name: bolaoName })
     .locator("xpath=../..")
     .getByRole("button")

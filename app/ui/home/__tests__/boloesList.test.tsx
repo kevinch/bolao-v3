@@ -128,8 +128,8 @@ describe("BoloesList", () => {
 
       render(await BoloesList())
 
-      expect(screen.getByText("Active bolões (1)")).toBeInTheDocument()
-      expect(screen.getByText("Past bolões (0)")).toBeInTheDocument()
+      expect(screen.getByText("Active (1)")).toBeInTheDocument()
+      expect(screen.getByText("Past (0)")).toBeInTheDocument()
     })
 
     it("should render create button in tabs header", async () => {
@@ -141,9 +141,10 @@ describe("BoloesList", () => {
 
       render(await BoloesList())
 
-      const createLinks = screen.getAllByRole("link", { name: /Create bolão/i })
-      expect(createLinks.length).toBeGreaterThan(0)
-      expect(createLinks[0]).toHaveAttribute("href", "/bolao/create")
+      expect(screen.getByRole("link", { name: "Create" })).toHaveAttribute(
+        "href",
+        "/bolao/create"
+      )
     })
 
     it("should have tabs list with correct structure", async () => {
@@ -169,7 +170,7 @@ describe("BoloesList", () => {
       render(await BoloesList())
 
       const tabs = screen.getAllByRole("tab")
-      const activeTab = tabs[0] // First tab should be Active bolões
+      const activeTab = tabs[0] // First tab is the Active tab
       expect(activeTab).toHaveAttribute("aria-selected", "true")
     })
   })
@@ -242,8 +243,8 @@ describe("BoloesList", () => {
 
       render(await BoloesList())
 
-      // Past bolões tab should exist
-      expect(screen.getByText("Past bolões (1)")).toBeInTheDocument()
+      // Past tab should exist
+      expect(screen.getByText("Past (1)")).toBeInTheDocument()
     })
 
     it("should categorize bolao with past end date correctly", async () => {
@@ -262,7 +263,7 @@ describe("BoloesList", () => {
 
       render(await BoloesList())
 
-      expect(screen.getByText("Past bolões (1)")).toBeInTheDocument()
+      expect(screen.getByText("Past (1)")).toBeInTheDocument()
     })
 
     it("should handle multiple years of past boloes", async () => {
@@ -280,7 +281,7 @@ describe("BoloesList", () => {
 
       render(await BoloesList())
 
-      expect(screen.getByText("Past bolões (3)")).toBeInTheDocument()
+      expect(screen.getByText("Past (3)")).toBeInTheDocument()
     })
   })
 
@@ -314,8 +315,8 @@ describe("BoloesList", () => {
       render(await BoloesList())
 
       // Verify both tabs exist
-      expect(screen.getByText("Active bolões (2)")).toBeInTheDocument()
-      expect(screen.getByText("Past bolões (2)")).toBeInTheDocument()
+      expect(screen.getByText("Active (2)")).toBeInTheDocument()
+      expect(screen.getByText("Past (2)")).toBeInTheDocument()
 
       // Active boloes should be visible
       expect(screen.getByTestId("bolao-card-active-1")).toBeInTheDocument()
@@ -515,7 +516,7 @@ describe("BoloesList", () => {
 
       render(await BoloesList())
 
-      expect(screen.getByText("Past bolões (1)")).toBeInTheDocument()
+      expect(screen.getByText("Past (1)")).toBeInTheDocument()
     })
 
     it("should handle bolao with start date", async () => {
@@ -552,7 +553,7 @@ describe("BoloesList", () => {
 
       render(await BoloesList())
 
-      expect(screen.getByText("Past bolões (1)")).toBeInTheDocument()
+      expect(screen.getByText("Past (1)")).toBeInTheDocument()
     })
 
     it("should handle future year boloes as past", async () => {
@@ -571,7 +572,7 @@ describe("BoloesList", () => {
       render(await BoloesList())
 
       // Future years without end date go to past group
-      expect(screen.getByText("Past bolões (1)")).toBeInTheDocument()
+      expect(screen.getByText("Past (1)")).toBeInTheDocument()
     })
 
     it("should handle empty string for end date", async () => {
@@ -590,7 +591,7 @@ describe("BoloesList", () => {
 
       render(await BoloesList())
 
-      expect(screen.getByText("Past bolões (1)")).toBeInTheDocument()
+      expect(screen.getByText("Past (1)")).toBeInTheDocument()
     })
   })
 
