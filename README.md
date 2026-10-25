@@ -27,6 +27,7 @@ Open [http://localhost:3000](http://localhost:3000)
 - Repo: [github.com/kevinch/bolao-v3](https://github.com/kevinch/bolao-v3)
 - Data source: [api-football.com](https://www.api-football.com/documentation-v3) - [dashboard](https://dashboard.api-football.com/)
 - CMS: [prismic.io](https://prismic.io/)
+- Email: [Resend](https://resend.com/) for contact form messages. Configure `RESEND_API_KEY`, `RESEND_FROM_EMAIL` (an address on a verified domain), and `CONTACT_EMAIL` (the inbox that receives submissions).
 
 - ENV vars:
 
@@ -51,6 +52,7 @@ RAPID_API_KEY
 
 RESEND_API_KEY
 RESEND_FROM_EMAIL
+CONTACT_EMAIL
 
 UMAMI_ID
 ```

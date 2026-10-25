@@ -3,7 +3,6 @@
 import { Resend } from "resend"
 import type { ContactFormState } from "./types"
 
-const CONTACT_EMAIL = "hibolaoio@gmail.com"
 const MAX_MESSAGE_LENGTH = 3000
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -29,8 +28,9 @@ export async function submitContactMessage(
 
   const apiKey = process.env.RESEND_API_KEY
   const from = process.env.RESEND_FROM_EMAIL
+  const to = process.env.CONTACT_EMAIL
 
-  if (!apiKey || !from) {
+  if (!apiKey || !from || !to) {
     console.error("Contact form is missing Resend configuration.")
     return { status: "error", error: "sendFailed" }
   }
@@ -39,7 +39,7 @@ export async function submitContactMessage(
     const resend = new Resend(apiKey)
     const { error } = await resend.emails.send({
       from,
-      to: CONTACT_EMAIL,
+      to,
       replyTo: email,
       subject: "Bolão.io website feedback",
       text: `From: ${email}\n\n${message}`,

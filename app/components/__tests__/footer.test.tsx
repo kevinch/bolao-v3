@@ -10,7 +10,7 @@ describe("Footer", () => {
     // Check for all 5 links by their text content
     expect(screen.getByRole("link", { name: "Home" })).toBeInTheDocument()
     expect(
-      screen.getByRole("link", { name: "Create bolão" })
+      screen.getByRole("link", { name: "Create" })
     ).toBeInTheDocument()
     expect(screen.getByRole("link", { name: "About" })).toBeInTheDocument()
     expect(screen.getByRole("link", { name: "News" })).toBeInTheDocument()
@@ -29,7 +29,7 @@ describe("Footer", () => {
       "href",
       "/"
     )
-    expect(screen.getByRole("link", { name: "Create bolão" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Create" })).toHaveAttribute(
       "href",
       "/bolao/create"
     )

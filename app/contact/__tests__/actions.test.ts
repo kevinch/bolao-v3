@@ -11,12 +11,14 @@ vi.mock("resend", () => ({ Resend: MockResend }))
 describe("submitContactMessage", () => {
   const originalApiKey = process.env.RESEND_API_KEY
   const originalFrom = process.env.RESEND_FROM_EMAIL
+  const originalContactEmail = process.env.CONTACT_EMAIL
   const consoleError = vi.spyOn(console, "error").mockImplementation(() => {})
 
   beforeEach(() => {
     vi.clearAllMocks()
     process.env.RESEND_API_KEY = "test-api-key"
     process.env.RESEND_FROM_EMAIL = "Bolão.io <feedback@example.com>"
+    process.env.CONTACT_EMAIL = "hibolaoio@gmail.com"
     MockResend.mockImplementation(function () {
       return { emails: { send: mockSend } }
     })
@@ -29,6 +31,9 @@ describe("submitContactMessage", () => {
 
     if (originalFrom === undefined) delete process.env.RESEND_FROM_EMAIL
     else process.env.RESEND_FROM_EMAIL = originalFrom
+
+    if (originalContactEmail === undefined) delete process.env.CONTACT_EMAIL
+    else process.env.CONTACT_EMAIL = originalContactEmail
   })
 
   function makeFormData(values: Record<string, string>) {
@@ -102,6 +107,18 @@ describe("submitContactMessage", () => {
 
   it("fails clearly when Resend credentials are not configured", async () => {
     delete process.env.RESEND_API_KEY
+
+    const result = await submitContactMessage(
+      { status: "idle" },
+      makeFormData({ email: "person@example.com", message: "I have an idea." })
+    )
+
+    expect(result).toEqual({ status: "error", error: "sendFailed" })
+    expect(mockSend).not.toHaveBeenCalled()
+  })
+
+  it("fails clearly when the contact inbox is not configured", async () => {
+    delete process.env.CONTACT_EMAIL
 
     const result = await submitContactMessage(
       { status: "idle" },
