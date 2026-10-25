@@ -44,6 +44,28 @@
     "en": "English",
     "pt-br": "Português (BR)"
   },
+  "adminUsage": {
+    "heading": "Visão geral de uso",
+    "boloesTab": "Bolões ({count})",
+    "usersTab": "Usuários ({count})",
+    "description": "Selecione um período para ver a atividade dos bolões e o uso dos campeonatos. O total de usuários é histórico.",
+    "periodLabel": "Período",
+    "period6Months": "6 meses",
+    "period12Months": "12 meses",
+    "period24Months": "24 meses",
+    "totalBoloesAllTime": "Total de bolões (histórico)",
+    "boloesCreatedMonths": "Bolões criados ({months} meses)",
+    "registeredUsersAllTime": "Usuários cadastrados (histórico)",
+    "averageMembersMonths": "Média de participantes por bolão ({months} meses)",
+    "createdByMonth": "Bolões criados por mês",
+    "rangeCalendarMonths": "{range} · {months} meses, incluindo o mês atual",
+    "chartDescription": "Bolões criados por mês, de {range}",
+    "oneBolaoCreated": "{month}: 1 bolão",
+    "manyBoloesCreated": "{month}: {count} bolões",
+    "mostUsedChampionships": "Campeonatos mais usados",
+    "championshipsCreatedRange": "Bolões criados {range}",
+    "noBoloesInPeriod": "Nenhum bolão foi criado neste período."
+  },
   "news": {
     "title": "Notícias",
     "metaDescription": "Novidades e anúncios do Bolão.io, o app grátis para bolões de futebol com os amigos."

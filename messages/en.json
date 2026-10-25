@@ -44,6 +44,28 @@
     "en": "English",
     "pt-br": "Português (BR)"
   },
+  "adminUsage": {
+    "heading": "Usage overview",
+    "boloesTab": "Bolões ({count})",
+    "usersTab": "Users ({count})",
+    "description": "Select a period for bolão activity and championship usage. User count is all-time.",
+    "periodLabel": "Period",
+    "period6Months": "6 months",
+    "period12Months": "12 months",
+    "period24Months": "24 months",
+    "totalBoloesAllTime": "Total bolões (all-time)",
+    "boloesCreatedMonths": "Bolões created ({months} months)",
+    "registeredUsersAllTime": "Registered users (all-time)",
+    "averageMembersMonths": "Average members per bolão ({months} months)",
+    "createdByMonth": "Bolões created by month",
+    "rangeCalendarMonths": "{range} · {months} calendar months, including the current month",
+    "chartDescription": "Bolões created per month from {range}",
+    "oneBolaoCreated": "{month}: 1 bolão",
+    "manyBoloesCreated": "{month}: {count} bolões",
+    "mostUsedChampionships": "Most used championships",
+    "championshipsCreatedRange": "Bolões created {range}",
+    "noBoloesInPeriod": "No bolões were created in this period."
+  },
   "news": {
     "title": "News",
     "metaDescription": "Product updates and announcements from Bolão.io, the free app for soccer betting pools with friends."

@@ -83,6 +83,45 @@ export async function fetchUsers() {
   }
 }
 
+export async function fetchAdminUsageStats() {
+  try {
+    const [summary, monthly, competitions] = await Promise.all([
+      sql`
+        SELECT
+          (SELECT COUNT(*)::int FROM boloes) AS total_boloes,
+          (SELECT COUNT(*)::int FROM users) AS total_users
+      `,
+      sql`
+        SELECT TO_CHAR(DATE_TRUNC('month', b.created_at), 'YYYY-MM') AS month,
+          COUNT(DISTINCT b.id)::int AS count,
+          COUNT(ub.id)::int AS members
+        FROM boloes b
+        LEFT JOIN user_bolao ub ON CAST(ub.bolao_id AS VARCHAR) = CAST(b.id AS VARCHAR)
+        WHERE b.created_at >= DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '23 months'
+        GROUP BY DATE_TRUNC('month', b.created_at)
+        ORDER BY DATE_TRUNC('month', b.created_at)
+      `,
+      sql`
+        SELECT competition_id,
+          TO_CHAR(DATE_TRUNC('month', created_at), 'YYYY-MM') AS month,
+          COUNT(*)::int AS count
+        FROM boloes
+        WHERE created_at >= DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '23 months'
+        GROUP BY competition_id, DATE_TRUNC('month', created_at)
+      `,
+    ])
+
+    return {
+      summary: summary.rows[0],
+      monthly: monthly.rows,
+      competitions: competitions.rows,
+    }
+  } catch (error) {
+    console.error("Database Error:", error)
+    throw new Error("Failed to fetch admin usage stats.")
+  }
+}
+
 export async function fetchUserBolao({
   bolaoId,
   userId,

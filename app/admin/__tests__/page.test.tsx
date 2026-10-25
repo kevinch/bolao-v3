@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import Admin from "../page"
 import type { Bolao, User } from "@/app/lib/definitions"
@@ -48,6 +49,10 @@ vi.mock("@/app/components/adminBolao", () => ({
       <div>{bolao.name}</div>
     </div>
   ),
+}))
+
+vi.mock("@/app/components/adminUsage", () => ({
+  default: () => <div data-testid="admin-usage-dashboard">Usage dashboard</div>,
 }))
 
 describe("Admin Page", () => {
@@ -398,7 +403,7 @@ describe("Admin Page", () => {
       expect(screen.getByText("Users (3)")).toBeInTheDocument()
     })
 
-    it("should have boloes tab selected by default", async () => {
+    it("should show Usage overview first and select it by default", async () => {
       const { currentUser, clerkClient } = await import("@clerk/nextjs/server")
       const { getBoloes, getUsers } = await import("@/app/lib/controllerAdmin")
 
@@ -420,6 +425,38 @@ describe("Admin Page", () => {
 
       const tabs = screen.getAllByRole("tab")
       expect(tabs[0]).toHaveAttribute("aria-selected", "true")
+      expect(tabs[0]).toHaveTextContent("Usage overview")
+      expect(screen.getByTestId("admin-usage-dashboard")).toBeVisible()
+    })
+
+    it("should keep the usage overview available after switching tabs", async () => {
+      const { currentUser, clerkClient } = await import("@clerk/nextjs/server")
+      const { getBoloes, getUsers } = await import("@/app/lib/controllerAdmin")
+
+      const mockClient = {
+        users: {
+          getUser: vi.fn().mockResolvedValue({
+            privateMetadata: { role: "admin" },
+          }),
+        },
+      }
+
+      vi.mocked(currentUser).mockResolvedValue({ id: "user-123" } as any)
+      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
+      vi.mocked(getBoloes).mockResolvedValue({ boloes: [] })
+      vi.mocked(getUsers).mockResolvedValue({ users: [] })
+
+      const adminPage = await Admin()
+      render(adminPage as React.ReactElement)
+
+      const usageTab = screen.getByRole("tab", { name: "Usage overview" })
+      expect(usageTab).toHaveAttribute("aria-selected", "true")
+
+      await userEvent.setup().click(screen.getByRole("tab", { name: "Bolões (0)" }))
+
+      expect(usageTab).toHaveAttribute("aria-selected", "false")
+      await userEvent.setup().click(usageTab)
+      expect(screen.getByTestId("admin-usage-dashboard")).toBeVisible()
     })
   })
 
@@ -449,6 +486,7 @@ describe("Admin Page", () => {
 
       const adminPage = await Admin()
       render(adminPage as React.ReactElement)
+      await userEvent.setup().click(screen.getByRole("tab", { name: /Bolões/ }))
 
       expect(screen.getByTestId("admin-bolao-bolao-1")).toBeInTheDocument()
       expect(screen.getByTestId("admin-bolao-bolao-2")).toBeInTheDocument()
@@ -479,6 +517,7 @@ describe("Admin Page", () => {
 
       const adminPage = await Admin()
       render(adminPage as React.ReactElement)
+      await userEvent.setup().click(screen.getByRole("tab", { name: /Bolões/ }))
 
       expect(screen.getByText("Premier League 2024")).toBeInTheDocument()
       expect(screen.getByText("La Liga 2024")).toBeInTheDocument()
@@ -508,6 +547,7 @@ describe("Admin Page", () => {
 
       const adminPage = await Admin()
       render(adminPage as React.ReactElement)
+      await userEvent.setup().click(screen.getByRole("tab", { name: /Bolões/ }))
 
       expect(screen.getByTestId("admin-bolao-unique-1")).toBeInTheDocument()
       expect(screen.getByTestId("admin-bolao-unique-2")).toBeInTheDocument()
@@ -625,6 +665,7 @@ describe("Admin Page", () => {
 
       const adminPage = await Admin()
       render(adminPage as React.ReactElement)
+      await userEvent.setup().click(screen.getByRole("tab", { name: /Bolões/ }))
 
       expect(screen.getByText("Bolões (5)")).toBeInTheDocument()
       boloes.forEach((bolao) => {

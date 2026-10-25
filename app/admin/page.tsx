@@ -4,9 +4,11 @@ import PageTitle from "@/app/components/pageTitle"
 import { BoloesListSkeleton } from "@/app/ui/skeletons"
 import { Bolao, User } from "@/app/lib/definitions"
 import AdminBolao from "@/app/components/adminBolao"
+import AdminUsage from "@/app/components/adminUsage"
 import { clerkClient, currentUser } from "@clerk/nextjs/server"
 import { navigate } from "@/app/lib/actions"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { getTranslations } from "next-intl/server"
 
 async function Admin() {
   const user = await currentUser()
@@ -23,6 +25,7 @@ async function Admin() {
 
   const dataBoloes = await getBoloes()
   const dataUsers = await getUsers()
+  const t = await getTranslations("adminUsage")
 
   return (
     <div>
@@ -31,15 +34,22 @@ async function Admin() {
       </PageTitle>
 
       <Suspense fallback={<BoloesListSkeleton />}>
-        <Tabs defaultValue="boloes" className="">
+        <Tabs defaultValue="usage" className="">
           <TabsList>
+            <TabsTrigger value="usage">{t("heading")}</TabsTrigger>
             <TabsTrigger value="boloes">
-              Bolões ({dataBoloes.boloes.length})
+              {t("boloesTab", { count: dataBoloes.boloes.length })}
             </TabsTrigger>
             <TabsTrigger value="users">
-              Users ({dataUsers.users.length})
+              {t("usersTab", { count: dataUsers.users.length })}
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="usage">
+            <Suspense fallback={<div className="h-96 animate-pulse rounded-xl bg-muted" />}>
+              <AdminUsage />
+            </Suspense>
+          </TabsContent>
 
           <TabsContent value="boloes">
             {dataBoloes.boloes.map((el: Bolao) => {
@@ -60,6 +70,7 @@ async function Admin() {
               })}
             </div>
           </TabsContent>
+
         </Tabs>
       </Suspense>
     </div>
