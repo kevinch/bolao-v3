@@ -70,7 +70,7 @@
   "contact": {
     "title": "Contato",
     "metaDescription": "Envie comentários ou sugestões para a equipe do Bolão.io.",
-    "intro": "Tem um comentário, uma ideia ou um problema para contar? Envie uma mensagem breve. Responderemos se você incluir seu e-mail.",
+    "intro": "Tem um comentário, uma ideia ou um problema para contar? Envie uma mensagem breve e responderemos.",
     "emailLabel": "Seu e-mail",
     "emailPlaceholder": "voce@exemplo.com",
     "messageLabel": "Mensagem",

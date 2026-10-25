@@ -70,7 +70,7 @@
   "contact": {
     "title": "Contact",
     "metaDescription": "Send feedback or a comment to the Bolão.io team.",
-    "intro": "Have a comment, idea, or issue to report? Send a short message and we’ll get back to you if you include your email.",
+    "intro": "Have a comment, idea, or issue to report? Send a short message and we’ll get back to you.",
     "emailLabel": "Your email",
     "emailPlaceholder": "you@example.com",
     "messageLabel": "Message",
