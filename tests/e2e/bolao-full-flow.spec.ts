@@ -85,7 +85,7 @@ test("Full bolão flow: create, navigate, and delete a bolão", async ({
   // Verify the newly created bolão appears on the home page
   await expect(
     page
-      .getByRole("tabpanel", { name: "Active bolões" })
+      .getByRole("tabpanel", { name: /Active/ })
       .getByRole("heading", { name: bolaoName })
   ).toBeVisible()
 
