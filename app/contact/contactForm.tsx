@@ -55,7 +55,7 @@ export default function ContactForm() {
       </div>
 
       <div className="absolute -left-[10000px]" aria-hidden="true">
-        <Label htmlFor="contact-website">Website</Label>
+        <Label htmlFor="contact-website">{t("honeypotLabel")}</Label>
         <Input
           id="contact-website"
           name="website"

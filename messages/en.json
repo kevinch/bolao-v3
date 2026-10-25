@@ -75,6 +75,7 @@
     "emailPlaceholder": "you@example.com",
     "messageLabel": "Message",
     "messagePlaceholder": "What would you like us to know?",
+    "honeypotLabel": "Website",
     "submit": "Send message",
     "sending": "Sending…",
     "success": "Thanks for your message. It has been sent.",

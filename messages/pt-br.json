@@ -75,6 +75,7 @@
     "emailPlaceholder": "voce@exemplo.com",
     "messageLabel": "Mensagem",
     "messagePlaceholder": "O que você gostaria de nos contar?",
+    "honeypotLabel": "Site",
     "submit": "Enviar mensagem",
     "sending": "Enviando…",
     "success": "Obrigado pela mensagem. Ela foi enviada.",
