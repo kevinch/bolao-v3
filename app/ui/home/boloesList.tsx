@@ -80,7 +80,7 @@ async function BoloesList() {
         </TabsList>
 
         <Button asChild size="sm">
-          <Link href="/bolao/create">{t("createBolao")}</Link>
+          <Link href="/bolao/create">{t("createBolaoShort")}</Link>
         </Button>
       </div>
       <TabsContent value="account">

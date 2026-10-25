@@ -126,8 +126,9 @@
     "errorMessage": "Houve um problema na criação."
   },
   "bolaoList": {
-    "activeBoloes": "Bolões ativos ({count})",
-    "pastBoloes": "Bolões passados ({count})",
+    "activeBoloes": "Ativos ({count})",
+    "pastBoloes": "Passados ({count})",
+    "createBolaoShort": "Criar",
     "createBolao": "Criar bolão"
   },
   "bolaoCard": {
