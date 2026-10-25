@@ -7,6 +7,10 @@ vi.mock("@clerk/nextjs", () => ({
   ClerkProvider: ({ children }: { children: React.ReactNode }) => children,
 }))
 
+vi.mock("@clerk/nextjs/server", () => ({
+  auth: vi.fn(async () => ({ userId: null })),
+}))
+
 // Mock ClerkThemeProvider
 vi.mock("@/components/clerk-theme-provider", () => ({
   ClerkThemeProvider: ({ children }: { children: React.ReactNode }) => children,
