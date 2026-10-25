@@ -55,4 +55,7 @@ RESEND_FROM_EMAIL
 CONTACT_EMAIL
 
 UMAMI_ID
+PUSHALERT_TEST_USER_ID
 ```
+
+`PUSHALERT_TEST_USER_ID` is a server-side allowlist for the PushAlert pilot; only the matching Clerk user loads the PushAlert script.

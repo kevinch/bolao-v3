@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from "next-intl"
 import { getLocale, getMessages } from "next-intl/server"
 import Header from "@/app/components/header"
 import Footer from "@/app/components/footer"
+import PushAlertScript from "@/app/components/pushAlertScript"
 import Script from "next/script"
 import { Analytics } from "@vercel/analytics/react"
 import { Toaster } from "@/components/ui/toaster"
@@ -138,6 +139,7 @@ export default async function RootLayout({
           data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
           strategy="lazyOnload"
         />
+        <PushAlertScript />
       </body>
     </html>
   )
