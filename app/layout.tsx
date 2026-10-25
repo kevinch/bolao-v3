@@ -2,9 +2,9 @@ import type { Metadata } from "next"
 import { IBM_Plex_Sans } from "next/font/google"
 import { NextIntlClientProvider } from "next-intl"
 import { getLocale, getMessages } from "next-intl/server"
+import { auth } from "@clerk/nextjs/server"
 import Header from "@/app/components/header"
 import Footer from "@/app/components/footer"
-import PushAlertScript from "@/app/components/pushAlertScript"
 import Script from "next/script"
 import { Analytics } from "@vercel/analytics/react"
 import { Toaster } from "@/components/ui/toaster"
@@ -96,6 +96,8 @@ export default async function RootLayout({
 }>) {
   const locale = await getLocale()
   const messages = await getMessages()
+  const pushAlertTestUserId = process.env.PUSHALERT_TEST_USER_ID
+  const { userId } = pushAlertTestUserId ? await auth() : { userId: null }
 
   return (
     <html lang={locale} suppressHydrationWarning>
@@ -139,7 +141,12 @@ export default async function RootLayout({
           data-website-id={process.env.NEXT_PUBLIC_UMAMI_ID}
           strategy="lazyOnload"
         />
-        <PushAlertScript testUserId={process.env.PUSHALERT_TEST_USER_ID} />
+        {userId === pushAlertTestUserId && pushAlertTestUserId ? (
+          <Script
+            src="https://cdn.pushalert.co/integrate_b0aea8d8062166fd960b713c02407dfc.js"
+            strategy="afterInteractive"
+          />
+        ) : null}
       </body>
     </html>
   )

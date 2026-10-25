@@ -7,6 +7,10 @@ vi.mock("@clerk/nextjs", () => ({
   ClerkProvider: ({ children }: { children: React.ReactNode }) => children,
 }))
 
+vi.mock("@clerk/nextjs/server", () => ({
+  auth: vi.fn(async () => ({ userId: null })),
+}))
+
 // Mock ClerkThemeProvider
 vi.mock("@/components/clerk-theme-provider", () => ({
   ClerkThemeProvider: ({ children }: { children: React.ReactNode }) => children,
@@ -20,10 +24,6 @@ vi.mock("@/app/components/header", () => ({
 // Mock Footer component
 vi.mock("@/app/components/footer", () => ({
   default: () => <div data-testid="footer">Footer</div>,
-}))
-
-vi.mock("@/app/components/pushAlertScript", () => ({
-  default: () => null,
 }))
 
 // Mock Toaster component
