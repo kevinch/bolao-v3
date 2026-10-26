@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/select"
 
 type UsageData = {
-  summary: { totalBoloes: number; totalUsers: number }
+  summary: { totalBoloes: number }
   monthly: { month: string; count: number; members: number }[]
   competitions: {
     id: string
@@ -114,15 +114,11 @@ export default function AdminUsageDashboard({ data }: { data: UsageData }) {
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <MetricCard label={t("totalBoloesAllTime")} value={data.summary.totalBoloes} />
         <MetricCard
           label={t("boloesCreatedMonths", { months: monthsToShow })}
           value={bolaoCount}
-        />
-        <MetricCard
-          label={t("registeredUsersAllTime")}
-          value={data.summary.totalUsers}
         />
         <MetricCard
           label={t("averageMembersMonths", { months: monthsToShow })}

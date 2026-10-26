@@ -88,8 +88,7 @@ export async function fetchAdminUsageStats() {
     const [summary, monthly, competitions] = await Promise.all([
       sql`
         SELECT
-          (SELECT COUNT(*)::int FROM boloes) AS total_boloes,
-          (SELECT COUNT(*)::int FROM users) AS total_users
+          (SELECT COUNT(*)::int FROM boloes) AS total_boloes
       `,
       sql`
         SELECT TO_CHAR(DATE_TRUNC('month', b.created_at), 'YYYY-MM') AS month,

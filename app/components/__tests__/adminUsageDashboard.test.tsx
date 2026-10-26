@@ -46,7 +46,7 @@ function makeData() {
   monthly[19] = { ...monthly[19], count: 1, members: 3 }
 
   return {
-    summary: { totalBoloes: 106, totalUsers: 17 },
+    summary: { totalBoloes: 106 },
     monthly,
     competitions: [
       {
