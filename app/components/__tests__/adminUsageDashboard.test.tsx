@@ -82,8 +82,10 @@ describe("AdminUsageDashboard", () => {
   })
 
   it("shows six-month metrics and championships by default", () => {
-    render(<AdminUsageDashboard data={makeData()} />)
+    render(<AdminUsageDashboard data={makeData()} clerkUserCount={109} />)
 
+    expect(screen.getByText("Clerk users (all-time)")).toBeInTheDocument()
+    expect(screen.getByText("109")).toBeInTheDocument()
     expect(screen.getByText("Total bolões (all-time)")).toBeInTheDocument()
     expect(screen.getByText("106")).toBeInTheDocument()
     expect(screen.getByText("Bolões created (6 months)")).toBeInTheDocument()
@@ -99,7 +101,7 @@ describe("AdminUsageDashboard", () => {
 
   it("updates the creation totals, average and championships for the selected period", async () => {
     const user = userEvent.setup()
-    render(<AdminUsageDashboard data={makeData()} />)
+    render(<AdminUsageDashboard data={makeData()} clerkUserCount={109} />)
 
     await user.selectOptions(screen.getByRole("combobox", { name: "Period" }), "12")
 
@@ -113,7 +115,7 @@ describe("AdminUsageDashboard", () => {
 
   it("shows all-time championship history when 24 months is selected", async () => {
     const user = userEvent.setup()
-    render(<AdminUsageDashboard data={makeData()} />)
+    render(<AdminUsageDashboard data={makeData()} clerkUserCount={109} />)
 
     await user.selectOptions(screen.getByRole("combobox", { name: "Period" }), "24")
 
@@ -129,7 +131,7 @@ describe("AdminUsageDashboard", () => {
     data.monthly = data.monthly.map((month) => ({ ...month, count: 0, members: 0 }))
     data.competitions = []
 
-    render(<AdminUsageDashboard data={data} />)
+    render(<AdminUsageDashboard data={data} clerkUserCount={109} />)
 
     expect(screen.getByText("0", { selector: "p" })).toBeInTheDocument()
     expect(screen.getByText("0.0")).toBeInTheDocument()

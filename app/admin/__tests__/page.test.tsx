@@ -57,7 +57,11 @@ vi.mock("@/app/components/adminBolao", () => ({
 }))
 
 vi.mock("@/app/components/adminUsage", () => ({
-  default: () => <div data-testid="admin-usage-dashboard">Usage dashboard</div>,
+  default: ({ clerkUserCount }: { clerkUserCount: number }) => (
+    <div data-testid="admin-usage-dashboard">
+      Clerk users (all-time): {clerkUserCount}
+    </div>
+  ),
 }))
 
 describe("Admin Page", () => {
@@ -234,13 +238,10 @@ describe("Admin Page", () => {
       const adminPage = await Admin()
       render(adminPage as React.ReactElement)
 
-      await userEvent.setup().click(screen.getByRole("tab", { name: /Users/ }))
       expect((mockClient as any).users.getCount).toHaveBeenCalled()
       expect(getUsers).not.toHaveBeenCalled()
-      expect(screen.getByText("Users (109)")).toBeInTheDocument()
-      expect(
-        screen.getByText("Clerk has 109 users. Manage user accounts in the Clerk dashboard.")
-      ).toBeInTheDocument()
+      expect(screen.queryByRole("tab", { name: /Users/ })).not.toBeInTheDocument()
+      expect(screen.getByText("Clerk users (all-time): 109")).toBeInTheDocument()
     })
 
     it("should handle empty boloes data", async () => {
@@ -286,7 +287,7 @@ describe("Admin Page", () => {
       const adminPage = await Admin()
       render(adminPage as React.ReactElement)
 
-      expect(screen.getByText("Users (0)")).toBeInTheDocument()
+      expect(screen.getByText("Clerk users (all-time): 0")).toBeInTheDocument()
     })
   })
 
@@ -413,7 +414,7 @@ describe("Admin Page", () => {
       const adminPage = await Admin()
       render(adminPage as React.ReactElement)
 
-      expect(screen.getByText("Users (3)")).toBeInTheDocument()
+      expect(screen.getByText("Clerk users (all-time): 3")).toBeInTheDocument()
     })
 
     it("should show Usage overview first and select it by default", async () => {
@@ -593,8 +594,7 @@ describe("Admin Page", () => {
       const adminPage = await Admin()
       render(adminPage as React.ReactElement)
 
-      // Users tab should show the count
-      expect(screen.getByText("Users (2)")).toBeInTheDocument()
+      expect(screen.getByText("Clerk users (all-time): 2")).toBeInTheDocument()
     })
 
     it("should handle single user", async () => {
@@ -619,7 +619,7 @@ describe("Admin Page", () => {
       const adminPage = await Admin()
       render(adminPage as React.ReactElement)
 
-      expect(screen.getByText("Users (1)")).toBeInTheDocument()
+      expect(screen.getByText("Clerk users (all-time): 1")).toBeInTheDocument()
     })
 
     it("should handle multiple users of different roles", async () => {
@@ -648,7 +648,7 @@ describe("Admin Page", () => {
       const adminPage = await Admin()
       render(adminPage as React.ReactElement)
 
-      expect(screen.getByText("Users (3)")).toBeInTheDocument()
+      expect(screen.getByText("Clerk users (all-time): 3")).toBeInTheDocument()
     })
   })
 
@@ -714,7 +714,7 @@ describe("Admin Page", () => {
       const adminPage = await Admin()
       render(adminPage as React.ReactElement)
 
-      expect(screen.getByText("Users (10)")).toBeInTheDocument()
+      expect(screen.getByText("Clerk users (all-time): 10")).toBeInTheDocument()
     })
   })
 })

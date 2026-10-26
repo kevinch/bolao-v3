@@ -42,14 +42,11 @@ async function Admin() {
             <TabsTrigger value="boloes">
               {t("boloesTab", { count: dataBoloes.boloes.length })}
             </TabsTrigger>
-            <TabsTrigger value="users">
-              {t("usersTab", { count: clerkUserCount })}
-            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="usage">
             <Suspense fallback={<div className="h-96 animate-pulse rounded-xl bg-muted" />}>
-              <AdminUsage />
+              <AdminUsage clerkUserCount={clerkUserCount} />
             </Suspense>
           </TabsContent>
 
@@ -57,10 +54,6 @@ async function Admin() {
             {dataBoloes.boloes.map((el: Bolao) => {
               return <AdminBolao key={el.id} bolao={el} />
             })}
-          </TabsContent>
-
-          <TabsContent value="users">
-            <p>{t("clerkUsersSummary", { count: clerkUserCount })}</p>
           </TabsContent>
 
         </Tabs>

@@ -38,7 +38,13 @@ function MetricCard({ label, value }: { label: string; value: string | number })
   )
 }
 
-export default function AdminUsageDashboard({ data }: { data: UsageData }) {
+export default function AdminUsageDashboard({
+  data,
+  clerkUserCount,
+}: {
+  data: UsageData
+  clerkUserCount: number
+}) {
   const t = useTranslations("adminUsage")
   const locale = useLocale()
   const [monthsToShow, setMonthsToShow] = useState(6)
@@ -114,8 +120,9 @@ export default function AdminUsageDashboard({ data }: { data: UsageData }) {
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard label={t("totalBoloesAllTime")} value={data.summary.totalBoloes} />
+        <MetricCard label={t("clerkUsersAllTime")} value={clerkUserCount} />
         <MetricCard
           label={t("boloesCreatedMonths", { months: monthsToShow })}
           value={bolaoCount}
