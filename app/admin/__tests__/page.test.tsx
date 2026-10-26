@@ -234,6 +234,7 @@ describe("Admin Page", () => {
       const adminPage = await Admin()
       render(adminPage as React.ReactElement)
 
+      await userEvent.setup().click(screen.getByRole("tab", { name: /Users/ }))
       expect((mockClient as any).users.getCount).toHaveBeenCalled()
       expect(getUsers).not.toHaveBeenCalled()
       expect(screen.getByText("Users (109)")).toBeInTheDocument()
