@@ -1,7 +1,11 @@
 import { getAdminUsageStats } from "@/app/lib/controllerAdmin"
 import AdminUsageDashboard from "./adminUsageDashboard"
 
-export default async function AdminUsage() {
+export default async function AdminUsage({
+  clerkUserCount,
+}: {
+  clerkUserCount: number
+}) {
   const data = await getAdminUsageStats()
-  return <AdminUsageDashboard data={data} />
+  return <AdminUsageDashboard data={data} clerkUserCount={clerkUserCount} />
 }

@@ -1,8 +1,8 @@
 import { Suspense } from "react"
-import { getBoloes, getUsers } from "@/app/lib/controllerAdmin"
+import { getBoloes } from "@/app/lib/controllerAdmin"
 import PageTitle from "@/app/components/pageTitle"
 import { BoloesListSkeleton } from "@/app/ui/skeletons"
-import { Bolao, User } from "@/app/lib/definitions"
+import { Bolao } from "@/app/lib/definitions"
 import AdminBolao from "@/app/components/adminBolao"
 import AdminUsage from "@/app/components/adminUsage"
 import { clerkClient, currentUser } from "@clerk/nextjs/server"
@@ -12,9 +12,9 @@ import { getTranslations } from "next-intl/server"
 
 async function Admin() {
   const user = await currentUser()
+  const client = await clerkClient()
 
   if (user) {
-    const client = await clerkClient()
     const userData = await client.users.getUser(user.id)
     const role = userData.privateMetadata?.role || "guest"
 
@@ -23,8 +23,10 @@ async function Admin() {
     }
   }
 
-  const dataBoloes = await getBoloes()
-  const dataUsers = await getUsers()
+  const [dataBoloes, clerkUserCount] = await Promise.all([
+    getBoloes(),
+    client.users.getCount(),
+  ])
   const t = await getTranslations("adminUsage")
 
   return (
@@ -40,14 +42,11 @@ async function Admin() {
             <TabsTrigger value="boloes">
               {t("boloesTab", { count: dataBoloes.boloes.length })}
             </TabsTrigger>
-            <TabsTrigger value="users">
-              {t("usersTab", { count: dataUsers.users.length })}
-            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="usage">
             <Suspense fallback={<div className="h-96 animate-pulse rounded-xl bg-muted" />}>
-              <AdminUsage />
+              <AdminUsage clerkUserCount={clerkUserCount} />
             </Suspense>
           </TabsContent>
 
@@ -55,20 +54,6 @@ async function Admin() {
             {dataBoloes.boloes.map((el: Bolao) => {
               return <AdminBolao key={el.id} bolao={el} />
             })}
-          </TabsContent>
-
-          <TabsContent value="users">
-            <div className="space-y-4">
-              {dataUsers.users.map((el: User) => {
-                return (
-                  <div key={el.id} className="p-4 border rounded-lg">
-                    <div className="font-semibold">{el.name}</div>
-                    <div className="text-sm text-gray-600">ID: {el.id}</div>
-                    <div className="text-sm text-gray-600">Role: {el.role}</div>
-                  </div>
-                )
-              })}
-            </div>
           </TabsContent>
 
         </Tabs>

@@ -105,7 +105,6 @@ export async function getAdminUsageStats() {
   return {
     summary: {
       totalBoloes: Number(data.summary.total_boloes),
-      totalUsers: Number(data.summary.total_users),
     },
     monthly,
     competitions,

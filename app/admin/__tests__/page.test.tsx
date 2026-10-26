@@ -10,6 +10,11 @@ vi.mock("@clerk/nextjs/server", () => ({
   clerkClient: vi.fn(),
 }))
 
+function withClerkUserCount(client: any, count = 0) {
+  client.users.getCount = vi.fn().mockResolvedValue(count)
+  return client
+}
+
 // Mock admin controllers
 vi.mock("@/app/lib/controllerAdmin", () => ({
   getBoloes: vi.fn(),
@@ -52,7 +57,11 @@ vi.mock("@/app/components/adminBolao", () => ({
 }))
 
 vi.mock("@/app/components/adminUsage", () => ({
-  default: () => <div data-testid="admin-usage-dashboard">Usage dashboard</div>,
+  default: ({ clerkUserCount }: { clerkUserCount: number }) => (
+    <div data-testid="admin-usage-dashboard">
+      Clerk users (all-time): {clerkUserCount}
+    </div>
+  ),
 }))
 
 describe("Admin Page", () => {
@@ -76,20 +85,22 @@ describe("Admin Page", () => {
   })
 
   describe("Authentication and Authorization", () => {
-    it("should redirect to home when user is not authenticated", async () => {
-      const { currentUser } = await import("@clerk/nextjs/server")
+    it("should not fetch database users when unauthenticated", async () => {
+      const { currentUser, clerkClient } = await import("@clerk/nextjs/server")
       const { getBoloes, getUsers } = await import("@/app/lib/controllerAdmin")
+      const mockClient = { users: {} }
 
       vi.mocked(currentUser).mockResolvedValue(null)
+      vi.mocked(clerkClient).mockResolvedValue(withClerkUserCount(mockClient) as any)
       vi.mocked(getBoloes).mockResolvedValue({ boloes: [] })
       vi.mocked(getUsers).mockResolvedValue({ users: [] })
 
       const adminPage = await Admin()
       render(adminPage as React.ReactElement)
 
-      // When user is null, the page should still fetch data
       expect(getBoloes).toHaveBeenCalled()
-      expect(getUsers).toHaveBeenCalled()
+      expect(getUsers).not.toHaveBeenCalled()
+      expect((mockClient as any).users.getCount).toHaveBeenCalled()
     })
 
     it("should redirect non-admin users to home", async () => {
@@ -105,7 +116,7 @@ describe("Admin Page", () => {
       }
 
       vi.mocked(currentUser).mockResolvedValue({ id: "user-123" } as any)
-      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
+      vi.mocked(clerkClient).mockResolvedValue(withClerkUserCount(mockClient) as any)
       vi.mocked(getBoloes).mockResolvedValue({ boloes: [] })
       vi.mocked(getUsers).mockResolvedValue({ users: [] })
 
@@ -128,7 +139,7 @@ describe("Admin Page", () => {
       }
 
       vi.mocked(currentUser).mockResolvedValue({ id: "user-123" } as any)
-      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
+      vi.mocked(clerkClient).mockResolvedValue(withClerkUserCount(mockClient) as any)
       vi.mocked(getBoloes).mockResolvedValue({ boloes: [mockBolao] })
       vi.mocked(getUsers).mockResolvedValue({ users: [mockUser] })
 
@@ -151,7 +162,7 @@ describe("Admin Page", () => {
       }
 
       vi.mocked(currentUser).mockResolvedValue({ id: "user-123" } as any)
-      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
+      vi.mocked(clerkClient).mockResolvedValue(withClerkUserCount(mockClient) as any)
 
       const adminPage = await Admin()
       render(adminPage as React.ReactElement)
@@ -172,7 +183,7 @@ describe("Admin Page", () => {
       }
 
       vi.mocked(currentUser).mockResolvedValue({ id: "user-456" } as any)
-      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
+      vi.mocked(clerkClient).mockResolvedValue(withClerkUserCount(mockClient) as any)
       vi.mocked(getBoloes).mockResolvedValue({ boloes: [] })
       vi.mocked(getUsers).mockResolvedValue({ users: [] })
 
@@ -197,7 +208,7 @@ describe("Admin Page", () => {
       }
 
       vi.mocked(currentUser).mockResolvedValue({ id: "user-123" } as any)
-      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
+      vi.mocked(clerkClient).mockResolvedValue(withClerkUserCount(mockClient) as any)
       vi.mocked(getBoloes).mockResolvedValue({ boloes: [mockBolao] })
       vi.mocked(getUsers).mockResolvedValue({ users: [mockUser] })
 
@@ -207,7 +218,7 @@ describe("Admin Page", () => {
       expect(getBoloes).toHaveBeenCalled()
     })
 
-    it("should fetch users data", async () => {
+    it("should fetch the Clerk user count instead of database users", async () => {
       const { currentUser, clerkClient } = await import("@clerk/nextjs/server")
       const { getBoloes, getUsers } = await import("@/app/lib/controllerAdmin")
 
@@ -220,14 +231,17 @@ describe("Admin Page", () => {
       }
 
       vi.mocked(currentUser).mockResolvedValue({ id: "user-123" } as any)
-      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
+      vi.mocked(clerkClient).mockResolvedValue(withClerkUserCount(mockClient, 109) as any)
       vi.mocked(getBoloes).mockResolvedValue({ boloes: [] })
       vi.mocked(getUsers).mockResolvedValue({ users: [] })
 
       const adminPage = await Admin()
       render(adminPage as React.ReactElement)
 
-      expect(getUsers).toHaveBeenCalled()
+      expect((mockClient as any).users.getCount).toHaveBeenCalled()
+      expect(getUsers).not.toHaveBeenCalled()
+      expect(screen.queryByRole("tab", { name: /Users/ })).not.toBeInTheDocument()
+      expect(screen.getByText("Clerk users (all-time): 109")).toBeInTheDocument()
     })
 
     it("should handle empty boloes data", async () => {
@@ -243,7 +257,7 @@ describe("Admin Page", () => {
       }
 
       vi.mocked(currentUser).mockResolvedValue({ id: "user-123" } as any)
-      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
+      vi.mocked(clerkClient).mockResolvedValue(withClerkUserCount(mockClient) as any)
       vi.mocked(getBoloes).mockResolvedValue({ boloes: [] })
       vi.mocked(getUsers).mockResolvedValue({ users: [] })
 
@@ -266,14 +280,14 @@ describe("Admin Page", () => {
       }
 
       vi.mocked(currentUser).mockResolvedValue({ id: "user-123" } as any)
-      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
+      vi.mocked(clerkClient).mockResolvedValue(withClerkUserCount(mockClient) as any)
       vi.mocked(getBoloes).mockResolvedValue({ boloes: [] })
       vi.mocked(getUsers).mockResolvedValue({ users: [] })
 
       const adminPage = await Admin()
       render(adminPage as React.ReactElement)
 
-      expect(screen.getByText("Users (0)")).toBeInTheDocument()
+      expect(screen.getByText("Clerk users (all-time): 0")).toBeInTheDocument()
     })
   })
 
@@ -291,7 +305,7 @@ describe("Admin Page", () => {
       }
 
       vi.mocked(currentUser).mockResolvedValue({ id: "user-123" } as any)
-      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
+      vi.mocked(clerkClient).mockResolvedValue(withClerkUserCount(mockClient) as any)
       vi.mocked(getBoloes).mockResolvedValue({ boloes: [] })
       vi.mocked(getUsers).mockResolvedValue({ users: [] })
 
@@ -316,7 +330,7 @@ describe("Admin Page", () => {
       }
 
       vi.mocked(currentUser).mockResolvedValue({ id: "user-123" } as any)
-      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
+      vi.mocked(clerkClient).mockResolvedValue(withClerkUserCount(mockClient) as any)
       vi.mocked(getBoloes).mockResolvedValue({ boloes: [] })
       vi.mocked(getUsers).mockResolvedValue({ users: [] })
 
@@ -339,7 +353,7 @@ describe("Admin Page", () => {
       }
 
       vi.mocked(currentUser).mockResolvedValue({ id: "user-123" } as any)
-      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
+      vi.mocked(clerkClient).mockResolvedValue(withClerkUserCount(mockClient) as any)
       vi.mocked(getBoloes).mockResolvedValue({ boloes: [] })
       vi.mocked(getUsers).mockResolvedValue({ users: [] })
 
@@ -364,7 +378,7 @@ describe("Admin Page", () => {
       const boloes = [mockBolao, { ...mockBolao, id: "bolao-2" }]
 
       vi.mocked(currentUser).mockResolvedValue({ id: "user-123" } as any)
-      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
+      vi.mocked(clerkClient).mockResolvedValue(withClerkUserCount(mockClient) as any)
       vi.mocked(getBoloes).mockResolvedValue({ boloes })
       vi.mocked(getUsers).mockResolvedValue({ users: [] })
 
@@ -393,14 +407,14 @@ describe("Admin Page", () => {
       ]
 
       vi.mocked(currentUser).mockResolvedValue({ id: "user-123" } as any)
-      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
+      vi.mocked(clerkClient).mockResolvedValue(withClerkUserCount(mockClient, 3) as any)
       vi.mocked(getBoloes).mockResolvedValue({ boloes: [] })
       vi.mocked(getUsers).mockResolvedValue({ users })
 
       const adminPage = await Admin()
       render(adminPage as React.ReactElement)
 
-      expect(screen.getByText("Users (3)")).toBeInTheDocument()
+      expect(screen.getByText("Clerk users (all-time): 3")).toBeInTheDocument()
     })
 
     it("should show Usage overview first and select it by default", async () => {
@@ -416,7 +430,7 @@ describe("Admin Page", () => {
       }
 
       vi.mocked(currentUser).mockResolvedValue({ id: "user-123" } as any)
-      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
+      vi.mocked(clerkClient).mockResolvedValue(withClerkUserCount(mockClient) as any)
       vi.mocked(getBoloes).mockResolvedValue({ boloes: [] })
       vi.mocked(getUsers).mockResolvedValue({ users: [] })
 
@@ -442,7 +456,7 @@ describe("Admin Page", () => {
       }
 
       vi.mocked(currentUser).mockResolvedValue({ id: "user-123" } as any)
-      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
+      vi.mocked(clerkClient).mockResolvedValue(withClerkUserCount(mockClient) as any)
       vi.mocked(getBoloes).mockResolvedValue({ boloes: [] })
       vi.mocked(getUsers).mockResolvedValue({ users: [] })
 
@@ -480,7 +494,7 @@ describe("Admin Page", () => {
       ]
 
       vi.mocked(currentUser).mockResolvedValue({ id: "user-123" } as any)
-      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
+      vi.mocked(clerkClient).mockResolvedValue(withClerkUserCount(mockClient) as any)
       vi.mocked(getBoloes).mockResolvedValue({ boloes })
       vi.mocked(getUsers).mockResolvedValue({ users: [] })
 
@@ -511,7 +525,7 @@ describe("Admin Page", () => {
       ]
 
       vi.mocked(currentUser).mockResolvedValue({ id: "user-123" } as any)
-      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
+      vi.mocked(clerkClient).mockResolvedValue(withClerkUserCount(mockClient) as any)
       vi.mocked(getBoloes).mockResolvedValue({ boloes })
       vi.mocked(getUsers).mockResolvedValue({ users: [] })
 
@@ -541,7 +555,7 @@ describe("Admin Page", () => {
       ]
 
       vi.mocked(currentUser).mockResolvedValue({ id: "user-123" } as any)
-      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
+      vi.mocked(clerkClient).mockResolvedValue(withClerkUserCount(mockClient) as any)
       vi.mocked(getBoloes).mockResolvedValue({ boloes })
       vi.mocked(getUsers).mockResolvedValue({ users: [] })
 
@@ -573,15 +587,14 @@ describe("Admin Page", () => {
       ]
 
       vi.mocked(currentUser).mockResolvedValue({ id: "user-123" } as any)
-      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
+      vi.mocked(clerkClient).mockResolvedValue(withClerkUserCount(mockClient, 2) as any)
       vi.mocked(getBoloes).mockResolvedValue({ boloes: [] })
       vi.mocked(getUsers).mockResolvedValue({ users })
 
       const adminPage = await Admin()
       render(adminPage as React.ReactElement)
 
-      // Users tab should show the count
-      expect(screen.getByText("Users (2)")).toBeInTheDocument()
+      expect(screen.getByText("Clerk users (all-time): 2")).toBeInTheDocument()
     })
 
     it("should handle single user", async () => {
@@ -599,14 +612,14 @@ describe("Admin Page", () => {
       const users = [{ ...mockUser, id: "user-abc-123" }]
 
       vi.mocked(currentUser).mockResolvedValue({ id: "user-123" } as any)
-      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
+      vi.mocked(clerkClient).mockResolvedValue(withClerkUserCount(mockClient, 1) as any)
       vi.mocked(getBoloes).mockResolvedValue({ boloes: [] })
       vi.mocked(getUsers).mockResolvedValue({ users })
 
       const adminPage = await Admin()
       render(adminPage as React.ReactElement)
 
-      expect(screen.getByText("Users (1)")).toBeInTheDocument()
+      expect(screen.getByText("Clerk users (all-time): 1")).toBeInTheDocument()
     })
 
     it("should handle multiple users of different roles", async () => {
@@ -628,14 +641,14 @@ describe("Admin Page", () => {
       ]
 
       vi.mocked(currentUser).mockResolvedValue({ id: "user-123" } as any)
-      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
+      vi.mocked(clerkClient).mockResolvedValue(withClerkUserCount(mockClient, 3) as any)
       vi.mocked(getBoloes).mockResolvedValue({ boloes: [] })
       vi.mocked(getUsers).mockResolvedValue({ users })
 
       const adminPage = await Admin()
       render(adminPage as React.ReactElement)
 
-      expect(screen.getByText("Users (3)")).toBeInTheDocument()
+      expect(screen.getByText("Clerk users (all-time): 3")).toBeInTheDocument()
     })
   })
 
@@ -659,7 +672,7 @@ describe("Admin Page", () => {
       }))
 
       vi.mocked(currentUser).mockResolvedValue({ id: "user-123" } as any)
-      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
+      vi.mocked(clerkClient).mockResolvedValue(withClerkUserCount(mockClient) as any)
       vi.mocked(getBoloes).mockResolvedValue({ boloes })
       vi.mocked(getUsers).mockResolvedValue({ users: [] })
 
@@ -694,14 +707,14 @@ describe("Admin Page", () => {
       }))
 
       vi.mocked(currentUser).mockResolvedValue({ id: "user-123" } as any)
-      vi.mocked(clerkClient).mockResolvedValue(mockClient as any)
+      vi.mocked(clerkClient).mockResolvedValue(withClerkUserCount(mockClient, 10) as any)
       vi.mocked(getBoloes).mockResolvedValue({ boloes: [] })
       vi.mocked(getUsers).mockResolvedValue({ users })
 
       const adminPage = await Admin()
       render(adminPage as React.ReactElement)
 
-      expect(screen.getByText("Users (10)")).toBeInTheDocument()
+      expect(screen.getByText("Clerk users (all-time): 10")).toBeInTheDocument()
     })
   })
 })
