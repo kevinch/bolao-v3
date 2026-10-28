@@ -1,16 +1,17 @@
 import { Suspense } from "react"
 import { getTranslations } from "next-intl/server"
-import BoloesList from "@/app/ui/home/boloesList"
 import { currentUser } from "@clerk/nextjs/server"
 import PageTitle from "./components/pageTitle"
-import { BoloesListSkeleton } from "@/app/ui/skeletons"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import InviteRedirector from "@/app/components/InviteRedirector"
 import JsonLd from "@/app/components/jsonLd"
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/app/lib/siteConfig"
+import Championships from "@/app/ui/home/championships"
+import SignedInHome from "@/app/ui/home/signedInHome"
+import MatchesSkeleton from "@/app/ui/home/matchesSkeleton"
 
-// ISR: revalidate cached page every 5 minutes
+// Football requests opt into a shared cache; Clerk keeps this page dynamic.
 export const revalidate = 300
 
 const sectionSpaceing = "mb-18"
@@ -39,7 +40,7 @@ async function Home() {
   if (user) {
     return (
       <main>
-        <InviteRedirector />
+        <InviteRedirector signedIn />
         <PageTitle>
           {t("greeting")}
           <br />
@@ -50,8 +51,8 @@ async function Home() {
           </span>
         </PageTitle>
 
-        <Suspense fallback={<BoloesListSkeleton />}>
-          <BoloesList />
+        <Suspense fallback={<MatchesSkeleton />}>
+          <SignedInHome userId={user.id} />
         </Suspense>
       </main>
     )
@@ -99,6 +100,10 @@ async function Home() {
           </div>
         </div>
       </div>
+
+      <Suspense fallback={<MatchesSkeleton />}>
+        <Championships />
+      </Suspense>
 
       {/* What is a Bolão? */}
       <section className={`${sectionSpaceing} text-center`}>

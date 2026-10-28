@@ -54,6 +54,15 @@ describe("BoloesList", () => {
   })
 
   describe("Authentication", () => {
+    it("reuses the membership list already loaded by the signed-in homepage", async () => {
+      const { auth } = await import("@clerk/nextjs/server")
+      const { fetchBoloesByUserId } = await import("@/app/lib/data")
+      render(await BoloesList({ userId: "user-123", boloes: [mockBolao] }))
+      expect(screen.getByText("Test Bolao - 2024")).toBeInTheDocument()
+      expect(auth).not.toHaveBeenCalled()
+      expect(fetchBoloesByUserId).not.toHaveBeenCalled()
+    })
+
     it("should return nothing when user is not authenticated", async () => {
       const { auth } = await import("@clerk/nextjs/server")
       vi.mocked(auth).mockResolvedValue({ userId: null } as any)

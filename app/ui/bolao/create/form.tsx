@@ -22,9 +22,10 @@ import { useState } from "react"
 
 type FormProps = {
   leagues: League[]
+  competitionId?: string
 }
 
-function Form({ leagues }: FormProps) {
+function Form({ leagues, competitionId }: FormProps) {
   const t = useTranslations("createBolao")
   const { toast } = useToast()
   const router = useRouter()
@@ -98,8 +99,8 @@ function Form({ leagues }: FormProps) {
 
       <div className="mb-6">
         <Label htmlFor="competitionId">{t("competitionLabel")}</Label>
-        <Select name="competitionId" required>
-          <SelectTrigger className="w-full">
+        <Select name="competitionId" required defaultValue={competitionId} key={competitionId ?? "empty"}>
+          <SelectTrigger id="competitionId" className="w-full">
             <SelectValue placeholder={t("competitionPlaceholder")} />
           </SelectTrigger>
           <SelectContent>

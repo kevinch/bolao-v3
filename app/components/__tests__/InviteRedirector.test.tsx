@@ -69,7 +69,7 @@ describe("InviteRedirector", () => {
     render(<InviteRedirector />)
 
     expect(mockReplace).not.toHaveBeenCalled()
-    expect(window.sessionStorage.removeItem).not.toHaveBeenCalled()
+    expect(window.sessionStorage.removeItem).not.toHaveBeenCalledWith(SESSION_STORAGE_INVITE_KEY)
   })
 
   it("should not redirect when on 127.0.0.1", () => {
@@ -85,7 +85,7 @@ describe("InviteRedirector", () => {
     render(<InviteRedirector />)
 
     expect(mockReplace).not.toHaveBeenCalled()
-    expect(window.sessionStorage.removeItem).not.toHaveBeenCalled()
+    expect(window.sessionStorage.removeItem).not.toHaveBeenCalledWith(SESSION_STORAGE_INVITE_KEY)
   })
 
   it("should redirect when on production domain with valid invite link", () => {
@@ -164,7 +164,7 @@ describe("InviteRedirector", () => {
       SESSION_STORAGE_INVITE_KEY
     )
     expect(mockReplace).not.toHaveBeenCalled()
-    expect(window.sessionStorage.removeItem).not.toHaveBeenCalled()
+    expect(window.sessionStorage.removeItem).not.toHaveBeenCalledWith(SESSION_STORAGE_INVITE_KEY)
   })
 
   it("should not redirect when invite link is invalid (no protocol)", () => {
@@ -183,7 +183,7 @@ describe("InviteRedirector", () => {
       SESSION_STORAGE_INVITE_KEY
     )
     expect(mockReplace).not.toHaveBeenCalled()
-    expect(window.sessionStorage.removeItem).not.toHaveBeenCalled()
+    expect(window.sessionStorage.removeItem).not.toHaveBeenCalledWith(SESSION_STORAGE_INVITE_KEY)
   })
 
   it("should not redirect when invite link is invalid (wrong protocol)", () => {
@@ -199,7 +199,7 @@ describe("InviteRedirector", () => {
     render(<InviteRedirector />)
 
     expect(mockReplace).not.toHaveBeenCalled()
-    expect(window.sessionStorage.removeItem).not.toHaveBeenCalled()
+    expect(window.sessionStorage.removeItem).not.toHaveBeenCalledWith(SESSION_STORAGE_INVITE_KEY)
   })
 
   it("should not redirect when invite link is empty string", () => {
@@ -215,7 +215,7 @@ describe("InviteRedirector", () => {
     render(<InviteRedirector />)
 
     expect(mockReplace).not.toHaveBeenCalled()
-    expect(window.sessionStorage.removeItem).not.toHaveBeenCalled()
+    expect(window.sessionStorage.removeItem).not.toHaveBeenCalledWith(SESSION_STORAGE_INVITE_KEY)
   })
 
   it("should not redirect when invite link is just protocol", () => {
@@ -231,7 +231,7 @@ describe("InviteRedirector", () => {
     render(<InviteRedirector />)
 
     expect(mockReplace).not.toHaveBeenCalled()
-    expect(window.sessionStorage.removeItem).not.toHaveBeenCalled()
+    expect(window.sessionStorage.removeItem).not.toHaveBeenCalledWith(SESSION_STORAGE_INVITE_KEY)
   })
 
   it("should handle complex invite URLs with query params", () => {

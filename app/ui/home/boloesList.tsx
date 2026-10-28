@@ -13,19 +13,15 @@ async function getData(userId: string) {
   return result
 }
 
-async function BoloesList() {
-  const { userId }: { userId: string | null } = await auth() // could go to context?
+async function BoloesList(props: { boloes?: Bolao[]; userId?: string } = {}) {
+  const userId = props.userId ?? (await auth()).userId
   const t = await getTranslations("bolaoList")
 
   if (!userId) {
     return
   }
 
-  let data: Bolao[] = []
-
-  if (userId) {
-    data = await getData(userId)
-  }
+  const data = props.boloes ?? await getData(userId)
 
   if (data.length === 0) {
     return (
@@ -68,32 +64,35 @@ async function BoloesList() {
   })
 
   return (
-    <Tabs defaultValue="account" className="">
-      <div className="flex justify-between mb-4">
-        <TabsList>
-          <TabsTrigger value="account">
-            {t("activeBoloes", { count: activeGroup.length })}
-          </TabsTrigger>
-          <TabsTrigger value="password">
-            {t("pastBoloes", { count: pastGroup.length })}
-          </TabsTrigger>
-        </TabsList>
+    <section aria-labelledby="your-boloes-title">
+      <h2 id="your-boloes-title" className="mb-4 text-xl font-bold">{t("title")}</h2>
+      <Tabs defaultValue="account" className="">
+        <div className="flex justify-between mb-4">
+          <TabsList>
+            <TabsTrigger value="account">
+              {t("activeBoloes", { count: activeGroup.length })}
+            </TabsTrigger>
+            <TabsTrigger value="password">
+              {t("pastBoloes", { count: pastGroup.length })}
+            </TabsTrigger>
+          </TabsList>
 
-        <Button asChild size="sm">
-          <Link href="/bolao/create">{t("createBolaoShort")}</Link>
-        </Button>
-      </div>
-      <TabsContent value="account">
-        {activeGroup.map((el: Bolao) => (
-          <BolaoCard key={el.id} bolao={el} userId={userId} />
-        ))}
-      </TabsContent>
-      <TabsContent value="password">
-        {pastGroup.map((el: Bolao) => (
-          <BolaoCard key={el.id} bolao={el} userId={userId} />
-        ))}
-      </TabsContent>
-    </Tabs>
+          <Button asChild size="sm">
+            <Link href="/bolao/create">{t("createBolaoShort")}</Link>
+          </Button>
+        </div>
+        <TabsContent value="account">
+          {activeGroup.map((el: Bolao) => (
+            <BolaoCard key={el.id} bolao={el} userId={userId} />
+          ))}
+        </TabsContent>
+        <TabsContent value="password">
+          {pastGroup.map((el: Bolao) => (
+            <BolaoCard key={el.id} bolao={el} userId={userId} />
+          ))}
+        </TabsContent>
+      </Tabs>
+    </section>
   )
 }
 
