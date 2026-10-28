@@ -97,32 +97,37 @@ test("Full bolão flow: create, navigate, and delete a bolão", async ({
     .getByRole("link", { name: "Results" })
     .click()
 
+  await expect(page).toHaveURL(/\/bolao\/[^/]+\/results$/)
+
   // Verify the Results page displays the bolão name and competition
   await expect(page.getByText(`${bolaoName}Serie A`)).toBeVisible()
 
   // Verify all navigation links are present on the Results page
-  await expect(page.getByRole("link", { name: "BET" })).toBeVisible()
-  await expect(page.getByRole("link", { name: "STANDINGS" })).toBeVisible()
-  await expect(page.getByRole("link", { name: "RESULTS" })).toBeVisible()
-  await expect(page.getByRole("link", { name: "LEAD" })).toBeVisible()
+  await expect(page.getByRole("link", { name: /^BET$/ })).toBeVisible()
+  await expect(page.getByRole("link", { name: /^STANDINGS$/ })).toBeVisible()
+  await expect(page.getByRole("link", { name: /^RESULTS$/ })).toBeVisible()
+  await expect(page.getByRole("link", { name: /^LEAD$/ })).toBeVisible()
 
   // Verify the "Next games" section is visible
   await expect(page.getByRole("heading", { name: "Next games" })).toBeVisible()
 
   // Navigate to the BET page
-  await page.getByRole("link", { name: "BET" }).click()
+  await page.getByRole("link", { name: /^BET$/ }).click()
+  await expect(page).toHaveURL(/\/bolao\/[^/]+\/bet$/)
 
   // Verify the BET page displays the bolão name and competition
   await expect(page.getByText(`${bolaoName}Serie A`)).toBeVisible()
 
   // Navigate to the STANDINGS page
-  await page.getByRole("link", { name: "STANDINGS" }).click()
+  await page.getByRole("link", { name: /^STANDINGS$/ }).click()
+  await expect(page).toHaveURL(/\/bolao\/[^/]+\/standings$/)
 
   // Verify the Standings page heading is visible
   await expect(page.getByRole("heading", { name: "Standings" })).toBeVisible()
 
   // Navigate to the LEAD page
-  await page.getByRole("link", { name: "LEAD" }).click()
+  await page.getByRole("link", { name: /^LEAD$/ }).click()
+  await expect(page).toHaveURL(/\/bolao\/[^/]+\/lead$/)
 
   // Verify the Players lead heading is visible
   await expect(
