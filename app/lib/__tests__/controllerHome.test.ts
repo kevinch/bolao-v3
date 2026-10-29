@@ -66,11 +66,51 @@ describe("homepage data", () => {
     expect(peak).toBe(3)
   })
 
-  it("avoids historical fixture and prediction requests for finished bolões", async () => {
+  it("checks actual fixtures even when a bolão's stored end date has passed", async () => {
     vi.mocked(fetchHomeMemberships).mockResolvedValue([{ ...membership("old"), end: "2000-01-01" }])
+    const result = await getPersonalPreviews("user")
+    expect(result.previews.map((preview) => preview.bolao.id)).toEqual(["old"])
+    expect(fetchHomeSeason).toHaveBeenCalledWith("71", 2026)
+    expect(fetchUsersBets).toHaveBeenCalledWith(["membership-old"])
+  })
+
+  it("does not request predictions when fixtures confirm that no games are open", async () => {
+    vi.mocked(fetchHomeMemberships).mockResolvedValue([{ ...membership("old"), end: "2000-01-01" }])
+    vi.mocked(fetchHomeSeason).mockResolvedValue({
+      fixtures: [{ ...fixture, fixture: { ...fixture.fixture, timestamp: 1, status: { short: "FT", long: "Finished", elapsed: 90 } } }],
+      rounds: [fixture.league.round],
+    })
     expect(await getPersonalPreviews("user")).toEqual({ hasBoloes: true, previews: [], notices: [] })
-    expect(fetchHomeSeason).not.toHaveBeenCalled()
+    expect(fetchHomeSeason).toHaveBeenCalled()
     expect(fetchUsersBets).not.toHaveBeenCalled()
+  })
+
+  it("fills three cards when competitions have open games despite stale saved season dates", async () => {
+    vi.mocked(fetchHomeMemberships).mockResolvedValue(["serie-a", "ligue-1", "champions", "europa"].map((id, i) => ({
+      ...membership(id), competition_id: String(i + 1), end: "2000-01-01",
+    })))
+    vi.mocked(fetchHomeSeason).mockImplementation(async (leagueId) => ({
+      fixtures: [{ ...fixture, fixture: { ...fixture.fixture, timestamp: fixture.fixture.timestamp + Number(leagueId) * 3600 } }],
+      rounds: [fixture.league.round],
+    }))
+    const result = await getPersonalPreviews("user")
+    expect(result.previews.map((preview) => preview.bolao.id)).toEqual(["serie-a", "ligue-1", "champions"])
+    expect(fetchHomeSeason).toHaveBeenCalledTimes(4)
+  })
+
+  it("limits personal schedule loading to three simultaneous requests", async () => {
+    let active = 0
+    let peak = 0
+    vi.mocked(fetchHomeMemberships).mockResolvedValue(["a", "b", "c", "d", "e"].map((id) => ({ ...membership(id), competition_id: id })))
+    vi.mocked(fetchHomeSeason).mockImplementation(async () => {
+      active++
+      peak = Math.max(peak, active)
+      await Promise.resolve()
+      active--
+      return { fixtures: [fixture], rounds: [fixture.league.round] }
+    })
+    await getPersonalPreviews("user")
+    expect(peak).toBe(3)
   })
 
   it("deduplicates schedules while scoping predictions to each membership", async () => {

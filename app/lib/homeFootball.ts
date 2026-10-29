@@ -1,7 +1,7 @@
 import { cache } from "react"
 import { unstable_cache } from "next/cache"
 import type { FixtureData, Season } from "./definitions"
-import { FOOTBALL_API_SPORTS } from "./utils"
+import { FOOTBALL_API_SPORTS, isFixtureOpenToBet } from "./utils"
 
 async function footballRequest(path: string): Promise<unknown[]> {
   const token = process.env.RAPID_API_KEY
@@ -61,8 +61,9 @@ const fetchHomeRounds = cache(unstable_cache(async (leagueId: string, year: numb
 }, ["home-rounds-v2"], { revalidate: 300 }))
 
 export const fetchHomeSeason = cache(async (leagueId: string, year: number) => {
-  const [fixtures, rounds] = await Promise.all([
-    fetchHomeFixtures(leagueId, year), fetchHomeRounds(leagueId, year),
-  ])
+  const fixtures = await fetchHomeFixtures(leagueId, year)
+  // Avoid round requests for seasons with no remaining open games.
+  if (!fixtures.some(isFixtureOpenToBet)) return { fixtures, rounds: [] }
+  const rounds = await fetchHomeRounds(leagueId, year)
   return { fixtures, rounds }
 })
