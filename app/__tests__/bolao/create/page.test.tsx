@@ -46,4 +46,18 @@ describe("CreateBolao", () => {
         // Verify fetchLeagues was called
         expect(fetchLeagues).toHaveBeenCalledOnce()
     })
+
+    it("prefills a supported championship from the signup journey", async () => {
+        vi.mocked(fetchLeagues).mockResolvedValue(mockLeagues as any)
+        render(await CreateBolao({ searchParams: Promise.resolve({ competitionId: "71" }) }))
+        const props = JSON.parse(screen.getByTestId("create-form").getAttribute("data-props") || "{}")
+        expect(props.competitionId).toBe("71")
+    })
+
+    it("ignores unsupported or repeated championship parameters", async () => {
+        vi.mocked(fetchLeagues).mockResolvedValue(mockLeagues as any)
+        render(await CreateBolao({ searchParams: Promise.resolve({ competitionId: ["71", "39"] }) }))
+        const props = JSON.parse(screen.getByTestId("create-form").getAttribute("data-props") || "{}")
+        expect(props.competitionId).toBeUndefined()
+    })
 })

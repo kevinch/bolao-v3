@@ -8,6 +8,10 @@
     "readMore": "Leia mais",
     "createBolao": "Criar"
   },
+  "auth": {
+    "signInTitle": "Entrar",
+    "signUpTitle": "Criar conta"
+  },
   "home": {
     "greeting": "E aí",
     "hero": "Bolões de futebol com os amigos.",
@@ -143,6 +147,7 @@
     "errorMessage": "Houve um problema na criação."
   },
   "bolaoList": {
+    "title": "Seus bolões",
     "activeBoloes": "Ativos ({count})",
     "pastBoloes": "Passados ({count})",
     "createBolaoShort": "Criar",
@@ -266,5 +271,27 @@
     "saveSuccessDescription": "{team} é seu palpite de campeão.",
     "saveErrorTitle": "Não foi possível salvar",
     "saveErrorDescription": "Algo deu errado ao salvar seu palpite. Tente novamente."
+  },
+  "homeMatches": {
+    "startingSoon": "Começa em breve",
+    "inProgress": "Em andamento",
+    "onboardingTitle": "Comece seu primeiro bolão",
+    "onboardingDescription": "Escolha um campeonato, dê seus palpites e convide seus amigos.",
+    "onboardingInvite": "Vai participar com seus amigos? Abra o link de convite que eles compartilharam com você.",
+    "visitorTitle": "Vem aí no Bolão.io",
+    "visitorDescription": "Escolha um campeonato, crie seu bolão e convide seus amigos para dar palpites nesses jogos.",
+    "create": "Criar um bolão",
+    "createFor": "Criar um bolão de {championship}",
+    "personalTitle": "Palpites para fazer",
+    "personalDescription": "Seus próximos jogos com palpites pendentes ou incompletos, por bolão.",
+    "predict": "Palpitar",
+    "predictMatch": "Palpitar em {home} x {away}",
+    "incomplete": "Palpite incompleto",
+    "missing": "Sem palpite",
+    "caughtUp": "Tudo em dia! Nenhum palpite para completar nos próximos jogos.",
+    "noBoloes": "Crie seu primeiro bolão abaixo ou entre no bolão dos seus amigos por um link de convite.",
+    "awaitingData": "Os dados dos jogos estarão disponíveis em breve.",
+    "unavailable": "Não foi possível carregar os dados dos jogos agora. Tente novamente mais tarde.",
+    "noUpcoming": "Nenhum próximo jogo para mostrar no momento."
   }
 }

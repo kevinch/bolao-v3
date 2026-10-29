@@ -2,6 +2,17 @@ import { render, screen, cleanup } from "@testing-library/react"
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import Home from "../page"
 
+vi.mock("@/app/ui/home/signedInHome", () => ({
+  default: () => <><section data-testid="personal-previews" /><div data-testid="boloes-list">BoloesList Component</div></>,
+}))
+
+vi.mock("@/app/ui/home/championships", () => ({
+  default: () => <section data-testid="championship-previews" />,
+}))
+vi.mock("@/app/ui/home/personalMatches", () => ({
+  default: () => <section data-testid="personal-previews" />,
+}))
+
 // Mock Clerk currentUser
 vi.mock("@clerk/nextjs/server", () => ({
   currentUser: vi.fn(),

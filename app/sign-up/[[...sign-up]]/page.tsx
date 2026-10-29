@@ -1,10 +1,15 @@
 import { SignUp } from "@clerk/nextjs"
 import PageTitle from "@/app/components/pageTitle"
+import { Suspense } from "react"
+import CompetitionIntentCapture from "@/app/components/CompetitionIntentCapture"
+import { useTranslations } from "next-intl"
 
 export default function Page() {
+  const t = useTranslations("auth")
   return (
     <main>
-      <PageTitle><h1>Register</h1></PageTitle>
+      <Suspense fallback={null}><CompetitionIntentCapture /></Suspense>
+      <PageTitle><h1>{t("signUpTitle")}</h1></PageTitle>
 
       <div className="flex justify-center">
         <SignUp />

@@ -8,6 +8,10 @@
     "readMore": "Read more",
     "createBolao": "Create"
   },
+  "auth": {
+    "signInTitle": "Login",
+    "signUpTitle": "Register"
+  },
   "home": {
     "greeting": "Hey",
     "hero": "Soccer betting pools with friends.",
@@ -143,6 +147,7 @@
     "errorMessage": "There was an issue with the creation."
   },
   "bolaoList": {
+    "title": "Your bolões",
     "activeBoloes": "Active ({count})",
     "pastBoloes": "Past ({count})",
     "createBolaoShort": "Create",
@@ -266,5 +271,27 @@
     "saveSuccessDescription": "{team} is your championship winner pick.",
     "saveErrorTitle": "Could not save pick",
     "saveErrorDescription": "Something went wrong while saving your pick. Please try again."
+  },
+  "homeMatches": {
+    "startingSoon": "Starting soon",
+    "inProgress": "In progress",
+    "onboardingTitle": "Start your first bolão",
+    "onboardingDescription": "Choose a championship, predict the scores and invite your friends.",
+    "onboardingInvite": "Joining friends? Open the invite link they shared with you.",
+    "visitorTitle": "Coming up on Bolão.io",
+    "visitorDescription": "Pick a championship, create your bolão and invite your friends to predict these scores.",
+    "create": "Create a bolão",
+    "createFor": "Create a bolão for {championship}",
+    "personalTitle": "Predictions to make",
+    "personalDescription": "Your next games with missing or incomplete predictions, by bolão.",
+    "predict": "Predict",
+    "predictMatch": "Predict {home} vs {away}",
+    "incomplete": "Incomplete prediction",
+    "missing": "Not predicted yet",
+    "caughtUp": "You’re all caught up! No predictions to complete for the upcoming games.",
+    "noBoloes": "Create your first bolão below, or join your friends through an invite link.",
+    "awaitingData": "Match details will be available soon.",
+    "unavailable": "We couldn’t load match details right now. Please try again later.",
+    "noUpcoming": "No upcoming games to show right now."
   }
 }

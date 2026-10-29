@@ -41,6 +41,19 @@ export async function fetchBoloesByUserId(userId: string) {
   }
 }
 
+/** Membership IDs stay server-side and scope each homepage prediction lookup. */
+export async function fetchHomeMemberships(userId: string) {
+  if (!userId) throw new Error("Missing userid.")
+  const data = await sql`
+    SELECT b.*, ub.id AS user_bolao_id
+    FROM boloes b
+    INNER JOIN user_bolao ub ON CAST(b.id AS VARCHAR) = ub.bolao_id
+    WHERE CAST(ub.user_id AS VARCHAR) = ${userId}
+    ORDER BY b.year DESC, b.start DESC
+  `
+  return data.rows as (Bolao & { user_bolao_id: string })[]
+}
+
 export async function fetchBolao(bolaoId: string) {
   try {
     const data: { rows: QueryResultRow[] } = await sql`SELECT *
