@@ -52,13 +52,29 @@ describe("public homepage football requests", () => {
     expect(fetchMock).toHaveBeenCalledTimes(1)
     expect(fetchMock.mock.calls[0][0]).not.toContain("rounds")
     expect(await fetchHomeSeason("71", 2026)).toEqual({ fixtures: [], rounds: [] })
-    expect(fetchMock).toHaveBeenCalledTimes(2)
+    expect(fetchMock).toHaveBeenCalledTimes(1)
   })
 
   it("rejects malformed fixtures without caching them", async () => {
     fetchMock.mockResolvedValueOnce(response([{ fixture: { timestamp: 5 } }])).mockResolvedValueOnce(response([]))
     await expect(fetchHomeFixtures("71", 2026)).rejects.toThrow("Invalid fixture data")
     expect(await fetchHomeFixtures("71", 2026)).toEqual([])
+  })
+
+  it("requests betting rounds only when the season still has open fixtures", async () => {
+    const fixture = {
+      fixture: { id: 1, timestamp: 5000000000, status: { short: "NS" } },
+      league: { id: 71, season: 2026, round: "Round 1" },
+      teams: { home: { name: "Home" }, away: { name: "Away" } },
+    }
+    fetchMock.mockImplementation(async (url: string) => response(url.includes("rounds") ? ["Round 1"] : [fixture]))
+    expect(await fetchHomeSeason("71", 2026)).toEqual({ fixtures: [fixture], rounds: ["Round 1"] })
+    expect(fetchMock).toHaveBeenCalledTimes(2)
+    stored.clear()
+    const finished = { ...fixture, fixture: { ...fixture.fixture, timestamp: 1, status: { short: "FT" } } }
+    fetchMock.mockReset().mockResolvedValue(response([finished]))
+    expect(await fetchHomeSeason("71", 2026)).toEqual({ fixtures: [finished], rounds: [] })
+    expect(fetchMock).toHaveBeenCalledTimes(1)
   })
 
   it("fails gracefully without sending requests when API configuration is absent", async () => {
