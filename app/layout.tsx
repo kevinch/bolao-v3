@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { IBM_Plex_Sans } from "next/font/google"
 import { NextIntlClientProvider } from "next-intl"
 import { getLocale, getMessages } from "next-intl/server"
@@ -17,6 +17,7 @@ import {
   getSiteDescription,
 } from "@/app/lib/siteConfig"
 import { ThemeProvider } from "@/components/theme-provider"
+import { themeColors } from "@/app/lib/themeColors"
 import { ClerkThemeProvider } from "@/components/clerk-theme-provider"
 import "./globals.css"
 
@@ -96,10 +97,13 @@ function getWebsiteJsonLd(description: string) {
   }
 }
 
-export const viewport = {
+export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#ffffff",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: themeColors.light },
+    { media: "(prefers-color-scheme: dark)", color: themeColors.dark },
+  ],
 }
 
 export default async function RootLayout({
