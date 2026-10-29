@@ -1,6 +1,8 @@
 import { describe, it, expect, vi } from "vitest"
 import { renderToString } from "react-dom/server"
-import RootLayout, { metadata } from "../layout"
+import { getLocale } from "next-intl/server"
+import RootLayout, { generateMetadata } from "../layout"
+import { SITE_DESCRIPTIONS } from "@/app/lib/siteConfig"
 
 // Mock Clerk
 vi.mock("@clerk/nextjs", () => ({
@@ -62,43 +64,68 @@ vi.mock("../globals.css", () => ({}))
 
 describe("RootLayout", () => {
   describe("Metadata", () => {
-    const defaultTitle =
-      typeof metadata.title === "object" && metadata.title !== null
-        ? ((metadata.title as { default?: string }).default ?? "")
-        : String(metadata.title)
+    it("should export a title with default and template", async () => {
+      const metadata = await generateMetadata()
+      const defaultTitle =
+        typeof metadata.title === "object" && metadata.title !== null
+          ? ((metadata.title as { default?: string }).default ?? "")
+          : String(metadata.title)
 
-    it("should export a title with default and template", () => {
       expect(metadata.title).toBeDefined()
       expect(metadata.title).toHaveProperty("default")
       expect(metadata.title).toHaveProperty("template")
       expect(defaultTitle).toContain("Bolão.io")
     })
 
-    it("should have both title and description defined", () => {
+    it("should have both title and description defined", async () => {
+      const metadata = await generateMetadata()
+
       expect(metadata).toHaveProperty("title")
       expect(metadata).toHaveProperty("description")
     })
 
-    it("should set metadataBase to the production domain", () => {
+    it("should set metadataBase to the production domain", async () => {
+      const metadata = await generateMetadata()
       const metadataBase = metadata.metadataBase
       const href =
         metadataBase instanceof URL ? metadataBase.href : metadataBase
       expect(href).toBe("https://bolao.io/")
     })
 
-    it("should define Open Graph and Twitter cards", () => {
+    it("should define Open Graph and Twitter cards", async () => {
+      const metadata = await generateMetadata()
+
       expect(metadata.openGraph).toBeDefined()
       expect(metadata.openGraph?.siteName).toBe("Bolão.io")
       expect(metadata.twitter).toBeDefined()
     })
 
-    it("should have SEO-friendly title length", () => {
+    it("should localize descriptions and Open Graph locale", async () => {
+      vi.mocked(getLocale).mockResolvedValueOnce("pt-br")
+
+      const metadata = await generateMetadata()
+
+      expect(metadata.description).toBe(SITE_DESCRIPTIONS["pt-br"])
+      expect(metadata.openGraph?.description).toBe(SITE_DESCRIPTIONS["pt-br"])
+      expect(metadata.openGraph?.locale).toBe("pt_BR")
+      expect(metadata.twitter?.description).toBe(SITE_DESCRIPTIONS["pt-br"])
+    })
+
+    it("should have SEO-friendly title length", async () => {
+      const metadata = await generateMetadata()
+      const defaultTitle =
+        typeof metadata.title === "object" && metadata.title !== null
+          ? ((metadata.title as { default?: string }).default ?? "")
+          : String(metadata.title)
+
       // Title should ideally be between 10 and 60 characters for SEO
       expect(defaultTitle.length).toBeGreaterThan(5)
       expect(defaultTitle.length).toBeLessThan(70)
     })
 
-    it("should have SEO-friendly description length", () => {
+    it("should have SEO-friendly description length", async () => {
+      const metadata = await generateMetadata()
+
       // Description should ideally be between 50 and 160 characters for SEO
       const descLength = metadata.description?.toString().length || 0
       expect(descLength).toBeGreaterThan(10)
@@ -158,10 +185,10 @@ describe("RootLayout", () => {
       expect(typeof RootLayout).toBe("function")
     })
 
-    it("should export metadata object", async () => {
-      const { metadata } = await import("../layout")
-      expect(metadata).toBeDefined()
-      expect(typeof metadata).toBe("object")
+    it("should export generateMetadata function", async () => {
+      const { generateMetadata } = await import("../layout")
+      expect(generateMetadata).toBeDefined()
+      expect(typeof generateMetadata).toBe("function")
     })
   })
 
