@@ -1,12 +1,16 @@
 import { Suspense } from "react"
-import { getTranslations } from "next-intl/server"
+import { getLocale, getTranslations } from "next-intl/server"
 import { currentUser } from "@clerk/nextjs/server"
 import PageTitle from "./components/pageTitle"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import InviteRedirector from "@/app/components/InviteRedirector"
 import JsonLd from "@/app/components/jsonLd"
-import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/app/lib/siteConfig"
+import {
+  SITE_URL,
+  SITE_NAME,
+  getSiteDescription,
+} from "@/app/lib/siteConfig"
 import Championships from "@/app/ui/home/championships"
 import SignedInHome from "@/app/ui/home/signedInHome"
 import MatchesSkeleton from "@/app/ui/home/matchesSkeleton"
@@ -16,21 +20,23 @@ export const revalidate = 300
 
 const sectionSpaceing = "mb-18"
 
-const webApplicationJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  name: SITE_NAME,
-  url: SITE_URL,
-  description: SITE_DESCRIPTION,
-  applicationCategory: "SportsApplication",
-  operatingSystem: "Any (web browser)",
-  isAccessibleForFree: true,
-  offers: {
-    "@type": "Offer",
-    price: "0",
-    priceCurrency: "USD",
-  },
-  inLanguage: ["en", "pt-BR"],
+function getWebApplicationJsonLd(description: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: SITE_NAME,
+    url: SITE_URL,
+    description,
+    applicationCategory: "SportsApplication",
+    operatingSystem: "Any (web browser)",
+    isAccessibleForFree: true,
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+    inLanguage: ["en", "pt-BR"],
+  }
 }
 
 async function Home() {
@@ -57,6 +63,9 @@ async function Home() {
       </main>
     )
   }
+
+  const locale = await getLocale()
+  const webApplicationJsonLd = getWebApplicationJsonLd(getSiteDescription(locale))
 
   return (
     <main className="max-w-4xl mx-auto px-4">

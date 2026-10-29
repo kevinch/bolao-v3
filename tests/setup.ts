@@ -59,7 +59,7 @@ vi.mock('next-intl/server', () => {
       }
       return t
     },
-    getLocale: async () => 'en',
+    getLocale: vi.fn(async () => 'en'),
     getMessages: async () => en,
   }
 })

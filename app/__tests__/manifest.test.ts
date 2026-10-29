@@ -9,6 +9,7 @@ describe("manifest", () => {
       name: SITE_NAME,
       short_name: SITE_NAME,
       description: SITE_DESCRIPTION,
+      lang: "en",
       start_url: "/",
       scope: "/",
       display: "standalone",

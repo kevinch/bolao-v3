@@ -11,7 +11,11 @@ import { Analytics } from "@vercel/analytics/react"
 import { Toaster } from "@/components/ui/toaster"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import JsonLd from "@/app/components/jsonLd"
-import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/app/lib/siteConfig"
+import {
+  SITE_URL,
+  SITE_NAME,
+  getSiteDescription,
+} from "@/app/lib/siteConfig"
 import { ThemeProvider } from "@/components/theme-provider"
 import { ClerkThemeProvider } from "@/components/clerk-theme-provider"
 import "./globals.css"
@@ -23,65 +27,73 @@ const Plex = IBM_Plex_Sans({
   preload: true,
 })
 
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  title: {
-    default: "Bolão.io — Free soccer betting pools with friends",
-    template: `%s | ${SITE_NAME}`,
-  },
-  description: SITE_DESCRIPTION,
-  keywords: [
-    "bolão",
-    "bolão online",
-    "bolão grátis",
-    "criar bolão",
-    "soccer betting pool",
-    "football prediction game",
-    "World Cup pool",
-    "Brasileirão",
-  ],
-  alternates: {
-    canonical: "/",
-  },
-  openGraph: {
-    type: "website",
-    url: SITE_URL,
-    siteName: SITE_NAME,
-    title: "Bolão.io — Free soccer betting pools with friends",
-    description: SITE_DESCRIPTION,
-    locale: "en_US",
-    alternateLocale: "pt_BR",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Bolão.io — Free soccer betting pools with friends",
-    description: SITE_DESCRIPTION,
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale()
+  const description = getSiteDescription(locale)
+  const openGraphLocale = locale === "pt-br" ? "pt_BR" : "en_US"
+
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: {
+      default: "Bolão.io — Free soccer betting pools with friends",
+      template: `%s | ${SITE_NAME}`,
+    },
+    description,
+    keywords: [
+      "bolão",
+      "bolão online",
+      "bolão grátis",
+      "criar bolão",
+      "soccer betting pool",
+      "football prediction game",
+      "World Cup pool",
+      "Brasileirão",
+    ],
+    alternates: {
+      canonical: "/",
+    },
+    openGraph: {
+      type: "website",
+      url: SITE_URL,
+      siteName: SITE_NAME,
+      title: "Bolão.io — Free soccer betting pools with friends",
+      description,
+      locale: openGraphLocale,
+      alternateLocale: openGraphLocale === "pt_BR" ? "en_US" : "pt_BR",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Bolão.io — Free soccer betting pools with friends",
+      description,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  }
 }
 
-const websiteJsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebSite",
-      "@id": `${SITE_URL}/#website`,
-      url: SITE_URL,
-      name: SITE_NAME,
-      description: SITE_DESCRIPTION,
-      inLanguage: ["en", "pt-BR"],
-      publisher: { "@id": `${SITE_URL}/#organization` },
-    },
-    {
-      "@type": "Organization",
-      "@id": `${SITE_URL}/#organization`,
-      name: SITE_NAME,
-      url: SITE_URL,
-    },
-  ],
+function getWebsiteJsonLd(description: string) {
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": `${SITE_URL}/#website`,
+        url: SITE_URL,
+        name: SITE_NAME,
+        description,
+        inLanguage: ["en", "pt-BR"],
+        publisher: { "@id": `${SITE_URL}/#organization` },
+      },
+      {
+        "@type": "Organization",
+        "@id": `${SITE_URL}/#organization`,
+        name: SITE_NAME,
+        url: SITE_URL,
+      },
+    ],
+  }
 }
 
 export const viewport = {
@@ -97,6 +109,7 @@ export default async function RootLayout({
 }>) {
   const locale = await getLocale()
   const messages = await getMessages()
+  const websiteJsonLd = getWebsiteJsonLd(getSiteDescription(locale))
   const pushAlertTestUserId = process.env.PUSHALERT_TEST_USER_ID
   const { userId } = pushAlertTestUserId ? await auth() : { userId: null }
 
