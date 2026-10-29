@@ -8,6 +8,10 @@
     "readMore": "Read more",
     "createBolao": "Create"
   },
+  "auth": {
+    "signInTitle": "Login",
+    "signUpTitle": "Register"
+  },
   "home": {
     "greeting": "Hey",
     "hero": "Soccer betting pools with friends.",

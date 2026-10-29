@@ -6,8 +6,10 @@ import { SignIn } from "@clerk/nextjs"
 import PageTitle from "@/app/components/pageTitle"
 import { SESSION_STORAGE_INVITE_KEY } from "@/app/lib/utils"
 import CompetitionIntentCapture from "@/app/components/CompetitionIntentCapture"
+import { useTranslations } from "next-intl"
 
 export default function Page() {
+  const t = useTranslations("auth")
   /**
    * This is used to handle the issue with the redirect url in prod
    * It does not work for some reason, so new users loose the invite.
@@ -25,7 +27,7 @@ export default function Page() {
   return (
     <main>
       <CompetitionIntentCapture />
-      <PageTitle><h1>Login</h1></PageTitle>
+      <PageTitle><h1>{t("signInTitle")}</h1></PageTitle>
 
       <div className="flex justify-center">
         <SignIn />

@@ -8,6 +8,10 @@
     "readMore": "Leia mais",
     "createBolao": "Criar"
   },
+  "auth": {
+    "signInTitle": "Entrar",
+    "signUpTitle": "Criar conta"
+  },
   "home": {
     "greeting": "E aí",
     "hero": "Bolões de futebol com os amigos.",
