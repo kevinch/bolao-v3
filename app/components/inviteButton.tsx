@@ -54,7 +54,7 @@ export default function InviteButton({
       try {
         await navigator.share({
           title: bolaoName,
-          text: `${shareText} ${inviteUrl}`,
+          text: shareText,
           url: inviteUrl,
         })
         return
