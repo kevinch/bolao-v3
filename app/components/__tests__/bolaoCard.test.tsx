@@ -42,9 +42,9 @@ vi.mock("next/navigation", () => ({
 }))
 
 // Mock child components
-vi.mock("../copyToClipboard", () => ({
+vi.mock("../inviteButton", () => ({
   default: ({ bolaoId }: { bolaoId: string }) => (
-    <span data-testid="copy-to-clipboard">Copy invite link</span>
+    <button data-testid="invite-button">Invite {bolaoId}</button>
   ),
 }))
 
@@ -159,7 +159,13 @@ describe("BolaoCard", () => {
     })
   })
 
-  it("should show copy to clipboard option in dropdown", async () => {
+  it("should show the invite action beside the card actions", () => {
+    render(<BolaoCard bolao={mockBolao} userId="user-789" />)
+
+    expect(screen.getByTestId("invite-button")).toBeInTheDocument()
+  })
+
+  it("should not show invite action in the dropdown", async () => {
     const user = userEvent.setup()
     render(<BolaoCard bolao={mockBolao} userId="user-789" />)
 
@@ -167,9 +173,9 @@ describe("BolaoCard", () => {
     const dropdownButton = screen.getByRole("button", { name: "" })
     await user.click(dropdownButton)
 
-    // Check for copy to clipboard
+    // Invite is kept visible outside the menu.
     await waitFor(() => {
-      expect(screen.getByTestId("copy-to-clipboard")).toBeInTheDocument()
+      expect(screen.queryByTestId("invite-button")).toBeInTheDocument()
     })
   })
 

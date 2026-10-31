@@ -67,6 +67,7 @@ type ErrorResult = {
 
 type SuccessCreateBolaoResult = {
   success: boolean
+  id: string
 }
 
 export type CreateBolaoResult = SuccessCreateBolaoResult | ErrorResult
