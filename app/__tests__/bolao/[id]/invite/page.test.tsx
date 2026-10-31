@@ -48,7 +48,7 @@ describe("InvitePage", () => {
         const result = await InvitePage({ params: mockParams })
         render(result)
 
-        expect(screen.getByText("You are already in the bolão.")).toBeDefined()
+        expect(screen.getByText("Your invitation is ready. Start predicting below.")).toBeDefined()
         expect(screen.getByText(/Test Bolao/)).toBeDefined()
         expect(createUserBolao).not.toHaveBeenCalled()
     })

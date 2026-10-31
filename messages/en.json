@@ -11,7 +11,8 @@
   },
   "auth": {
     "signInTitle": "Login",
-    "signUpTitle": "Register"
+    "signUpTitle": "Register",
+    "inviteSignInHint": "You were invited to a bolão. Sign in or create a free account to join it automatically."
   },
   "navigation": {
     "primaryNavigation": "Primary navigation",
@@ -180,7 +181,7 @@
     "title": "You're in the bolão",
     "missingUser": "Error while loading the bolão. Missing userid",
     "error": "Error while adding you to the bolão.",
-    "alreadyIn": "You are already in the bolão.",
+    "alreadyIn": "Your invitation is ready. Start predicting below.",
     "added": "You were added to the bolão with success.",
     "addError": "Something went wrong while adding you to the bolão.",
     "nextGames": "Next games",
