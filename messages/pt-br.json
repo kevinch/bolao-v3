@@ -11,7 +11,8 @@
   },
   "auth": {
     "signInTitle": "Entrar",
-    "signUpTitle": "Criar conta"
+    "signUpTitle": "Criar conta",
+    "inviteSignInHint": "Você recebeu um convite para um bolão. Entre ou crie uma conta gratuita para participar automaticamente."
   },
   "navigation": {
     "primaryNavigation": "Navegação principal",
@@ -180,7 +181,7 @@
     "title": "Você entrou no bolão",
     "missingUser": "Erro ao carregar o bolão. Usuário não encontrado",
     "error": "Erro ao adicionar você ao bolão.",
-    "alreadyIn": "Você já está no bolão.",
+    "alreadyIn": "Seu convite está pronto. Comece a dar seus palpites abaixo.",
     "added": "Você foi adicionado ao bolão com sucesso.",
     "addError": "Algo deu errado ao adicionar você ao bolão.",
     "nextGames": "Próximos jogos",

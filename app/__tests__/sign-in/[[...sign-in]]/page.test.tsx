@@ -61,6 +61,15 @@ describe("SignIn Page", () => {
         )
     })
 
+    it("should explain that sign-in is part of the invite flow", () => {
+        mockSearchParams.get.mockReturnValue("/bolao/123/invite")
+        ;(useSearchParams as any).mockReturnValue(mockSearchParams)
+
+        render(<Page />)
+
+        expect(screen.getByText(/You were invited to a bolão/i)).toBeDefined()
+    })
+
     it("should not store redirect_url in sessionStorage when it does not end with 'invite'", () => {
         const redirectUrl = "/bolao/123/bet"
         mockSearchParams.get.mockReturnValue(redirectUrl);

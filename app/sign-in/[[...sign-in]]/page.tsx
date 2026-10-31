@@ -17,17 +17,24 @@ export default function Page() {
    */
   const searchParams = useSearchParams()
   const redirectUrl = searchParams.get("redirect_url")
+  const isInviteRedirect = redirectUrl?.endsWith("invite") ?? false
 
   useEffect(() => {
-    if (redirectUrl?.endsWith("invite")) {
+    if (isInviteRedirect && redirectUrl) {
       sessionStorage.setItem(SESSION_STORAGE_INVITE_KEY, redirectUrl)
     }
-  }, [redirectUrl])
+  }, [isInviteRedirect, redirectUrl])
 
   return (
     <main>
       <CompetitionIntentCapture />
       <PageTitle><h1>{t("signInTitle")}</h1></PageTitle>
+
+      {isInviteRedirect && (
+        <p className="mx-auto mb-6 max-w-md rounded-lg border bg-muted/30 px-4 py-3 text-center text-sm text-muted-foreground">
+          {t("inviteSignInHint")}
+        </p>
+      )}
 
       <div className="flex justify-center">
         <SignIn />
