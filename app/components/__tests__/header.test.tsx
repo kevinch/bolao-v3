@@ -113,9 +113,11 @@ describe("Header", () => {
     expect(menuButton).toBeInTheDocument()
 
     fireEvent.click(menuButton)
-    expect(screen.getByRole("link", { name: "Home" })).toHaveAttribute(
-      "href",
-      "/"
+    const mobileHomeLink = screen.getByRole("link", { name: "Home" })
+    expect(mobileHomeLink).toHaveAttribute("href", "/")
+    expect(mobileHomeLink).toHaveClass("text-foreground")
+    expect(screen.getByRole("heading", { name: "Explore" })).toHaveClass(
+      "text-muted-foreground"
     )
   })
 })

@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useTranslations } from "next-intl"
@@ -40,10 +41,12 @@ function NavigationLink({
   link,
   pathname,
   mobile = false,
+  onNavigate,
 }: {
   link: NavigationLink
   pathname: string
   mobile?: boolean
+  onNavigate?: (href: string) => void
 }) {
   const active = isActivePath(pathname, link)
 
@@ -51,12 +54,16 @@ function NavigationLink({
     <Link
       href={link.href}
       aria-current={active ? "page" : undefined}
+      onNavigate={() => onNavigate?.(link.href)}
       className={cn(
         "inline-flex min-h-11 items-center border-b text-sm transition-colors duration-150 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:transition-none",
         mobile ? "w-full px-1 text-base" : "px-2",
         active
           ? "border-foreground font-semibold text-foreground"
-          : "border-transparent text-muted-foreground hover:text-foreground"
+          : cn(
+              "border-transparent hover:text-foreground",
+              mobile ? "text-foreground" : "text-muted-foreground"
+            )
       )}
     >
       {link.label}
@@ -72,6 +79,39 @@ export default function HeaderNavigation({
   const pathname = usePathname()
   const common = useTranslations("common")
   const t = useTranslations("navigation")
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const shouldScrollToTop = useRef(false)
+
+  useEffect(() => {
+    if (!shouldScrollToTop.current) return
+
+    shouldScrollToTop.current = false
+    const frame = requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" })
+    })
+
+    return () => cancelAnimationFrame(frame)
+  }, [pathname])
+
+  function scrollToTop() {
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" })
+    })
+  }
+
+  function prepareNavigation(href: string) {
+    if (href === pathname) {
+      scrollToTop()
+      return
+    }
+
+    shouldScrollToTop.current = true
+  }
+
+  function prepareMobileNavigation(href: string) {
+    prepareNavigation(href)
+    setMobileMenuOpen(false)
+  }
 
   const publicLinks: NavigationLink[] = [
     { href: "/about", label: common("about") },
@@ -99,17 +139,32 @@ export default function HeaderNavigation({
           className="flex items-center gap-1"
         >
           {(isSignedIn ? memberLinks : publicLinks).map((link) => (
-            <NavigationLink key={link.href} link={link} pathname={pathname} />
+            <NavigationLink
+              key={link.href}
+              link={link}
+              pathname={pathname}
+              onNavigate={prepareNavigation}
+            />
           ))}
         </nav>
         <PreferencesMenu />
         {!isSignedIn ? (
           <>
             <Button asChild variant="ghost" size="sm" className="h-11 px-2">
-              <Link href="/sign-in">{t("login")}</Link>
+              <Link
+                href="/sign-in"
+                onNavigate={() => prepareNavigation("/sign-in")}
+              >
+                {t("login")}
+              </Link>
             </Button>
             <Button asChild size="sm" className="ml-1 h-9 px-3">
-              <Link href="/sign-up">{t("getStarted")}</Link>
+              <Link
+                href="/sign-up"
+                onNavigate={() => prepareNavigation("/sign-up")}
+              >
+                {t("getStarted")}
+              </Link>
             </Button>
           </>
         ) : null}
@@ -118,17 +173,26 @@ export default function HeaderNavigation({
       <div className="flex min-w-0 items-center gap-1.5 md:hidden">
         {isSignedIn ? (
           <Button asChild variant="ghost" size="sm" className="h-10 px-2">
-            <Link href="/bolao/create" aria-label={t("createBolao")}>
+            <Link
+              href="/bolao/create"
+              aria-label={t("createBolao")}
+              onNavigate={() => prepareNavigation("/bolao/create")}
+            >
               {common("createBolao")}
             </Link>
           </Button>
         ) : (
           <Button asChild size="sm" className="h-9 px-3">
-            <Link href="/sign-up">{t("getStarted")}</Link>
+            <Link
+              href="/sign-up"
+              onNavigate={() => prepareNavigation("/sign-up")}
+            >
+              {t("getStarted")}
+            </Link>
           </Button>
         )}
 
-        <Sheet>
+        <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
           <SheetTrigger asChild>
             <Button
               type="button"
@@ -158,6 +222,7 @@ export default function HeaderNavigation({
                         link={link}
                         pathname={pathname}
                         mobile
+                        onNavigate={prepareMobileNavigation}
                       />
                     )
                   )}
@@ -176,6 +241,7 @@ export default function HeaderNavigation({
                         link={link}
                         pathname={pathname}
                         mobile
+                        onNavigate={prepareMobileNavigation}
                       />
                     ))}
                   </div>
@@ -189,12 +255,22 @@ export default function HeaderNavigation({
               <div className="mt-8 grid gap-3 border-t pt-6">
                 <SheetClose asChild>
                   <Button asChild variant="outline" className="h-11">
-                    <Link href="/sign-in">{t("login")}</Link>
+                    <Link
+                      href="/sign-in"
+                      onNavigate={() => prepareMobileNavigation("/sign-in")}
+                    >
+                      {t("login")}
+                    </Link>
                   </Button>
                 </SheetClose>
                 <SheetClose asChild>
                   <Button asChild className="h-11">
-                    <Link href="/sign-up">{t("getStarted")}</Link>
+                    <Link
+                      href="/sign-up"
+                      onNavigate={() => prepareMobileNavigation("/sign-up")}
+                    >
+                      {t("getStarted")}
+                    </Link>
                   </Button>
                 </SheetClose>
               </div>
