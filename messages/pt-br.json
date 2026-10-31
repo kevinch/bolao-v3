@@ -172,7 +172,7 @@
   },
   "invite": {
     "button": "Convidar",
-    "shareMessage": "Entre no meu bolão {name} no Bolão.io e dê seus palpites:",
+    "shareMessage": "Entre no meu bolão \"{name}\" no Bolão.io e dê seus palpites:",
     "copySuccessTitle": "Sucesso",
     "copySuccessMessage": "O link de convite foi copiado para a área de transferência.",
     "copyErrorMessage": "Falha ao copiar o link de convite para a área de transferência."

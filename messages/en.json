@@ -172,7 +172,7 @@
   },
   "invite": {
     "button": "Invite",
-    "shareMessage": "Join my bolão {name} on Bolão.io and make your predictions:",
+    "shareMessage": "Join my bolão \"{name}\" on Bolão.io and make your predictions:",
     "copySuccessTitle": "Success",
     "copySuccessMessage": "The invite link was copied to the clipboard.",
     "copyErrorMessage": "Failed to copy the invite link to the clipboard."
