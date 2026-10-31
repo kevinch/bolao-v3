@@ -199,7 +199,7 @@ describe("actions", () => {
 
       expect(fetchLeague).toHaveBeenCalledWith(2)
       expect(getCurrentSeasonObject).toHaveBeenCalled()
-      expect(result).toEqual({ success: true })
+      expect(result).toEqual({ success: true, id: "bolao-1" })
     })
 
     it("should return error when name is not a string", async () => {
@@ -281,7 +281,7 @@ describe("actions", () => {
 
       const result = await createBolao(formData)
 
-      expect(result).toEqual({ success: true })
+      expect(result).toEqual({ success: true, id: "bolao-1" })
     })
   })
 

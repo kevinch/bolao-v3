@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl"
 import { useToast } from "@/hooks/use-toast"
+import { copyText } from "@/app/lib/copyText"
 
 type Props = {
   bolaoId: string
@@ -13,8 +14,8 @@ function CopyToClipboard({ bolaoId }: Props) {
 
   async function handleCopyClipboard() {
     try {
-      await navigator.clipboard.writeText(
-        `${window.location}bolao/${bolaoId}/invite`
+      await copyText(
+        new URL(`/bolao/${bolaoId}/invite`, window.location.href).toString()
       )
 
       toast({

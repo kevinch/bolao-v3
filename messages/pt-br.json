@@ -164,7 +164,27 @@
     "loadingButton": "Aguarde",
     "successTitle": "Sucesso",
     "successMessage": "O bolão foi criado com sucesso.",
-    "errorMessage": "Houve um problema na criação."
+    "errorMessage": "Houve um problema na criação.",
+    "createdTitle": "Seu bolão está pronto",
+    "createdDescription": "{name} está pronto. Convide seus amigos ou comece a dar seus palpites.",
+    "startBetting": "Fazer meus palpites"
+  },
+  "invite": {
+    "button": "Convidar",
+    "shareMessage": "Entre no meu bolão {name} no Bolão.io e dê seus palpites:",
+    "copySuccessTitle": "Sucesso",
+    "copySuccessMessage": "O link de convite foi copiado para a área de transferência.",
+    "copyErrorMessage": "Falha ao copiar o link de convite para a área de transferência."
+  },
+  "invitePage": {
+    "title": "Você entrou no bolão",
+    "missingUser": "Erro ao carregar o bolão. Usuário não encontrado",
+    "error": "Erro ao adicionar você ao bolão.",
+    "alreadyIn": "Você já está no bolão.",
+    "added": "Você foi adicionado ao bolão com sucesso.",
+    "addError": "Algo deu errado ao adicionar você ao bolão.",
+    "nextGames": "Próximos jogos",
+    "startBetting": "Começar a apostar"
   },
   "bolaoList": {
     "title": "Seus bolões",

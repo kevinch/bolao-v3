@@ -164,7 +164,27 @@
     "loadingButton": "Please wait",
     "successTitle": "Success",
     "successMessage": "The bolão was successfully created.",
-    "errorMessage": "There was an issue with the creation."
+    "errorMessage": "There was an issue with the creation.",
+    "createdTitle": "Your bolão is ready",
+    "createdDescription": "{name} is ready. Invite your friends or start making your predictions.",
+    "startBetting": "Make my predictions"
+  },
+  "invite": {
+    "button": "Invite",
+    "shareMessage": "Join my bolão {name} on Bolão.io and make your predictions:",
+    "copySuccessTitle": "Success",
+    "copySuccessMessage": "The invite link was copied to the clipboard.",
+    "copyErrorMessage": "Failed to copy the invite link to the clipboard."
+  },
+  "invitePage": {
+    "title": "You're in the bolão",
+    "missingUser": "Error while loading the bolão. Missing userid",
+    "error": "Error while adding you to the bolão.",
+    "alreadyIn": "You are already in the bolão.",
+    "added": "You were added to the bolão with success.",
+    "addError": "Something went wrong while adding you to the bolão.",
+    "nextGames": "Next games",
+    "startBetting": "Start betting now"
   },
   "bolaoList": {
     "title": "Your bolões",
