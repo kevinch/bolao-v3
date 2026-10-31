@@ -21,9 +21,10 @@ type Props = {
   bolao: Bolao
   leagueName?: string
   leagueLogo?: string
+  className?: string
 }
 
-function BolaoPageTitle({ leagueName, leagueLogo, bolao }: Props) {
+function BolaoPageTitle({ leagueName, leagueLogo, bolao, className }: Props) {
   const [failedLocalLogos, setFailedLocalLogos] = useState<Set<string>>(
     () => new Set()
   )
@@ -71,7 +72,7 @@ function BolaoPageTitle({ leagueName, leagueLogo, bolao }: Props) {
   const alt = `${leagueName ?? "2026 FIFA World Cup"}'s logo`
 
   return (
-    <PageTitle center={true}>
+    <PageTitle center={true} className={className}>
       {logoSrc && (
         <div className="flex justify-center mb-6">
           {darkLogoSrc && darkLogoSrc !== lightLogoSrc ? (

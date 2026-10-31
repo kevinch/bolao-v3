@@ -9,8 +9,13 @@ import { auth } from "@clerk/nextjs/server"
 vi.mock("@/app/lib/data")
 vi.mock("@/app/lib/actions")
 vi.mock("@clerk/nextjs/server")
-vi.mock("@/app/components/pageTitle", () => ({
-    default: ({ children }: { children: React.ReactNode }) => <h1 data-testid="page-title">{children}</h1>
+vi.mock("@/app/ui/bolao/bolaoPageTitle", () => ({
+    default: ({ bolao, leagueName }: { bolao: { name: string }; leagueName?: string }) => (
+        <h1 data-testid="page-title">{bolao.name} {leagueName}</h1>
+    ),
+}))
+vi.mock("@/app/ui/home/matchPreview", () => ({
+    default: () => <div data-testid="match-preview" />,
 }))
 vi.mock("@/components/ui/button", () => ({
     Button: ({ children, asChild }: { children: React.ReactNode, asChild?: boolean }) => (

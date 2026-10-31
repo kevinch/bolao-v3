@@ -2,8 +2,10 @@
 
 import { useTranslations } from "next-intl"
 import { createBolao } from "@/app/lib/actions"
+import InviteButton from "@/app/components/inviteButton"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import {
   Select,
@@ -17,7 +19,7 @@ import {
 import { ReloadIcon } from "@radix-ui/react-icons"
 import { League } from "@/app/lib/definitions"
 import { useToast } from "@/hooks/use-toast"
-import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { useState } from "react"
 
 type FormProps = {
@@ -28,8 +30,11 @@ type FormProps = {
 function Form({ leagues, competitionId }: FormProps) {
   const t = useTranslations("createBolao")
   const { toast } = useToast()
-  const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [createdBolao, setCreatedBolao] = useState<{
+    id: string
+    name: string
+  } | null>(null)
 
   const orderedLeaguesByCountryName = Object.values(
     leagues.reduce(
@@ -69,19 +74,45 @@ function Form({ leagues, competitionId }: FormProps) {
 
     setLoading(false)
 
-    if (result.success) {
-      toast({
-        title: t("successTitle"),
-        description: t("successMessage"),
-        variant: "success",
+    if (result.success && "id" in result) {
+      setCreatedBolao({
+        id: result.id,
+        name: String(formData.get("name")),
       })
-      router.push("/")
     } else {
       toast({
         description: t("errorMessage"),
         variant: "destructive",
       })
     }
+  }
+
+  if (createdBolao) {
+    return (
+      <Card className="mx-auto max-w-lg">
+        <CardHeader>
+          <CardTitle>{t("createdTitle")}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground">
+            {t("createdDescription", { name: createdBolao.name })}
+          </p>
+        </CardContent>
+        <CardFooter className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+          <InviteButton
+            bolaoId={createdBolao.id}
+            bolaoName={createdBolao.name}
+            size="default"
+            className="w-full sm:w-auto"
+          />
+          <Button asChild variant="secondary" className="w-full sm:w-auto">
+            <Link href={`/bolao/${createdBolao.id}/bet`}>
+              {t("startBetting")}
+            </Link>
+          </Button>
+        </CardFooter>
+      </Card>
+    )
   }
 
   return (

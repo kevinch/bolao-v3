@@ -5,11 +5,12 @@ type Props = {
   children: ReactNode
   center?: boolean
   subTitle?: string | number
+  className?: string
 }
 
-function PageTitle({ children, center, subTitle }: Props) {
+function PageTitle({ children, center, subTitle, className }: Props) {
   return (
-    <div className="capitalize mt-24 mb-20">
+    <div className={clsx("capitalize mt-24 mb-20", className)}>
       <div className={clsx("text-4xl ", { "text-center": center })}>
         {children}
       </div>

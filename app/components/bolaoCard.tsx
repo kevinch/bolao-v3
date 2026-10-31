@@ -5,7 +5,6 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { format } from "date-fns"
-import CopyToClipboard from "./copyToClipboard"
 import { updateBolao } from "@/app/lib/actions"
 import { deleteBolaoGroup } from "@/app/lib/controllerAdmin"
 import { Bolao } from "@/app/lib/definitions"
@@ -13,7 +12,6 @@ import { Button } from "@/components/ui/button"
 import {
   DotsVerticalIcon,
   Pencil2Icon,
-  ClipboardCopyIcon,
   TrashIcon,
 } from "@radix-ui/react-icons"
 import {
@@ -27,6 +25,7 @@ import {
 import BolaoYearBadge from "@/app/components/bolaoYearBadge"
 import { BolaoEditModal } from "@/app/components/bolaoEditModal"
 import { BolaoDeleteModal } from "@/app/components/bolaoDeleteModal"
+import InviteButton from "@/app/components/inviteButton"
 import { useToast } from "@/hooks/use-toast"
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
@@ -118,7 +117,7 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
 
       <CardFooter>
         <div className="flex justify-between w-full">
-          <div className="space-x-2">
+          <div className="flex items-center gap-2">
             <Button asChild variant="outline">
               <Link href={`/bolao/${bolao.id}/bet`}>{t("bet")}</Link>
             </Button>
@@ -126,6 +125,13 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
             <Button asChild variant="outline">
               <Link href={`/bolao/${bolao.id}/results`}>{t("results")}</Link>
             </Button>
+
+            <InviteButton
+              bolaoId={bolao.id}
+              bolaoName={bolao.name}
+              iconOnly
+              size="icon"
+            />
           </div>
 
           <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
@@ -137,11 +143,6 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
 
             <DropdownMenuContent className="w-56">
               <DropdownMenuGroup>
-                <DropdownMenuItem>
-                  <ClipboardCopyIcon className="h-4 w-4 mr-1" />
-                  <CopyToClipboard bolaoId={bolao.id} />
-                </DropdownMenuItem>
-
                 {bolao.created_by === userId && (
                   <>
                     <DropdownMenuItem

@@ -84,6 +84,7 @@ export async function createBolao(
     if (userBolaoResult.success) {
       return {
         success: true,
+        id: insertedData.id,
       }
     }
     return {

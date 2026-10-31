@@ -7,6 +7,11 @@ import { useToast } from "@/hooks/use-toast"
 // Mock dependencies
 vi.mock("@/app/lib/actions")
 vi.mock("@/hooks/use-toast")
+vi.mock("@/app/components/inviteButton", () => ({
+    default: ({ bolaoId, bolaoName }: { bolaoId: string; bolaoName: string }) => (
+        <button data-testid="invite-button">Invite {bolaoName} ({bolaoId})</button>
+    ),
+}))
 const mockPush = vi.fn()
 vi.mock("next/navigation", () => ({
     useRouter: () => ({
@@ -91,8 +96,8 @@ describe("Form", () => {
         })
     })
 
-    it("should show success toast on successful creation", async () => {
-        (createBolao as any).mockResolvedValue({ success: true });
+    it("should show the creation success step", async () => {
+        (createBolao as any).mockResolvedValue({ success: true, id: "bolao-1" });
 
         const { container } = render(<Form leagues={mockLeagues} />)
 
@@ -103,11 +108,7 @@ describe("Form", () => {
         fireEvent.submit(form)
 
         await waitFor(() => {
-            expect(mockToast).toHaveBeenCalledWith({
-                title: "Success",
-                description: "The bolão was successfully created.",
-                variant: "success"
-            })
+            expect(screen.getByText("Your bolão is ready")).toBeDefined()
         })
     })
 
@@ -130,8 +131,8 @@ describe("Form", () => {
         })
     })
 
-    it("should redirect to the home page after successful creation", async () => {
-        (createBolao as any).mockResolvedValue({ success: true });
+    it("should show the invite and betting actions after successful creation", async () => {
+        (createBolao as any).mockResolvedValue({ success: true, id: "bolao-1" });
 
         const { container } = render(<Form leagues={mockLeagues} />)
 
@@ -139,7 +140,12 @@ describe("Form", () => {
         fireEvent.submit(form)
 
         await waitFor(() => {
-            expect(mockPush).toHaveBeenCalledWith("/")
+            expect(screen.getByText("Your bolão is ready")).toBeDefined()
+            expect(screen.getByTestId("invite-button")).toBeDefined()
+            expect(screen.getByRole("link", { name: "Make my predictions" })).toHaveAttribute(
+                "href",
+                "/bolao/bolao-1/bet"
+            )
         })
     })
 })
