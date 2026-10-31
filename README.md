@@ -59,3 +59,15 @@ PUSHALERT_TEST_USER_ID
 ```
 
 `PUSHALERT_TEST_USER_ID` is a server-side allowlist for the PushAlert pilot; only the matching Clerk user loads the PushAlert script.
+
+## Prismic
+
+News and other Prismic documents are cached in production under the `prismic` tag. After publishing, force a refresh:
+
+```bash
+curl -X POST https://bolao.io/api/revalidate
+```
+
+`POST /api/revalidate` revalidates that tag. No secret or request body is required. A successful call returns `{ "revalidated": true, "now": ... }`.
+
+Local `yarn dev` refetches Prismic every 5 seconds and does not use this endpoint.
