@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { useEffect } from "react"
 import { SignIn } from "@clerk/nextjs"
@@ -39,6 +40,17 @@ export default function Page() {
       <div className="flex justify-center">
         <SignIn />
       </div>
+      <p className="mx-auto mt-6 max-w-md text-center text-xs text-muted-foreground">
+        {t("legalNotice")}{" "}
+        <Link className="underline hover:no-underline" href="/terms">
+          {t("terms")}
+        </Link>{" "}
+        {t("and")} {" "}
+        <Link className="underline hover:no-underline" href="/privacy">
+          {t("privacy")}
+        </Link>
+        .
+      </p>
     </main>
   )
 }

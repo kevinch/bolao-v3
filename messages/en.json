@@ -7,12 +7,18 @@
     "contact": "Contact",
     "readMore": "Read more",
     "createBolao": "Create",
-    "footerNavigation": "Footer navigation"
+    "footerNavigation": "Footer navigation",
+    "privacy": "Privacy",
+    "terms": "Terms"
   },
   "auth": {
     "signInTitle": "Login",
     "signUpTitle": "Register",
-    "inviteSignInHint": "You were invited to a bolão. Sign in or create a free account to join it automatically."
+    "inviteSignInHint": "You were invited to a bolão. Sign in or create a free account to join it automatically.",
+    "legalNotice": "By continuing, you agree to the",
+    "and": "and",
+    "terms": "Terms of Use",
+    "privacy": "Privacy Notice"
   },
   "navigation": {
     "primaryNavigation": "Primary navigation",
@@ -172,7 +178,7 @@
   },
   "invite": {
     "button": "Invite",
-    "shareMessage": "Join my bolão {name} on Bolão.io and make your predictions:",
+    "shareMessage": "Join my bolão \"{name}\" on Bolão.io and make your predictions:",
     "copySuccessTitle": "Success",
     "copySuccessMessage": "The invite link was copied to the clipboard.",
     "copyErrorMessage": "Failed to copy the invite link to the clipboard."
@@ -312,6 +318,35 @@
     "saveSuccessDescription": "{team} is your championship winner pick.",
     "saveErrorTitle": "Could not save pick",
     "saveErrorDescription": "Something went wrong while saving your pick. Please try again."
+  },
+  "privacy": {
+    "title": "Privacy Notice",
+    "metaDescription": "How Bolão.io handles personal data, cookies and similar technologies.",
+    "lastUpdated": "Last updated: October 31, 2026",
+    "intro": "This notice explains how Bolão.io handles personal data when you use our website and services. It is intended to provide the clear information required by applicable privacy law, including Brazil's LGPD.",
+    "controller": { "title": "Who is responsible", "body": "Bolão.io is the controller of the personal data described in this notice. Use our contact form for privacy questions, requests, or concerns.", "contactLink": "Contact Bolão.io" },
+    "data": { "title": "Data we handle", "body": "We only handle data needed to run and improve the service.", "account": "Account data provided through Clerk, such as your name, username, email address and authentication identifiers.", "activity": "Bolão activity, including bolão names, memberships, predictions, points and leaderboard display information.", "contact": "Contact-form information, including the email address and message you send us.", "technical": "Technical and usage information, such as browser, device, pages viewed and performance information." },
+    "purposes": { "title": "Why we use data", "body": "We use personal data to create and secure accounts, operate bolões and predictions, show standings, provide support, prevent abuse, maintain and improve the service, and understand aggregate site use. The applicable legal basis depends on the purpose, including performance of the service, legal obligations, legitimate interests such as security and reliability, or consent where required." },
+    "sharing": { "title": "Service providers and data sharing", "body": "We use service providers to operate Bolão.io. They process data on our instructions or under their own applicable privacy terms. Depending on your use, data may be processed outside Brazil.", "clerk": "Clerk provides account authentication and session management.", "vercel": "Vercel provides hosting, web analytics and performance insights.", "umami": "Umami provides website analytics.", "infrastructure": "Vercel Postgres stores application data such as bolões, memberships and predictions.", "content": "Prismic provides content-management services for site content.", "email": "Resend sends messages submitted through the contact form.", "football": "API-Football provides fixture and result data; we do not send it your account data to retrieve public football information." },
+    "cookies": { "title": "Cookies and similar technologies", "body": "Bolão.io uses cookies and browser storage for the purposes below. You can manage or clear cookies in your browser, but doing so may affect sign-in or preferences.", "locale": "A NEXT_LOCALE cookie remembers your selected language for up to one year.", "auth": "Clerk uses authentication-related cookies or similar technologies to keep your account session secure.", "storage": "Temporary session storage may keep an invite or selected competition while you continue a sign-in or creation flow.", "analytics": "Vercel Analytics, Vercel Speed Insights and Umami help us understand performance and aggregate use. Their behavior may vary with their configuration and your browser settings." },
+    "retention": { "title": "How long we keep data", "body": "We keep data only for as long as necessary for the purposes described here, including maintaining your account and bolão history, resolving disputes, meeting legal obligations and protecting the service. We may retain anonymized or aggregated information longer." },
+    "rights": { "title": "Your privacy rights", "body": "Subject to applicable law, you may request confirmation and access to your data, correction, anonymization, blocking or deletion where appropriate, information about sharing, portability, revocation of consent, and review of certain automated decisions. Contact us to make a request. You may also complain to the Brazilian data-protection authority (ANPD)." },
+    "security": { "title": "Security", "body": "We use reasonable technical and organizational measures intended to protect personal data. No internet service can guarantee absolute security, so please keep your account credentials confidential." },
+    "updates": { "title": "Changes to this notice", "body": "We may update this notice when our practices or legal requirements change. We will post the updated version here and change the date above." }
+  },
+  "terms": {
+    "title": "Terms of Use",
+    "metaDescription": "Terms for using Bolão.io, the free social football prediction app.",
+    "lastUpdated": "Last updated: October 31, 2026",
+    "intro": "These Terms of Use govern your access to and use of Bolão.io. By creating an account or using the service, you agree to these terms and our Privacy Notice.",
+    "service": { "title": "The service", "body": "Bolão.io is a free social football prediction service. It lets friends create groups, predict match scores and compare points. Bolão.io does not accept, process or pay out money, and it is not a bookmaker, gambling operator or financial service." },
+    "accounts": { "title": "Accounts and invitations", "body": "You are responsible for the information associated with your account and for keeping access to it secure. Invite links are intended for people you choose to invite; do not use them to harass others or distribute them in a way that creates unwanted access or disruption." },
+    "acceptableUse": { "title": "Acceptable use", "body": "Use Bolão.io lawfully and respectfully. Do not interfere with the service, attempt unauthorized access, use automated means that harm the service, impersonate others, submit unlawful or abusive content, or use the app to organize or promote illegal gambling." },
+    "content": { "title": "Your content and group activity", "body": "You remain responsible for bolão names and other content you submit. We may remove content or restrict access when reasonably necessary to protect users, comply with law, or keep the service reliable and safe." },
+    "availability": { "title": "Availability and changes", "body": "We work to keep Bolão.io available and accurate, but match data, scores, features and availability may change or be interrupted. We may modify, suspend or discontinue features when necessary. Do not rely on the service for financial, betting or other high-stakes decisions." },
+    "thirdParties": { "title": "Third-party services", "body": "Bolão.io relies on third parties for services such as authentication, hosting, football data and content. Their services and any external links are governed by their own terms and privacy policies." },
+    "changes": { "title": "Changes to these terms", "body": "We may update these terms as the service evolves or legal requirements change. We will post the new version here and update the date above. Continued use after an update means you accept the revised terms." },
+    "contact": { "title": "Contact", "body": "For questions about these terms or the service, please use the contact page." }
   },
   "homeMatches": {
     "startingSoon": "Starting soon",

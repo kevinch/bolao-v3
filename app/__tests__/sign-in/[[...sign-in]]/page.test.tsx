@@ -45,6 +45,8 @@ describe("SignIn Page", () => {
         expect(screen.getByTestId("page-title")).toBeDefined()
         expect(screen.getByText("Login")).toBeDefined()
         expect(screen.getByTestId("clerk-sign-in")).toBeDefined()
+        expect(screen.getByRole("link", { name: "Terms of Use" })).toHaveAttribute("href", "/terms")
+        expect(screen.getByRole("link", { name: "Privacy Notice" })).toHaveAttribute("href", "/privacy")
     })
 
     it("should store redirect_url in sessionStorage when it ends with 'invite'", () => {
