@@ -31,6 +31,16 @@ For full setup and env var list, see [README.md](README.md).
 | `yarn test:watch` | Vitest watch mode                        |
 | `yarn test:e2e`   | Playwright (installs Chromium if needed) |
 
+### Refresh published Prismic content
+
+Production Prismic fetches (news posts and other documents) are cached with the `prismic` tag. After a publish, force a refresh:
+
+```bash
+curl -X POST https://bolao.io/api/revalidate
+```
+
+`POST /api/revalidate` revalidates that tag. No secret or body. Local `yarn dev` refetches every 5 seconds and does not use this endpoint. Details are in [README.md](README.md).
+
 ## Code style
 
 TBD — follow existing patterns in the codebase and match surrounding files.
