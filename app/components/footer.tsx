@@ -37,6 +37,12 @@ function Footer() {
           <Button asChild variant="ghost" className={footerLinkClassName}>
             <Link href="/contact">{t("contact")}</Link>
           </Button>
+          <Button asChild variant="ghost" className={footerLinkClassName}>
+            <Link href="/privacy">{t("privacy")}</Link>
+          </Button>
+          <Button asChild variant="ghost" className={footerLinkClassName}>
+            <Link href="/terms">{t("terms")}</Link>
+          </Button>
         </div>
       </nav>
       <div className="flex flex-wrap items-center justify-center gap-1 border-t py-4">

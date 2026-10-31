@@ -34,7 +34,7 @@ describe("InviteButton", () => {
     await waitFor(() => {
       expect(share).toHaveBeenCalledWith({
         title: "Test Bolao",
-        text: "Join my bolão Test Bolao on Bolão.io and make your predictions:",
+        text: "Join my bolão \"Test Bolao\" on Bolão.io and make your predictions:",
         url: "http://localhost:3000/bolao/bolao-123/invite",
       })
     })

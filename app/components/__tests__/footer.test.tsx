@@ -4,7 +4,7 @@ import { render } from "@testing-library/react"
 import Footer from "../footer"
 
 describe("Footer", () => {
-  it("should render 6 links", () => {
+  it("should render 8 links", () => {
     render(<Footer />)
 
     // Check for all 5 links by their text content
@@ -16,10 +16,12 @@ describe("Footer", () => {
     expect(screen.getByRole("link", { name: "News" })).toBeInTheDocument()
     expect(screen.getByRole("link", { name: "FAQ" })).toBeInTheDocument()
     expect(screen.getByRole("link", { name: "Contact" })).toBeInTheDocument()
+    expect(screen.getByRole("link", { name: "Privacy" })).toBeInTheDocument()
+    expect(screen.getByRole("link", { name: "Terms" })).toBeInTheDocument()
 
-    // Verify there are exactly 6 links
+    // Verify there are exactly 8 links
     const links = screen.getAllByRole("link")
-    expect(links).toHaveLength(6)
+    expect(links).toHaveLength(8)
   })
 
   it("should have correct href attributes for all links", () => {
@@ -48,6 +50,14 @@ describe("Footer", () => {
     expect(screen.getByRole("link", { name: "Contact" })).toHaveAttribute(
       "href",
       "/contact"
+    )
+    expect(screen.getByRole("link", { name: "Privacy" })).toHaveAttribute(
+      "href",
+      "/privacy"
+    )
+    expect(screen.getByRole("link", { name: "Terms" })).toHaveAttribute(
+      "href",
+      "/terms"
     )
   })
 

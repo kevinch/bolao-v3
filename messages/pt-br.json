@@ -7,12 +7,18 @@
     "contact": "Contato",
     "readMore": "Leia mais",
     "createBolao": "Criar",
-    "footerNavigation": "Navegação do rodapé"
+    "footerNavigation": "Navegação do rodapé",
+    "privacy": "Privacidade",
+    "terms": "Termos"
   },
   "auth": {
     "signInTitle": "Entrar",
     "signUpTitle": "Criar conta",
-    "inviteSignInHint": "Você recebeu um convite para um bolão. Entre ou crie uma conta gratuita para participar automaticamente."
+    "inviteSignInHint": "Você recebeu um convite para um bolão. Entre ou crie uma conta gratuita para participar automaticamente.",
+    "legalNotice": "Ao continuar, você concorda com os",
+    "and": "e com o",
+    "terms": "Termos de Uso",
+    "privacy": "Aviso de Privacidade"
   },
   "navigation": {
     "primaryNavigation": "Navegação principal",
@@ -153,7 +159,7 @@
     "techDesc1": "Como dito antes, este é um web app, o que significa que não há app extra para Android ou iOS para baixar. Basta abrir seu navegador em https://bolao.io. Isso me permite lançar mudanças constantemente sem que os usuários precisem atualizar seus apps nativos.",
     "techDesc2": "O app é construído com NextJS, Typescript e React, hospedado na Vercel e usa Postgres para o banco de dados. Usa Prismic.io para o CMS headless e Clerk para gerenciamento de autenticação.",
     "coverageTitle": "Cobertura de futebol",
-    "coverageDesc": "O app usa a API do <apiLink>api-football.com</apiLink> para obter os últimos jogos e resultados. Por enquanto, apenas algumas ligas estão disponíveis, mas mediante solicitação mais podem ser adicionadas. Fique à vontade para me contatar no <linkedinLink>LinkedIn</linkedinLink>."
+    "coverageDesc": "O app usa a API do <apiLink>api-football.com</apiLink> para obter os últimos jogos e resultados. Por enquanto, apenas algumas ligas estão disponíveis, mas mediante solicitação mais podem ser adicionadas. Fique à vontade para me contactar no <linkedinLink>LinkedIn</linkedinLink>."
   },
   "createBolao": {
     "title": "Criar bolão",
@@ -172,7 +178,7 @@
   },
   "invite": {
     "button": "Convidar",
-    "shareMessage": "Entre no meu bolão {name} no Bolão.io e dê seus palpites:",
+    "shareMessage": "Entre no meu bolão \"{name}\" no Bolão.io e dê seus palpites:",
     "copySuccessTitle": "Sucesso",
     "copySuccessMessage": "O link de convite foi copiado para a área de transferência.",
     "copyErrorMessage": "Falha ao copiar o link de convite para a área de transferência."
@@ -312,6 +318,35 @@
     "saveSuccessDescription": "{team} é seu palpite de campeão.",
     "saveErrorTitle": "Não foi possível salvar",
     "saveErrorDescription": "Algo deu errado ao salvar seu palpite. Tente novamente."
+  },
+  "privacy": {
+    "title": "Aviso de Privacidade",
+    "metaDescription": "Como o Bolão.io trata dados pessoais, cookies e tecnologias semelhantes.",
+    "lastUpdated": "Última atualização: 31 de outubro de 2026",
+    "intro": "Este aviso explica como o Bolão.io trata dados pessoais quando você usa nosso site e serviços. Ele busca fornecer informações claras exigidas pela legislação de privacidade aplicável, incluindo a LGPD.",
+    "controller": { "title": "Quem é responsável", "body": "O Bolão.io é o controlador dos dados pessoais descritos neste aviso. Use nosso formulário de contato para dúvidas, solicitações ou preocupações sobre privacidade.", "contactLink": "Entre em contato com o Bolão.io" },
+    "data": { "title": "Dados que tratamos", "body": "Tratamos somente os dados necessários para operar e melhorar o serviço.", "account": "Dados da conta fornecidos pelo Clerk, como nome, nome de usuário, endereço de e-mail e identificadores de autenticação.", "activity": "Atividade no bolão, incluindo nomes de bolões, participantes, palpites, pontos e informações exibidas no ranking.", "contact": "Informações do formulário de contato, incluindo o endereço de e-mail e a mensagem que você enviar.", "technical": "Informações técnicas e de uso, como navegador, dispositivo, páginas visualizadas e informações de desempenho." },
+    "purposes": { "title": "Por que usamos dados", "body": "Usamos dados pessoais para criar e proteger contas, operar bolões e palpites, mostrar rankings, prestar suporte, prevenir abusos, manter e melhorar o serviço e entender o uso agregado do site. A base legal aplicável depende da finalidade, incluindo execução do serviço, obrigações legais, interesses legítimos como segurança e confiabilidade, ou consentimento quando exigido." },
+    "sharing": { "title": "Prestadores de serviço e compartilhamento", "body": "Usamos prestadores de serviço para operar o Bolão.io. Eles tratam dados sob nossas instruções ou conforme seus próprios termos de privacidade aplicáveis. Dependendo do seu uso, dados podem ser tratados fora do Brasil.", "clerk": "O Clerk fornece autenticação de contas e gerenciamento de sessão.", "vercel": "A Vercel fornece hospedagem, análises web e informações de desempenho.", "umami": "O Umami fornece análises de uso do site.", "infrastructure": "O Vercel Postgres armazena dados da aplicação, como bolões, participantes e palpites.", "content": "O Prismic fornece serviços de gerenciamento de conteúdo do site.", "email": "O Resend envia as mensagens enviadas pelo formulário de contato.", "football": "A API-Football fornece dados de jogos e resultados; não enviamos seus dados de conta para obter informações públicas de futebol." },
+    "cookies": { "title": "Cookies e tecnologias semelhantes", "body": "O Bolão.io usa cookies e armazenamento do navegador para as finalidades abaixo. Você pode gerenciar ou limpar cookies no navegador, mas isso pode afetar o login ou as preferências.", "locale": "Um cookie NEXT_LOCALE lembra o idioma escolhido por até um ano.", "auth": "O Clerk usa cookies ou tecnologias semelhantes relacionados à autenticação para manter sua sessão segura.", "storage": "O armazenamento temporário da sessão pode guardar um convite ou campeonato selecionado enquanto você continua um fluxo de login ou criação.", "analytics": "Vercel Analytics, Vercel Speed Insights e Umami nos ajudam a entender desempenho e uso agregado. O comportamento deles pode variar conforme a configuração e as definições do seu navegador." },
+    "retention": { "title": "Por quanto tempo guardamos dados", "body": "Guardamos dados somente pelo tempo necessário às finalidades descritas aqui, incluindo manter sua conta e o histórico de bolões, resolver disputas, cumprir obrigações legais e proteger o serviço. Podemos manter informações anonimizadas ou agregadas por mais tempo." },
+    "rights": { "title": "Seus direitos de privacidade", "body": "Sujeito à legislação aplicável, você pode solicitar confirmação e acesso aos seus dados, correção, anonimização, bloqueio ou eliminação quando apropriado, informação sobre compartilhamento, portabilidade, revogação do consentimento e revisão de certas decisões automatizadas. Entre em contato para fazer uma solicitação. Você também pode reclamar à Autoridade Nacional de Proteção de Dados (ANPD)." },
+    "security": { "title": "Segurança", "body": "Usamos medidas técnicas e organizacionais razoáveis para proteger dados pessoais. Nenhum serviço na internet pode garantir segurança absoluta; mantenha as credenciais da sua conta em sigilo." },
+    "updates": { "title": "Alterações neste aviso", "body": "Podemos atualizar este aviso quando nossas práticas ou exigências legais mudarem. Publicaremos a versão atualizada aqui e alteraremos a data acima." }
+  },
+  "terms": {
+    "title": "Termos de Uso",
+    "metaDescription": "Termos para usar o Bolão.io, o app social e gratuito de palpites de futebol.",
+    "lastUpdated": "Última atualização: 31 de outubro de 2026",
+    "intro": "Estes Termos de Uso regulam seu acesso e uso do Bolão.io. Ao criar uma conta ou usar o serviço, você concorda com estes termos e com nosso Aviso de Privacidade.",
+    "service": { "title": "O serviço", "body": "O Bolão.io é um serviço social e gratuito de palpites de futebol. Ele permite que amigos criem grupos, prevejam placares e comparem pontos. O Bolão.io não aceita, processa nem paga dinheiro e não é uma casa de apostas, operadora de jogos de azar ou serviço financeiro." },
+    "accounts": { "title": "Contas e convites", "body": "Você é responsável pelas informações associadas à sua conta e por manter seu acesso seguro. Links de convite são destinados às pessoas que você escolher convidar; não os use para assediar outras pessoas ou distribuí-los de forma que gere acesso ou perturbação indesejados." },
+    "acceptableUse": { "title": "Uso aceitável", "body": "Use o Bolão.io de forma legal e respeitosa. Não interfira no serviço, tente obter acesso não autorizado, use meios automatizados que prejudiquem o serviço, se passe por outras pessoas, envie conteúdo ilegal ou abusivo, nem use o app para organizar ou promover jogos de azar ilegais." },
+    "content": { "title": "Seu conteúdo e atividade em grupo", "body": "Você continua responsável pelos nomes de bolões e outros conteúdos enviados. Podemos remover conteúdo ou restringir acesso quando for razoavelmente necessário para proteger usuários, cumprir a lei ou manter o serviço seguro e confiável." },
+    "availability": { "title": "Disponibilidade e alterações", "body": "Trabalhamos para manter o Bolão.io disponível e preciso, mas dados de jogos, placares, recursos e disponibilidade podem mudar ou sofrer interrupções. Podemos modificar, suspender ou descontinuar recursos quando necessário. Não dependa do serviço para decisões financeiras, de apostas ou outras decisões de alto risco." },
+    "thirdParties": { "title": "Serviços de terceiros", "body": "O Bolão.io depende de terceiros para serviços como autenticação, hospedagem, dados de futebol e conteúdo. Os serviços deles e quaisquer links externos são regidos por seus próprios termos e políticas de privacidade." },
+    "changes": { "title": "Alterações nestes termos", "body": "Podemos atualizar estes termos conforme o serviço evolui ou as exigências legais mudam. Publicaremos a nova versão aqui e atualizaremos a data acima. O uso contínuo após uma atualização significa que você aceita os termos revisados." },
+    "contact": { "title": "Contato", "body": "Para dúvidas sobre estes termos ou sobre o serviço, use a página de contato." }
   },
   "homeMatches": {
     "startingSoon": "Começa em breve",
