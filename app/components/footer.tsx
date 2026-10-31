@@ -13,8 +13,11 @@ function Footer() {
   const t = useTranslations("common")
 
   return (
-    <footer className="mt-20 text-sm">
-      <div className="mb-4 flex flex-wrap justify-center items-center gap-1">
+    <footer className="mt-20 border-t text-sm">
+      <nav
+        aria-label={t("footerNavigation")}
+        className="flex flex-wrap items-center justify-center gap-1 py-5"
+      >
         <div className="flex flex-wrap justify-center items-center gap-1">
           <Button asChild variant="ghost" className={footerLinkClassName}>
             <Link href="/">{t("home")}</Link>
@@ -35,10 +38,10 @@ function Footer() {
             <Link href="/contact">{t("contact")}</Link>
           </Button>
         </div>
-        <div className="flex items-center gap-1">
-          <LanguageSwitcher />
-          <ModeToggle />
-        </div>
+      </nav>
+      <div className="flex flex-wrap items-center justify-center gap-1 border-t py-4">
+        <LanguageSwitcher showLabel />
+        <ModeToggle showLabel />
       </div>
       <BackgroundStripes />
     </footer>

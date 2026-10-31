@@ -50,4 +50,15 @@ describe("Footer", () => {
       "/contact"
     )
   })
+
+  it("labels universal preferences", () => {
+    render(<Footer />)
+
+    expect(
+      screen.getByRole("button", { name: "Switch language" })
+    ).toHaveTextContent("English")
+    expect(
+      screen.getByRole("button", { name: "Toggle appearance" })
+    ).toHaveTextContent("Light")
+  })
 })

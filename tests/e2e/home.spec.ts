@@ -5,6 +5,7 @@ test.describe("Home Page", () => {
     page,
   }) => {
     await page.goto("/")
+    const main = page.getByRole("main")
 
     // Check that the main heading is visible
     await expect(
@@ -24,15 +25,19 @@ test.describe("Home Page", () => {
 
     // Check that CTA buttons are visible
     await expect(
-      page.getByRole("link", { name: /^GET STARTED$/i })
+      main.getByRole("link", { name: "GET STARTED", exact: true })
     ).toBeVisible()
-    await expect(page.getByRole("link", { name: /^LOGIN$/i })).toBeVisible()
+    await expect(
+      main.getByRole("link", { name: "LOGIN", exact: true })
+    ).toBeVisible()
   })
 
   test("should have working navigation to login", async ({ page }) => {
     await page.goto("/")
 
-    const loginLink = page.getByRole("link", { name: /^LOGIN$/i })
+    const loginLink = page
+      .getByRole("main")
+      .getByRole("link", { name: "LOGIN", exact: true })
     await expect(loginLink).toBeVisible()
 
     await loginLink.click()
@@ -43,8 +48,8 @@ test.describe("Home Page", () => {
     await page.goto("/")
 
     const registerLink = page
-      .getByRole("link", { name: /^GET STARTED$/i })
-      .first()
+      .getByRole("main")
+      .getByRole("link", { name: "GET STARTED", exact: true })
     await expect(registerLink).toBeVisible()
 
     await registerLink.click()

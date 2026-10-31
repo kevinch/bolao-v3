@@ -35,7 +35,10 @@ test("Full bolão flow: create, navigate, and delete a bolão", async ({
   await page.goto("http://localhost:3000/")
 
   // Navigate to login page
-  await page.getByRole("link", { name: "Login" }).click()
+  await page
+    .getByRole("main")
+    .getByRole("link", { name: "LOGIN", exact: true })
+    .click()
 
   // Fill in email/username and continue
   await page.getByRole("textbox", { name: "Email address or username" }).click()

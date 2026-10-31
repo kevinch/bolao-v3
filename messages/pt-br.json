@@ -6,11 +6,31 @@
     "faq": "FAQ",
     "contact": "Contato",
     "readMore": "Leia mais",
-    "createBolao": "Criar"
+    "createBolao": "Criar",
+    "footerNavigation": "Navegação do rodapé"
   },
   "auth": {
     "signInTitle": "Entrar",
     "signUpTitle": "Criar conta"
+  },
+  "navigation": {
+    "primaryNavigation": "Navegação principal",
+    "moreNavigation": "Mais opções de navegação",
+    "menu": "Menu",
+    "openMenu": "Abrir menu",
+    "closeMenu": "Fechar menu",
+    "explore": "Explorar",
+    "yourBolao": "Seu bolão",
+    "more": "Mais",
+    "login": "Entrar",
+    "getStarted": "Começar",
+    "createBolao": "Criar um bolão",
+    "preferences": "Preferências",
+    "language": "Idioma",
+    "appearance": "Aparência",
+    "light": "Claro",
+    "dark": "Escuro",
+    "toggleAppearance": "Alternar aparência"
   },
   "home": {
     "greeting": "E aí",

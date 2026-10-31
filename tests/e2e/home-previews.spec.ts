@@ -3,6 +3,9 @@ import { test, expect } from "@playwright/test"
 test("championship previews stay compact and carry a choice to signup", async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 1280, height: 1000 })
   await page.goto("/")
+  await expect(page.locator("main .animate-pulse")).toHaveCount(0, {
+    timeout: 15_000,
+  })
   const section = page.getByRole("region", { name: "Coming up on Bolão.io" })
   if (await section.count() === 0) {
     await expect(page.getByText("Coming up on Bolão.io", { exact: true })).toHaveCount(0)
@@ -37,6 +40,9 @@ test("championship previews stay compact and carry a choice to signup", async ({
 test("homepage fits a narrow mobile screen", async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 360, height: 800 })
   await page.goto("/")
+  await expect(page.locator("main .animate-pulse")).toHaveCount(0, {
+    timeout: 15_000,
+  })
   const section = page.getByRole("region", { name: "Coming up on Bolão.io" })
   if (await section.count() === 0) {
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)

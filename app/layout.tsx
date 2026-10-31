@@ -143,8 +143,8 @@ export default async function RootLayout({
             }}
           >
             <NextIntlClientProvider locale={locale} messages={messages}>
+              <Header />
               <div className="container mx-auto px-4">
-                <Header />
                 {children}
                 <Footer />
                 <Toaster />
