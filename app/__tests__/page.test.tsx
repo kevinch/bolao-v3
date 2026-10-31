@@ -302,13 +302,16 @@ describe("Home Page", () => {
       expect(screen.queryByTestId("boloes-list")).not.toBeInTheDocument()
     })
 
-    it("should render PageTitle for unauthenticated user", async () => {
+    it("should render one main heading inside PageTitle for unauthenticated user", async () => {
       const { currentUser } = await import("@clerk/nextjs/server")
       vi.mocked(currentUser).mockResolvedValue(null)
 
       render(await Home())
 
       expect(screen.getByTestId("page-title")).toBeInTheDocument()
+      const headings = screen.getAllByRole("heading", { level: 1 })
+      expect(headings).toHaveLength(1)
+      expect(screen.getByTestId("page-title")).toContainElement(headings[0])
     })
 
     it("should render main element with max-width wrapper", async () => {

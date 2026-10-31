@@ -74,7 +74,7 @@ async function Home() {
 
       {/* Hero Section */}
       <div className={`text-center ${sectionSpaceing}`}>
-        <PageTitle>{t("hero")}</PageTitle>
+        <PageTitle><h1>{t("hero")}</h1></PageTitle>
         <p className="text-xl text-gray-600 dark:text-gray-300 mt-4 mb-8">
           {t("tagline1")}
           <br />
