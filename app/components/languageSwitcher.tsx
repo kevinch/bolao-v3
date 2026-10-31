@@ -1,6 +1,6 @@
 "use client"
 
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
 import { useTransition } from "react"
 import { GlobeIcon } from "@radix-ui/react-icons"
@@ -13,8 +13,13 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { locales, type Locale } from "@/i18n/config"
 
-export default function LanguageSwitcher() {
+export default function LanguageSwitcher({
+  showLabel = false,
+}: {
+  showLabel?: boolean
+}) {
   const t = useTranslations("language")
+  const currentLocale = useLocale() as Locale
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
@@ -33,10 +38,12 @@ export default function LanguageSwitcher() {
         <Button
           variant="ghost"
           size="sm"
+          className={showLabel ? "h-10 gap-2 px-3" : undefined}
           disabled={isPending}
           aria-label={t("switchTo")}
         >
           <GlobeIcon className="h-4 w-4 text-foreground" aria-hidden />
+          {showLabel ? <span>{t(currentLocale)}</span> : null}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
