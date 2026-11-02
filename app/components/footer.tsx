@@ -39,7 +39,7 @@ function Footer() {
           </Button>
         </div>
       </nav>
-      <div className="flex flex-wrap items-center justify-center gap-1 border-t px-4 py-4">
+      <div className="flex flex-wrap items-center justify-center gap-1 px-4 py-4">
         <Button asChild variant="ghost" size="sm" className="h-10 px-3">
           <Link href="/privacy">{t("privacy")}</Link>
         </Button>
