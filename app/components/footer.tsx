@@ -13,7 +13,7 @@ function Footer() {
   const t = useTranslations("common")
 
   return (
-    <footer className="mt-20 border-t text-sm">
+    <footer className="mt-20 text-sm">
       <nav
         aria-label={t("footerNavigation")}
         className="flex flex-wrap items-center justify-center gap-1 px-4 py-5"
