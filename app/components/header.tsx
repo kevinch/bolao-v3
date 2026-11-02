@@ -10,7 +10,7 @@ async function Header() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/70 bg-background">
-      <div className="h-1 overflow-hidden opacity-55" aria-hidden>
+      <div aria-hidden>
         <BackgroundStripes />
       </div>
       <div className="mx-auto flex h-16 w-full max-w-[800px] items-center justify-between gap-4 px-4">
