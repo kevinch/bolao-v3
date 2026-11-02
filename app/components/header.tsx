@@ -9,7 +9,7 @@ async function Header() {
   const { userId }: { userId: string | null } = await auth()
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border/70 bg-background">
+    <header className="sticky top-0 z-40 bg-background shadow-sm dark:border-b dark:border-border/70 dark:shadow-none">
       <div aria-hidden>
         <BackgroundStripes />
       </div>
