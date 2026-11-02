@@ -172,8 +172,9 @@
     "successTitle": "Success",
     "successMessage": "The bolão was successfully created.",
     "errorMessage": "There was an issue with the creation.",
-    "createdTitle": "Your bolão is ready",
-    "createdDescription": "{name} is ready. Invite your friends or start making your predictions.",
+    "createdTitle": "Bolão created",
+    "createdNote": "Start making your predictions now and share the bolão with your friends using the Invite button.",
+    "nextGames": "Next games",
     "startBetting": "Make my predictions"
   },
   "invite": {

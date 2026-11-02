@@ -3,9 +3,11 @@
 import { useTranslations } from "next-intl"
 import { createBolao } from "@/app/lib/actions"
 import InviteButton from "@/app/components/inviteButton"
+import PageTitle from "@/app/components/pageTitle"
+import BolaoPageTitle from "@/app/ui/bolao/bolaoPageTitle"
+import NextGames from "@/app/ui/bolao/nextGames"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import {
   Select,
@@ -17,7 +19,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { ReloadIcon } from "@radix-ui/react-icons"
-import { League } from "@/app/lib/definitions"
+import { Bolao, League } from "@/app/lib/definitions"
+import type { PreviewMatch } from "@/app/lib/homeMatches"
 import { useToast } from "@/hooks/use-toast"
 import Link from "next/link"
 import { useState } from "react"
@@ -32,8 +35,10 @@ function Form({ leagues, competitionId }: FormProps) {
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
   const [createdBolao, setCreatedBolao] = useState<{
-    id: string
-    name: string
+    bolao: Bolao
+    matches: PreviewMatch[]
+    leagueName?: string
+    leagueLogo?: string
   } | null>(null)
 
   const orderedLeaguesByCountryName = Object.values(
@@ -76,8 +81,10 @@ function Form({ leagues, competitionId }: FormProps) {
 
     if (result.success && "id" in result) {
       setCreatedBolao({
-        id: result.id,
-        name: String(formData.get("name")),
+        bolao: result.bolao,
+        matches: result.matches,
+        leagueName: result.leagueName,
+        leagueLogo: result.leagueLogo,
       })
     } else {
       toast({
@@ -89,75 +96,107 @@ function Form({ leagues, competitionId }: FormProps) {
 
   if (createdBolao) {
     return (
-      <Card className="mx-auto max-w-lg">
-        <CardHeader>
-          <CardTitle>{t("createdTitle")}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">
-            {t("createdDescription", { name: createdBolao.name })}
-          </p>
-        </CardContent>
-        <CardFooter className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+      <div>
+        <PageTitle center={true}>
+          <h1>{t("createdTitle")}</h1>
+        </PageTitle>
+        <BolaoPageTitle
+          bolao={createdBolao.bolao}
+          leagueLogo={createdBolao.leagueLogo}
+          leagueName={createdBolao.leagueName}
+          className="mt-0 mb-8"
+        />
+
+        <p
+          role="status"
+          aria-live="polite"
+          className="mx-auto mb-4 max-w-xl rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-center font-medium text-green-700 dark:border-green-900 dark:bg-green-950/40 dark:text-green-300"
+        >
+          {t("successMessage")}
+        </p>
+        <p className="mx-auto mb-8 max-w-xl text-center text-muted-foreground">
+          {t("createdNote")}
+        </p>
+
+        <NextGames
+          title={t("nextGames")}
+          matches={createdBolao.matches}
+          bolaoId={createdBolao.bolao.id}
+        />
+
+        <div className="flex flex-col-reverse items-center gap-3 sm:flex-row sm:justify-center">
           <InviteButton
-            bolaoId={createdBolao.id}
-            bolaoName={createdBolao.name}
+            bolaoId={createdBolao.bolao.id}
+            bolaoName={createdBolao.bolao.name}
             size="default"
             className="w-full sm:w-auto"
           />
-          <Button asChild variant="secondary" className="w-full sm:w-auto">
-            <Link href={`/bolao/${createdBolao.id}/bet`}>
+          <Button asChild className="w-full sm:w-auto">
+            <Link href={`/bolao/${createdBolao.bolao.id}/bet`}>
               {t("startBetting")}
             </Link>
           </Button>
-        </CardFooter>
-      </Card>
+        </div>
+      </div>
     )
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="mb-6">
-        <Label htmlFor="name">{t("nameLabel")}</Label>
-        <Input
-          type="text"
-          id="name"
-          name="name"
-          required
-          placeholder={t("namePlaceholder")}
-        />
-      </div>
+    <div>
+      <PageTitle center={true}>
+        <h1>{t("title")}</h1>
+      </PageTitle>
 
-      <div className="mb-6">
-        <Label htmlFor="competitionId">{t("competitionLabel")}</Label>
-        <Select name="competitionId" required defaultValue={competitionId} key={competitionId ?? "empty"}>
-          <SelectTrigger id="competitionId" className="w-full">
-            <SelectValue placeholder={t("competitionPlaceholder")} />
-          </SelectTrigger>
-          <SelectContent>
-            {finalOrderedResult.map((el: League[], index: number) => (
-              <SelectGroup key={`league_${index}`}>
-                <SelectLabel>{el[0].countryName}</SelectLabel>
-                {el.map((el: League) => (
-                  <SelectItem key={el.id} value={el.id.toString()}>
-                    {el.name}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-6">
+          <Label htmlFor="name">{t("nameLabel")}</Label>
+          <Input
+            type="text"
+            id="name"
+            name="name"
+            required
+            placeholder={t("namePlaceholder")}
+          />
+        </div>
 
-      {loading ? (
-        <Button disabled>
-          <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-          {t("loadingButton")}
-        </Button>
-      ) : (
-        <Button type="submit">{t("submitButton")}</Button>
-      )}
-    </form>
+        <div className="mb-6">
+          <Label htmlFor="competitionId">{t("competitionLabel")}</Label>
+          <Select
+            name="competitionId"
+            required
+            defaultValue={competitionId}
+            key={competitionId ?? "empty"}
+          >
+            <SelectTrigger id="competitionId" className="w-full">
+              <SelectValue placeholder={t("competitionPlaceholder")} />
+            </SelectTrigger>
+            <SelectContent>
+              {finalOrderedResult.map((el: League[], index: number) => (
+                <SelectGroup key={`league_${index}`}>
+                  <SelectLabel>{el[0].countryName}</SelectLabel>
+                  {el.map((el: League) => (
+                    <SelectItem key={el.id} value={el.id.toString()}>
+                      {el.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {loading ? (
+          <Button disabled className="w-full sm:w-auto">
+            <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+            {t("loadingButton")}
+          </Button>
+        ) : (
+          <Button type="submit" className="w-full sm:w-auto">
+            {t("submitButton")}
+          </Button>
+        )}
+      </form>
+    </div>
   )
 }
 

@@ -12,7 +12,7 @@ import { createUserBolao } from "@/app/lib/actions"
 import { Button } from "@/components/ui/button"
 import PageTitle from "@/app/components/pageTitle"
 import BolaoPageTitle from "@/app/ui/bolao/bolaoPageTitle"
-import MatchPreview from "@/app/ui/home/matchPreview"
+import NextGames from "@/app/ui/bolao/nextGames"
 import { cleanRounds } from "@/app/lib/utils"
 import { upcomingMatches, type PreviewMatch } from "@/app/lib/homeMatches"
 
@@ -51,7 +51,10 @@ async function getData({
       fetchFixtures({ leagueId, year: bolao.year }),
       fetchRounds({ leagueId, year: bolao.year }),
     ])
-    const previewMatches = upcomingMatches(fixtures, cleanRounds(rounds)).slice(0, 3)
+    const previewMatches = upcomingMatches(fixtures, cleanRounds(rounds)).slice(
+      0,
+      3
+    )
     matches = previewMatches
     leagueName = previewMatches[0]?.fixture.league.name ?? league?.league?.name
     leagueLogo = previewMatches[0]?.fixture.league.logo ?? league?.league?.logo
@@ -63,7 +66,7 @@ async function getData({
 }
 
 async function InvitePage(props: { params: Promise<{ id: string }> }) {
-  const params = await props.params;
+  const params = await props.params
   const { userId }: { userId: string | null } = await auth()
 
   if (!userId) {
@@ -94,7 +97,7 @@ async function InvitePage(props: { params: Promise<{ id: string }> }) {
         role="status"
         aria-live="polite"
         className={`mx-auto mb-8 max-w-xl rounded-lg border px-4 py-3 text-center font-medium ${
-          (data.resultKey === "added" || data.resultKey === "alreadyIn")
+          data.resultKey === "added" || data.resultKey === "alreadyIn"
             ? "border-green-200 bg-green-50 text-green-700 dark:border-green-900 dark:bg-green-950/40 dark:text-green-300"
             : data.resultKey === "addError"
               ? "border-red-200 bg-red-50 text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300"
@@ -104,28 +107,14 @@ async function InvitePage(props: { params: Promise<{ id: string }> }) {
         {t(data.resultKey)}
       </p>
 
-      {data.matches.length > 0 && (
-        <section aria-labelledby="invite-next-games-title" className="mb-8">
-          <h2 id="invite-next-games-title" className="mb-4 text-xl font-bold">
-            {t("nextGames")}
-          </h2>
-          <div className="grid gap-4 md:grid-cols-3">
-            {data.matches.map((match, index) => (
-              <article
-                key={match.fixture.fixture.id}
-                className={`min-w-0 overflow-hidden rounded-xl border bg-card text-card-foreground shadow-sm ${
-                  index > 1 ? "hidden md:block" : ""
-                }`}
-              >
-                <MatchPreview matches={[match]} bolaoId={data.bolao.id} />
-              </article>
-            ))}
-          </div>
-        </section>
-      )}
+      <NextGames
+        title={t("nextGames")}
+        matches={data.matches}
+        bolaoId={data.bolao.id}
+      />
 
       <p className="text-center">
-        <Button asChild>
+        <Button asChild className="w-full sm:w-auto">
           <Link href={`/bolao/${data.bolao.id}/bet`}>{t("startBetting")}</Link>
         </Button>
       </p>

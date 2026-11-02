@@ -4,7 +4,8 @@ import { sql } from "@vercel/postgres"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { auth } from "@clerk/nextjs/server"
-import { fetchLeague, fetchBolao, fetchFixtures } from "./data"
+import { fetchLeague, fetchBolao, fetchFixtures, fetchRounds } from "./data"
+import { upcomingMatches, type PreviewMatch } from "./homeMatches"
 import { getUserRole } from "./authRole"
 import {
   getCurrentSeasonObject,
@@ -12,6 +13,7 @@ import {
   isFixtureOpenToBet,
 } from "./utils"
 import {
+  Bolao,
   BetResult,
   UpdateBolaoResult,
   CreateUserBolaoResult,
@@ -82,9 +84,27 @@ export async function createBolao(
     const userBolaoResult = await createUserBolao(insertedData.id)
 
     if (userBolaoResult.success) {
+      let matches: PreviewMatch[] = []
+
+      try {
+        if (year) {
+          const [fixtures, rounds] = await Promise.all([
+            fetchFixtures({ leagueId: competitionId, year }),
+            fetchRounds({ leagueId: competitionId, year }),
+          ])
+          matches = upcomingMatches(fixtures, rounds).slice(0, 3)
+        }
+      } catch {
+        // The bolão is created; next games are a nice-to-have.
+      }
+
       return {
         success: true,
         id: insertedData.id,
+        bolao: insertedData as Bolao,
+        matches,
+        leagueName: league?.league?.name,
+        leagueLogo: league?.league?.logo,
       }
     }
     return {

@@ -7,6 +7,16 @@ import { useToast } from "@/hooks/use-toast"
 // Mock dependencies
 vi.mock("@/app/lib/actions")
 vi.mock("@/hooks/use-toast")
+vi.mock("@/app/ui/home/matchPreview", () => ({
+    default: ({ matches, bolaoId }: { matches: any[]; bolaoId: string }) => (
+        <div data-testid="match-preview">{matches[0].fixture.fixture.id} {bolaoId}</div>
+    ),
+}))
+vi.mock("@/app/ui/bolao/bolaoPageTitle", () => ({
+    default: ({ bolao, leagueName }: { bolao: { name: string }; leagueName?: string }) => (
+        <div data-testid="bolao-page-title">{bolao.name} {leagueName}</div>
+    ),
+}))
 vi.mock("@/app/components/inviteButton", () => ({
     default: ({ bolaoId, bolaoName }: { bolaoId: string; bolaoName: string }) => (
         <button data-testid="invite-button">Invite {bolaoName} ({bolaoId})</button>
@@ -52,6 +62,15 @@ describe("Form", () => {
         { id: 3, name: "Championship", countryName: "England" }
     ]
 
+    const createdResult = {
+        success: true,
+        id: "bolao-1",
+        bolao: { id: "bolao-1", name: "Test Bolao", competition_id: "71", year: 2026 },
+        matches: [],
+        leagueName: "Serie A",
+        leagueLogo: "https://example.com/logo.png",
+    }
+
     beforeEach(() => {
         vi.clearAllMocks();
         (useToast as any).mockReturnValue({ toast: mockToast })
@@ -60,6 +79,7 @@ describe("Form", () => {
     it("should render form with name input and competition select", () => {
         render(<Form leagues={mockLeagues} />)
 
+        expect(screen.getByRole("heading", { name: "Create bolão" })).toBeDefined()
         expect(screen.getByLabelText("Name:")).toBeDefined()
         expect(screen.getByPlaceholderText("Choose a name for your bolão")).toBeDefined()
         expect(screen.getByText("Competition:")).toBeDefined()
@@ -97,7 +117,7 @@ describe("Form", () => {
     })
 
     it("should show the creation success step", async () => {
-        (createBolao as any).mockResolvedValue({ success: true, id: "bolao-1" });
+        (createBolao as any).mockResolvedValue(createdResult);
 
         const { container } = render(<Form leagues={mockLeagues} />)
 
@@ -108,7 +128,9 @@ describe("Form", () => {
         fireEvent.submit(form)
 
         await waitFor(() => {
-            expect(screen.getByText("Your bolão is ready")).toBeDefined()
+            expect(screen.getByRole("heading", { name: "Bolão created" })).toBeDefined()
+            expect(screen.getByTestId("bolao-page-title")).toHaveTextContent("Test Bolao Serie A")
+            expect(screen.getByRole("status")).toHaveTextContent("The bolão was successfully created.")
         })
     })
 
@@ -132,7 +154,7 @@ describe("Form", () => {
     })
 
     it("should show the invite and betting actions after successful creation", async () => {
-        (createBolao as any).mockResolvedValue({ success: true, id: "bolao-1" });
+        (createBolao as any).mockResolvedValue(createdResult);
 
         const { container } = render(<Form leagues={mockLeagues} />)
 
@@ -140,12 +162,41 @@ describe("Form", () => {
         fireEvent.submit(form)
 
         await waitFor(() => {
-            expect(screen.getByText("Your bolão is ready")).toBeDefined()
-            expect(screen.getByTestId("invite-button")).toBeDefined()
+            expect(screen.getByTestId("invite-button")).toHaveTextContent("Invite Test Bolao (bolao-1)")
             expect(screen.getByRole("link", { name: "Make my predictions" })).toHaveAttribute(
                 "href",
                 "/bolao/bolao-1/bet"
             )
         })
+    })
+
+    it("should show the next games after successful creation", async () => {
+        (createBolao as any).mockResolvedValue({
+            ...createdResult,
+            matches: [{ fixture: { fixture: { id: 10 } } }, { fixture: { fixture: { id: 11 } } }],
+        });
+
+        const { container } = render(<Form leagues={mockLeagues} />)
+        fireEvent.submit(container.querySelector("form")!)
+
+        await waitFor(() => {
+            expect(screen.getByRole("heading", { name: "Next games" })).toBeDefined()
+            expect(screen.getAllByTestId("match-preview").map((el) => el.textContent)).toEqual([
+                "10 bolao-1",
+                "11 bolao-1",
+            ])
+        })
+    })
+
+    it("should hide the next games section when there are no matches", async () => {
+        (createBolao as any).mockResolvedValue(createdResult);
+
+        const { container } = render(<Form leagues={mockLeagues} />)
+        fireEvent.submit(container.querySelector("form")!)
+
+        await waitFor(() => {
+            expect(screen.getByRole("heading", { name: "Bolão created" })).toBeDefined()
+        })
+        expect(screen.queryByRole("heading", { name: "Next games" })).toBeNull()
     })
 })
