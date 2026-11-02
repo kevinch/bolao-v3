@@ -77,9 +77,9 @@ test("Full bolão flow: create, navigate, and delete a bolão", async ({
   // Submit the form to create the bolão
   await page.getByRole("button", { name: "Create" }).click()
 
-  // Toast: scope to Radix region + open item; longer timeout for enter animation / navigation.
+  // The form swaps to a success card (no toast); longer timeout for the server action.
   await expect(
-    openToastWithText(page, "The bolão was successfully created.")
+    page.getByRole("heading", { name: "Your bolão is ready" })
   ).toBeVisible({ timeout: 15_000 })
 
   // Navigate back to home page using the logo link in the header
@@ -146,7 +146,7 @@ test("Full bolão flow: create, navigate, and delete a bolão", async ({
     .getByRole("tabpanel", { name: /Active/ })
     .getByRole("heading", { name: bolaoName })
     .locator("xpath=../..")
-    .getByRole("button")
+    .locator('button[aria-haspopup="menu"]')
     .click()
 
   // Click the Delete option from the dropdown menu
