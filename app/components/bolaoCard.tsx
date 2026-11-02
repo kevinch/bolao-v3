@@ -9,11 +9,7 @@ import { updateBolao } from "@/app/lib/actions"
 import { deleteBolaoGroup } from "@/app/lib/controllerAdmin"
 import { Bolao } from "@/app/lib/definitions"
 import { Button } from "@/components/ui/button"
-import {
-  DotsVerticalIcon,
-  Pencil2Icon,
-  TrashIcon,
-} from "@radix-ui/react-icons"
+import { DotsVerticalIcon, Pencil2Icon, TrashIcon } from "@radix-ui/react-icons"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,6 +30,8 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
   const router = useRouter()
   const [name, setName] = useState(bolao.name)
   const [disabledDelete, setDisabledDelete] = useState(false)
+  const [isUpdating, setIsUpdating] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
   const { toast } = useToast()
 
   let bolaoDate = bolao.year.toString()
@@ -50,41 +48,51 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
   async function handleUpdate() {
     const data = { name, bolaoId: bolao.id }
 
-    const result = await updateBolao(data)
+    setIsUpdating(true)
+    try {
+      const result = await updateBolao(data)
 
-    if (result.success) {
-      setDialogEditOpen(false)
-      router.refresh()
-      toast({
-        title: t("updateSuccessTitle"),
-        description: t("updateSuccessMessage"),
-        variant: "success",
-      })
-    } else {
-      toast({
-        description: t("updateErrorMessage"),
-        variant: "destructive",
-      })
+      if (result.success) {
+        setDialogEditOpen(false)
+        router.refresh()
+        toast({
+          title: t("updateSuccessTitle"),
+          description: t("updateSuccessMessage"),
+          variant: "success",
+        })
+      } else {
+        toast({
+          description: t("updateErrorMessage"),
+          variant: "destructive",
+        })
+      }
+    } finally {
+      setIsUpdating(false)
     }
   }
 
   async function handleDelete(bolaoId: string) {
-    const result = await deleteBolaoGroup(bolaoId)
+    setIsDeleting(true)
+    try {
+      const result = await deleteBolaoGroup(bolaoId)
 
-    if (result.success) {
-      setDisabledDelete(true)
-      setDialogDeleteOpen(false)
-      router.refresh()
-      toast({
-        title: t("deleteSuccessTitle"),
-        description: t("deleteSuccessMessage"),
-        variant: "success",
-      })
-    } else {
-      toast({
-        description: t("deleteErrorMessage"),
-        variant: "destructive",
-      })
+      if (result.success) {
+        setDisabledDelete(true)
+        setDialogDeleteOpen(false)
+        router.refresh()
+        toast({
+          title: t("deleteSuccessTitle"),
+          description: t("deleteSuccessMessage"),
+          variant: "success",
+        })
+      } else {
+        toast({
+          description: t("deleteErrorMessage"),
+          variant: "destructive",
+        })
+      }
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -175,6 +183,7 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
             bolaoName={bolao.name}
             onNameChange={setName}
             onSubmit={handleUpdate}
+            loading={isUpdating}
           />
           <BolaoDeleteModal
             open={dialogDeleteOpen}
@@ -183,6 +192,7 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
             bolaoName={bolao.name}
             disabledDelete={disabledDelete}
             onSubmit={handleDelete}
+            loading={isDeleting}
           />
         </div>
       </CardFooter>
