@@ -1,6 +1,7 @@
 "use client"
 
 import { useTranslations } from "next-intl"
+import { ReloadIcon } from "@radix-ui/react-icons"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -19,6 +20,7 @@ interface SettingsDialogProps {
   disabledDelete: boolean
   bolaoId: string
   bolaoName: string
+  loading?: boolean
 }
 
 export const handlePointerDownOutside = (e: any) => {
@@ -35,6 +37,7 @@ export function BolaoDeleteModal({
   disabledDelete,
   bolaoId,
   bolaoName,
+  loading = false,
 }: SettingsDialogProps) {
   const t = useTranslations("bolaoDeleteModal")
 
@@ -50,13 +53,16 @@ export function BolaoDeleteModal({
 
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="secondary">{t("cancel")}</Button>
+            <Button variant="secondary" disabled={loading}>
+              {t("cancel")}
+            </Button>
           </DialogClose>
           <Button
-            disabled={disabledDelete}
+            disabled={disabledDelete || loading}
             variant="destructive"
             onClick={() => onSubmit(bolaoId)}
           >
+            {loading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
             {t("confirm")}
           </Button>
         </DialogFooter>

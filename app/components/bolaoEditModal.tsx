@@ -1,6 +1,7 @@
 "use client"
 
 import { useTranslations } from "next-intl"
+import { ReloadIcon } from "@radix-ui/react-icons"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -19,14 +20,12 @@ interface SettingsDialogProps {
   bolaoName: string
   onNameChange: (bolaoName: string) => void
   onSubmit: () => void
+  loading?: boolean
 }
 
 export const handlePointerDownOutside = (e: any) => {
   // Prevent closing when clicking inside the dialog
-  if (
-    e.target instanceof HTMLElement &&
-    e.target.closest('[role="dialog"]')
-  ) {
+  if (e.target instanceof HTMLElement && e.target.closest('[role="dialog"]')) {
     e.preventDefault()
   }
 }
@@ -37,6 +36,7 @@ export function BolaoEditModal({
   bolaoName,
   onNameChange,
   onSubmit,
+  loading = false,
 }: SettingsDialogProps) {
   const t = useTranslations("bolaoEditModal")
 
@@ -59,9 +59,12 @@ export function BolaoEditModal({
         </div>
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="secondary">{t("cancel")}</Button>
+            <Button variant="secondary" disabled={loading}>
+              {t("cancel")}
+            </Button>
           </DialogClose>
-          <Button type="submit" onClick={onSubmit}>
+          <Button type="submit" onClick={onSubmit} disabled={loading}>
+            {loading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
             {t("saveChanges")}
           </Button>
         </DialogFooter>

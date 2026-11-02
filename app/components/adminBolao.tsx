@@ -5,6 +5,7 @@ import { Bolao } from "@/app/lib/definitions"
 import { deleteBolaoGroup } from "../lib/controllerAdmin"
 import { formatDateNews } from "@/app/lib/utils"
 import { useState } from "react"
+import { ReloadIcon } from "@radix-ui/react-icons"
 import { useToast } from "@/hooks/use-toast"
 import { Button } from "@/components/ui/button"
 import {
@@ -21,23 +22,29 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 function AdminBolao({ bolao }: { bolao: Bolao }) {
   const [deleted, setDeleted] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
   const { toast } = useToast()
 
   const actionDelete = async (bolaoId: string) => {
-    const result = await deleteBolaoGroup(bolaoId)
+    setIsDeleting(true)
+    try {
+      const result = await deleteBolaoGroup(bolaoId)
 
-    if (result.success) {
-      setDeleted(true)
-      toast({
-        title: "Success",
-        description: "The bolão was successfully deleted.",
-        variant: "success",
-      })
-    } else {
-      toast({
-        description: "There was an issue with the deletion.",
-        variant: "destructive",
-      })
+      if (result.success) {
+        setDeleted(true)
+        toast({
+          title: "Success",
+          description: "The bolão was successfully deleted.",
+          variant: "success",
+        })
+      } else {
+        toast({
+          description: "There was an issue with the deletion.",
+          variant: "destructive",
+        })
+      }
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -79,12 +86,18 @@ function AdminBolao({ bolao }: { bolao: Bolao }) {
 
                   <DialogFooter>
                     <DialogClose asChild>
-                      <Button variant="secondary">Cancel</Button>
+                      <Button variant="secondary" disabled={isDeleting}>
+                        Cancel
+                      </Button>
                     </DialogClose>
                     <Button
                       variant="destructive"
+                      disabled={isDeleting}
                       onClick={() => actionDelete(bolao.id)}
                     >
+                      {isDeleting && (
+                        <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                      )}
                       Confirm
                     </Button>
                   </DialogFooter>
