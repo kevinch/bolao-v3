@@ -77,9 +77,9 @@ test("Full bolão flow: create, navigate, and delete a bolão", async ({
   // Submit the form to create the bolão
   await page.getByRole("button", { name: "Create" }).click()
 
-  // The form swaps to a success card (no toast); longer timeout for the server action.
+  // The form swaps to a success view (no toast); longer timeout for the server action.
   await expect(
-    page.getByRole("heading", { name: "Your bolão is ready" })
+    page.getByRole("heading", { name: "Bolão created" })
   ).toBeVisible({ timeout: 15_000 })
 
   // Navigate back to home page using the logo link in the header

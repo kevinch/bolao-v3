@@ -1,3 +1,5 @@
+import type { PreviewMatch } from "./homeMatches"
+
 export type Competition = {
   name: string
   id: string
@@ -68,6 +70,10 @@ type ErrorResult = {
 type SuccessCreateBolaoResult = {
   success: boolean
   id: string
+  bolao: Bolao
+  matches: PreviewMatch[]
+  leagueName?: string
+  leagueLogo?: string
 }
 
 export type CreateBolaoResult = SuccessCreateBolaoResult | ErrorResult

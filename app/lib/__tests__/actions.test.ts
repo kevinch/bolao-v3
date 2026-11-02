@@ -25,6 +25,7 @@ vi.mock("../data", () => ({
   fetchLeague: vi.fn(),
   fetchBolao: vi.fn(),
   fetchFixtures: vi.fn(),
+  fetchRounds: vi.fn(),
 }))
 
 // Mock auth role
@@ -58,7 +59,7 @@ import { sql } from "@vercel/postgres"
 import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
 import { auth } from "@clerk/nextjs/server"
-import { fetchLeague, fetchBolao, fetchFixtures } from "../data"
+import { fetchLeague, fetchBolao, fetchFixtures, fetchRounds } from "../data"
 import { getCurrentSeasonObject } from "../utils"
 import { getUserRole } from "../authRole"
 
@@ -166,6 +167,7 @@ describe("actions", () => {
       formData.append("competitionId", "2")
 
       const mockLeague = {
+        league: { name: "Serie A", logo: "https://example.com/71.png" },
         seasons: [
           { year: 2023, start: "2023-01-01", end: "2023-12-31" },
           { year: 2024, start: "2024-01-01", end: "2024-12-31", current: true },
@@ -173,7 +175,17 @@ describe("actions", () => {
       }
 
       const mockSeason = { year: 2024, start: "2024-01-01", end: "2024-12-31" }
+      const fixtures = [4, 1, 3, 2].map((hours) => ({
+        fixture: {
+          id: hours,
+          status: { short: "NS" },
+          timestamp: Math.floor(Date.now() / 1000) + hours * 3600,
+        },
+        league: { round: "Regular Season - 1" },
+      }))
 
+      vi.mocked(fetchFixtures).mockResolvedValue(fixtures as any)
+      vi.mocked(fetchRounds).mockResolvedValue(["Regular Season - 1"] as any)
       vi.mocked(fetchLeague).mockResolvedValue(mockLeague as any)
       vi.mocked(getCurrentSeasonObject).mockReturnValue(mockSeason as any)
       vi.mocked(sql).mockResolvedValueOnce({
@@ -199,7 +211,17 @@ describe("actions", () => {
 
       expect(fetchLeague).toHaveBeenCalledWith(2)
       expect(getCurrentSeasonObject).toHaveBeenCalled()
-      expect(result).toEqual({ success: true, id: "bolao-1" })
+      expect(result).toEqual({
+        success: true,
+        id: "bolao-1",
+        bolao: { id: "bolao-1", name: "Test Bolao", competition_id: "2" },
+        matches: [1, 2, 3].map((id) => ({
+          fixture: fixtures.find((entry) => entry.fixture.id === id),
+          roundIndex: 1,
+        })),
+        leagueName: "Serie A",
+        leagueLogo: "https://example.com/71.png",
+      })
     })
 
     it("should return error when name is not a string", async () => {
@@ -281,7 +303,40 @@ describe("actions", () => {
 
       const result = await createBolao(formData)
 
-      expect(result).toEqual({ success: true, id: "bolao-1" })
+      expect(result).toEqual({
+        success: true,
+        id: "bolao-1",
+        bolao: { id: "bolao-1" },
+        matches: [],
+        leagueName: undefined,
+        leagueLogo: undefined,
+      })
+      expect(fetchFixtures).not.toHaveBeenCalled()
+    })
+
+    it("should still succeed when the next games cannot be loaded", async () => {
+      const formData = new FormData()
+      formData.append("name", "Test Bolao")
+      formData.append("competitionId", "2")
+
+      vi.mocked(fetchLeague).mockResolvedValue({ seasons: [] } as any)
+      vi.mocked(getCurrentSeasonObject).mockReturnValue({
+        year: 2024,
+        start: "2024-01-01",
+        end: "2024-12-31",
+      } as any)
+      vi.mocked(fetchFixtures).mockRejectedValue(new Error("API down"))
+      vi.mocked(fetchRounds).mockResolvedValue([] as any)
+      vi.mocked(sql).mockResolvedValueOnce({
+        rows: [{ id: "bolao-1" }],
+      } as any)
+      vi.mocked(sql).mockResolvedValueOnce({
+        rows: [{ id: "ub-1", bolao_id: "bolao-1", user_id: "user-123" }],
+      } as any)
+
+      const result = await createBolao(formData)
+
+      expect(result).toMatchObject({ success: true, id: "bolao-1", matches: [] })
     })
   })
 

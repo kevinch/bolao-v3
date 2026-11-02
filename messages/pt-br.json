@@ -172,8 +172,9 @@
     "successTitle": "Sucesso",
     "successMessage": "O bolão foi criado com sucesso.",
     "errorMessage": "Houve um problema na criação.",
-    "createdTitle": "Seu bolão está pronto",
-    "createdDescription": "{name} está pronto. Convide seus amigos ou comece a dar seus palpites.",
+    "createdTitle": "Bolão criado",
+    "createdNote": "Comece a dar seus palpites agora e envie o bolão para seus amigos pelo botão Convidar.",
+    "nextGames": "Próximos jogos",
     "startBetting": "Fazer meus palpites"
   },
   "invite": {
