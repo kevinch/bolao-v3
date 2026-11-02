@@ -11,11 +11,7 @@ import { Analytics } from "@vercel/analytics/react"
 import { Toaster } from "@/components/ui/toaster"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import JsonLd from "@/app/components/jsonLd"
-import {
-  SITE_URL,
-  SITE_NAME,
-  getSiteDescription,
-} from "@/app/lib/siteConfig"
+import { SITE_URL, SITE_NAME, getSiteDescription } from "@/app/lib/siteConfig"
 import { ThemeProvider } from "@/components/theme-provider"
 import { themeColors } from "@/app/lib/themeColors"
 import { ClerkThemeProvider } from "@/components/clerk-theme-provider"
@@ -121,7 +117,11 @@ export default async function RootLayout({
     <html lang={locale} suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://clerk.bolao.io" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
         <link rel="dns-prefetch" href="https://media.api-sports.io" />
         <JsonLd data={websiteJsonLd} />
       </head>
@@ -143,9 +143,11 @@ export default async function RootLayout({
             }}
           >
             <NextIntlClientProvider locale={locale} messages={messages}>
-              <Header />
-              <div className="container mx-auto px-4">
-                {children}
+              <div className="flex min-h-dvh flex-col">
+                <Header />
+                <div className="container mx-auto w-full flex-1 px-4">
+                  {children}
+                </div>
                 <Footer />
                 <Toaster />
                 <Analytics />

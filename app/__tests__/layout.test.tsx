@@ -223,7 +223,8 @@ describe("RootLayout", () => {
       const html = renderToString(Layout)
 
       expect(html).toContain("Child Content")
-      expect(html).toContain("mx-auto px-4")
+      expect(html).toContain("mx-auto")
+      expect(html).toContain("px-4")
       expect(html).toContain('data-testid="header"')
       expect(html).toContain('data-testid="footer"')
     })
