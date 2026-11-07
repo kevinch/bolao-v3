@@ -8,7 +8,6 @@ vi.mock("next-intl", () => ({
     if (key.startsWith("tiers.")) return key.replace("tiers.", "")
     if (key === "tierBreakdownPoints") return `${values?.points} pts`
     if (key === "tierBreakdownPercentage") return `${values?.percentage}%`
-    if (key === "tierBreakdownMissPercentage") return `${values?.percentage}% of bets`
     return key
   },
 }))
@@ -39,9 +38,9 @@ describe("TierBreakdownList", () => {
     expect(screen.getByText("winnerOnly")).toBeInTheDocument()
     expect(screen.getByText("zeroPoints")).toBeInTheDocument()
     expect(screen.getByText("200 pts")).toBeInTheDocument()
-    expect(screen.getByText("66.7%")).toBeInTheDocument()
+    expect(screen.getByText("67%")).toBeInTheDocument()
     expect(screen.getByText("100 pts")).toBeInTheDocument()
-    expect(screen.getByText("33.3%")).toBeInTheDocument()
-    expect(screen.getByText("25.0% of bets")).toBeInTheDocument()
+    expect(screen.getByText("33%")).toBeInTheDocument()
+    expect(screen.getByText("25%")).toBeInTheDocument()
   })
 })

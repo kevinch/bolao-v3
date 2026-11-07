@@ -143,7 +143,9 @@
       "outro": "O ranking atualiza automaticamente conforme os resultados saem."
     },
     "q6": "Quais campeonatos estão disponíveis?",
-    "a6": "O Bolão.io cobre grandes competições como Copa do Mundo, Brasileirão Série A e B, Copa do Brasil, Copa América, Libertadores, UEFA Champions League, Premier League, La Liga e Ligue 1, com jogos e resultados atualizados automaticamente."
+    "a6": "O Bolão.io cobre estas competições, agrupadas por país:",
+    "q7": "Como funciona o bônus de palpite do campeão?",
+    "a7": "Antes de a competição começar, cada participante pode escolher o time que acha que vai ser campeão. Se o seu palpite for o campeão, você ganha um bônus único de +500 pontos no seu total. Os palpites são travados quando a primeira partida começa e ficam escondidos de todos até lá. O campeão é o vencedor da final nos mata-matas, ou o primeiro colocado da tabela nas ligas de pontos corridos — e vale para todas as competições, não só a Copa do Mundo."
   },
   "about": {
     "title": "Sobre",
@@ -277,17 +279,16 @@
     "emptyState": "As estatísticas aparecerão quando a primeira rodada terminar.",
     "positionSubtitle": "Posição no ranking após cada rodada finalizada.",
     "tierTitle": "Seus pontos por tipo",
-    "tierSubtitle": "Seus pontos de jogos por tipo de placar.",
+    "tierSubtitle": "Como seus palpites se dividem por tipo de placar, com os pontos de cada um.",
     "tierBreakdownPoints": "{points} pts",
     "tierBreakdownPercentage": "{percentage}%",
-    "tierBreakdownMissPercentage": "{percentage}% das apostas",
     "tierComparisonTitle": "Você vs média do grupo",
     "tierComparisonSubtitle": "Seu perfil de pontos comparado com a média de todos os membros.",
     "comparisonYou": "Você",
     "comparisonGroupAverage": "Média do grupo",
     "comparisonTooltipYou": "Você: {percentage}% ({points} pts)",
     "comparisonTooltipGroup": "Média do grupo: {percentage}%",
-    "seasonEnd": "Fim da temporada",
+    "seasonEnd": "Bônus do campeão",
     "rankAxis": "Posição",
     "rankValue": "#{rank}",
     "snapshotLabel": "{label}",

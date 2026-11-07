@@ -12,10 +12,7 @@ vi.mock("../positionEvolutionChart", () => ({
 }))
 
 vi.mock("../tierChartsSection", () => ({
-  default: (props: {
-    breakdown: unknown
-    comparison: unknown
-  }) => (
+  default: (props: { breakdown: unknown; comparison: unknown }) => (
     <div
       data-testid="tier-charts-section"
       data-has-breakdown={String(Boolean(props.breakdown))}
@@ -37,12 +34,15 @@ describe("StatsContent", () => {
       tierBreakdown: null,
       zeroPointsBreakdown: null,
       tierComparison: null,
+      currentUserBolaoId: null,
     })
 
     expect(screen.getByText("title")).toBeInTheDocument()
     expect(screen.getByText("beta")).toBeInTheDocument()
     expect(screen.getByText("emptyState")).toBeInTheDocument()
-    expect(screen.queryByTestId("position-evolution-chart")).not.toBeInTheDocument()
+    expect(
+      screen.queryByTestId("position-evolution-chart")
+    ).not.toBeInTheDocument()
   })
 
   it("renders charts when finished rounds exist", async () => {
@@ -65,6 +65,7 @@ describe("StatsContent", () => {
           groupAveragePercentage: 50,
         },
       ],
+      currentUserBolaoId: null,
     })
 
     expect(screen.getByTestId("position-evolution-chart")).toBeInTheDocument()
@@ -91,6 +92,7 @@ describe("StatsContent", () => {
       tierBreakdown: null,
       zeroPointsBreakdown: null,
       tierComparison: null,
+      currentUserBolaoId: null,
     })
 
     expect(screen.getByTestId("position-evolution-chart")).toBeInTheDocument()

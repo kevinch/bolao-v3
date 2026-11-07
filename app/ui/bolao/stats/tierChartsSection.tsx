@@ -9,15 +9,24 @@ import type {
 } from "@/app/lib/statsFactory"
 import TierBreakdownList from "./tierBreakdownList"
 import TierComparisonChart from "./tierComparisonChart"
-import { buildTierBreakdownListRows, mergeTierChartRows } from "./tierChartLayout"
+import {
+  buildTierBreakdownListRows,
+  mergeTierChartRows,
+} from "./tierChartLayout"
 
 type Props = {
   breakdown: TierBreakdownEntry[]
   zeroPoints?: ZeroPointsBreakdown | null
   comparison?: TierComparisonRow[] | null
+  youColor?: string
 }
 
-function TierChartsSection({ breakdown, zeroPoints, comparison }: Props) {
+function TierChartsSection({
+  breakdown,
+  zeroPoints,
+  comparison,
+  youColor,
+}: Props) {
   const t = useTranslations("statsPage")
 
   const breakdownRows = useMemo(
@@ -48,7 +57,7 @@ function TierChartsSection({ breakdown, zeroPoints, comparison }: Props) {
           <p className="mt-1 mb-4 text-sm text-muted-foreground">
             {t("tierComparisonSubtitle")}
           </p>
-          <TierComparisonChart rows={comparisonRows} />
+          <TierComparisonChart rows={comparisonRows} youColor={youColor} />
         </section>
       )}
     </div>

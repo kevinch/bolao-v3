@@ -5,7 +5,6 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
-  Cell,
   Legend,
   ResponsiveContainer,
   Tooltip,
@@ -17,7 +16,6 @@ import {
   CHART_GRID_STROKE,
   CHART_TOOLTIP_BG,
   CHART_TOOLTIP_BORDER,
-  TIER_BAR_COLORS,
 } from "./chartTheme"
 import {
   getTierChartHeight,
@@ -31,9 +29,10 @@ const GROUP_AVERAGE_COLOR = "hsl(215 16% 62%)"
 
 type Props = {
   rows: TierChartRow[]
+  youColor?: string
 }
 
-function TierComparisonChart({ rows }: Props) {
+function TierComparisonChart({ rows, youColor = "hsl(221 83% 48%)" }: Props) {
   const t = useTranslations("statsPage")
 
   const chartData = rows.map((entry) => ({
@@ -99,11 +98,11 @@ function TierComparisonChart({ rows }: Props) {
                       <li key={key}>
                         {key === "youPercentage"
                           ? t("comparisonTooltipYou", {
-                              percentage: value.toFixed(1),
+                              percentage: String(Math.round(value)),
                               points: String(row.youPoints),
                             })
                           : t("comparisonTooltipGroup", {
-                              percentage: value.toFixed(1),
+                              percentage: String(Math.round(value)),
                             })}
                       </li>
                     )
@@ -126,11 +125,8 @@ function TierComparisonChart({ rows }: Props) {
           name="youPercentage"
           radius={0}
           maxBarSize={TIER_GROUP_BAR_MAX_SIZE}
-        >
-          {chartData.map((entry) => (
-            <Cell key={`you-${entry.tier}`} fill={TIER_BAR_COLORS[entry.tier]} />
-          ))}
-        </Bar>
+          fill={youColor}
+        />
         <Bar
           dataKey="groupAveragePercentage"
           name="groupAveragePercentage"
