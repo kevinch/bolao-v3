@@ -2,8 +2,9 @@ import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 import PageTitle from "@/app/components/pageTitle"
 import JsonLd from "@/app/components/jsonLd"
+import { FOOTBALL_API_SPORTS_LEAGUES } from "@/app/lib/utils"
 
-const QUESTION_KEYS = ["1", "2", "3", "4", "5", "6"] as const
+const QUESTION_KEYS = ["1", "2", "3", "4", "5", "6", "7"] as const
 const SCORING_TIER_KEYS = [
   "tierExact",
   "tierWinnerScore",
@@ -15,6 +16,24 @@ const SCORING_TIER_KEYS = [
 
 type FaqTranslator = Awaited<ReturnType<typeof getTranslations<"faq">>>
 
+// Supported competitions grouped by country, ordered the same way as the
+// create-bolão form's select: countries reverse-alphabetical, competitions
+// alphabetical within each country.
+const competitionsByCountry = Object.entries(
+  FOOTBALL_API_SPORTS_LEAGUES.reduce<Record<string, string[]>>(
+    (acc, competition) => {
+      ;(acc[competition.countryName] ??= []).push(competition.name)
+      return acc
+    },
+    {}
+  )
+)
+  .sort(([countryA], [countryB]) => countryB.localeCompare(countryA))
+  .map(([country, names]) => ({
+    country,
+    names: [...names].sort((a, b) => a.localeCompare(b)),
+  }))
+
 function getScoringAnswerText(t: FaqTranslator): string {
   return [
     t("scoring.intro"),
@@ -22,6 +41,19 @@ function getScoringAnswerText(t: FaqTranslator): string {
     t("scoring.championBonus"),
     t("scoring.outro"),
   ].join(" ")
+}
+
+function getCompetitionsAnswerText(t: FaqTranslator): string {
+  const list = competitionsByCountry
+    .map(({ country, names }) => `${country}: ${names.join(", ")}`)
+    .join("; ")
+  return `${t("a6")} ${list}`
+}
+
+function getAnswerText(t: FaqTranslator, key: string): string {
+  if (key === "5") return getScoringAnswerText(t)
+  if (key === "6") return getCompetitionsAnswerText(t)
+  return t(`a${key}`)
 }
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -42,7 +74,7 @@ export default async function Faq() {
   const questions = QUESTION_KEYS.map((key) => ({
     key,
     question: t(`q${key}`),
-    answer: key === "5" ? getScoringAnswerText(t) : t(`a${key}`),
+    answer: getAnswerText(t, key),
   }))
 
   const faqJsonLd = {
@@ -79,6 +111,22 @@ export default async function Faq() {
               </ul>
               <p className="mb-4">{t("scoring.championBonus")}</p>
               <p>{t("scoring.outro")}</p>
+            </>
+          ) : key === "6" ? (
+            <>
+              <p className="mb-4">{t("a6")}</p>
+              <div className="space-y-4">
+                {competitionsByCountry.map(({ country, names }) => (
+                  <div key={country}>
+                    <p className="font-medium">{country}</p>
+                    <ul className="list-disc pl-6 mt-1 space-y-1">
+                      {names.map((name) => (
+                        <li key={name}>{name}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
             </>
           ) : (
             <p>{answer}</p>

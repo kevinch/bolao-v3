@@ -143,7 +143,9 @@
       "outro": "The leaderboard updates automatically as results come in."
     },
     "q6": "Which competitions are supported?",
-    "a6": "Bolão.io covers major competitions such as the World Cup, Brasileirão Série A and B, Copa do Brasil, Copa America, Libertadores, UEFA Champions League, Premier League, La Liga and Ligue 1, with fixtures and results updated automatically."
+    "a6": "Bolão.io supports these competitions, grouped by country:",
+    "q7": "How does the champion pick bonus work?",
+    "a7": "Before a competition starts, each member can pick the team they think will win it. If your pick becomes champion, you get a one-time +500 points added to your leaderboard total. Picks lock when the first match kicks off, and everyone's picks stay hidden until then. The champion is the winner of the final for knockout cups, or the team that finishes top of the table for league competitions — and it works for every supported competition, not only the World Cup."
   },
   "about": {
     "title": "About",

@@ -34,12 +34,20 @@ describe("Faq page", () => {
       const page = await Faq()
       render(page)
 
-      expect(screen.getByTestId("page-title")).toHaveAttribute("data-center", "true")
+      expect(screen.getByTestId("page-title")).toHaveAttribute(
+        "data-center",
+        "true"
+      )
       expect(
-        screen.getByRole("heading", { level: 1, name: "Frequently Asked Questions" })
+        screen.getByRole("heading", {
+          level: 1,
+          name: "Frequently Asked Questions",
+        })
       ).toBeInTheDocument()
 
-      expect(screen.getByRole("heading", { level: 2, name: "What is a bolão?" })).toBeInTheDocument()
+      expect(
+        screen.getByRole("heading", { level: 2, name: "What is a bolão?" })
+      ).toBeInTheDocument()
       expect(
         screen.getByRole("heading", {
           level: 2,
@@ -47,18 +55,33 @@ describe("Faq page", () => {
         })
       ).toBeInTheDocument()
       expect(
-        screen.getByRole("heading", { level: 2, name: "Is Bolão.io really free?" })
+        screen.getByRole("heading", {
+          level: 2,
+          name: "Is Bolão.io really free?",
+        })
       ).toBeInTheDocument()
       expect(
-        screen.getByRole("heading", { level: 2, name: "How do friends join my bolão?" })
+        screen.getByRole("heading", {
+          level: 2,
+          name: "How do friends join my bolão?",
+        })
       ).toBeInTheDocument()
       expect(
-        screen.getByRole("heading", { level: 2, name: "How does the scoring work?" })
+        screen.getByRole("heading", {
+          level: 2,
+          name: "How does the scoring work?",
+        })
       ).toBeInTheDocument()
       expect(
         screen.getByRole("heading", {
           level: 2,
           name: "Which competitions are supported?",
+        })
+      ).toBeInTheDocument()
+      expect(
+        screen.getByRole("heading", {
+          level: 2,
+          name: "How does the champion pick bonus work?",
         })
       ).toBeInTheDocument()
     })
@@ -74,7 +97,11 @@ describe("Faq page", () => {
         screen.getByText(/Create a free account at bolao\.io/)
       ).toBeInTheDocument()
       expect(
-        screen.getByText(/Bolão\.io covers major competitions/)
+        screen.getByText(/Bolão\.io supports these competitions/)
+      ).toBeInTheDocument()
+      expect(screen.getByText("Premier League")).toBeInTheDocument()
+      expect(
+        screen.getByText(/each member can pick the team they think will win/)
       ).toBeInTheDocument()
     })
 
@@ -88,7 +115,9 @@ describe("Faq page", () => {
         )
       ).toBeInTheDocument()
       expect(
-        screen.getByText("200 pts — Exact score (e.g. result 3-0, your bet 3-0)")
+        screen.getByText(
+          "200 pts — Exact score (e.g. result 3-0, your bet 3-0)"
+        )
       ).toBeInTheDocument()
       expect(
         screen.getByText("80 pts — Winner only (e.g. result 1-0, your bet 3-2)")
@@ -99,18 +128,24 @@ describe("Faq page", () => {
         )
       ).toBeInTheDocument()
       expect(
-        screen.getByText("The leaderboard updates automatically as results come in.")
+        screen.getByText(
+          "The leaderboard updates automatically as results come in."
+        )
       ).toBeInTheDocument()
 
-      const scoringList = screen.getByRole("list")
-      expect(scoringList.querySelectorAll("li")).toHaveLength(6)
+      const scoringList = screen
+        .getAllByRole("list")
+        .find((list) => list.textContent?.includes("200 pts — Exact score"))
+      expect(scoringList?.querySelectorAll("li")).toHaveLength(6)
     })
 
     it("includes FAQPage JSON-LD with all questions", async () => {
       const page = await Faq()
       const { container } = render(page)
 
-      const script = container.querySelector('script[type="application/ld+json"]')
+      const script = container.querySelector(
+        'script[type="application/ld+json"]'
+      )
       expect(script).not.toBeNull()
 
       const jsonLd = JSON.parse(script!.textContent ?? "")
@@ -119,7 +154,10 @@ describe("Faq page", () => {
         "@context": "https://schema.org",
         "@type": "FAQPage",
       })
-      expect(jsonLd.mainEntity).toHaveLength(6)
+      expect(jsonLd.mainEntity).toHaveLength(7)
+      expect(jsonLd.mainEntity[6].name).toBe(
+        "How does the champion pick bonus work?"
+      )
       expect(jsonLd.mainEntity[0]).toMatchObject({
         "@type": "Question",
         name: "What is a bolão?",
@@ -129,7 +167,9 @@ describe("Faq page", () => {
         },
       })
       expect(jsonLd.mainEntity[4].name).toBe("How does the scoring work?")
-      expect(jsonLd.mainEntity[4].acceptedAnswer.text).toContain("200 pts — Exact score")
+      expect(jsonLd.mainEntity[4].acceptedAnswer.text).toContain(
+        "200 pts — Exact score"
+      )
       expect(jsonLd.mainEntity[4].acceptedAnswer.text).toContain(
         "The leaderboard updates automatically as results come in."
       )
