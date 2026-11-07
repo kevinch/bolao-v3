@@ -286,7 +286,7 @@
     "comparisonGroupAverage": "Média do grupo",
     "comparisonTooltipYou": "Você: {percentage}% ({points} pts)",
     "comparisonTooltipGroup": "Média do grupo: {percentage}%",
-    "seasonEnd": "Fim da temporada",
+    "seasonEnd": "Bônus do campeão",
     "rankAxis": "Posição",
     "rankValue": "#{rank}",
     "snapshotLabel": "{label}",

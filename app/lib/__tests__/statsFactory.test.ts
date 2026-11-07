@@ -217,6 +217,47 @@ describe("statsFactory", () => {
       })
       expect(snapshots[1].ranks[0].total).toBe(700)
     })
+
+    it("omits the season-end snapshot when no champion pick was made", () => {
+      const fixtures = [
+        createFinishedFixture({
+          id: 1,
+          round: "Final",
+          homeGoals: 1,
+          awayGoals: 0,
+        }),
+      ]
+
+      const bets: Bet[] = [
+        {
+          id: "b1",
+          user_bolao_id: "ub-1",
+          fixture_id: "1",
+          value: 1,
+          type: "home",
+        },
+        {
+          id: "b2",
+          user_bolao_id: "ub-1",
+          fixture_id: "1",
+          value: 0,
+          type: "away",
+        },
+      ]
+
+      const snapshots = buildPositionSnapshots({
+        players,
+        fixtures,
+        bets,
+        allRounds: ["Final"],
+        championPicks: [],
+        leagueWinnerTeamId: 99,
+        seasonEndLabel: "Season end",
+      })
+
+      expect(snapshots).toHaveLength(1)
+      expect(snapshots.some((snapshot) => snapshot.isSeasonEnd)).toBe(false)
+    })
   })
 
   describe("buildTierBreakdown", () => {

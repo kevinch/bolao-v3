@@ -286,7 +286,7 @@
     "comparisonGroupAverage": "Group average",
     "comparisonTooltipYou": "You: {percentage}% ({points} pts)",
     "comparisonTooltipGroup": "Group average: {percentage}%",
-    "seasonEnd": "Season end",
+    "seasonEnd": "Champion bonus",
     "rankAxis": "Rank",
     "rankValue": "#{rank}",
     "snapshotLabel": "{label}",

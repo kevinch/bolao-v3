@@ -179,7 +179,14 @@ export function buildPositionSnapshots({
 
   const roundSnapshots = snapshots.filter((snapshot) => !snapshot.isSeasonEnd)
 
-  if (leagueWinnerTeamId !== null && roundSnapshots.length > 0) {
+  // Only show the season-end column when the champion-pick bonus can actually
+  // move the standings — i.e. the champion is known and at least one member
+  // made a pick. Otherwise it would just duplicate the final round.
+  if (
+    leagueWinnerTeamId !== null &&
+    roundSnapshots.length > 0 &&
+    championPicks.length > 0
+  ) {
     snapshots.push(
       snapshotFromFixtures({
         label: seasonEndLabel,
