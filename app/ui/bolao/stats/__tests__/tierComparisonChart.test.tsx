@@ -111,12 +111,15 @@ vi.mock("recharts", () => ({
   Bar: ({
     children,
     dataKey,
+    fill,
   }: {
     children?: React.ReactNode
     dataKey?: string
-  }) => <div data-testid={`bar-${dataKey}`}>{children}</div>,
-  Cell: ({ fill }: { fill?: string }) => (
-    <span data-testid="bar-cell" data-fill={fill} />
+    fill?: string
+  }) => (
+    <div data-testid={`bar-${dataKey}`} data-fill={fill}>
+      {children}
+    </div>
   ),
 }))
 
@@ -210,15 +213,16 @@ describe("TierComparisonChart", () => {
     expect(tooltip.getByText("Group average: 0%")).toBeInTheDocument()
   })
 
-  it("renders tier-colored cells for the you bar series", () => {
-    render(<TierComparisonChart rows={rows} />)
+  it("fills the you bar with the member color and the group bar grey", () => {
+    render(<TierComparisonChart rows={rows} youColor="hsl(0 74% 44%)" />)
 
-    const cells = within(
-      screen.getByTestId("bar-youPercentage")
-    ).getAllByTestId("bar-cell")
-
-    expect(cells).toHaveLength(2)
-    expect(cells[0]).toHaveAttribute("data-fill", "hsl(221 83% 48%)")
-    expect(cells[1]).toHaveAttribute("data-fill", "hsl(215 16% 47%)")
+    expect(screen.getByTestId("bar-youPercentage")).toHaveAttribute(
+      "data-fill",
+      "hsl(0 74% 44%)"
+    )
+    expect(screen.getByTestId("bar-groupAveragePercentage")).toHaveAttribute(
+      "data-fill",
+      "hsl(215 16% 62%)"
+    )
   })
 })

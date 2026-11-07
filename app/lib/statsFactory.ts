@@ -56,6 +56,7 @@ export type StatsViewModel = {
   tierBreakdown: TierBreakdownEntry[] | null
   zeroPointsBreakdown: ZeroPointsBreakdown | null
   tierComparison: TierComparisonRow[] | null
+  currentUserBolaoId: string | null
 }
 
 function groupFixturesByRound(
@@ -478,5 +479,6 @@ export function buildStatsViewModel({
     zeroPointsBreakdown,
     tierComparison:
       tierComparison && tierComparison.length > 0 ? tierComparison : null,
+    currentUserBolaoId: currentUserBolaoId ?? null,
   }
 }

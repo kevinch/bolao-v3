@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import type { StatsViewModel } from "@/app/lib/statsFactory"
 import PositionEvolutionChart from "./positionEvolutionChart"
 import TierChartsSection from "./tierChartsSection"
+import { buildPlayerColors, getPlayerColor } from "./chartTheme"
 
 type Props = {
   stats: StatsViewModel
@@ -28,6 +29,16 @@ async function StatsContent({ stats }: Props) {
     )
   }
 
+  // Reuse the member's line-chart color (assigned by their order in the first
+  // snapshot) for the "You" bars and legend in the comparison chart.
+  const firstRanks = stats.positionSnapshots[0]?.ranks ?? []
+  const youIndex = firstRanks.findIndex(
+    (entry) => entry.userBolaoId === stats.currentUserBolaoId
+  )
+  const playerColors = buildPlayerColors(firstRanks.length)
+  const youColor =
+    youIndex >= 0 ? getPlayerColor(playerColors, youIndex) : "hsl(221 83% 48%)"
+
   return (
     <div className="space-y-6">
       <Card className="max-md:rounded-none max-md:border-0 max-md:shadow-none md:rounded-xl md:border-x md:shadow-sm">
@@ -36,7 +47,9 @@ async function StatsContent({ stats }: Props) {
             {t("title")}
             <Badge variant="secondary">{t("beta")}</Badge>
           </CardTitle>
-          <p className="text-sm text-muted-foreground">{t("positionSubtitle")}</p>
+          <p className="text-sm text-muted-foreground">
+            {t("positionSubtitle")}
+          </p>
         </CardHeader>
         <CardContent className="pb-6">
           <PositionEvolutionChart snapshots={stats.positionSnapshots} />
@@ -50,6 +63,7 @@ async function StatsContent({ stats }: Props) {
               breakdown={stats.tierBreakdown}
               zeroPoints={stats.zeroPointsBreakdown}
               comparison={stats.tierComparison}
+              youColor={youColor}
             />
           </CardContent>
         </Card>
