@@ -99,11 +99,11 @@ function TierComparisonChart({ rows }: Props) {
                       <li key={key}>
                         {key === "youPercentage"
                           ? t("comparisonTooltipYou", {
-                              percentage: value.toFixed(1),
+                              percentage: String(Math.round(value)),
                               points: String(row.youPoints),
                             })
                           : t("comparisonTooltipGroup", {
-                              percentage: value.toFixed(1),
+                              percentage: String(Math.round(value)),
                             })}
                       </li>
                     )
@@ -128,7 +128,10 @@ function TierComparisonChart({ rows }: Props) {
           maxBarSize={TIER_GROUP_BAR_MAX_SIZE}
         >
           {chartData.map((entry) => (
-            <Cell key={`you-${entry.tier}`} fill={TIER_BAR_COLORS[entry.tier]} />
+            <Cell
+              key={`you-${entry.tier}`}
+              fill={TIER_BAR_COLORS[entry.tier]}
+            />
           ))}
         </Bar>
         <Bar

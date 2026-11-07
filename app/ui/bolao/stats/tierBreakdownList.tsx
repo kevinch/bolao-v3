@@ -34,19 +34,14 @@ function TierBreakdownList({ rows }: Props) {
                 : t(`tiers.${row.tier}`)}
             </span>
           </span>
-          <span className="flex shrink-0 items-baseline gap-2 tabular-nums">
-            <span className="font-medium">
+          <span className="flex shrink-0 items-baseline gap-3 tabular-nums">
+            <span className="w-20 text-right font-medium">
               {t("tierBreakdownPoints", { points: String(row.youPoints) })}
             </span>
-            <span className="text-muted-foreground">
-              {t(
-                row.tier === "zeroPoints"
-                  ? "tierBreakdownMissPercentage"
-                  : "tierBreakdownPercentage",
-                {
-                  percentage: row.youPercentage.toFixed(1),
-                }
-              )}
+            <span className="w-10 text-right text-muted-foreground">
+              {t("tierBreakdownPercentage", {
+                percentage: String(Math.round(row.youPercentage)),
+              })}
             </span>
           </span>
         </li>

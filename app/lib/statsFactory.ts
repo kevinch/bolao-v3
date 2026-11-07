@@ -6,7 +6,11 @@ import {
   ScoringTierId,
 } from "./definitions"
 import { calcLead } from "./calcLeadFactory"
-import { calcScore, classifyScoringTier, SCORING_TIER_IDS } from "./scoresCalcFactory"
+import {
+  calcScore,
+  classifyScoringTier,
+  SCORING_TIER_IDS,
+} from "./scoresCalcFactory"
 import {
   findBetObj,
   getEmailUsername,
@@ -159,10 +163,7 @@ export function buildPositionSnapshots({
 
     if (!isRoundFullyFinished(roundFixtures)) break
 
-    cumulativeFixtures = sortFixtures([
-      ...cumulativeFixtures,
-      ...roundFixtures,
-    ])
+    cumulativeFixtures = sortFixtures([...cumulativeFixtures, ...roundFixtures])
 
     snapshots.push(
       snapshotFromFixtures({
@@ -204,6 +205,9 @@ function accumulateMemberTierPoints({
   userBolaoId: string
 }) {
   const pointsByTier = new Map<ScoringTierId, number>(
+    SCORING_TIER_IDS.map((tier) => [tier, 0])
+  )
+  const countByTier = new Map<ScoringTierId, number>(
     SCORING_TIER_IDS.map((tier) => [tier, 0])
   )
   let zeroPointFixtures = 0
@@ -252,9 +256,10 @@ function accumulateMemberTierPoints({
     }
 
     pointsByTier.set(tier, (pointsByTier.get(tier) ?? 0) + points)
+    countByTier.set(tier, (countByTier.get(tier) ?? 0) + 1)
   }
 
-  return { pointsByTier, zeroPointFixtures, finishedBetFixtures }
+  return { pointsByTier, countByTier, zeroPointFixtures, finishedBetFixtures }
 }
 
 export function buildZeroPointsBreakdown({
@@ -266,11 +271,13 @@ export function buildZeroPointsBreakdown({
   bets: Bet[]
   userBolaoId: string
 }): ZeroPointsBreakdown {
-  const { zeroPointFixtures, finishedBetFixtures } = accumulateMemberTierPoints({
-    fixtures,
-    bets,
-    userBolaoId,
-  })
+  const { zeroPointFixtures, finishedBetFixtures } = accumulateMemberTierPoints(
+    {
+      fixtures,
+      bets,
+      userBolaoId,
+    }
+  )
 
   return {
     points: 0,
@@ -290,23 +297,23 @@ export function buildTierBreakdownFull({
   bets: Bet[]
   userBolaoId: string
 }): TierBreakdownEntry[] {
-  const { pointsByTier } = accumulateMemberTierPoints({
-    fixtures,
-    bets,
-    userBolaoId,
-  })
+  const { pointsByTier, countByTier, finishedBetFixtures } =
+    accumulateMemberTierPoints({
+      fixtures,
+      bets,
+      userBolaoId,
+    })
 
-  const totalPoints = SCORING_TIER_IDS.reduce(
-    (sum, tier) => sum + (pointsByTier.get(tier) ?? 0),
-    0
-  )
-
+  // Percentage is the share of settled bets that landed in this tier, so the
+  // six tiers plus the zero-points row add up to 100% of the member's bets.
   return SCORING_TIER_IDS.map((tier) => {
     const points = pointsByTier.get(tier) ?? 0
+    const count = countByTier.get(tier) ?? 0
     return {
       tier,
       points,
-      percentage: totalPoints > 0 ? (points / totalPoints) * 100 : 0,
+      percentage:
+        finishedBetFixtures > 0 ? (count / finishedBetFixtures) * 100 : 0,
     }
   })
 }
@@ -348,7 +355,8 @@ export function buildGroupAverageTierBreakdown({
     const averagePercentage =
       allBreakdowns.reduce(
         (sum, breakdown) =>
-          sum + (breakdown.find((entry) => entry.tier === tier)?.percentage ?? 0),
+          sum +
+          (breakdown.find((entry) => entry.tier === tier)?.percentage ?? 0),
         0
       ) / players.length
 

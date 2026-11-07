@@ -60,11 +60,9 @@ vi.mock("recharts", () => ({
     </div>
   ),
   CartesianGrid: () => null,
-  XAxis: ({
-    tickFormatter,
-  }: {
-    tickFormatter?: (value: number) => string
-  }) => <div data-testid="x-axis">{tickFormatter?.(75)}</div>,
+  XAxis: ({ tickFormatter }: { tickFormatter?: (value: number) => string }) => (
+    <div data-testid="x-axis">{tickFormatter?.(75)}</div>
+  ),
   YAxis: () => null,
   Tooltip: ({ content }: TooltipProps) => (
     <div data-testid="tooltip">
@@ -116,9 +114,7 @@ vi.mock("recharts", () => ({
   }: {
     children?: React.ReactNode
     dataKey?: string
-  }) => (
-    <div data-testid={`bar-${dataKey}`}>{children}</div>
-  ),
+  }) => <div data-testid={`bar-${dataKey}`}>{children}</div>,
   Cell: ({ fill }: { fill?: string }) => (
     <span data-testid="bar-cell" data-fill={fill} />
   ),
@@ -144,7 +140,10 @@ describe("TierComparisonChart", () => {
     render(<TierComparisonChart rows={rows} />)
 
     expect(screen.getByTestId("responsive-container")).toBeInTheDocument()
-    expect(screen.getByTestId("bar-chart")).toHaveAttribute("data-row-count", "2")
+    expect(screen.getByTestId("bar-chart")).toHaveAttribute(
+      "data-row-count",
+      "2"
+    )
   })
 
   it("defaults missing group averages to zero in chart data", () => {
@@ -177,14 +176,20 @@ describe("TierComparisonChart", () => {
     render(<TierComparisonChart rows={rows} />)
 
     expect(screen.getByTestId("legend-you")).toHaveTextContent("You")
-    expect(screen.getByTestId("legend-group")).toHaveTextContent("Group average")
+    expect(screen.getByTestId("legend-group")).toHaveTextContent(
+      "Group average"
+    )
   })
 
   it("returns null for inactive or empty tooltip states", () => {
     render(<TierComparisonChart rows={rows} />)
 
-    expect(within(screen.getByTestId("tooltip-inactive")).queryByRole("list")).toBeNull()
-    expect(within(screen.getByTestId("tooltip-empty")).queryByRole("list")).toBeNull()
+    expect(
+      within(screen.getByTestId("tooltip-inactive")).queryByRole("list")
+    ).toBeNull()
+    expect(
+      within(screen.getByTestId("tooltip-empty")).queryByRole("list")
+    ).toBeNull()
   })
 
   it("renders tooltip rows for you and group average", () => {
@@ -193,8 +198,8 @@ describe("TierComparisonChart", () => {
     const tooltip = within(screen.getByTestId("tooltip-active"))
 
     expect(tooltip.getByText("Exact score (200)")).toBeInTheDocument()
-    expect(tooltip.getByText("You: 100.0% (200 pts)")).toBeInTheDocument()
-    expect(tooltip.getByText("Group average: 50.0%")).toBeInTheDocument()
+    expect(tooltip.getByText("You: 100% (200 pts)")).toBeInTheDocument()
+    expect(tooltip.getByText("Group average: 50%")).toBeInTheDocument()
   })
 
   it("falls back to group tooltip when payload keys are missing", () => {
@@ -202,15 +207,15 @@ describe("TierComparisonChart", () => {
 
     const tooltip = within(screen.getByTestId("tooltip-fallback"))
 
-    expect(tooltip.getByText("Group average: 0.0%")).toBeInTheDocument()
+    expect(tooltip.getByText("Group average: 0%")).toBeInTheDocument()
   })
 
   it("renders tier-colored cells for the you bar series", () => {
     render(<TierComparisonChart rows={rows} />)
 
-    const cells = within(screen.getByTestId("bar-youPercentage")).getAllByTestId(
-      "bar-cell"
-    )
+    const cells = within(
+      screen.getByTestId("bar-youPercentage")
+    ).getAllByTestId("bar-cell")
 
     expect(cells).toHaveLength(2)
     expect(cells[0]).toHaveAttribute("data-fill", "hsl(221 83% 48%)")
