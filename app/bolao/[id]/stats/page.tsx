@@ -4,6 +4,7 @@ import BolaoPageTitle from "@/app/ui/bolao/bolaoPageTitle"
 import BolaoLinks from "@/app/ui/bolao/bolaoLinks"
 import StatsContent from "@/app/ui/bolao/stats/statsContent"
 import { getData } from "@/app/lib/controllerStats"
+import { requireBolaoAccess } from "@/app/lib/bolaoAccess"
 
 async function StatsPage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params
@@ -13,6 +14,10 @@ async function StatsPage(props: { params: Promise<{ id: string }> }) {
   if (!userId) {
     return <p>{t("errorMissingUser")}</p>
   }
+
+  // Enforce membership before loading data. Kept out of the try/catch below so
+  // the notFound() it may throw is not swallowed and renders a real 404.
+  await requireBolaoAccess(params.id)
 
   let data
   try {

@@ -12,6 +12,10 @@ vi.mock("@/app/lib/controllerStats", () => ({
   getData: vi.fn(),
 }))
 
+vi.mock("@/app/lib/bolaoAccess", () => ({
+  requireBolaoAccess: vi.fn(),
+}))
+
 vi.mock("next-intl/server", () => ({
   getTranslations: vi.fn(async () => (key: string) => key),
 }))

@@ -8,6 +8,10 @@ vi.mock("@/app/lib/data", () => ({
   fetchStandings: vi.fn(),
 }))
 
+vi.mock("../bolaoAccess", () => ({
+  requireBolaoAccess: vi.fn(),
+}))
+
 describe("controllerStandings", () => {
   const mockBolao: Bolao = {
     id: "bolao-1",

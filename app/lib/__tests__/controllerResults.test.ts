@@ -26,6 +26,10 @@ vi.mock("@/app/lib/utils", async (importOriginal) => {
   }
 })
 
+vi.mock("../bolaoAccess", () => ({
+  requireBolaoAccess: vi.fn(),
+}))
+
 describe("controllerResults", () => {
   const mockBolao: Bolao = {
     id: "bolao-1",
