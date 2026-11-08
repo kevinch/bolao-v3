@@ -2,6 +2,9 @@ import '@testing-library/jest-dom'
 import { vi } from 'vitest'
 import en from '../messages/en.json'
 
+// Stable secret so invite-token signing/verification is deterministic in tests.
+process.env.INVITE_LINK_SECRET = process.env.INVITE_LINK_SECRET || 'test-invite-secret'
+
 // Helper to get nested translation value
 function getNestedValue(obj: Record<string, any>, path: string): string {
   const result = path.split('.').reduce((acc, key) => acc?.[key], obj)

@@ -19,9 +19,11 @@ import { upcomingMatches, type PreviewMatch } from "@/app/lib/homeMatches"
 async function getData({
   bolaoId,
   userId,
+  inviteToken,
 }: {
   bolaoId: string
   userId: string
+  inviteToken?: string
 }) {
   const [bolao, userBolao] = await Promise.all([
     fetchBolao(bolaoId),
@@ -31,7 +33,7 @@ async function getData({
   let resultKey = "alreadyIn"
 
   if (!userBolao) {
-    const data = await createUserBolao(bolaoId)
+    const data = await createUserBolao(bolaoId, inviteToken)
 
     if (data.success) {
       resultKey = "added"
@@ -65,8 +67,12 @@ async function getData({
   return { bolao, resultKey, matches, leagueName, leagueLogo }
 }
 
-async function InvitePage(props: { params: Promise<{ id: string }> }) {
+async function InvitePage(props: {
+  params: Promise<{ id: string }>
+  searchParams?: Promise<{ t?: string }>
+}) {
   const params = await props.params
+  const searchParams = await props.searchParams
   const { userId }: { userId: string | null } = await auth()
 
   if (!userId) {
@@ -75,7 +81,11 @@ async function InvitePage(props: { params: Promise<{ id: string }> }) {
   }
 
   const t = await getTranslations("invitePage")
-  const data = await getData({ bolaoId: params.id, userId })
+  const data = await getData({
+    bolaoId: params.id,
+    userId,
+    inviteToken: searchParams?.t,
+  })
 
   if (!data) {
     return <p>{t("error")}</p>
