@@ -842,6 +842,31 @@ describe("actions", () => {
       expect(sql).toHaveBeenCalledTimes(1)
       expect(revalidatePath).not.toHaveBeenCalled()
     })
+
+    it("should reject an unauthenticated caller", async () => {
+      vi.mocked(auth).mockResolvedValue({ userId: null } as any)
+
+      const result = await deleteBolaoGroup("bolao-1")
+
+      expect(result).toEqual({ success: false, message: "Unauthorized." })
+      expect(sql).not.toHaveBeenCalled()
+      expect(revalidatePath).not.toHaveBeenCalled()
+    })
+
+    it("should handle database errors during the cascade", async () => {
+      vi.mocked(auth).mockResolvedValue({ userId: "admin-1" } as any)
+      vi.mocked(getUserRole).mockResolvedValue("admin")
+      // first cascade DELETE (bets) fails
+      vi.mocked(sql).mockRejectedValue(new Error("Database error"))
+
+      const result = await deleteBolaoGroup("bolao-1")
+
+      expect(result).toEqual({
+        message: "Database Error: failed to delete a bolao.",
+        success: false,
+      })
+      expect(revalidatePath).not.toHaveBeenCalled()
+    })
   })
 
   describe("deleteUserBolao", () => {
