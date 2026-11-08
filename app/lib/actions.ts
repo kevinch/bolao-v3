@@ -120,6 +120,38 @@ export async function createBolao(
   }
 }
 
+/**
+ * Authorizes a bolão-level mutation (rename, delete, member management).
+ * Returns an error object to return to the caller, or null when allowed.
+ * Only the bolão's creator or an admin may manage it.
+ */
+async function assertCanManageBolao(
+  bolaoId: string
+): Promise<{ success: false; message: string } | null> {
+  const { userId } = await auth()
+
+  if (!userId) {
+    return { success: false, message: "Unauthorized." }
+  }
+
+  if ((await getUserRole(userId)) === "admin") {
+    return null
+  }
+
+  const result = await sql`
+    SELECT created_by
+    FROM boloes
+    WHERE CAST(id AS VARCHAR) = ${bolaoId}
+  `
+  const row = result.rows[0]
+
+  if (!row || String(row.created_by) !== userId) {
+    return { success: false, message: "Forbidden." }
+  }
+
+  return null
+}
+
 export async function updateBolao({
   bolaoId,
   name,
@@ -127,6 +159,12 @@ export async function updateBolao({
   bolaoId: string
   name: string
 }): Promise<UpdateBolaoResult> {
+  const authorization = await assertCanManageBolao(bolaoId)
+
+  if (authorization) {
+    return authorization
+  }
+
   try {
     const data = await sql`
         UPDATE boloes
@@ -418,6 +456,12 @@ export async function createOrUpdateChampionPick({
 }
 
 export async function deleteBolao(bolaoId: string) {
+  const authorization = await assertCanManageBolao(bolaoId)
+
+  if (authorization) {
+    return authorization
+  }
+
   try {
     const result = await sql`
       DELETE FROM boloes
@@ -443,7 +487,81 @@ export async function deleteBolao(bolaoId: string) {
   }
 }
 
+/**
+ * Deletes a bolão together with its memberships and bets. Authorization is
+ * checked once (creator or admin); the cascade then runs entirely server-side
+ * so it never depends on the browser or on per-row permission checks.
+ */
+export async function deleteBolaoGroup(bolaoId: string) {
+  const authorization = await assertCanManageBolao(bolaoId)
+
+  if (authorization) {
+    return authorization
+  }
+
+  try {
+    await sql`
+      DELETE FROM bets
+      WHERE CAST(user_bolao_id AS VARCHAR) IN (
+        SELECT CAST(id AS VARCHAR)
+        FROM user_bolao
+        WHERE CAST(bolao_id AS VARCHAR) = ${bolaoId}
+      )
+    `
+    await sql`
+      DELETE FROM user_bolao
+      WHERE CAST(bolao_id AS VARCHAR) = ${bolaoId}
+    `
+    const result = await sql`
+      DELETE FROM boloes
+      WHERE CAST(id AS VARCHAR) = ${bolaoId}
+      RETURNING *
+    `
+
+    revalidatePath("/")
+
+    return {
+      data: result.rows,
+      message: "bolao deleted",
+      success: true,
+    }
+  } catch (error) {
+    console.log(error)
+    return {
+      message: "Database Error: failed to delete a bolao.",
+      success: false,
+    }
+  }
+}
+
 export async function deleteUserBolao(userBolaoId: string) {
+  const { userId } = await auth()
+
+  if (!userId) {
+    return { success: false, message: "Unauthorized." }
+  }
+
+  const membership = await sql`
+    SELECT bolao_id, user_id
+    FROM user_bolao
+    WHERE CAST(id AS VARCHAR) = ${userBolaoId}
+  `
+  const row = membership.rows[0]
+
+  if (!row) {
+    return { success: false, message: "Forbidden." }
+  }
+
+  // A member may remove their own membership (leave); otherwise the caller
+  // must be the bolão's creator or an admin.
+  if (String(row.user_id) !== userId) {
+    const authorization = await assertCanManageBolao(String(row.bolao_id))
+
+    if (authorization) {
+      return authorization
+    }
+  }
+
   try {
     const result = await sql`
       DELETE FROM user_bolao

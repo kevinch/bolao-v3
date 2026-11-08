@@ -1,13 +1,14 @@
 import {
   fetchAdminUsageStats,
   fetchBoloes,
-  fetchUsersBolao,
-  fetchUsersBets,
   fetchUsers,
 } from "@/app/lib/data"
-import { deleteBolao, deleteUserBolao, deleteBet } from "./actions"
-import { UserBolao, Bet } from "./definitions"
 import { FOOTBALL_API_SPORTS_LEAGUES } from "./utils"
+
+// deleteBolaoGroup now lives in actions.ts as an authorized, server-side
+// cascade (creator or admin only). Re-exported here so existing callers keep
+// importing it from this module.
+export { deleteBolaoGroup } from "./actions"
 
 export async function getBoloes() {
   const boloes = await fetchBoloes()
@@ -15,41 +16,6 @@ export async function getBoloes() {
   return {
     boloes,
   }
-}
-
-export async function deleteBolaoGroup(bolaoId: string) {
-  // find user_boloes
-  const usersBolao: UserBolao[] = await fetchUsersBolao(bolaoId)
-
-  // retrieve user_boloes ids
-  const usersBoloesIds: string[] = []
-  usersBolao.forEach((el: UserBolao) => {
-    usersBoloesIds.push(el.id)
-  })
-
-  // find bets
-  const usersBets = await fetchUsersBets(usersBoloesIds)
-
-  // retrieve bets ids
-  const usersBetsIds: string[] = []
-  usersBets.forEach((el: Bet) => {
-    usersBetsIds.push(el.id)
-  })
-
-  // delete bets
-  const deleteBetsPromises = usersBetsIds.map((betId) => deleteBet(betId))
-  await Promise.all(deleteBetsPromises)
-
-  // delete user_boloes
-  const deleteUsersBolaoPromises = usersBoloesIds.map((userBolaoId) =>
-    deleteUserBolao(userBolaoId)
-  )
-  await Promise.all(deleteUsersBolaoPromises)
-
-  // delete bolao
-  const result = await deleteBolao(bolaoId)
-
-  return result
 }
 
 export async function getUsers() {

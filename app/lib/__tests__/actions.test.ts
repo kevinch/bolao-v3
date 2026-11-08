@@ -51,6 +51,7 @@ import {
   createBet,
   updateBet,
   deleteBolao,
+  deleteBolaoGroup,
   deleteUserBolao,
   deleteBet,
   createOrUpdateChampionPick,
@@ -341,7 +342,9 @@ describe("actions", () => {
   })
 
   describe("updateBolao", () => {
-    it("should update a bolao successfully", async () => {
+    it("should update a bolao successfully as an admin", async () => {
+      vi.mocked(auth).mockResolvedValue({ userId: "admin-1" } as any)
+      vi.mocked(getUserRole).mockResolvedValue("admin")
       vi.mocked(sql).mockResolvedValue({
         rows: [{ id: "bolao-1", name: "Updated Name" }],
       } as any)
@@ -360,7 +363,58 @@ describe("actions", () => {
       expect(revalidatePath).toHaveBeenCalledWith("/")
     })
 
+    it("should update a bolao successfully as its creator", async () => {
+      vi.mocked(auth).mockResolvedValue({ userId: "owner-1" } as any)
+      vi.mocked(getUserRole).mockResolvedValue("user")
+      // 1) ownership lookup, 2) the UPDATE
+      vi.mocked(sql)
+        .mockResolvedValueOnce({ rows: [{ created_by: "owner-1" }] } as any)
+        .mockResolvedValueOnce({
+          rows: [{ id: "bolao-1", name: "Updated Name" }],
+        } as any)
+
+      const result = await updateBolao({
+        bolaoId: "bolao-1",
+        name: "Updated Name",
+      })
+
+      expect(result).toEqual({ success: true })
+      expect(revalidatePath).toHaveBeenCalledWith("/")
+    })
+
+    it("should forbid a non-owner, non-admin from renaming", async () => {
+      vi.mocked(auth).mockResolvedValue({ userId: "attacker" } as any)
+      vi.mocked(getUserRole).mockResolvedValue("user")
+      vi.mocked(sql).mockResolvedValue({
+        rows: [{ created_by: "owner-1" }],
+      } as any)
+
+      const result = await updateBolao({
+        bolaoId: "bolao-1",
+        name: "HACKED",
+      })
+
+      expect(result).toEqual({ success: false, message: "Forbidden." })
+      // only the ownership lookup ran; no UPDATE was issued
+      expect(sql).toHaveBeenCalledTimes(1)
+      expect(revalidatePath).not.toHaveBeenCalled()
+    })
+
+    it("should reject an unauthenticated caller", async () => {
+      vi.mocked(auth).mockResolvedValue({ userId: null } as any)
+
+      const result = await updateBolao({
+        bolaoId: "bolao-1",
+        name: "Updated Name",
+      })
+
+      expect(result).toEqual({ success: false, message: "Unauthorized." })
+      expect(sql).not.toHaveBeenCalled()
+    })
+
     it("should handle database errors", async () => {
+      vi.mocked(auth).mockResolvedValue({ userId: "admin-1" } as any)
+      vi.mocked(getUserRole).mockResolvedValue("admin")
       vi.mocked(sql).mockRejectedValue(new Error("Database error"))
 
       const result = await updateBolao({
@@ -673,8 +727,10 @@ describe("actions", () => {
   })
 
   describe("deleteBolao", () => {
-    it("should delete a bolao successfully", async () => {
+    it("should delete a bolao successfully as an admin", async () => {
       const mockData = [{ id: "bolao-1", name: "Test Bolao" }]
+      vi.mocked(auth).mockResolvedValue({ userId: "admin-1" } as any)
+      vi.mocked(getUserRole).mockResolvedValue("admin")
       vi.mocked(sql).mockResolvedValue({ rows: [mockData] } as any)
 
       const result = await deleteBolao("bolao-1")
@@ -691,7 +747,50 @@ describe("actions", () => {
       expect(revalidatePath).toHaveBeenCalledWith("/")
     })
 
+    it("should delete a bolao successfully as its creator", async () => {
+      const deletedData = [{ id: "bolao-1", name: "Deleted Bolao" }]
+      vi.mocked(auth).mockResolvedValue({ userId: "owner-1" } as any)
+      vi.mocked(getUserRole).mockResolvedValue("user")
+      vi.mocked(sql)
+        .mockResolvedValueOnce({ rows: [{ created_by: "owner-1" }] } as any)
+        .mockResolvedValueOnce({ rows: deletedData } as any)
+
+      const result = await deleteBolao("bolao-1")
+
+      expect(result).toEqual({
+        data: deletedData,
+        message: "bolao deleted",
+        success: true,
+      })
+      expect(revalidatePath).toHaveBeenCalledWith("/")
+    })
+
+    it("should forbid a non-owner, non-admin from deleting", async () => {
+      vi.mocked(auth).mockResolvedValue({ userId: "attacker" } as any)
+      vi.mocked(getUserRole).mockResolvedValue("user")
+      vi.mocked(sql).mockResolvedValue({
+        rows: [{ created_by: "owner-1" }],
+      } as any)
+
+      const result = await deleteBolao("bolao-1")
+
+      expect(result).toEqual({ success: false, message: "Forbidden." })
+      expect(sql).toHaveBeenCalledTimes(1)
+      expect(revalidatePath).not.toHaveBeenCalled()
+    })
+
+    it("should reject an unauthenticated caller", async () => {
+      vi.mocked(auth).mockResolvedValue({ userId: null } as any)
+
+      const result = await deleteBolao("bolao-1")
+
+      expect(result).toEqual({ success: false, message: "Unauthorized." })
+      expect(sql).not.toHaveBeenCalled()
+    })
+
     it("should handle database errors", async () => {
+      vi.mocked(auth).mockResolvedValue({ userId: "admin-1" } as any)
+      vi.mocked(getUserRole).mockResolvedValue("admin")
       vi.mocked(sql).mockRejectedValue(new Error("Database error"))
 
       const result = await deleteBolao("bolao-1")
@@ -702,34 +801,126 @@ describe("actions", () => {
       })
       expect(revalidatePath).not.toHaveBeenCalled()
     })
+  })
 
-    it("should return RETURNING data", async () => {
-      const deletedData = [{ id: "bolao-1", name: "Deleted Bolao" }]
-      vi.mocked(sql).mockResolvedValue({ rows: deletedData } as any)
+  describe("deleteBolaoGroup", () => {
+    it("should cascade-delete bets, memberships and the bolao as admin", async () => {
+      vi.mocked(auth).mockResolvedValue({ userId: "admin-1" } as any)
+      vi.mocked(getUserRole).mockResolvedValue("admin")
+      vi.mocked(sql)
+        .mockResolvedValueOnce({ rows: [] } as any) // delete bets
+        .mockResolvedValueOnce({ rows: [] } as any) // delete user_bolao
+        .mockResolvedValueOnce({ rows: [{ id: "bolao-1" }] } as any) // delete bolao
 
-      const result = await deleteBolao("bolao-1")
+      const result = await deleteBolaoGroup("bolao-1")
 
-      expect(result.data).toEqual(deletedData)
+      const statements = vi
+        .mocked(sql)
+        .mock.calls.map(([strings]) => strings.join(""))
+      expect(statements[0]).toContain("DELETE FROM bets")
+      expect(statements[1]).toContain("DELETE FROM user_bolao")
+      expect(statements[2]).toContain("DELETE FROM boloes")
+      expect(result).toEqual({
+        data: [{ id: "bolao-1" }],
+        message: "bolao deleted",
+        success: true,
+      })
       expect(revalidatePath).toHaveBeenCalledWith("/")
+    })
+
+    it("should forbid a non-owner, non-admin from cascade-deleting", async () => {
+      vi.mocked(auth).mockResolvedValue({ userId: "attacker" } as any)
+      vi.mocked(getUserRole).mockResolvedValue("user")
+      vi.mocked(sql).mockResolvedValue({
+        rows: [{ created_by: "owner-1" }],
+      } as any)
+
+      const result = await deleteBolaoGroup("bolao-1")
+
+      expect(result).toEqual({ success: false, message: "Forbidden." })
+      // only the ownership lookup ran; no cascade deletes were issued
+      expect(sql).toHaveBeenCalledTimes(1)
+      expect(revalidatePath).not.toHaveBeenCalled()
     })
   })
 
   describe("deleteUserBolao", () => {
-    it("should delete a user bolao successfully", async () => {
+    it("should let a member remove their own membership", async () => {
       const mockData = [{ id: "ub-1" }]
-      vi.mocked(sql).mockResolvedValue({ rows: mockData } as any)
+      vi.mocked(auth).mockResolvedValue({ userId: "user-1" } as any)
+      vi.mocked(sql)
+        .mockResolvedValueOnce({
+          rows: [{ bolao_id: "bolao-1", user_id: "user-1" }],
+        } as any) // membership lookup
+        .mockResolvedValueOnce({ rows: mockData } as any) // the DELETE
 
       const result = await deleteUserBolao("ub-1")
 
-      expect(sql).toHaveBeenCalled()
-      const [strings, userBolaoId] = vi.mocked(sql).mock.calls[0]
-      expect(strings.join("")).toContain("DELETE FROM user_bolao")
-      expect(userBolaoId).toBe("ub-1")
+      const deleteCall = vi
+        .mocked(sql)
+        .mock.calls.find(([strings]) =>
+          strings.join("").includes("DELETE FROM user_bolao")
+        )
+      expect(deleteCall).toBeDefined()
+      expect(deleteCall?.[1]).toBe("ub-1")
       expect(result).toEqual(mockData)
     })
 
+    it("should let the bolao creator remove another member", async () => {
+      const mockData = [{ id: "ub-1" }]
+      vi.mocked(auth).mockResolvedValue({ userId: "owner-1" } as any)
+      vi.mocked(getUserRole).mockResolvedValue("user")
+      vi.mocked(sql)
+        .mockResolvedValueOnce({
+          rows: [{ bolao_id: "bolao-1", user_id: "member-2" }],
+        } as any) // membership lookup
+        .mockResolvedValueOnce({ rows: [{ created_by: "owner-1" }] } as any) // ownership check
+        .mockResolvedValueOnce({ rows: mockData } as any) // the DELETE
+
+      const result = await deleteUserBolao("ub-1")
+
+      expect(result).toEqual(mockData)
+    })
+
+    it("should forbid removing another member without ownership", async () => {
+      vi.mocked(auth).mockResolvedValue({ userId: "attacker" } as any)
+      vi.mocked(getUserRole).mockResolvedValue("user")
+      vi.mocked(sql)
+        .mockResolvedValueOnce({
+          rows: [{ bolao_id: "bolao-1", user_id: "member-2" }],
+        } as any) // membership lookup
+        .mockResolvedValueOnce({ rows: [{ created_by: "owner-1" }] } as any) // ownership check fails
+
+      const result = await deleteUserBolao("ub-1")
+
+      expect(result).toEqual({ success: false, message: "Forbidden." })
+    })
+
+    it("should reject an unauthenticated caller", async () => {
+      vi.mocked(auth).mockResolvedValue({ userId: null } as any)
+
+      const result = await deleteUserBolao("ub-1")
+
+      expect(result).toEqual({ success: false, message: "Unauthorized." })
+      expect(sql).not.toHaveBeenCalled()
+    })
+
+    it("should return Forbidden when the membership does not exist", async () => {
+      vi.mocked(auth).mockResolvedValue({ userId: "user-1" } as any)
+      vi.mocked(sql).mockResolvedValue({ rows: [] } as any)
+
+      const result = await deleteUserBolao("missing")
+
+      expect(result).toEqual({ success: false, message: "Forbidden." })
+    })
+
     it("should handle database errors", async () => {
-      vi.mocked(sql).mockRejectedValue(new Error("Database error"))
+      vi.mocked(auth).mockResolvedValue({ userId: "user-1" } as any)
+      vi.mocked(sql)
+        .mockResolvedValueOnce({
+          rows: [{ bolao_id: "bolao-1", user_id: "user-1" }],
+        } as any) // membership lookup
+        .mockRejectedValueOnce(new Error("Database error")) // the DELETE fails
 
       const result = await deleteUserBolao("ub-1")
 
