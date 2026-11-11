@@ -26,6 +26,7 @@ vi.mock("../data", () => ({
   fetchBolao: vi.fn(),
   fetchFixtures: vi.fn(),
   fetchRounds: vi.fn(),
+  fetchUserBolao: vi.fn(),
 }))
 
 // Mock auth role
@@ -48,6 +49,7 @@ import {
   createBolao,
   updateBolao,
   createUserBolao,
+  createInviteLink,
   createBet,
   updateBet,
   deleteBolao,
@@ -60,9 +62,16 @@ import { sql } from "@vercel/postgres"
 import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
 import { auth } from "@clerk/nextjs/server"
-import { fetchLeague, fetchBolao, fetchFixtures, fetchRounds } from "../data"
+import {
+  fetchLeague,
+  fetchBolao,
+  fetchFixtures,
+  fetchRounds,
+  fetchUserBolao,
+} from "../data"
 import { getCurrentSeasonObject } from "../utils"
 import { getUserRole } from "../authRole"
+import { signInvite } from "../inviteToken"
 
 const FIXTURE_ID = "12345"
 
@@ -435,7 +444,7 @@ describe("actions", () => {
       vi.mocked(auth).mockResolvedValue({ userId: "user-123" } as any)
     })
 
-    it("should create a user bolao successfully", async () => {
+    it("should create a user bolao successfully with a valid token", async () => {
       vi.mocked(sql).mockResolvedValue({
         rows: [
           {
@@ -446,7 +455,7 @@ describe("actions", () => {
         ],
       } as any)
 
-      const result = await createUserBolao("bolao-1")
+      const result = await createUserBolao("bolao-1", signInvite("bolao-1"))
 
       expect(sql).toHaveBeenCalled()
       const [strings, bolaoId, userId] = vi.mocked(sql).mock.calls[0]
@@ -472,20 +481,93 @@ describe("actions", () => {
         ],
       } as any)
 
-      const result = await createUserBolao(1)
+      const result = await createUserBolao(1, signInvite("1"))
 
       expect(result.success).toBe(true)
+    })
+
+    it("should reject a join without a valid invite token", async () => {
+      const result = await createUserBolao("bolao-1")
+
+      expect(result).toEqual({
+        success: false,
+        message: "Invalid or expired invite.",
+      })
+      expect(sql).not.toHaveBeenCalled()
+    })
+
+    it("should reject a token signed for a different bolao", async () => {
+      const result = await createUserBolao("bolao-1", signInvite("other-bolao"))
+
+      expect(result).toEqual({
+        success: false,
+        message: "Invalid or expired invite.",
+      })
+      expect(sql).not.toHaveBeenCalled()
+    })
+
+    it("should reject an unauthenticated caller", async () => {
+      vi.mocked(auth).mockResolvedValue({ userId: null } as any)
+
+      const result = await createUserBolao("bolao-1", signInvite("bolao-1"))
+
+      expect(result).toEqual({ success: false, message: "Unauthorized." })
+      expect(sql).not.toHaveBeenCalled()
     })
 
     it("should handle database errors", async () => {
       vi.mocked(sql).mockRejectedValue(new Error("Database error"))
 
-      const result = await createUserBolao("bolao-1")
+      const result = await createUserBolao("bolao-1", signInvite("bolao-1"))
 
       expect(result).toEqual({
         success: false,
         message: "Database Error: failed to Create UserBolao.",
       })
+    })
+  })
+
+  describe("createInviteLink", () => {
+    it("returns a token for a member", async () => {
+      vi.mocked(auth).mockResolvedValue({ userId: "user-1" } as any)
+      vi.mocked(getUserRole).mockResolvedValue("user")
+      vi.mocked(fetchUserBolao).mockResolvedValue({
+        id: "ub-1",
+        bolao_id: "bolao-1",
+        user_id: "user-1",
+      })
+
+      const result = await createInviteLink("bolao-1")
+
+      expect(result).toEqual({ success: true, token: signInvite("bolao-1") })
+    })
+
+    it("returns a token for an admin without a membership lookup", async () => {
+      vi.mocked(auth).mockResolvedValue({ userId: "admin-1" } as any)
+      vi.mocked(getUserRole).mockResolvedValue("admin")
+
+      const result = await createInviteLink("bolao-1")
+
+      expect(result).toEqual({ success: true, token: signInvite("bolao-1") })
+      expect(fetchUserBolao).not.toHaveBeenCalled()
+    })
+
+    it("forbids a non-member from minting a link", async () => {
+      vi.mocked(auth).mockResolvedValue({ userId: "stranger" } as any)
+      vi.mocked(getUserRole).mockResolvedValue("user")
+      vi.mocked(fetchUserBolao).mockResolvedValue(undefined as any)
+
+      const result = await createInviteLink("bolao-1")
+
+      expect(result).toEqual({ success: false, message: "Forbidden." })
+    })
+
+    it("rejects an unauthenticated caller", async () => {
+      vi.mocked(auth).mockResolvedValue({ userId: null } as any)
+
+      const result = await createInviteLink("bolao-1")
+
+      expect(result).toEqual({ success: false, message: "Unauthorized." })
     })
   })
 

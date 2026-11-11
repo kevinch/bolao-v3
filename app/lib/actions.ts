@@ -4,9 +4,16 @@ import { sql } from "@vercel/postgres"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { auth } from "@clerk/nextjs/server"
-import { fetchLeague, fetchBolao, fetchFixtures, fetchRounds } from "./data"
+import {
+  fetchLeague,
+  fetchBolao,
+  fetchFixtures,
+  fetchRounds,
+  fetchUserBolao,
+} from "./data"
 import { upcomingMatches, type PreviewMatch } from "./homeMatches"
 import { getUserRole } from "./authRole"
+import { signInvite, verifyInvite } from "./inviteToken"
 import {
   getCurrentSeasonObject,
   isChampionPickLocked,
@@ -81,7 +88,11 @@ export async function createBolao(
 
     const insertedData = result.rows[0]
 
-    const userBolaoResult = await createUserBolao(insertedData.id)
+    // The creator joins their own new bolão with a freshly signed token.
+    const userBolaoResult = await createUserBolao(
+      insertedData.id,
+      signInvite(String(insertedData.id))
+    )
 
     if (userBolaoResult.success) {
       let matches: PreviewMatch[] = []
@@ -189,9 +200,21 @@ export async function updateBolao({
 }
 
 export async function createUserBolao(
-  bolaoId: number | string
+  bolaoId: number | string,
+  inviteToken?: string
 ): Promise<CreateUserBolaoResult> {
   const { userId }: { userId: string | null } = await auth()
+
+  if (!userId) {
+    return { success: false, message: "Unauthorized." }
+  }
+
+  // Knowing the bolão id is not enough to join: the caller must present a valid
+  // signed invite token. The creator gets one from createBolao; everyone else
+  // from a shared invite link (minted by createInviteLink for members).
+  if (!verifyInvite(String(bolaoId), inviteToken)) {
+    return { success: false, message: "Invalid or expired invite." }
+  }
 
   try {
     const data = await sql`
@@ -215,6 +238,33 @@ export async function createUserBolao(
       message: "Database Error: failed to Create UserBolao.",
     }
   }
+}
+
+/**
+ * Produces a signed invite token for a bolão so the caller can build a
+ * shareable invite link. Only a member (or an admin) may mint one, so a
+ * non-member cannot generate an invite for a bolão they don't belong to.
+ */
+export async function createInviteLink(
+  bolaoId: string
+): Promise<{ success: true; token: string } | { success: false; message: string }> {
+  const { userId } = await auth()
+
+  if (!userId) {
+    return { success: false, message: "Unauthorized." }
+  }
+
+  const isAdmin = (await getUserRole(userId)) === "admin"
+
+  if (!isAdmin) {
+    const membership = await fetchUserBolao({ bolaoId, userId })
+
+    if (!membership) {
+      return { success: false, message: "Forbidden." }
+    }
+  }
+
+  return { success: true, token: signInvite(bolaoId) }
 }
 
 type BetMutationError = { success: false; message: string }

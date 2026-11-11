@@ -5,6 +5,7 @@ import { Share1Icon } from "@radix-ui/react-icons"
 import { Button, type ButtonProps } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
 import { copyText } from "@/app/lib/copyText"
+import { createInviteLink } from "@/app/lib/actions"
 
 type InviteButtonProps = Omit<ButtonProps, "onClick" | "children"> & {
   bolaoId: string
@@ -24,13 +25,21 @@ export default function InviteButton({
   const t = useTranslations("invite")
   const { toast } = useToast()
 
-  function getInviteUrl() {
-    return new URL(`/bolao/${bolaoId}/invite`, window.location.href).toString()
+  async function getInviteUrl(): Promise<string | null> {
+    const result = await createInviteLink(bolaoId)
+
+    if (!result.success) {
+      return null
+    }
+
+    const url = new URL(`/bolao/${bolaoId}/invite`, window.location.href)
+    url.searchParams.set("t", result.token)
+    return url.toString()
   }
 
-  async function copyInviteLink() {
+  async function copyInviteLink(inviteUrl: string) {
     try {
-      await copyText(getInviteUrl())
+      await copyText(inviteUrl)
       toast({
         title: t("copySuccessTitle"),
         description: t("copySuccessMessage"),
@@ -45,7 +54,16 @@ export default function InviteButton({
   }
 
   async function handleInvite() {
-    const inviteUrl = getInviteUrl()
+    const inviteUrl = await getInviteUrl()
+
+    if (!inviteUrl) {
+      toast({
+        description: t("copyErrorMessage"),
+        variant: "destructive",
+      })
+      return
+    }
+
     const shareText = t("shareMessage", { name: bolaoName })
 
     const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
@@ -65,7 +83,7 @@ export default function InviteButton({
       }
     }
 
-    await copyInviteLink()
+    await copyInviteLink(inviteUrl)
   }
 
   return (

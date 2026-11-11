@@ -59,11 +59,14 @@ describe("InvitePage", () => {
         (fetchUserBolao as any).mockResolvedValue(null);
         (createUserBolao as any).mockResolvedValue({ success: true });
 
-        const result = await InvitePage({ params: mockParams })
+        const result = await InvitePage({
+          params: mockParams,
+          searchParams: Promise.resolve({ t: "tok-123" }),
+        })
         render(result)
 
         expect(screen.getByText("You were added to the bolão with success.")).toBeDefined()
-        expect(createUserBolao).toHaveBeenCalledWith("bolao-123")
+        expect(createUserBolao).toHaveBeenCalledWith("bolao-123", "tok-123")
     })
 
     it("should attempt to add user and show error message on failure", async () => {
@@ -72,10 +75,13 @@ describe("InvitePage", () => {
         (fetchUserBolao as any).mockResolvedValue(null);
         (createUserBolao as any).mockResolvedValue({ success: false });
 
-        const result = await InvitePage({ params: mockParams })
+        const result = await InvitePage({
+          params: mockParams,
+          searchParams: Promise.resolve({ t: "tok-123" }),
+        })
         render(result)
 
         expect(screen.getByText("Something went wrong while adding you to the bolão.")).toBeDefined()
-        expect(createUserBolao).toHaveBeenCalledWith("bolao-123")
+        expect(createUserBolao).toHaveBeenCalledWith("bolao-123", "tok-123")
     })
 })
