@@ -12,6 +12,7 @@ import {
 } from "@/app/lib/utils"
 import { Bet, UserBolao } from "@/app/lib/definitions"
 import { getPlayersFromUsersBolao } from "./players"
+import { requireBolaoAccess } from "./bolaoAccess"
 
 export async function getData({
   bolaoId,
@@ -20,6 +21,8 @@ export async function getData({
   bolaoId: string
   roundParam?: string
 }) {
+  await requireBolaoAccess(bolaoId)
+
   const [bolao, usersBolao] = await Promise.all([
     fetchBolao(bolaoId),
     fetchUsersBolao(bolaoId),

@@ -24,6 +24,10 @@ vi.mock("@clerk/nextjs/server", () => ({
   clerkClient: vi.fn(),
 }))
 
+vi.mock("../bolaoAccess", () => ({
+  requireBolaoAccess: vi.fn(),
+}))
+
 describe("controllerLead", () => {
   const mockBolao: Bolao = {
     id: "bolao-1",

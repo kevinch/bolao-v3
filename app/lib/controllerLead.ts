@@ -10,8 +10,11 @@ import { FixtureData, UserBolao, Bet } from "./definitions"
 import { getPlayersFromUsersBolao } from "./players"
 import { resolveChampionTeamId } from "./championPick"
 import { isChampionPickLocked } from "./utils"
+import { requireBolaoAccess } from "./bolaoAccess"
 
 export async function getData({ bolaoId }: { bolaoId: string }) {
+  await requireBolaoAccess(bolaoId)
+
   const [bolao, usersBolao] = await Promise.all([
     fetchBolao(bolaoId),
     fetchUsersBolao(bolaoId),
