@@ -28,3 +28,24 @@ export async function requireBolaoAccess(bolaoId: string): Promise<string> {
 
   return userId
 }
+
+/**
+ * Stricter variant for member-scoped pages (the bet page): the caller must
+ * actually be a member — admins are NOT exempt, because the page is built
+ * around the viewer's own membership. Non-members (admins included) get a 404.
+ */
+export async function requireBolaoMembership(bolaoId: string): Promise<string> {
+  const { userId } = await auth()
+
+  if (!userId) {
+    notFound()
+  }
+
+  const membership = await fetchUserBolao({ bolaoId, userId })
+
+  if (!membership) {
+    notFound()
+  }
+
+  return userId
+}

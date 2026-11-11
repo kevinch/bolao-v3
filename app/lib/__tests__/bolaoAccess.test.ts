@@ -18,7 +18,7 @@ vi.mock("../data", () => ({
   fetchUserBolao: vi.fn(),
 }))
 
-import { requireBolaoAccess } from "../bolaoAccess"
+import { requireBolaoAccess, requireBolaoMembership } from "../bolaoAccess"
 import { auth } from "@clerk/nextjs/server"
 import { notFound } from "next/navigation"
 import { getUserRole } from "../authRole"
@@ -78,6 +78,57 @@ describe("requireBolaoAccess", () => {
     )
     expect(notFound).toHaveBeenCalled()
     expect(getUserRole).not.toHaveBeenCalled()
+    expect(fetchUserBolao).not.toHaveBeenCalled()
+  })
+})
+
+describe("requireBolaoMembership", () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it("returns the userId for a member", async () => {
+    vi.mocked(auth).mockResolvedValue({ userId: "user-1" } as any)
+    vi.mocked(fetchUserBolao).mockResolvedValue({
+      id: "ub-1",
+      bolao_id: "bolao-1",
+      user_id: "user-1",
+    })
+
+    const result = await requireBolaoMembership("bolao-1")
+
+    expect(result).toBe("user-1")
+    expect(notFound).not.toHaveBeenCalled()
+  })
+
+  it("calls notFound for an admin who is not a member (no bypass)", async () => {
+    vi.mocked(auth).mockResolvedValue({ userId: "admin-1" } as any)
+    vi.mocked(getUserRole).mockResolvedValue("admin")
+    vi.mocked(fetchUserBolao).mockResolvedValue(undefined as any)
+
+    await expect(requireBolaoMembership("bolao-1")).rejects.toThrow(
+      "NEXT_NOT_FOUND"
+    )
+    expect(notFound).toHaveBeenCalled()
+  })
+
+  it("calls notFound for a non-member", async () => {
+    vi.mocked(auth).mockResolvedValue({ userId: "stranger" } as any)
+    vi.mocked(fetchUserBolao).mockResolvedValue(undefined as any)
+
+    await expect(requireBolaoMembership("bolao-1")).rejects.toThrow(
+      "NEXT_NOT_FOUND"
+    )
+    expect(notFound).toHaveBeenCalled()
+  })
+
+  it("calls notFound for an unauthenticated caller", async () => {
+    vi.mocked(auth).mockResolvedValue({ userId: null } as any)
+
+    await expect(requireBolaoMembership("bolao-1")).rejects.toThrow(
+      "NEXT_NOT_FOUND"
+    )
+    expect(notFound).toHaveBeenCalled()
     expect(fetchUserBolao).not.toHaveBeenCalled()
   })
 })

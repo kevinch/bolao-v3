@@ -144,19 +144,14 @@ describe("BolaoCard", () => {
     })
   })
 
-  it("should NOT show Edit and Delete options when user is not the creator", async () => {
-    const user = userEvent.setup()
+  it("should not render the actions menu when user is not the creator", () => {
     render(<BolaoCard bolao={mockBolao} userId="different-user" />)
 
-    // Click the dropdown menu button
-    const dropdownButton = screen.getByRole("button", { name: "" })
-    await user.click(dropdownButton)
-
-    // Check that Edit and Delete are not present
-    await waitFor(() => {
-      expect(screen.queryByText("Edit")).not.toBeInTheDocument()
-      expect(screen.queryByText("Delete")).not.toBeInTheDocument()
-    })
+    // The 3-dots menu button (empty accessible name) is not rendered for
+    // non-owners, so there is no empty menu to open.
+    expect(screen.queryByRole("button", { name: "" })).not.toBeInTheDocument()
+    expect(screen.queryByText("Edit")).not.toBeInTheDocument()
+    expect(screen.queryByText("Delete")).not.toBeInTheDocument()
   })
 
   it("should show the invite action beside the card actions", () => {
@@ -167,7 +162,7 @@ describe("BolaoCard", () => {
 
   it("should not show invite action in the dropdown", async () => {
     const user = userEvent.setup()
-    render(<BolaoCard bolao={mockBolao} userId="user-789" />)
+    render(<BolaoCard bolao={mockBolao} userId="user-456" />)
 
     // Click the dropdown menu button
     const dropdownButton = screen.getByRole("button", { name: "" })

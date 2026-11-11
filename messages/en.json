@@ -186,11 +186,15 @@
     "copySuccessMessage": "The invite link was copied to the clipboard.",
     "copyErrorMessage": "Failed to copy the invite link to the clipboard."
   },
+  "notFound": {
+    "message": "This page could not be found.",
+    "backHome": "Go back home"
+  },
   "invitePage": {
     "title": "You're in the bolão",
     "missingUser": "Error while loading the bolão. Missing userid",
     "error": "Error while adding you to the bolão.",
-    "alreadyIn": "Your invitation is ready. Start predicting below.",
+    "alreadyIn": "You're already in this bolão. Start predicting below.",
     "added": "You were added to the bolão with success.",
     "addError": "Something went wrong while adding you to the bolão.",
     "nextGames": "Next games",

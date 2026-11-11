@@ -186,11 +186,15 @@
     "copySuccessMessage": "O link de convite foi copiado para a área de transferência.",
     "copyErrorMessage": "Falha ao copiar o link de convite para a área de transferência."
   },
+  "notFound": {
+    "message": "Esta página não foi encontrada.",
+    "backHome": "Voltar para o início"
+  },
   "invitePage": {
     "title": "Você entrou no bolão",
     "missingUser": "Erro ao carregar o bolão. Usuário não encontrado",
     "error": "Erro ao adicionar você ao bolão.",
-    "alreadyIn": "Seu convite está pronto. Comece a dar seus palpites abaixo.",
+    "alreadyIn": "Você já faz parte deste bolão. Comece a dar seus palpites abaixo.",
     "added": "Você foi adicionado ao bolão com sucesso.",
     "addError": "Algo deu errado ao adicionar você ao bolão.",
     "nextGames": "Próximos jogos",

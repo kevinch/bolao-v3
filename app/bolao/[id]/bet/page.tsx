@@ -1,6 +1,8 @@
 import { getTranslations, getLocale } from "next-intl/server"
 import { getData } from "@/app/lib/controllerBet"
 import { auth } from "@clerk/nextjs/server"
+import { requireBolaoMembership } from "@/app/lib/bolaoAccess"
+import PageMessage from "@/app/components/pageMessage"
 import BolaoPageTitle from "@/app/ui/bolao/bolaoPageTitle"
 import BolaoLinks from "@/app/ui/bolao/bolaoLinks"
 import Pagination from "@/app/ui/bolao/bet/pagination"
@@ -24,8 +26,13 @@ async function BetPage(props: {
   const locale = await getLocale()
 
   if (!userId) {
-    return <p>{t("errorMissingUser")}</p>
+    return <PageMessage>{t("errorMissingUser")}</PageMessage>
   }
+
+  // The bet page is member-scoped, so require actual membership (admins are not
+  // exempt here). Non-members get a 404 instead of the controller throwing
+  // "User is not a member". Kept out of the try/catch so notFound() propagates.
+  await requireBolaoMembership(params.id)
 
   let data
   try {
@@ -37,11 +44,11 @@ async function BetPage(props: {
     })
   } catch (error) {
     console.error("Bet page load failed:", error)
-    return <p>{t("errorLoadFailed")}</p>
+    return <PageMessage>{t("errorLoadFailed")}</PageMessage>
   }
 
   if (!data || data.fixtures.length === 0) {
-    return <p>{t("errorNoData")}</p>
+    return <PageMessage>{t("errorNoData")}</PageMessage>
   }
 
   const currentRoundIndex =
