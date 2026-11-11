@@ -27,6 +27,7 @@ import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
 function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
   const t = useTranslations("bolaoCard")
+  const isOwner = bolao.created_by === userId
   const router = useRouter()
   const [name, setName] = useState(bolao.name)
   const [disabledDelete, setDisabledDelete] = useState(false)
@@ -142,17 +143,17 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
             />
           </div>
 
-          <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <DotsVerticalIcon className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
+          {isOwner && (
+            <>
+              <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <DotsVerticalIcon className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
 
-            <DropdownMenuContent className="w-56">
-              <DropdownMenuGroup>
-                {bolao.created_by === userId && (
-                  <>
+                <DropdownMenuContent className="w-56">
+                  <DropdownMenuGroup>
                     <DropdownMenuItem
                       onSelect={(e) => {
                         e.preventDefault()
@@ -171,29 +172,29 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
                       <TrashIcon className="h-4 w-4 mr-1" color="red" />
                       <span className="text-red-500">{t("delete")}</span>
                     </DropdownMenuItem>
-                  </>
-                )}
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                  </DropdownMenuGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
 
-          <BolaoEditModal
-            open={dialogEditOpen}
-            onOpenChange={setDialogEditOpen}
-            bolaoName={bolao.name}
-            onNameChange={setName}
-            onSubmit={handleUpdate}
-            loading={isUpdating}
-          />
-          <BolaoDeleteModal
-            open={dialogDeleteOpen}
-            onOpenChange={setDialogDeleteOpen}
-            bolaoId={bolao.id}
-            bolaoName={bolao.name}
-            disabledDelete={disabledDelete}
-            onSubmit={handleDelete}
-            loading={isDeleting}
-          />
+              <BolaoEditModal
+                open={dialogEditOpen}
+                onOpenChange={setDialogEditOpen}
+                bolaoName={bolao.name}
+                onNameChange={setName}
+                onSubmit={handleUpdate}
+                loading={isUpdating}
+              />
+              <BolaoDeleteModal
+                open={dialogDeleteOpen}
+                onOpenChange={setDialogDeleteOpen}
+                bolaoId={bolao.id}
+                bolaoName={bolao.name}
+                disabledDelete={disabledDelete}
+                onSubmit={handleDelete}
+                loading={isDeleting}
+              />
+            </>
+          )}
         </div>
       </CardFooter>
     </Card>

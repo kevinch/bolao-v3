@@ -6,6 +6,10 @@ import { auth } from "@clerk/nextjs/server"
 
 vi.mock("@/app/lib/controllerBet")
 vi.mock("@clerk/nextjs/server")
+vi.mock("@/app/lib/bolaoAccess", () => ({
+  requireBolaoAccess: vi.fn(),
+  requireBolaoMembership: vi.fn(),
+}))
 vi.mock("@/app/ui/bolao/bolaoPageTitle", () => ({
   default: (props: any) => (
     <div data-testid="bolao-page-title" data-props={JSON.stringify(props)} />
