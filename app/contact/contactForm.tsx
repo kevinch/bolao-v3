@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useRef } from "react"
 import { useTranslations } from "next-intl"
+import Spinner from "@/app/components/spinner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -77,6 +78,7 @@ export default function ContactForm() {
       )}
 
       <Button type="submit" disabled={isPending} className="w-full sm:w-auto">
+        {isPending && <Spinner className="mr-2" />}
         {isPending ? t("sending") : t("submit")}
       </Button>
     </form>
