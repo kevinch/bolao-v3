@@ -1,7 +1,7 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { ReloadIcon } from "@radix-ui/react-icons"
+import Spinner from "@/app/components/spinner"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -64,7 +64,7 @@ export function BolaoEditModal({
             </Button>
           </DialogClose>
           <Button type="submit" onClick={onSubmit} disabled={loading}>
-            {loading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
+            {loading && <Spinner className="mr-2" />}
             {t("saveChanges")}
           </Button>
         </DialogFooter>

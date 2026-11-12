@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { ReloadIcon } from "@radix-ui/react-icons"
+import Spinner from "@/app/components/spinner"
 import { Bolao, League } from "@/app/lib/definitions"
 import type { PreviewMatch } from "@/app/lib/homeMatches"
 import { useToast } from "@/hooks/use-toast"
@@ -187,7 +187,7 @@ function Form({ leagues, competitionId }: FormProps) {
 
         {loading ? (
           <Button disabled className="w-full sm:w-auto">
-            <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+            <Spinner className="mr-2" />
             {t("loadingButton")}
           </Button>
         ) : (

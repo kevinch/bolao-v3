@@ -1,7 +1,7 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { ReloadIcon } from "@radix-ui/react-icons"
+import Spinner from "@/app/components/spinner"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -62,7 +62,7 @@ export function BolaoDeleteModal({
             variant="destructive"
             onClick={() => onSubmit(bolaoId)}
           >
-            {loading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
+            {loading && <Spinner className="mr-2" />}
             {t("confirm")}
           </Button>
         </DialogFooter>

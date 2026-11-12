@@ -5,7 +5,7 @@ import { Bolao } from "@/app/lib/definitions"
 import { deleteBolaoGroup } from "../lib/controllerAdmin"
 import { formatDateNews } from "@/app/lib/utils"
 import { useState } from "react"
-import { ReloadIcon } from "@radix-ui/react-icons"
+import Spinner from "@/app/components/spinner"
 import { useToast } from "@/hooks/use-toast"
 import { Button } from "@/components/ui/button"
 import {
@@ -96,7 +96,7 @@ function AdminBolao({ bolao }: { bolao: Bolao }) {
                       onClick={() => actionDelete(bolao.id)}
                     >
                       {isDeleting && (
-                        <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                        <Spinner className="mr-2" />
                       )}
                       Confirm
                     </Button>
