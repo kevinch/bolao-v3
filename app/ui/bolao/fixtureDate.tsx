@@ -1,12 +1,12 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import {
   STATUSES_IN_PLAY,
   STATUSES_ERROR,
   formatDateFixtures,
 } from "@/app/lib/utils"
 import { FixtureStatus } from "@/app/lib/definitions"
+import { useHydrated } from "@/app/lib/useHydrated"
 import clsx from "clsx"
 
 type Props = {
@@ -18,11 +18,10 @@ type Props = {
 function FixtureDate({ timestamp, status, locale = "en" }: Props) {
   const inPlay = STATUSES_IN_PLAY.includes(status.short)
   const hasError = STATUSES_ERROR.includes(status.short)
-  const [formattedDate, setFormattedDate] = useState("")
-
-  useEffect(() => {
-    setFormattedDate(formatDateFixtures(timestamp, locale))
-  }, [timestamp, locale])
+  // Format on the client only (user's timezone), keeping SSR output empty to
+  // avoid a hydration mismatch — the span below has suppressHydrationWarning.
+  const hydrated = useHydrated()
+  const formattedDate = hydrated ? formatDateFixtures(timestamp, locale) : ""
 
   return (
     <div className="text-xs text-center">

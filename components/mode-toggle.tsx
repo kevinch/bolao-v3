@@ -1,20 +1,16 @@
 "use client"
 
-import * as React from "react"
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons"
 import { useTranslations } from "next-intl"
 import { useTheme } from "next-themes"
 
 import { Button } from "@/components/ui/button"
+import { useHydrated } from "@/app/lib/useHydrated"
 
 export function ModeToggle({ showLabel = false }: { showLabel?: boolean }) {
   const t = useTranslations("navigation")
   const { setTheme, resolvedTheme } = useTheme()
-  const [mounted, setMounted] = React.useState(false)
-
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
+  const mounted = useHydrated()
 
   if (!mounted) {
     return (
