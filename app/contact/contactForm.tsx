@@ -1,6 +1,6 @@
 "use client"
 
-import { useActionState, useEffect, useRef } from "react"
+import { useActionState, useEffect, useRef, useState } from "react"
 import { useTranslations } from "next-intl"
 import Spinner from "@/app/components/spinner"
 import { Button } from "@/components/ui/button"
@@ -18,10 +18,21 @@ export default function ContactForm() {
     submitContactMessage,
     INITIAL_STATE
   )
+  // Hide the success note a few seconds after it appears. Keyed by the state
+  // object so each new successful submit restarts the timer; the only state
+  // update happens inside the timeout (never synchronously in the effect).
+  const [dismissedState, setDismissedState] = useState<ContactFormState | null>(
+    null
+  )
+  const showSuccess = state.status === "success" && dismissedState !== state
 
   useEffect(() => {
-    if (state.status === "success") formRef.current?.reset()
-  }, [state.status])
+    if (state.status !== "success") return
+
+    formRef.current?.reset()
+    const timer = setTimeout(() => setDismissedState(state), 10000)
+    return () => clearTimeout(timer)
+  }, [state])
 
   const errorMessage =
     state.status === "error"
@@ -66,7 +77,7 @@ export default function ContactForm() {
         />
       </div>
 
-      {state.status === "success" && (
+      {showSuccess && (
         <p role="status" className="text-sm text-green-700 dark:text-green-400">
           {t("success")}
         </p>
