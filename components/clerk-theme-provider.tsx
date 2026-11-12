@@ -4,6 +4,7 @@ import * as React from "react"
 import { ClerkProvider } from "@clerk/nextjs"
 import { dark } from "@clerk/themes"
 import { useTheme } from "next-themes"
+import { useHydrated } from "@/app/lib/useHydrated"
 
 type ClerkThemeProviderProps = {
   children: React.ReactNode
@@ -17,11 +18,7 @@ export function ClerkThemeProvider({
   publishableKey,
 }: ClerkThemeProviderProps) {
   const { resolvedTheme } = useTheme()
-  const [mounted, setMounted] = React.useState(false)
-
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
+  const mounted = useHydrated()
 
   if (!mounted) {
     return (

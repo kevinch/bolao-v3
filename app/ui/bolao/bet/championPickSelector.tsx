@@ -1,10 +1,11 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useTranslations } from "next-intl"
 import { ChampionTeam, ChampionPick } from "@/app/lib/definitions"
 import { createOrUpdateChampionPick } from "@/app/lib/actions"
 import { formatDateFixtures } from "@/app/lib/utils"
+import { useHydrated } from "@/app/lib/useHydrated"
 import { useToast } from "@/hooks/use-toast"
 import {
   Select,
@@ -50,17 +51,14 @@ function ChampionPickSelector({
     userChampionPick ? String(userChampionPick.team_id) : undefined
   )
   const [isSaving, setIsSaving] = useState(false)
-  const [formattedLockDate, setFormattedLockDate] = useState("")
 
-  // Format after mount so the date is rendered in the user's timezone,
-  // avoiding an SSR/client hydration mismatch.
-  useEffect(() => {
-    if (lockDate) {
-      setFormattedLockDate(
-        formatDateFixtures(Math.floor(lockDate.getTime() / 1000), locale)
-      )
-    }
-  }, [lockDate, locale])
+  // Format on the client only (user's timezone) to avoid an SSR/client
+  // hydration mismatch; empty on the server and the first client render.
+  const hydrated = useHydrated()
+  const formattedLockDate =
+    hydrated && lockDate
+      ? formatDateFixtures(Math.floor(lockDate.getTime() / 1000), locale)
+      : ""
 
   const handleChange = async (teamIdStr: string) => {
     const team = teams.find((entry) => entry.id === Number(teamIdStr))

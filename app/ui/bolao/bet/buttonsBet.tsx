@@ -58,13 +58,14 @@ function ButtonsBet({
   const isSavingRef = useRef(false)
   const pendingSaveRef = useRef(false)
 
-  valueRef.current = value
-  betIdRef.current = betIdValue
-
+  // Re-initialize the optimistic state when the server-provided bet changes
+  // (e.g. an admin switches the viewed player). This is an intentional
+  // prop->state reset, hence the scoped set-state-in-effect disables.
   useEffect(() => {
     const saved = betValue !== undefined ? betValue : null
     savedValueRef.current = saved
     betIdRef.current = betId || null
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setValue(savedValueToDisplay(saved))
     setBetIdValue(betId || null)
   }, [betValue, betId])
@@ -85,7 +86,7 @@ function ButtonsBet({
 
   const persistBetRef = useRef<() => Promise<boolean>>(async () => true)
 
-  persistBetRef.current = async () => {
+  const persistBet = useCallback(async () => {
     const numValue = displayToSavedValue(valueRef.current)
     if (numValue === null) return true
     if (numValue === savedValueRef.current) return true
@@ -149,7 +150,15 @@ function ButtonsBet({
         }
       }
     }
-  }
+  }, [userBolaoId, type, fixtureId, showSaveError])
+
+  // Keep the refs read by the async save in sync with the latest render,
+  // instead of mutating them during render.
+  useEffect(() => {
+    valueRef.current = value
+    betIdRef.current = betIdValue
+    persistBetRef.current = persistBet
+  }, [value, betIdValue, persistBet])
 
   useEffect(() => {
     if (value === INITIAL_BET_VALUE) return
