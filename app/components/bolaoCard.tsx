@@ -147,8 +147,12 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
             <>
               <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <DotsVerticalIcon className="h-4 w-4" />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label={t("moreActions", { name: bolao.name })}
+                  >
+                    <DotsVerticalIcon className="h-4 w-4" aria-hidden />
                   </Button>
                 </DropdownMenuTrigger>
 

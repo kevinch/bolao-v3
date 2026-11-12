@@ -134,7 +134,7 @@ describe("BolaoCard", () => {
     render(<BolaoCard bolao={mockBolao} userId="user-456" />)
 
     // Click the dropdown menu button
-    const dropdownButton = screen.getByRole("button", { name: "" })
+    const dropdownButton = screen.getByRole("button", { name: /more actions/i })
     await user.click(dropdownButton)
 
     // Check for Edit and Delete menu items
@@ -149,7 +149,7 @@ describe("BolaoCard", () => {
 
     // The 3-dots menu button (empty accessible name) is not rendered for
     // non-owners, so there is no empty menu to open.
-    expect(screen.queryByRole("button", { name: "" })).not.toBeInTheDocument()
+    expect(screen.queryByRole("button", { name: /more actions/i })).not.toBeInTheDocument()
     expect(screen.queryByText("Edit")).not.toBeInTheDocument()
     expect(screen.queryByText("Delete")).not.toBeInTheDocument()
   })
@@ -165,7 +165,7 @@ describe("BolaoCard", () => {
     render(<BolaoCard bolao={mockBolao} userId="user-456" />)
 
     // Click the dropdown menu button
-    const dropdownButton = screen.getByRole("button", { name: "" })
+    const dropdownButton = screen.getByRole("button", { name: /more actions/i })
     await user.click(dropdownButton)
 
     // Invite is kept visible outside the menu.
@@ -179,7 +179,7 @@ describe("BolaoCard", () => {
     render(<BolaoCard bolao={mockBolao} userId="user-456" />)
 
     // Click the dropdown menu button
-    const dropdownButton = screen.getByRole("button", { name: "" })
+    const dropdownButton = screen.getByRole("button", { name: /more actions/i })
     await user.click(dropdownButton)
 
     // Click Edit
@@ -197,7 +197,7 @@ describe("BolaoCard", () => {
     render(<BolaoCard bolao={mockBolao} userId="user-456" />)
 
     // Click the dropdown menu button
-    const dropdownButton = screen.getByRole("button", { name: "" })
+    const dropdownButton = screen.getByRole("button", { name: /more actions/i })
     await user.click(dropdownButton)
 
     // Click Delete
@@ -255,7 +255,7 @@ describe("BolaoCard", () => {
     render(<BolaoCard bolao={mockBolao} userId="user-456" />)
 
     // Open dropdown and click Edit
-    const dropdownButton = screen.getByRole("button", { name: "" })
+    const dropdownButton = screen.getByRole("button", { name: /more actions/i })
     await user.click(dropdownButton)
     const editButton = await screen.findByText("Edit")
     await user.click(editButton)
@@ -292,7 +292,7 @@ describe("BolaoCard", () => {
     render(<BolaoCard bolao={mockBolao} userId="user-456" />)
 
     // Open dropdown and click Edit
-    const dropdownButton = screen.getByRole("button", { name: "" })
+    const dropdownButton = screen.getByRole("button", { name: /more actions/i })
     await user.click(dropdownButton)
     const editButton = await screen.findByText("Edit")
     await user.click(editButton)
@@ -321,7 +321,7 @@ describe("BolaoCard", () => {
     render(<BolaoCard bolao={mockBolao} userId="user-456" />)
 
     // Open dropdown and click Delete
-    const dropdownButton = screen.getByRole("button", { name: "" })
+    const dropdownButton = screen.getByRole("button", { name: /more actions/i })
     await user.click(dropdownButton)
     const deleteButton = await screen.findByText("Delete")
     await user.click(deleteButton)
@@ -353,7 +353,7 @@ describe("BolaoCard", () => {
     render(<BolaoCard bolao={mockBolao} userId="user-456" />)
 
     // Open dropdown and click Delete
-    const dropdownButton = screen.getByRole("button", { name: "" })
+    const dropdownButton = screen.getByRole("button", { name: /more actions/i })
     await user.click(dropdownButton)
     const deleteButton = await screen.findByText("Delete")
     await user.click(deleteButton)

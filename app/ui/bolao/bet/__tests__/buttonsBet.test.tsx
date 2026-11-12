@@ -78,7 +78,10 @@ describe("ButtonsBet", () => {
 
       const valueDisplay = screen.getByText("5")
       expect(valueDisplay).toBeInTheDocument()
-      expect(valueDisplay.parentElement).toHaveClass("flex", "items-center")
+      expect(valueDisplay.closest('[role="group"]')).toHaveClass(
+        "flex",
+        "items-center"
+      )
     })
   })
 

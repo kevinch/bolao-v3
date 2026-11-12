@@ -57,7 +57,7 @@ async function BetPage(props: {
     ) + 1
 
   return (
-    <main>
+    <div>
       <BolaoPageTitle
         bolao={data.bolao}
         leagueLogo={data.fixtures[0].league.logo}
@@ -99,7 +99,7 @@ async function BetPage(props: {
         userBolaoId={data.userBolao.id}
         isAdmin={data.isAdmin}
       />
-    </main>
+    </div>
   )
 }
 

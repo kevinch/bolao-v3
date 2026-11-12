@@ -9,7 +9,10 @@
     "createBolao": "Criar",
     "footerNavigation": "Navegação do rodapé",
     "privacy": "Privacidade",
-    "terms": "Termos"
+    "terms": "Termos",
+    "skipToContent": "Pular para o conteúdo",
+    "previousRound": "Rodada anterior",
+    "nextRound": "Próxima rodada"
   },
   "auth": {
     "signInTitle": "Entrar",
@@ -221,7 +224,8 @@
     "deleteErrorMessage": "Houve um problema na exclusão.",
     "copySuccessTitle": "Sucesso",
     "copySuccessMessage": "O link foi copiado para a área de transferência.",
-    "copyErrorMessage": "Falha ao copiar o link para a área de transferência."
+    "copyErrorMessage": "Falha ao copiar o link para a área de transferência.",
+    "moreActions": "Mais ações para {name}"
   },
   "bolaoEditModal": {
     "title": "Editar bolão",
@@ -254,7 +258,13 @@
     "errorLoadFailed": "Não foi possível carregar a página de apostas. Verifique sua conexão e tente novamente.",
     "saveErrorTitle": "Não foi possível salvar o palpite",
     "saveErrorDescription": "Algo deu errado ao salvar seu palpite. Tente novamente.",
-    "saveLockedDescription": "Apostas encerradas para este jogo. Sua alteração não foi salva."
+    "saveLockedDescription": "Apostas encerradas para este jogo. Sua alteração não foi salva.",
+    "betFor": "Seu palpite para {team}",
+    "decreaseBet": "Diminuir palpite para {team}",
+    "increaseBet": "Aumentar palpite para {team}",
+    "noBet": "Sem palpite ainda",
+    "home": "time da casa",
+    "away": "time visitante"
   },
   "resultsPage": {
     "nextGames": "Próximos jogos",
@@ -269,15 +279,23 @@
     "matchesPlayed": "j",
     "goalDifference": "sg",
     "points": "pts",
-    "form": "forma"
+    "form": "forma",
+    "rank": "Posição",
+    "team": "Time",
+    "formWin": "Vitória",
+    "formLoss": "Derrota",
+    "formDraw": "Empate"
   },
   "leadPage": {
     "title": "Liderança",
     "player": "jogador",
     "score": "pontos",
-    "needs": "faltam"
+    "needs": "faltam",
+    "rank": "Posição"
   },
   "statsPage": {
+    "positionTableCaption": "Posição no ranking de cada jogador após cada rodada encerrada.",
+    "playerColumn": "Jogador",
     "title": "Estatísticas",
     "beta": "Beta",
     "emptyState": "As estatísticas aparecerão quando a primeira rodada terminar.",

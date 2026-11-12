@@ -27,7 +27,7 @@ function NewsList({ documents }: { documents: NewsDocument[] }) {
               {asText(document.data.title)}
             </Link>
           </h2>
-          <div className="text-sm mb-6 text-slate-500">
+          <div className="text-sm mb-6 text-muted-foreground">
             {formatDateNews(document.first_publication_date)}
           </div>
 

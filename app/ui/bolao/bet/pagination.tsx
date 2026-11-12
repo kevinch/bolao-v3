@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 import { usePathname, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { ChevronRightIcon, ChevronLeftIcon } from "@radix-ui/react-icons"
@@ -18,6 +19,7 @@ function Pagination({
   isLastRound,
   isFirstRound,
 }: Props) {
+  const t = useTranslations("common")
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
@@ -35,8 +37,11 @@ function Pagination({
     <div className="flex justify-center mb-4 items-center">
       {!isFirstRound && (
         <Button asChild size="icon" variant="outline">
-          <Link href={createPageURL(-1)}>
-            <ChevronLeftIcon />
+          <Link
+            href={createPageURL(-1)}
+            aria-label={t("previousRound")}
+          >
+            <ChevronLeftIcon aria-hidden />
           </Link>
         </Button>
       )}
@@ -47,8 +52,11 @@ function Pagination({
 
       {!isLastRound && (
         <Button asChild size="icon" variant="outline">
-          <Link href={createPageURL(+1)}>
-            <ChevronRightIcon />
+          <Link
+            href={createPageURL(+1)}
+            aria-label={t("nextRound")}
+          >
+            <ChevronRightIcon aria-hidden />
           </Link>
         </Button>
       )}

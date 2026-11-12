@@ -36,7 +36,7 @@ async function StatsPage(props: { params: Promise<{ id: string }> }) {
   }
 
   return (
-    <main>
+    <div>
       <BolaoPageTitle
         bolao={data.bolao}
         leagueLogo={data.fixtures[0].league.logo}
@@ -46,7 +46,7 @@ async function StatsPage(props: { params: Promise<{ id: string }> }) {
       <BolaoLinks bolaoId={data.bolao.id} active={5} />
 
       <StatsContent stats={data.stats} />
-    </main>
+    </div>
   )
 }
 

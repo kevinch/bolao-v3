@@ -5,8 +5,8 @@ import { ReactNode } from "react"
 // the layout's flex-1 content area, keeping the footer at the viewport bottom.
 export default function PageMessage({ children }: { children: ReactNode }) {
   return (
-    <main className="flex flex-col items-center justify-center gap-2 py-24 text-center text-muted-foreground">
+    <div className="flex flex-col items-center justify-center gap-2 py-24 text-center text-muted-foreground">
       {children}
-    </main>
+    </div>
   )
 }

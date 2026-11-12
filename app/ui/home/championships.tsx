@@ -33,7 +33,7 @@ export default async function Championships({ onboarding = false }: { onboarding
                   {championship.status && (
                     <span className={`mt-2 inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${championship.status === "upcoming"
                       ? "bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-200"
-                      : "bg-muted text-muted-foreground"}`}>
+                      : "bg-muted text-foreground"}`}>
                       {t(championship.status === "upcoming" ? "startingSoon" : "inProgress")}
                     </span>
                   )}

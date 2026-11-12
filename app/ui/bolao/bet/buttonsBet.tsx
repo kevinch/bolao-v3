@@ -16,6 +16,7 @@ type Props = {
   betValue?: number
   betId?: string
   disabled: boolean
+  teamName?: string
 }
 
 function displayToSavedValue(display: string): number | null {
@@ -45,6 +46,7 @@ function ButtonsBet({
   betValue,
   betId,
   disabled,
+  teamName,
 }: Props) {
   const t = useTranslations("betPage")
   const { toast } = useToast()
@@ -194,23 +196,34 @@ function ButtonsBet({
   }
 
   return (
-    <div className="flex items-center">
+    <div
+      className="flex items-center"
+      role="group"
+      aria-label={t("betFor", { team: teamName ?? t(type) })}
+    >
       <Button
         size="icon"
         variant={disabled ? "ghost" : "outline"}
         disabled={disabled}
         onClick={() => decrementCount()}
+        aria-label={t("decreaseBet", { team: teamName ?? t(type) })}
       >
-        <MinusIcon />
+        <MinusIcon aria-hidden />
       </Button>
-      <div className="mx-2">{value}</div>
+      <div className="mx-2" aria-live="polite" aria-atomic="true">
+        <span aria-hidden={value === INITIAL_BET_VALUE}>{value}</span>
+        {value === INITIAL_BET_VALUE && (
+          <span className="sr-only">{t("noBet")}</span>
+        )}
+      </div>
       <Button
         size="icon"
         variant={disabled ? "ghost" : "outline"}
         disabled={disabled}
         onClick={() => incrementCount()}
+        aria-label={t("increaseBet", { team: teamName ?? t(type) })}
       >
-        <PlusIcon />
+        <PlusIcon aria-hidden />
       </Button>
     </div>
   )

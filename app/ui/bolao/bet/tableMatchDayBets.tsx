@@ -75,6 +75,7 @@ async function TableMatchDayBets({
                       fixtureId={fixtureId}
                       type="home"
                       userBolaoId={userBolaoId}
+                      teamName={fixtureData.teams.home.name}
                       betValue={homeBet?.value}
                       betId={homeBet?.id}
                       disabled={disabled}
@@ -122,6 +123,7 @@ async function TableMatchDayBets({
                       fixtureId={fixtureId}
                       type="away"
                       userBolaoId={userBolaoId}
+                      teamName={fixtureData.teams.away.name}
                       betValue={awayBet?.value}
                       betId={awayBet?.id}
                       disabled={disabled}

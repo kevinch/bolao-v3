@@ -81,7 +81,7 @@ async function NewsPost(props: Props) {
         <h1>{title}</h1>
       </PageTitle>
 
-      <div className="text-sm mb-12 text-slate-500 text-center">
+      <div className="text-sm mb-12 text-muted-foreground text-center">
         {formatDateNews(document.first_publication_date)}
       </div>
 

@@ -29,7 +29,7 @@ export default async function PrivacyPage() {
   const t = await getTranslations("privacy")
 
   return (
-    <main className="mx-auto max-w-2xl">
+    <div className="mx-auto max-w-2xl">
       <PageTitle center>
         <h1>{t("title")}</h1>
       </PageTitle>
@@ -82,6 +82,6 @@ export default async function PrivacyPage() {
           )}
         </section>
       ))}
-    </main>
+    </div>
   )
 }

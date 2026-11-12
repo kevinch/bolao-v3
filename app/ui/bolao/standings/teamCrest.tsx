@@ -14,7 +14,7 @@ export function TeamCrest({ src, alt }: TeamCrestProps) {
   if (imageError || !src) {
     return (
       <div className="inline-flex mr-2 h-5 w-5 items-center justify-center bg-slate-200 rounded-sm">
-        <span className="text-[10px] font-semibold text-slate-500">
+        <span className="text-[10px] font-semibold text-slate-700">
           {alt.charAt(0).toUpperCase()}
         </span>
       </div>

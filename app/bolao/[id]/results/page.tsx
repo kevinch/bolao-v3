@@ -43,7 +43,7 @@ async function ResultsPage(props: {
   })
 
   return (
-    <main>
+    <div>
       <BolaoPageTitle
         bolao={data.bolao}
         leagueLogo={data.fixtures[0].league.logo}
@@ -60,7 +60,7 @@ async function ResultsPage(props: {
       />
 
       <TableMatchDayResults tableView={tableView} />
-    </main>
+    </div>
   )
 }
 

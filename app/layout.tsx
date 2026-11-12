@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next"
 import { IBM_Plex_Sans } from "next/font/google"
 import { NextIntlClientProvider } from "next-intl"
-import { getLocale, getMessages } from "next-intl/server"
+import { getLocale, getMessages, getTranslations } from "next-intl/server"
 import { auth } from "@clerk/nextjs/server"
 import Header from "@/app/components/header"
 import Footer from "@/app/components/footer"
@@ -109,6 +109,7 @@ export default async function RootLayout({
 }>) {
   const locale = await getLocale()
   const messages = await getMessages()
+  const t = await getTranslations("common")
   const websiteJsonLd = getWebsiteJsonLd(getSiteDescription(locale))
   const pushAlertTestUserId = process.env.PUSHALERT_TEST_USER_ID
   const { userId } = pushAlertTestUserId ? await auth() : { userId: null }
@@ -144,10 +145,20 @@ export default async function RootLayout({
           >
             <NextIntlClientProvider locale={locale} messages={messages}>
               <div className="flex min-h-dvh flex-col">
+                <a
+                  href="#main-content"
+                  className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-background focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:shadow-md focus:ring-2 focus:ring-ring"
+                >
+                  {t("skipToContent")}
+                </a>
                 <Header />
-                <div className="container mx-auto w-full flex-1 px-4">
+                <main
+                  id="main-content"
+                  tabIndex={-1}
+                  className="container mx-auto w-full flex-1 px-4 focus:outline-none"
+                >
                   {children}
-                </div>
+                </main>
                 <Footer />
                 <Toaster />
                 <Analytics />

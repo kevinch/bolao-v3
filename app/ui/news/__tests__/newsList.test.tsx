@@ -116,7 +116,7 @@ describe("NewsList", () => {
       const { container } = render(<NewsList documents={[mockNewsDocument]} />)
 
       const dateElement = container.querySelector(
-        ".text-sm.mb-6.text-slate-500"
+        ".text-sm.mb-6.text-muted-foreground"
       )
       expect(dateElement).toBeInTheDocument()
       expect(dateElement?.textContent).toBe("January 15, 2024")
@@ -136,11 +136,11 @@ describe("NewsList", () => {
       expect(dateElement.className).toContain("mb-6")
     })
 
-    it("should apply slate-500 text color", () => {
+    it("should apply muted-foreground text color", () => {
       const { container } = render(<NewsList documents={[mockNewsDocument]} />)
 
       const dateElement = screen.getByText("January 15, 2024")
-      expect(dateElement.className).toContain("text-slate-500")
+      expect(dateElement.className).toContain("text-muted-foreground")
     })
   })
 

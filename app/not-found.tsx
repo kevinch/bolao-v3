@@ -9,7 +9,7 @@ async function NotFound() {
   const t = await getTranslations("notFound")
 
   return (
-    <main className="flex flex-col items-center justify-center gap-6 py-24 text-center">
+    <div className="flex flex-col items-center justify-center gap-6 py-24 text-center">
       <div className="flex items-center gap-4">
         <span className="text-3xl font-bold">404</span>
         <span className="h-10 w-px bg-border" aria-hidden="true" />
@@ -19,7 +19,7 @@ async function NotFound() {
       <Button asChild variant="outline">
         <Link href="/">{t("backHome")}</Link>
       </Button>
-    </main>
+    </div>
   )
 }
 
