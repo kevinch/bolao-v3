@@ -6,6 +6,7 @@ import { auth } from "@clerk/nextjs/server"
 import Header from "@/app/components/header"
 import Footer from "@/app/components/footer"
 import ServiceWorkerRegistration from "@/app/components/serviceWorkerRegistration"
+import ScrollToTop from "@/app/components/scrollToTop"
 import Script from "next/script"
 import { Analytics } from "@vercel/analytics/react"
 import { Toaster } from "@/components/ui/toaster"
@@ -144,6 +145,7 @@ export default async function RootLayout({
             }}
           >
             <NextIntlClientProvider locale={locale} messages={messages}>
+              <ScrollToTop />
               <div className="flex min-h-dvh flex-col">
                 <a
                   href="#main-content"
