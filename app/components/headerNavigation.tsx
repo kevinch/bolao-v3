@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useTranslations } from "next-intl"
@@ -80,32 +80,16 @@ export default function HeaderNavigation({
   const common = useTranslations("common")
   const t = useTranslations("navigation")
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const shouldScrollToTop = useRef(false)
 
-  useEffect(() => {
-    if (!shouldScrollToTop.current) return
-
-    shouldScrollToTop.current = false
-    const frame = requestAnimationFrame(() => {
-      window.scrollTo({ top: 0, left: 0, behavior: "instant" })
-    })
-
-    return () => cancelAnimationFrame(frame)
-  }, [pathname])
-
-  function scrollToTop() {
-    requestAnimationFrame(() => {
-      window.scrollTo({ top: 0, left: 0, behavior: "instant" })
-    })
-  }
-
+  // Forward navigations to a different path are scrolled to the top globally by
+  // <ScrollToTop /> in the root layout. Clicking the link for the current page
+  // doesn't change the pathname, so that case is handled here.
   function prepareNavigation(href: string) {
     if (href === pathname) {
-      scrollToTop()
-      return
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: "instant" })
+      })
     }
-
-    shouldScrollToTop.current = true
   }
 
   function prepareMobileNavigation(href: string) {
