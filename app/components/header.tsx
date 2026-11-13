@@ -4,12 +4,13 @@ import Link from "next/link"
 import LogoSvg from "./logoSvg"
 import BackgroundStripes from "./backgroundStripes"
 import HeaderNavigation from "./headerNavigation"
+import HeaderShell from "./headerShell"
 
 async function Header() {
   const { userId }: { userId: string | null } = await auth()
 
   return (
-    <header className="sticky top-0 z-40 bg-background shadow-sm dark:border-b dark:border-border/70 dark:shadow-none">
+    <HeaderShell>
       <div aria-hidden>
         <BackgroundStripes />
       </div>
@@ -26,7 +27,7 @@ async function Header() {
           <HeaderNavigation isSignedIn={Boolean(userId)} />
         </div>
       </div>
-    </header>
+    </HeaderShell>
   )
 }
 
