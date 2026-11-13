@@ -43,25 +43,26 @@ function TierComparisonChart({ rows, youColor = "hsl(221 83% 48%)" }: Props) {
 
   return (
     <>
-      <table className="sr-only">
-        <caption>{t("tierComparisonTitle")}</caption>
-        <thead>
-          <tr>
-            <th scope="col">{t("tierTitle")}</th>
-            <th scope="col">{t("comparisonYou")}</th>
-            <th scope="col">{t("comparisonGroupAverage")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {chartData.map((row) => (
-            <tr key={row.tier}>
-              <th scope="row">{row.label}</th>
-              <td>{Math.round(row.youPercentage)}%</td>
-              <td>{Math.round(row.groupAveragePercentage)}%</td>
+      <div className="sr-only">
+        <table aria-label={t("tierComparisonTitle")}>
+          <thead>
+            <tr>
+              <th scope="col">{t("tierTitle")}</th>
+              <th scope="col">{t("comparisonYou")}</th>
+              <th scope="col">{t("comparisonGroupAverage")}</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {chartData.map((row) => (
+              <tr key={row.tier}>
+                <th scope="row">{row.label}</th>
+                <td>{Math.round(row.youPercentage)}%</td>
+                <td>{Math.round(row.groupAveragePercentage)}%</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <ResponsiveContainer
         width="100%"
         height={getTierChartHeight(rows.length, { withLegend: true })}

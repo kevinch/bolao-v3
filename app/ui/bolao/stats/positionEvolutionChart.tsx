@@ -58,31 +58,32 @@ function PositionEvolutionChart({ snapshots }: Props) {
 
   return (
     <div>
-      <table className="sr-only">
-        <caption>{t("positionTableCaption")}</caption>
-        <thead>
-          <tr>
-            <th scope="col">{t("playerColumn")}</th>
-            {chartData.map((point) => (
-              <th scope="col" key={String(point.label)}>
-                {String(point.label)}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {playerNames.map((name) => (
-            <tr key={name}>
-              <th scope="row">{name}</th>
+      <div className="sr-only">
+        <table aria-label={t("positionTableCaption")}>
+          <thead>
+            <tr>
+              <th scope="col">{t("playerColumn")}</th>
               {chartData.map((point) => (
-                <td key={String(point.label)}>
-                  {t("rankValue", { rank: String(point[name] ?? "-") })}
-                </td>
+                <th scope="col" key={String(point.label)}>
+                  {String(point.label)}
+                </th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {playerNames.map((name) => (
+              <tr key={name}>
+                <th scope="row">{name}</th>
+                {chartData.map((point) => (
+                  <td key={String(point.label)}>
+                    {t("rankValue", { rank: String(point[name] ?? "-") })}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <div className="md:mx-4" aria-hidden="true">
         <ResponsiveContainer width="100%" height={chartHeight}>
           <LineChart
