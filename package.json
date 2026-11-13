@@ -18,6 +18,7 @@
     "test:coverage": "vitest --coverage",
     "playwright:install": "playwright install chromium",
     "test:e2e": "playwright install chromium && playwright test",
+    "test:a11y": "playwright install chromium && playwright test tests/e2e/a11y.spec.ts",
     "test:e2e:ui": "playwright install chromium && playwright test --ui",
     "test:e2e:debug": "playwright install chromium && playwright test --debug",
     "prepare": "husky"
@@ -60,6 +61,7 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
     "@playwright/test": "^1.65.0",
     "@slicemachine/adapter-next": "0.3.100",
     "@tailwindcss/postcss": "^4.3.5",

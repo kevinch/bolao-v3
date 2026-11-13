@@ -64,11 +64,11 @@ describe("Footer", () => {
   it("labels universal preferences", () => {
     render(<Footer />)
 
+    // With visible labels shown, the controls take their accessible name from
+    // the visible text (no conflicting aria-label), satisfying WCAG 2.5.3.
     expect(
-      screen.getByRole("button", { name: "Switch language" })
-    ).toHaveTextContent("English")
-    expect(
-      screen.getByRole("button", { name: "Toggle appearance" })
-    ).toHaveTextContent("Light")
+      screen.getByRole("button", { name: "English" })
+    ).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: "Light" })).toBeInTheDocument()
   })
 })
