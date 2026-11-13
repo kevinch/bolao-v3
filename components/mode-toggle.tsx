@@ -18,7 +18,7 @@ export function ModeToggle({ showLabel = false }: { showLabel?: boolean }) {
         variant="ghost"
         size={showLabel ? "sm" : "icon"}
         className={showLabel ? "h-10 gap-2 px-3" : undefined}
-        aria-label={t("toggleAppearance")}
+        aria-label={showLabel ? undefined : t("toggleAppearance")}
       >
         <SunIcon className="h-[1.2rem] w-[1.2rem]" />
         {showLabel ? <span>{t("light")}</span> : null}
@@ -33,7 +33,7 @@ export function ModeToggle({ showLabel = false }: { showLabel?: boolean }) {
       variant="ghost"
       size={showLabel ? "sm" : "icon"}
       className={showLabel ? "h-10 gap-2 px-3" : undefined}
-      aria-label={t("toggleAppearance")}
+      aria-label={showLabel ? undefined : t("toggleAppearance")}
       onClick={() => setTheme(isDark ? "light" : "dark")}
     >
       {isDark ? (

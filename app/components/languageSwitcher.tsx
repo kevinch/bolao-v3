@@ -40,7 +40,7 @@ export default function LanguageSwitcher({
           size="sm"
           className={showLabel ? "h-10 gap-2 px-3" : undefined}
           disabled={isPending}
-          aria-label={t("switchTo")}
+          aria-label={showLabel ? undefined : t("switchTo")}
         >
           <GlobeIcon className="h-4 w-4 text-foreground" aria-hidden />
           {showLabel ? <span>{t(currentLocale)}</span> : null}
