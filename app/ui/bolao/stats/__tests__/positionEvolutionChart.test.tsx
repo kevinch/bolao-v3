@@ -38,7 +38,7 @@ describe("PositionEvolutionChart", () => {
 
     expect(screen.getByTestId("responsive-container")).toBeInTheDocument()
     expect(screen.getByTestId("line-chart")).toBeInTheDocument()
-    expect(screen.getByText("alice")).toBeInTheDocument()
-    expect(screen.getByText("bob")).toBeInTheDocument()
+    expect(screen.getAllByText("alice").length).toBeGreaterThan(0)
+    expect(screen.getAllByText("bob").length).toBeGreaterThan(0)
   })
 })

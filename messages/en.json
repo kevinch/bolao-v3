@@ -9,7 +9,10 @@
     "createBolao": "Create",
     "footerNavigation": "Footer navigation",
     "privacy": "Privacy",
-    "terms": "Terms"
+    "terms": "Terms",
+    "skipToContent": "Skip to content",
+    "previousRound": "Previous round",
+    "nextRound": "Next round"
   },
   "auth": {
     "signInTitle": "Login",
@@ -221,7 +224,8 @@
     "deleteErrorMessage": "There was an issue with the deletion.",
     "copySuccessTitle": "Success",
     "copySuccessMessage": "The link was copied to the clipboard.",
-    "copyErrorMessage": "Failed to copy the link to the clipboard."
+    "copyErrorMessage": "Failed to copy the link to the clipboard.",
+    "moreActions": "More actions for {name}"
   },
   "bolaoEditModal": {
     "title": "Edit bolão",
@@ -254,7 +258,13 @@
     "errorLoadFailed": "Could not load the bet page. Check your connection and try again.",
     "saveErrorTitle": "Could not save bet",
     "saveErrorDescription": "Something went wrong while saving your bet. Please try again.",
-    "saveLockedDescription": "Betting is closed for this match. Your change was not saved."
+    "saveLockedDescription": "Betting is closed for this match. Your change was not saved.",
+    "betFor": "Your bet for {team}",
+    "decreaseBet": "Decrease bet for {team}",
+    "increaseBet": "Increase bet for {team}",
+    "noBet": "No bet yet",
+    "home": "home team",
+    "away": "away team"
   },
   "resultsPage": {
     "nextGames": "Next games",
@@ -269,15 +279,23 @@
     "matchesPlayed": "mp",
     "goalDifference": "+/-",
     "points": "pts",
-    "form": "form"
+    "form": "form",
+    "rank": "Rank",
+    "team": "Team",
+    "formWin": "Win",
+    "formLoss": "Loss",
+    "formDraw": "Draw"
   },
   "leadPage": {
     "title": "Players lead",
     "player": "player",
     "score": "score",
-    "needs": "needs"
+    "needs": "needs",
+    "rank": "Rank"
   },
   "statsPage": {
+    "positionTableCaption": "Leaderboard rank for each player after every finished round.",
+    "playerColumn": "Player",
     "title": "Stats",
     "beta": "Beta",
     "emptyState": "Stats will appear once the first round finishes.",

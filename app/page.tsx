@@ -6,11 +6,7 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import InviteRedirector from "@/app/components/InviteRedirector"
 import JsonLd from "@/app/components/jsonLd"
-import {
-  SITE_URL,
-  SITE_NAME,
-  getSiteDescription,
-} from "@/app/lib/siteConfig"
+import { SITE_URL, SITE_NAME, getSiteDescription } from "@/app/lib/siteConfig"
 import Championships from "@/app/ui/home/championships"
 import SignedInHome from "@/app/ui/home/signedInHome"
 import MatchesSkeleton from "@/app/ui/home/matchesSkeleton"
@@ -45,36 +41,42 @@ async function Home() {
 
   if (user) {
     return (
-      <main>
+      <div>
         <InviteRedirector signedIn />
         <PageTitle>
-          {t("greeting")}
-          <br />
-          <span className="font-bold">
-            {user.username
-              ? `${user.username}.`
-              : user.emailAddresses[0].emailAddress.split("@")[0]}
-          </span>
+          <h1>
+            {t("greeting")}
+            <br />
+            <span className="font-bold">
+              {user.username
+                ? `${user.username}.`
+                : user.emailAddresses[0].emailAddress.split("@")[0]}
+            </span>
+          </h1>
         </PageTitle>
 
         <Suspense fallback={<MatchesSkeleton />}>
           <SignedInHome userId={user.id} />
         </Suspense>
-      </main>
+      </div>
     )
   }
 
   const locale = await getLocale()
-  const webApplicationJsonLd = getWebApplicationJsonLd(getSiteDescription(locale))
+  const webApplicationJsonLd = getWebApplicationJsonLd(
+    getSiteDescription(locale)
+  )
 
   return (
-    <main className="max-w-4xl mx-auto px-4">
+    <div className="max-w-4xl mx-auto px-4">
       <JsonLd data={webApplicationJsonLd} />
       <InviteRedirector />
 
       {/* Hero Section */}
       <div className={`text-center ${sectionSpaceing}`}>
-        <PageTitle><h1>{t("hero")}</h1></PageTitle>
+        <PageTitle>
+          <h1>{t("hero")}</h1>
+        </PageTitle>
         <p className="text-xl text-gray-600 dark:text-gray-300 mt-4 mb-8">
           {t("tagline1")}
           <br />
@@ -90,7 +92,7 @@ async function Home() {
             </Button>
             <Link
               href="/about"
-              className="text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 underline"
+              className="text-sm text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 underline"
             >
               {t("learnMore")}
             </Link>
@@ -102,7 +104,7 @@ async function Home() {
             </Button>
             <Link
               href="/faq"
-              className="text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 underline"
+              className="text-sm text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 underline"
             >
               {t("faqLink")}
             </Link>
@@ -195,7 +197,7 @@ async function Home() {
           <Link href="/sign-up">{t("getStartedFree")}</Link>
         </Button>
       </section>
-    </main>
+    </div>
   )
 }
 

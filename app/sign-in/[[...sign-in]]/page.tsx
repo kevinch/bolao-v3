@@ -27,7 +27,7 @@ export default function Page() {
   }, [isInviteRedirect, redirectUrl])
 
   return (
-    <main>
+    <div>
       <CompetitionIntentCapture />
       <PageTitle><h1>{t("signInTitle")}</h1></PageTitle>
 
@@ -51,6 +51,6 @@ export default function Page() {
         </Link>
         .
       </p>
-    </main>
+    </div>
   )
 }

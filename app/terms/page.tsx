@@ -27,7 +27,7 @@ export default async function TermsPage() {
   const t = await getTranslations("terms")
 
   return (
-    <main className="mx-auto max-w-2xl">
+    <div className="mx-auto max-w-2xl">
       <PageTitle center>
         <h1>{t("title")}</h1>
       </PageTitle>
@@ -43,6 +43,6 @@ export default async function TermsPage() {
           <p>{t(`${key}.body`)}</p>
         </section>
       ))}
-    </main>
+    </div>
   )
 }

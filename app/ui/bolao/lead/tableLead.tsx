@@ -24,7 +24,9 @@ async function TableLead({ data, isChampionPickLocked = false }: TableProps) {
           <table className="w-full text-xs">
             <thead className="uppercase">
               <tr>
-                <th className={paddingVertical} />
+                <th className={paddingVertical}>
+                  <span className="sr-only">{t("rank")}</span>
+                </th>
                 <th className={`${paddingVertical} text-left pl-2`}>
                   {t("player")}
                 </th>

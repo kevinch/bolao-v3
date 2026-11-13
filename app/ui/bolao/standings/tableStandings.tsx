@@ -23,6 +23,8 @@ type TheadProps = {
     goalDifference: string
     points: string
     form: string
+    rank: string
+    team: string
   }
 }
 
@@ -67,8 +69,12 @@ function Thead({ labels }: TheadProps) {
   return (
     <thead className="uppercase">
       <tr>
-        <th>&nbsp;&nbsp;</th>
-        <th className="font-normal text-xs py-3 text-left w-2/6">&nbsp;</th>
+        <th scope="col">
+          <span className="sr-only">{labels.rank}</span>
+        </th>
+        <th scope="col" className="font-normal text-xs py-3 text-left w-2/6">
+          <span className="sr-only">{labels.team}</span>
+        </th>
         <th className={thClasses}>{labels.matchesPlayed}</th>
         <th className={thClasses}>{labels.goalDifference}</th>
         <th className={clsx("font-bold")}>{labels.points}</th>
@@ -88,6 +94,8 @@ async function TableStandings({ standingsLeague }: TableProps) {
     goalDifference: t("goalDifference"),
     points: t("points"),
     form: t("form"),
+    rank: t("rank"),
+    team: t("team"),
   }
 
   if (!standings || standings.length === 0) {
@@ -166,18 +174,24 @@ async function TableStandings({ standingsLeague }: TableProps) {
                             .map((f, k) =>
                               f.toLowerCase() === "w" ? (
                                 <CheckCircledIcon
+                                  role="img"
+                                  aria-label={t("formWin")}
                                   key={`standing_table_${i}_group${j}_f_${k}_check`}
                                   color="green"
                                   style={{ margin: "0 1px" }}
                                 />
                               ) : f.toLowerCase() === "l" ? (
                                 <CrossCircledIcon
+                                  role="img"
+                                  aria-label={t("formLoss")}
                                   key={`standing_table_${i}_group${j}_f_${k}_cross`}
                                   color="red"
                                   style={{ margin: "0 1px" }}
                                 />
                               ) : (
                                 <MinusCircledIcon
+                                  role="img"
+                                  aria-label={t("formDraw")}
                                   key={`standing_table_${i}_group${j}_f_${k}_minus`}
                                   style={{ margin: "0 1px" }}
                                 />

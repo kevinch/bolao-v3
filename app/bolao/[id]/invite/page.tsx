@@ -92,7 +92,7 @@ async function InvitePage(props: {
   }
 
   return (
-    <main>
+    <div>
       <PageTitle center>
         <h1>{t("title")}</h1>
       </PageTitle>
@@ -128,7 +128,7 @@ async function InvitePage(props: {
           <Link href={`/bolao/${data.bolao.id}/bet`}>{t("startBetting")}</Link>
         </Button>
       </p>
-    </main>
+    </div>
   )
 }
 

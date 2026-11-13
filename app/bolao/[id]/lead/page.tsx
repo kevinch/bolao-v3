@@ -23,7 +23,7 @@ async function LeadPage(props: { params: Promise<{ id: string }> }) {
   )
 
   return (
-    <main>
+    <div>
       <BolaoPageTitle
         bolao={data.bolao}
         leagueLogo={data.fixtures[0].league.logo}
@@ -36,7 +36,7 @@ async function LeadPage(props: { params: Promise<{ id: string }> }) {
         data={leadForDisplay}
         isChampionPickLocked={data.isChampionPickLocked}
       />
-    </main>
+    </div>
   )
 }
 

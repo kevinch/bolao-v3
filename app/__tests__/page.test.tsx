@@ -116,8 +116,10 @@ describe("Home Page", () => {
 
       const { container } = render(await Home())
 
-      const mainElement = container.querySelector("main")
-      expect(mainElement).toBeInTheDocument()
+      // The <main> landmark now lives in the root layout; the Home component
+      // renders a content wrapper div.
+      const wrapper = container.firstElementChild
+      expect(wrapper?.tagName).toBe("DIV")
     })
 
     it("should render PageTitle component for authenticated user", async () => {
@@ -320,7 +322,7 @@ describe("Home Page", () => {
 
       const { container } = render(await Home())
 
-      const mainElement = container.querySelector("main.max-w-4xl")
+      const mainElement = container.querySelector("div.max-w-4xl")
       expect(mainElement).toBeInTheDocument()
     })
   })
@@ -336,7 +338,7 @@ describe("Home Page", () => {
       } as any)
 
       const { container: authenticatedContainer } = render(await Home())
-      expect(authenticatedContainer.querySelector("main")).toBeInTheDocument()
+      expect(authenticatedContainer.firstElementChild?.tagName).toBe("DIV")
 
       cleanup()
 
@@ -344,7 +346,9 @@ describe("Home Page", () => {
       vi.mocked(currentUser).mockResolvedValue(null)
 
       const { container: unauthenticatedContainer } = render(await Home())
-      expect(unauthenticatedContainer.querySelector("main")).toBeInTheDocument()
+      expect(
+        unauthenticatedContainer.querySelector("div.max-w-4xl")
+      ).toBeInTheDocument()
     })
 
     it("should always render InviteRedirector regardless of auth state", async () => {
@@ -406,8 +410,8 @@ describe("Home Page", () => {
 
       const { container } = render(await Home())
 
-      const main = container.querySelector("main")
-      expect(main).toBeInTheDocument()
+      // The semantic <main> landmark is provided by the root layout.
+      expect(container.firstElementChild?.tagName).toBe("DIV")
     })
 
     it("should use semantic main element for unauthenticated state", async () => {
@@ -416,8 +420,9 @@ describe("Home Page", () => {
 
       const { container } = render(await Home())
 
-      const main = container.querySelector("main")
-      expect(main).toBeInTheDocument()
+      expect(
+        container.querySelector("div.max-w-4xl")
+      ).toBeInTheDocument()
     })
 
     it("should have accessible links with descriptive text", async () => {

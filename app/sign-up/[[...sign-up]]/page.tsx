@@ -7,13 +7,13 @@ import { useTranslations } from "next-intl"
 export default function Page() {
   const t = useTranslations("auth")
   return (
-    <main>
+    <div>
       <Suspense fallback={null}><CompetitionIntentCapture /></Suspense>
       <PageTitle><h1>{t("signUpTitle")}</h1></PageTitle>
 
       <div className="flex justify-center">
         <SignUp />
       </div>
-    </main>
+    </div>
   )
 }
