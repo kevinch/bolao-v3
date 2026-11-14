@@ -3,52 +3,30 @@
 import { useEffect, useRef } from "react"
 import { usePathname } from "next/navigation"
 
+// Module-level flag so a scroll request survives components that unmount during
+// a route change (e.g. the per-page bolão tab bar). It is only ever set by a
+// forward Link click that opts in via requestScrollToTop(), so browser
+// back/forward keep their native scroll restoration, and navigations that have
+// their own scroll handling (the header) are left untouched.
+let pendingScrollToTop = false
+
+export function requestScrollToTop() {
+  pendingScrollToTop = true
+}
+
 /**
- * Scrolls back to the top of the page on forward navigations (Link clicks),
- * which Next's App Router does not reliably do for these routes (e.g. entering
- * a bolão or switching tabs while scrolled down). Browser back/forward
- * navigations are left untouched so their native scroll restoration still
- * works.
- *
- * Mounted once in the root layout so it survives the per-page remounts of the
- * route segments.
+ * Persistent listener mounted once in the root layout. When a navigation was
+ * requested via requestScrollToTop(), it scrolls to the top of the page after
+ * the new route renders. Opt-in only — it does nothing for navigations that
+ * did not call requestScrollToTop().
  */
 function ScrollToTop() {
   const pathname = usePathname()
-  const isFirstRender = useRef(true)
-  const isPopNavigation = useRef(false)
 
   useEffect(() => {
-    function handlePopState() {
-      isPopNavigation.current = true
-      // Safety net: if this pop did not change the pathname (hash/query only),
-      // clear the flag so a later forward navigation still scrolls to top. A
-      // real forward Link click never happens within this window of a pop.
-      window.setTimeout(() => {
-        isPopNavigation.current = false
-      }, 100)
-    }
+    if (!pendingScrollToTop) return
 
-    window.addEventListener("popstate", handlePopState)
-    return () => window.removeEventListener("popstate", handlePopState)
-  }, [])
-
-  useEffect(() => {
-    // Don't fight the browser's initial scroll / hash handling on first load.
-    if (isFirstRender.current) {
-      isFirstRender.current = false
-      return
-    }
-
-    // Preserve native scroll restoration on browser back/forward.
-    if (isPopNavigation.current) {
-      isPopNavigation.current = false
-      return
-    }
-
-    // Respect in-page anchor navigation.
-    if (window.location.hash) return
-
+    pendingScrollToTop = false
     const frame = requestAnimationFrame(() => {
       window.scrollTo({ top: 0, left: 0, behavior: "instant" })
     })
