@@ -1,8 +1,12 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { notFound } from "next/navigation"
+import { getTranslations } from "next-intl/server"
+import { ChevronLeftIcon } from "@radix-ui/react-icons"
 import { asText, asImageSrc } from "@prismicio/client"
 import { PrismicRichText } from "@prismicio/react"
 import { createClient } from "@/prismicio"
+import { Button } from "@/components/ui/button"
 import PageTitle from "@/app/components/pageTitle"
 import JsonLd from "@/app/components/jsonLd"
 import { formatDateNews } from "@/app/lib/utils"
@@ -53,6 +57,7 @@ async function NewsPost(props: Props) {
 
   if (!document) notFound()
 
+  const t = await getTranslations("news")
   const title = asText(document.data.title)
 
   const articleJsonLd = {
@@ -88,6 +93,15 @@ async function NewsPost(props: Props) {
       <div className="news-container">
         <PrismicRichText field={document.data.content} />
       </div>
+
+      <footer className="mt-12 border-t pt-6">
+        <Button asChild variant="ghost" size="sm" className="-ml-2">
+          <Link href="/news">
+            <ChevronLeftIcon aria-hidden />
+            {t("backToNews")}
+          </Link>
+        </Button>
+      </footer>
     </article>
   )
 }

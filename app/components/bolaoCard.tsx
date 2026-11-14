@@ -1,8 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
+import ScrollLink from "@/app/ui/bolao/scrollLink"
 import { useTranslations } from "next-intl"
 import { format } from "date-fns"
 import { updateBolao } from "@/app/lib/actions"
@@ -128,11 +128,15 @@ function BolaoCard({ bolao, userId }: { bolao: Bolao; userId: string }) {
         <div className="flex justify-between w-full">
           <div className="flex items-center gap-2">
             <Button asChild variant="outline">
-              <Link href={`/bolao/${bolao.id}/bet`}>{t("bet")}</Link>
+              <ScrollLink href={`/bolao/${bolao.id}/bet`}>
+                {t("bet")}
+              </ScrollLink>
             </Button>
 
             <Button asChild variant="outline">
-              <Link href={`/bolao/${bolao.id}/results`}>{t("results")}</Link>
+              <ScrollLink href={`/bolao/${bolao.id}/results`}>
+                {t("results")}
+              </ScrollLink>
             </Button>
 
             <InviteButton

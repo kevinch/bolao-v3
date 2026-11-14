@@ -1,8 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import Link from "next/link"
 import { useLocale, useTranslations } from "next-intl"
+import ScrollLink from "@/app/ui/bolao/scrollLink"
 import TeamCodeLogo from "@/app/ui/bolao/teamCodeLogo"
 import FixtureDate from "@/app/ui/bolao/fixtureDate"
 import { isFixtureOpenToBet } from "@/app/lib/utils"
@@ -47,13 +47,13 @@ export default function MatchPreview({ matches, bolaoId }: {
                 : "text-xs text-muted-foreground"}>
                 {t(incomplete ? "incomplete" : "missing")}
               </span>
-              <Link
+              <ScrollLink
                 href={`/bolao/${bolaoId}/bet?roundIndex=${roundIndex}`}
                 className="inline-flex min-h-10 items-center gap-1 text-sm font-medium text-primary underline-offset-4 hover:underline"
                 aria-label={t("predictMatch", { home: match.teams.home.name, away: match.teams.away.name })}
               >
                 {t("predict")}<ArrowRightIcon aria-hidden="true" />
-              </Link>
+              </ScrollLink>
             </div>
           )}
         </li>

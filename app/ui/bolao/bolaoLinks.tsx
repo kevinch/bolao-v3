@@ -1,7 +1,7 @@
-import Link from "next/link"
 import { getTranslations } from "next-intl/server"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import ScrollLink from "@/app/ui/bolao/scrollLink"
 
 type Props = {
   bolaoId: string
@@ -20,7 +20,7 @@ async function BolaoLinks({ bolaoId }: Props) {
           variant="ghost"
           className="max-md:px-2 max-md:shrink-0"
         >
-          <Link href={`/bolao/${bolaoId}/bet`}>{t("bet")}</Link>
+          <ScrollLink href={`/bolao/${bolaoId}/bet`}>{t("bet")}</ScrollLink>
         </Button>
 
         <Button
@@ -29,7 +29,7 @@ async function BolaoLinks({ bolaoId }: Props) {
           variant="ghost"
           className="max-md:px-2 max-md:shrink-0"
         >
-          <Link href={`/bolao/${bolaoId}/standings`}>{t("standings")}</Link>
+          <ScrollLink href={`/bolao/${bolaoId}/standings`}>{t("standings")}</ScrollLink>
         </Button>
 
         <Button
@@ -38,7 +38,7 @@ async function BolaoLinks({ bolaoId }: Props) {
           variant="ghost"
           className="max-md:px-2 max-md:shrink-0"
         >
-          <Link href={`/bolao/${bolaoId}/results`}>{t("results")}</Link>
+          <ScrollLink href={`/bolao/${bolaoId}/results`}>{t("results")}</ScrollLink>
         </Button>
 
         <Button
@@ -47,7 +47,7 @@ async function BolaoLinks({ bolaoId }: Props) {
           variant="ghost"
           className="max-md:px-2 max-md:shrink-0"
         >
-          <Link href={`/bolao/${bolaoId}/lead`}>{t("lead")}</Link>
+          <ScrollLink href={`/bolao/${bolaoId}/lead`}>{t("lead")}</ScrollLink>
         </Button>
 
         <Button
@@ -56,7 +56,7 @@ async function BolaoLinks({ bolaoId }: Props) {
           variant="ghost"
           className="max-md:px-2 max-md:shrink-0"
         >
-          <Link href={`/bolao/${bolaoId}/stats`}>{t("stats")}</Link>
+          <ScrollLink href={`/bolao/${bolaoId}/stats`}>{t("stats")}</ScrollLink>
         </Button>
       </div>
       <Separator className="my-4" />

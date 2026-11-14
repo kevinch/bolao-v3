@@ -119,7 +119,8 @@
   },
   "news": {
     "title": "News",
-    "metaDescription": "Product updates and announcements from Bolão.io, the free app for soccer betting pools with friends."
+    "metaDescription": "Product updates and announcements from Bolão.io, the free app for soccer betting pools with friends.",
+    "backToNews": "Back to news"
   },
   "faq": {
     "title": "Frequently Asked Questions",
