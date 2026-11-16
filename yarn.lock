@@ -635,7 +635,19 @@
   dependencies:
     tslib "^2.8.1"
 
-"@formatjs/icu-messageformat-parser@3.5.1", "@formatjs/icu-messageformat-parser@^3.4.0":
+"@formatjs/fast-memoize@3.1.7":
+  version "3.1.7"
+  resolved "https://registry.yarnpkg.com/@formatjs/fast-memoize/-/fast-memoize-3.1.7.tgz#5f79b3756e4bcb5faee47b3a2f01216e1212c9e4"
+  integrity sha512-zXfhLpvA6T7+efdt9JLbBwZ00tT7NsBMDVnDu8rpHeNNv8KfRZAMo2gkG0k9lK/Nzc//3kJ9pImsfuJxk3KhUA==
+
+"@formatjs/icu-messageformat-parser@3.5.23":
+  version "3.5.23"
+  resolved "https://registry.yarnpkg.com/@formatjs/icu-messageformat-parser/-/icu-messageformat-parser-3.5.23.tgz#4812fd6d3adf844036108697f0486bf0464b2d5f"
+  integrity sha512-iB1fYfhtSGd8uH9A8b1m01Ujcv6QtQnJasefP3jPApmz72L/zNipzf3BdoinTMd1xuviVChjUJWL60iTwjUQ+w==
+  dependencies:
+    "@formatjs/icu-skeleton-parser" "2.1.13"
+
+"@formatjs/icu-messageformat-parser@^3.4.0":
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/@formatjs/icu-messageformat-parser/-/icu-messageformat-parser-3.5.1.tgz#a08faadbbb333d9e4fa7276c92a2b66a37788aa1"
   integrity sha512-sSDmSvmmoVQ92XqWb499KrIhv/vLisJU8ITFrx7T7NZHUmMY7EL9xgRowAosaljhqnj/5iufG24QrdzB6X3ItA==
@@ -651,6 +663,11 @@
   dependencies:
     "@formatjs/ecma402-abstract" "3.1.1"
     tslib "^2.8.1"
+
+"@formatjs/icu-skeleton-parser@2.1.13":
+  version "2.1.13"
+  resolved "https://registry.yarnpkg.com/@formatjs/icu-skeleton-parser/-/icu-skeleton-parser-2.1.13.tgz#b51ec5c826b93c34d4e45390a4d32d05c222cf07"
+  integrity sha512-IdAJ9NrHn7AF0zqncD9UpxQozTYyJtbwwrZnJMEKVxTcOOXtVkUb2XYTpNOGTAv58NCsk0rjRB9G+i2SvBmGAQ==
 
 "@formatjs/intl-localematcher@0.8.1", "@formatjs/intl-localematcher@^0.8.1":
   version "0.8.1"
@@ -4429,10 +4446,10 @@ iconv-lite@~0.4.24:
   dependencies:
     safer-buffer ">= 2.1.2 < 3"
 
-icu-minify@^4.14.9:
-  version "4.14.9"
-  resolved "https://registry.yarnpkg.com/icu-minify/-/icu-minify-4.14.9.tgz#604295631a4fcf0d69766b1b281dfefff7427d8c"
-  integrity sha512-PmO+fNnC3K3mfPKTnm3RrPERrhQZnjm1AlpyZQ0ShbXi8Y/kYZ3YOde8TEjCLz9k3P2DmzkBn8lykGrCAi1Ajw==
+icu-minify@^4.15.1:
+  version "4.15.2"
+  resolved "https://registry.yarnpkg.com/icu-minify/-/icu-minify-4.15.2.tgz#54d48d9041faa2b7206bba7dab4a4233a3e3c6f5"
+  integrity sha512-IsgBR7/1RBkYWUqP2wS+vE9BBBfH4HjNjDbSPF3uK2Jjlzlsd7R+loUhjEEUySU6tjGmUIuft7w3qp7PI0KkXA==
   dependencies:
     "@formatjs/icu-messageformat-parser" "^3.4.0"
 
@@ -4508,15 +4525,13 @@ internal-slot@^1.1.0:
   resolved "https://registry.yarnpkg.com/internmap/-/internmap-2.0.3.tgz#6685f23755e43c524e251d29cbc97248e3061009"
   integrity sha512-5Hh7Y1wQbvY5ooGgPbDaL5iYLAPzMTUrjMulskHLH6wnv/A+1q5rgEaiuqEjB+oxGXIVZs1FF+R/KPN3ZSQYYg==
 
-intl-messageformat@^11.1.0:
-  version "11.1.2"
-  resolved "https://registry.yarnpkg.com/intl-messageformat/-/intl-messageformat-11.1.2.tgz#c72879165d15633f38b092479822c5d831c21ac5"
-  integrity sha512-ucSrQmZGAxfiBHfBRXW/k7UC8MaGFlEj4Ry1tKiDcmgwQm1y3EDl40u+4VNHYomxJQMJi9NEI3riDRlth96jKg==
+"intl-messageformat@^11.1.0 || ^12.0.0":
+  version "12.1.5"
+  resolved "https://registry.yarnpkg.com/intl-messageformat/-/intl-messageformat-12.1.5.tgz#1b902dd7f68764c69318a7afe363cbc34b426486"
+  integrity sha512-quhcDFAxy4wr/GrgWgmMjuegoedNUIxGNLORfXgDgdjuv8cBM88ClLTLXmfYC1roMSR1PPc55yUEkpJ5m67W2g==
   dependencies:
-    "@formatjs/ecma402-abstract" "3.1.1"
-    "@formatjs/fast-memoize" "3.1.0"
-    "@formatjs/icu-messageformat-parser" "3.5.1"
-    tslib "^2.8.1"
+    "@formatjs/fast-memoize" "3.1.7"
+    "@formatjs/icu-messageformat-parser" "3.5.23"
 
 io-ts-reporters@^2.0.1:
   version "2.0.1"
@@ -5345,15 +5360,15 @@ newtype-ts@^0.3.5:
   resolved "https://registry.yarnpkg.com/newtype-ts/-/newtype-ts-0.3.5.tgz#5c113d34a04938d9e90061437638260ea965c490"
   integrity sha512-v83UEQMlVR75yf1OUdoSFssjitxzjZlqBAjiGQ4WJaML8Jdc68LJ+BaSAXUmKY4bNzp7hygkKLYTsDi14PxI2g==
 
-next-intl-swc-plugin-extractor@4.14.9:
-  version "4.14.9"
-  resolved "https://registry.yarnpkg.com/next-intl-swc-plugin-extractor/-/next-intl-swc-plugin-extractor-4.14.9.tgz#0bc3608c6865418cfb3cbd1e8c09b63824cc7348"
-  integrity sha512-8jAkmDwQJo6RDavBHm9QRl1YTn2WXf+rI4SVhMaZxZcxopnwZic6fKTXOoNIo3kzC+a6vJySkOkXmHTVFLAYtg==
+next-intl-swc-plugin-extractor@4.15.1:
+  version "4.15.1"
+  resolved "https://registry.yarnpkg.com/next-intl-swc-plugin-extractor/-/next-intl-swc-plugin-extractor-4.15.1.tgz#27d0bf64b687296675cf344431b4e838c41d26b1"
+  integrity sha512-n+CrfyQ3obIpZoaHtlHvtTLg6EuFcmSC3c71Yv0Kh4/5zenBJ8WeYP/xAnsiwQjZcaK9zie0SHwWeIG+5OJaBw==
 
-next-intl@^4.14.9:
-  version "4.14.9"
-  resolved "https://registry.yarnpkg.com/next-intl/-/next-intl-4.14.9.tgz#49d9531adbea2153f68d104e2809711ae7916df1"
-  integrity sha512-uauRtUC+TrYNA1OL/QcwL9irndLrI9jK3Wdaa9W0B5AeKh9cqVdNeT0IWgLnhBqBRrVwppVdI0M+C1+JdGPQ3w==
+next-intl@^4.15.1:
+  version "4.15.1"
+  resolved "https://registry.yarnpkg.com/next-intl/-/next-intl-4.15.1.tgz#c4eae18cdbf4e55cbc79983ddd12e192ede49f6e"
+  integrity sha512-b0KOLdd2pv+uWTma2Lv8OlSLCAqa2zasCx6ZXo2n/0/rAGWkzgRdQ0nD7sl0xtuDFRPNu8sNm+cWgJic16Sbmg==
   dependencies:
     "@eloqnt/config" "^0.1.1"
     "@eloqnt/format-json" "^0.1.0"
@@ -5361,10 +5376,10 @@ next-intl@^4.14.9:
     "@formatjs/intl-localematcher" "^0.8.1"
     "@parcel/watcher" "^2.4.1"
     "@swc/core" "~1.16.0"
-    icu-minify "^4.14.9"
+    icu-minify "^4.15.1"
     negotiator "^1.0.0"
-    next-intl-swc-plugin-extractor "4.14.9"
-    use-intl "^4.14.9"
+    next-intl-swc-plugin-extractor "4.15.1"
+    use-intl "^4.15.1"
 
 next-themes@^0.4.6:
   version "0.4.6"
@@ -7124,15 +7139,15 @@ use-callback-ref@^1.3.3:
   dependencies:
     tslib "^2.0.0"
 
-use-intl@^4.14.9:
-  version "4.14.9"
-  resolved "https://registry.yarnpkg.com/use-intl/-/use-intl-4.14.9.tgz#ca83a8be71a4aa5372e1d7d791fbf1f69e3b85f8"
-  integrity sha512-37ktvdCCz+6JY2VFPl/GV69Ds4ahiUT2c2xEZZRZYxdgGLxFsUbdxzjQVRm3YMIOUU0VPs6zvlifb4Yjk4IxIg==
+use-intl@^4.15.1:
+  version "4.15.1"
+  resolved "https://registry.yarnpkg.com/use-intl/-/use-intl-4.15.1.tgz#063dec89f33535eefc09533f1674c2f316678a2e"
+  integrity sha512-WJwcDTRzrg4JaEu3Jl1oEEXu5fLkWh+R8jZAhEYrTWMYqGYExKAi51MwtSBZZpYa7HzqluJPx2jmEap21kQlUQ==
   dependencies:
     "@formatjs/fast-memoize" "^3.1.0"
     "@schummar/icu-type-parser" "1.21.5"
-    icu-minify "^4.14.9"
-    intl-messageformat "^11.1.0"
+    icu-minify "^4.15.1"
+    intl-messageformat "^11.1.0 || ^12.0.0"
 
 use-sidecar@^1.1.3:
   version "1.1.3"
